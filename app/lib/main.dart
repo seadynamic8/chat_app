@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/env/environment.dart';
+import 'package:chat_app/i18n/supported_locales.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chat_app/routing/app_router.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +42,16 @@ class MyApp extends ConsumerWidget {
         useMaterial3: true,
       ),
       routerConfig: appRouter.config(),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: supportedLocales,
+      // *** Change Locale to different to see different language (ex: Locale('es'))
+      // *** Current Locale... can use a button to change if u want
+      // *** or remove to use system locale (meaning will change with user region)
+      locale: const Locale('en'),
     );
   }
 }

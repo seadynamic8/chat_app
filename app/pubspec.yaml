@@ -42,6 +42,8 @@ dependencies:
   riverpod_annotation: ^2.2.1
   auto_route: ^7.8.4
   i18n_extension: ^9.0.2
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
