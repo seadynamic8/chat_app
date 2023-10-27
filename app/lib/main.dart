@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/env/environment.dart';
+import 'package:chat_app/features/auth/repository/auth_repository.dart';
 import 'package:chat_app/i18n/supported_locales.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,7 +41,11 @@ class MyApp extends ConsumerWidget {
       darkTheme: ThemeData.dark()
           .copyWith(useMaterial3: true, colorScheme: const ColorScheme.dark()),
       themeMode: ThemeMode.dark,
-      routerConfig: appRouter.config(),
+      routerConfig: appRouter.config(
+        reevaluateListenable: ReevaluateListenable.stream(
+          ref.watch(authRepositoryProvider).onAuthStateChanges(),
+        ),
+      ),
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
