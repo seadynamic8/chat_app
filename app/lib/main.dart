@@ -37,10 +37,9 @@ class MyApp extends ConsumerWidget {
 
     return MaterialApp.router(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      darkTheme: ThemeData.dark()
+          .copyWith(useMaterial3: true, colorScheme: const ColorScheme.dark()),
+      themeMode: ThemeMode.dark,
       routerConfig: appRouter.config(),
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
