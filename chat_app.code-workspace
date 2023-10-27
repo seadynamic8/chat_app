@@ -5,12 +5,17 @@
       "path": "./"
     },
     {
+      "name": "frontend",
+      "path": "app"
+    },
+    {
       "name": "supabase-functions",
       "path": "supabase/functions"
     }
   ],
   "settings": {
     "files.exclude": {
+      "app/": true,
       "supabase/functions/": true
     }
   }
