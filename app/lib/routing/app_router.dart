@@ -8,7 +8,15 @@ part 'app_router.g.dart';
 class AppRouter extends $AppRouter {
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(page: MyHomeRoute.page, initial: true),
+        AutoRoute(
+          page: HomeRoute.page,
+          initial: true,
+          children: [
+            AutoRoute(page: ContactsRoute.page, initial: true),
+            AutoRoute(page: ChatsRoute.page),
+            AutoRoute(page: ProfileRoute.page),
+          ],
+        ),
       ];
 }
 
