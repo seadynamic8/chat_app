@@ -3,8 +3,8 @@ import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:flutter/material.dart';
 
 @RoutePage()
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomeNavigation extends StatelessWidget {
+  const HomeNavigation({super.key});
 
   @override
   Widget build(BuildContext context) {

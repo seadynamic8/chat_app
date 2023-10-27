@@ -12,7 +12,8 @@ import 'package:auto_route/auto_route.dart' as _i6;
 import 'package:chat_app/features/chat/presentation/chats_screen.dart' as _i1;
 import 'package:chat_app/features/contacts/presentation/contacts_screen.dart'
     as _i2;
-import 'package:chat_app/features/home/presentation/home_screen.dart' as _i3;
+import 'package:chat_app/features/home/presentation/home_navigation.dart'
+    as _i3;
 import 'package:chat_app/features/profile/presentation/profile_screen.dart'
     as _i5;
 import 'package:chat_app/main.dart' as _i4;
@@ -34,10 +35,10 @@ abstract class $AppRouter extends _i6.RootStackRouter {
         child: const _i2.ContactsScreen(),
       );
     },
-    HomeRoute.name: (routeData) {
+    HomeNavigation.name: (routeData) {
       return _i6.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i3.HomeScreen(),
+        child: const _i3.HomeNavigation(),
       );
     },
     MyHomeRoute.name: (routeData) {
@@ -84,15 +85,15 @@ class ContactsRoute extends _i6.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i3.HomeScreen]
-class HomeRoute extends _i6.PageRouteInfo<void> {
-  const HomeRoute({List<_i6.PageRouteInfo>? children})
+/// [_i3.HomeNavigation]
+class HomeNavigation extends _i6.PageRouteInfo<void> {
+  const HomeNavigation({List<_i6.PageRouteInfo>? children})
       : super(
-          HomeRoute.name,
+          HomeNavigation.name,
           initialChildren: children,
         );
 
-  static const String name = 'HomeRoute';
+  static const String name = 'HomeNavigation';
 
   static const _i6.PageInfo<void> page = _i6.PageInfo<void>(name);
 }
