@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/env/environment.dart';
 import 'package:chat_app/features/auth/repository/auth_repository.dart';
 import 'package:chat_app/i18n/supported_locales_and_delegates.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chat_app/routing/app_router.dart';
 import 'package:flutter/material.dart';
@@ -53,15 +52,5 @@ class MyApp extends ConsumerWidget {
       // *** or remove to use system locale (meaning will change with user region)
       locale: const Locale('en'),
     );
-  }
-}
-
-@RoutePage()
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }
