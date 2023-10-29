@@ -21,7 +21,13 @@ class AppRouter extends $AppRouter {
           children: [
             AutoRoute(page: ContactsRoute.page, initial: true),
             AutoRoute(page: ChatsRoute.page),
-            AutoRoute(page: ProfileRoute.page),
+            AutoRoute(
+              page: ProfileNavigation.page,
+              children: [
+                AutoRoute(page: ProfileRoute.page, initial: true),
+                AutoRoute(page: ProfileSettingsRoute.page),
+              ],
+            ),
           ],
         ),
       ];

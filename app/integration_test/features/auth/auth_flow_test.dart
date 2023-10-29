@@ -6,7 +6,7 @@ import '../../robot.dart';
 
 void main() {
   patrolTest(
-    'login successfully',
+    'login and logout flow',
     ($) async {
       final r = Robot($: $);
       await r.pumpAndSettleMyApp();
@@ -18,6 +18,12 @@ void main() {
       await $(ElevatedButton).containing('Login').tap();
 
       expect($('Contacts'), findsWidgets);
+
+      await $(#profileButton).tap();
+      await $(IconButton).containing(Icons.settings).tap();
+      await $(ListTile).containing('Logout').tap();
+
+      expect($('Log In'), findsOneWidget);
     },
   );
 }

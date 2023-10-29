@@ -23,15 +23,24 @@ class HomeNavigation extends StatelessWidget {
           selectedItemColor: Theme.of(context).iconTheme.color,
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.people_alt_outlined),
+              icon: Icon(
+                Icons.people_alt_outlined,
+                key: Key('contactsButton'),
+              ),
               label: 'Contacts',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.message),
+              icon: Icon(
+                Icons.message,
+                key: Key('chatsButton'),
+              ),
               label: 'Chats',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person),
+              icon: Icon(
+                Icons.person,
+                key: Key('profileButton'),
+              ),
               label: 'Profile',
             ),
           ],

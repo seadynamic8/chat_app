@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:i18n_extension/i18n_widget.dart';
 
 @RoutePage()
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class ProfileSettingsScreen extends StatelessWidget {
+  const ProfileSettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,15 +14,18 @@ class ProfileScreen extends StatelessWidget {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            title: Text('Profile'.i18n),
-            actions: [
-              IconButton(
-                  onPressed: () =>
-                      context.router.push(const ProfileSettingsRoute()),
-                  icon: const Icon(Icons.settings))
+            title: Text('Settings'.i18n),
+          ),
+          body: ListView(
+            children: [
+              ListTile(
+                title: Text('Logout'.i18n),
+                onTap: () {
+                  context.router.navigate(const HomeNavigation());
+                },
+              )
             ],
           ),
-          body: Container(),
         ),
       ),
     );
