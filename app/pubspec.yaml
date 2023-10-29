@@ -59,6 +59,14 @@ dev_dependencies:
   secure_dotenv_generator: ^1.0.1
   riverpod_generator: ^2.3.5
   auto_route_generator: ^7.3.2
+  patrol: ^2.3.1
+
+patrol:
+  app_name: Chat App
+  android:
+    package_name: com.example.chat_app
+  ios:
+    bundle_id: com.example.ChatApp
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
