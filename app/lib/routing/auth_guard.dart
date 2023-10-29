@@ -16,11 +16,11 @@ class AuthGuard extends AutoRouteGuard {
       // Continue navigation
       resolver.next();
     } else {
-      // Navigate to login page to get authenticated
+      // Navigate to auth screen to get authenticated
 
       // Redirect will remove the redirected route from the stack after completion
       resolver.redirect(
-        LoginRoute(onAuthResult: (isSuccess) => resolver.next(isSuccess)),
+        AuthRoute(onAuthResult: (isSuccess) => resolver.next(isSuccess)),
       );
     }
   }

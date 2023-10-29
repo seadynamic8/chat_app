@@ -2,10 +2,10 @@ import 'package:chat_app/features/auth/repository/auth_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-part 'login_screen_controller.g.dart';
+part 'auth_screen_controller.g.dart';
 
 @riverpod
-class LoginScreenController extends _$LoginScreenController {
+class AuthScreenController extends _$AuthScreenController {
   @override
   AsyncValue<void> build() {
     return const AsyncData(null);

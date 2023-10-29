@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/error_snackbar.dart';
-import 'package:chat_app/features/auth/presentation/login_screen_controller.dart';
+import 'package:chat_app/features/auth/presentation/auth_screen_controller.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,16 +8,16 @@ import 'package:i18n_extension/i18n_widget.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 @RoutePage()
-class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key, required this.onAuthResult});
+class AuthScreen extends ConsumerStatefulWidget {
+  const AuthScreen({super.key, required this.onAuthResult});
 
   final void Function(bool isSuccess) onAuthResult;
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<AuthScreen> createState() => _AuthScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
+class _AuthScreenState extends ConsumerState<AuthScreen> {
   final _form = GlobalKey<FormState>();
 
   final _emailController = TextEditingController();
@@ -31,7 +31,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     try {
       final response = await ref
-          .read(loginScreenControllerProvider.notifier)
+          .read(authScreenControllerProvider.notifier)
           .authenticate(email, password);
 
       if (response.value != null) widget.onAuthResult(true);
@@ -54,7 +54,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(loginScreenControllerProvider);
+    final state = ref.watch(authScreenControllerProvider);
 
     return I18n(
       child: SafeArea(
