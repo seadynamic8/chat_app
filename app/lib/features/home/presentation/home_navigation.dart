@@ -1,6 +1,9 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
+import 'package:chat_app/utils/keys.dart';
 import 'package:flutter/material.dart';
+import 'package:i18n_extension/i18n_widget.dart';
 
 @RoutePage()
 class HomeNavigation extends StatelessWidget {
@@ -8,44 +11,48 @@ class HomeNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AutoTabsScaffold(
-      routes: const [
-        ContactsRoute(),
-        ChatsRoute(),
-        ProfileRoute(),
-      ],
-      bottomNavigationBuilder: (_, tabsRouter) {
-        return BottomNavigationBar(
-          currentIndex: tabsRouter.activeIndex,
-          onTap: tabsRouter.setActiveIndex,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          selectedItemColor: Theme.of(context).iconTheme.color,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.people_alt_outlined,
-                key: Key('contactsButton'),
+    return I18n(
+      child: AutoTabsScaffold(
+        routes: const [
+          ContactsRoute(),
+          ChatsRoute(),
+          ProfileRoute(),
+        ],
+        bottomNavigationBuilder: (_, tabsRouter) {
+          return BottomNavigationBar(
+            currentIndex: tabsRouter.activeIndex,
+            onTap: tabsRouter.setActiveIndex,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            // TODO: Update color to something than just some random color
+            selectedItemColor:
+                Theme.of(context).textTheme.labelMedium!.decorationColor,
+            items: [
+              BottomNavigationBarItem(
+                icon: const Icon(
+                  Icons.people_alt_outlined,
+                  key: K.contactsTab,
+                ),
+                label: 'Contacts'.i18n,
               ),
-              label: 'Contacts',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.message,
-                key: Key('chatsButton'),
+              BottomNavigationBarItem(
+                icon: const Icon(
+                  Icons.message,
+                  key: K.chatsTab,
+                ),
+                label: 'Chats'.i18n,
               ),
-              label: 'Chats',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.person,
-                key: Key('profileButton'),
+              BottomNavigationBarItem(
+                icon: const Icon(
+                  Icons.person,
+                  key: K.profileTab,
+                ),
+                label: 'Profile'.i18n,
               ),
-              label: 'Profile',
-            ),
-          ],
-        );
-      },
+            ],
+          );
+        },
+      ),
     );
   }
 }

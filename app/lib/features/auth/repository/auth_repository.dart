@@ -46,13 +46,18 @@ class AuthRepository {
     required String password,
     String? username,
   }) async {
-    final data = username == null ? null : {'username': username};
-
-    return await supabase.auth.signUp(
+    final userCreateResponse = await supabase.auth.signUp(
       email: email,
       password: password,
-      data: data,
     );
+
+    if (userCreateResponse.session != null && username != null) {
+      await supabase.from('profiles').insert({
+        'username': username,
+      });
+    }
+
+    return userCreateResponse;
   }
 
   Future<AuthResponse> signInWithEmailAndPassword({
