@@ -9,6 +9,8 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i8;
+import 'package:chat_app/features/auth/presentation/auth_form_state.dart'
+    as _i10;
 import 'package:chat_app/features/auth/presentation/auth_screen.dart' as _i1;
 import 'package:chat_app/features/chat/presentation/chats_screen.dart' as _i2;
 import 'package:chat_app/features/contacts/presentation/contacts_screen.dart'
@@ -34,6 +36,7 @@ abstract class $AppRouter extends _i8.RootStackRouter {
         routeData: routeData,
         child: _i1.AuthScreen(
           key: args.key,
+          formType: args.formType,
           onAuthResult: args.onAuthResult,
         ),
       );
@@ -82,12 +85,14 @@ abstract class $AppRouter extends _i8.RootStackRouter {
 class AuthRoute extends _i8.PageRouteInfo<AuthRouteArgs> {
   AuthRoute({
     _i9.Key? key,
+    required _i10.AuthFormType formType,
     required void Function(bool) onAuthResult,
     List<_i8.PageRouteInfo>? children,
   }) : super(
           AuthRoute.name,
           args: AuthRouteArgs(
             key: key,
+            formType: formType,
             onAuthResult: onAuthResult,
           ),
           initialChildren: children,
@@ -102,16 +107,19 @@ class AuthRoute extends _i8.PageRouteInfo<AuthRouteArgs> {
 class AuthRouteArgs {
   const AuthRouteArgs({
     this.key,
+    required this.formType,
     required this.onAuthResult,
   });
 
   final _i9.Key? key;
 
+  final _i10.AuthFormType formType;
+
   final void Function(bool) onAuthResult;
 
   @override
   String toString() {
-    return 'AuthRouteArgs{key: $key, onAuthResult: $onAuthResult}';
+    return 'AuthRouteArgs{key: $key, formType: $formType, onAuthResult: $onAuthResult}';
   }
 }
 

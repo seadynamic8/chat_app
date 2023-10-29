@@ -1,3 +1,4 @@
+import 'package:chat_app/features/auth/presentation/auth_form_state.dart';
 import 'package:chat_app/features/auth/repository/auth_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -7,13 +8,13 @@ part 'auth_screen_controller.g.dart';
 @riverpod
 class AuthScreenController extends _$AuthScreenController {
   @override
-  AsyncValue<void> build() {
-    return const AsyncData(null);
+  AuthFormState build(AuthFormType formType) {
+    return AuthFormState(formType: formType);
   }
 
   Future<AsyncValue<AuthResponse>> authenticate(
       String email, String password) async {
-    state = const AsyncLoading();
+    state = state.copyWith(value: const AsyncLoading());
 
     final result = await AsyncValue.guard(
       () => ref
@@ -21,7 +22,7 @@ class AuthScreenController extends _$AuthScreenController {
           .signInWithEmailAndPassword(email: email, password: password),
     );
 
-    state = result;
+    state = state.copyWith(value: result);
 
     return result;
   }

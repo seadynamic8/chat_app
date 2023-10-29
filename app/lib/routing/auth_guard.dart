@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:chat_app/features/auth/presentation/auth_form_state.dart';
 import 'package:chat_app/features/auth/repository/auth_repository.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -20,7 +21,10 @@ class AuthGuard extends AutoRouteGuard {
 
       // Redirect will remove the redirected route from the stack after completion
       resolver.redirect(
-        AuthRoute(onAuthResult: (isSuccess) => resolver.next(isSuccess)),
+        AuthRoute(
+          formType: AuthFormType.login,
+          onAuthResult: (isSuccess) => resolver.next(isSuccess),
+        ),
       );
     }
   }

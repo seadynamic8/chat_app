@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/error_snackbar.dart';
+import 'package:chat_app/features/auth/presentation/auth_form_state.dart';
 import 'package:chat_app/features/auth/presentation/auth_screen_controller.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +10,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 @RoutePage()
 class AuthScreen extends ConsumerStatefulWidget {
-  const AuthScreen({super.key, required this.onAuthResult});
+  const AuthScreen(
+      {super.key, required this.formType, required this.onAuthResult});
 
+  final AuthFormType formType;
   final void Function(bool isSuccess) onAuthResult;
 
   @override
@@ -31,7 +34,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
     try {
       final response = await ref
-          .read(authScreenControllerProvider.notifier)
+          .read(authScreenControllerProvider(widget.formType).notifier)
           .authenticate(email, password);
 
       if (response.value != null) widget.onAuthResult(true);
@@ -54,7 +57,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(authScreenControllerProvider);
+    final state = ref.watch(authScreenControllerProvider(widget.formType));
 
     return I18n(
       child: SafeArea(
@@ -84,8 +87,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 ),
                 const SizedBox(width: 16, height: 16),
                 ElevatedButton(
-                  onPressed: state.isLoading ? null : _signIn,
-                  child: state.isLoading
+                  onPressed: state.value.isLoading ? null : _signIn,
+                  child: state.value.isLoading
                       ? const CircularProgressIndicator()
                       : const Text('Login'),
                 ),
