@@ -7,7 +7,7 @@ part of 'auth_screen_controller.dart';
 // **************************************************************************
 
 String _$authScreenControllerHash() =>
-    r'5ae832b630ff3107d23a4f178c0e666916b4c3aa';
+    r'1d35fae1bb3e65056e1049498c1f766575c9abac';
 
 /// Copied from Dart SDK
 class _SystemHash {
