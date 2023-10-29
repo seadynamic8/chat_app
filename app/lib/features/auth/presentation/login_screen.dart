@@ -1,8 +1,11 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:chat_app/common/error_snackbar.dart';
 import 'package:chat_app/features/auth/presentation/login_screen_controller.dart';
+import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n_extension/i18n_widget.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 @RoutePage()
 class LoginScreen extends ConsumerStatefulWidget {
@@ -26,11 +29,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void _signIn() async {
     if (!_form.currentState!.validate()) return;
 
-    final isSuccess = await ref
-        .read(loginScreenControllerProvider.notifier)
-        .authenticate(email, password);
+    try {
+      final response = await ref
+          .read(loginScreenControllerProvider.notifier)
+          .authenticate(email, password);
 
-    widget.onAuthResult(isSuccess);
+      if (response.value != null) widget.onAuthResult(true);
+    } on AuthException catch (error) {
+      if (!context.mounted) return;
+      context.showErrorSnackBar(error.message);
+    } catch (error) {
+      if (!context.mounted) return;
+      logger.e(error.toString());
+      context.showErrorSnackBar(unexpectedErrorMessage);
+    }
   }
 
   @override

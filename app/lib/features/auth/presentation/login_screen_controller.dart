@@ -1,5 +1,6 @@
 import 'package:chat_app/features/auth/repository/auth_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'login_screen_controller.g.dart';
 
@@ -10,14 +11,18 @@ class LoginScreenController extends _$LoginScreenController {
     return const AsyncData(null);
   }
 
-  Future<bool> authenticate(String email, String password) async {
+  Future<AsyncValue<AuthResponse>> authenticate(
+      String email, String password) async {
     state = const AsyncLoading();
-    await AsyncValue.guard(
+
+    final result = await AsyncValue.guard(
       () => ref
           .watch(authRepositoryProvider)
           .signInWithEmailAndPassword(email: email, password: password),
     );
-    state = const AsyncData(null);
-    return state.hasError == false;
+
+    state = result;
+
+    return result;
   }
 }
