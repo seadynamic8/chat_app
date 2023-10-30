@@ -40,7 +40,10 @@ class AuthScreenController extends _$AuthScreenController {
             .watch(authRepositoryProvider)
             .signInWithEmailAndPassword(email: email, password: password);
       case AuthFormType.signup:
-        username ??= UsernameGenerator().generateRandom();
+        if (username == null || username.isEmpty) {
+          username = UsernameGenerator().generateRandom();
+        }
+
         return ref
             .watch(authRepositoryProvider)
             .signUp(email: email, password: password, username: username);
