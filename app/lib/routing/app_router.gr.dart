@@ -19,7 +19,7 @@ import 'package:chat_app/features/auth/view/profile/public_profile_screen.dart'
     as _i8;
 import 'package:chat_app/features/auth/view/profile/settings_screen.dart'
     as _i10;
-import 'package:chat_app/features/chat/view/chats_screen.dart' as _i2;
+import 'package:chat_app/features/chat/view/chat_lobby_screen.dart' as _i2;
 import 'package:chat_app/features/explore/view/explore_navigation.dart' as _i3;
 import 'package:chat_app/features/explore/view/explore_screen.dart' as _i4;
 import 'package:chat_app/features/home/view/home_navigation.dart' as _i5;
@@ -42,10 +42,10 @@ abstract class $AppRouter extends _i11.RootStackRouter {
         ),
       );
     },
-    ChatsRoute.name: (routeData) {
+    ChatLobbyRoute.name: (routeData) {
       return _i11.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i2.ChatsScreen(),
+        child: const _i2.ChatLobbyScreen(),
       );
     },
     ExploreNavigation.name: (routeData) {
@@ -150,15 +150,15 @@ class AuthRouteArgs {
 }
 
 /// generated route for
-/// [_i2.ChatsScreen]
-class ChatsRoute extends _i11.PageRouteInfo<void> {
-  const ChatsRoute({List<_i11.PageRouteInfo>? children})
+/// [_i2.ChatLobbyScreen]
+class ChatLobbyRoute extends _i11.PageRouteInfo<void> {
+  const ChatLobbyRoute({List<_i11.PageRouteInfo>? children})
       : super(
-          ChatsRoute.name,
+          ChatLobbyRoute.name,
           initialChildren: children,
         );
 
-  static const String name = 'ChatsRoute';
+  static const String name = 'ChatLobbyRoute';
 
   static const _i11.PageInfo<void> page = _i11.PageInfo<void>(name);
 }

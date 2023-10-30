@@ -28,7 +28,7 @@ class AppRouter extends $AppRouter {
                 AutoRoute(page: PublicProfileRoute.page),
               ],
             ),
-            AutoRoute(page: ChatsRoute.page),
+            AutoRoute(page: ChatLobbyRoute.page),
             AutoRoute(
               page: ProfileNavigation.page,
               children: [

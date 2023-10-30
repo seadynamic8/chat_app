@@ -15,7 +15,7 @@ class HomeNavigation extends StatelessWidget {
       child: AutoTabsScaffold(
         routes: const [
           ExploreRoute(),
-          ChatsRoute(),
+          ChatLobbyRoute(),
           PrivateProfileRoute(),
         ],
         bottomNavigationBuilder: (_, tabsRouter) {
@@ -33,7 +33,7 @@ class HomeNavigation extends StatelessWidget {
                   Icons.people_alt_outlined,
                   key: K.contactsTab,
                 ),
-                label: 'Contacts'.i18n,
+                label: 'Explore'.i18n,
               ),
               BottomNavigationBarItem(
                 icon: const Icon(
