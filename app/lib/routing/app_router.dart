@@ -19,7 +19,14 @@ class AppRouter extends $AppRouter {
           initial: true,
           guards: [authGuard],
           children: [
-            AutoRoute(page: ExploreRoute.page, initial: true),
+            AutoRoute(
+              page: ExploreNavigation.page,
+              initial: true,
+              children: [
+                AutoRoute(page: ExploreRoute.page, initial: true),
+                AutoRoute(page: SearchRoute.page)
+              ],
+            ),
             AutoRoute(page: ChatsRoute.page),
             AutoRoute(
               page: ProfileNavigation.page,
