@@ -36,7 +36,8 @@ class AuthRepository {
           ? profileUser['avatar_url']
           : null,
       bio: profileUser.containsKey('bio') ? profileUser['bio'] : null,
-      birthdate: profileUser['birthdate'],
+      birthdate:
+          profileUser.containsKey('bio') ? profileUser['birthdate'] : null,
     );
   }
 

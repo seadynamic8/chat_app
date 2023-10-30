@@ -13,5 +13,5 @@ class Profile {
   final String? username;
   final String? avatarUrl;
   final String? bio;
-  final DateTime birthdate;
+  final DateTime? birthdate;
 }
