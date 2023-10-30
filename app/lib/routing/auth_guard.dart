@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:chat_app/features/auth/presentation/auth_form_state.dart';
-import 'package:chat_app/features/auth/repository/auth_repository.dart';
+import 'package:chat_app/features/auth/presentation/auth/auth_form_state.dart';
+import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

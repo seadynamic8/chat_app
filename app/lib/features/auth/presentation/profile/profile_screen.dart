@@ -1,4 +1,4 @@
-import 'package:chat_app/features/auth/repository/auth_repository.dart';
+import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/i18n/localizations.dart';

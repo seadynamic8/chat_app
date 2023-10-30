@@ -9,20 +9,21 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i8;
-import 'package:chat_app/features/auth/presentation/auth_form_state.dart'
+import 'package:chat_app/features/auth/presentation/auth/auth_form_state.dart'
     as _i10;
-import 'package:chat_app/features/auth/presentation/auth_screen.dart' as _i1;
+import 'package:chat_app/features/auth/presentation/auth/auth_screen.dart'
+    as _i1;
+import 'package:chat_app/features/auth/presentation/profile/profile_navigation.dart'
+    as _i5;
+import 'package:chat_app/features/auth/presentation/profile/profile_screen.dart'
+    as _i6;
+import 'package:chat_app/features/auth/presentation/profile/profile_settings_screen.dart'
+    as _i7;
 import 'package:chat_app/features/chat/presentation/chats_screen.dart' as _i2;
 import 'package:chat_app/features/contacts/presentation/contacts_screen.dart'
     as _i3;
 import 'package:chat_app/features/home/presentation/home_navigation.dart'
     as _i4;
-import 'package:chat_app/features/profile/presentation/profile_navigation.dart'
-    as _i5;
-import 'package:chat_app/features/profile/presentation/profile_screen.dart'
-    as _i6;
-import 'package:chat_app/features/profile/presentation/profile_settings_screen.dart'
-    as _i7;
 import 'package:flutter/material.dart' as _i9;
 
 abstract class $AppRouter extends _i8.RootStackRouter {

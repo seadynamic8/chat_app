@@ -1,4 +1,4 @@
-import 'package:chat_app/features/auth/presentation/string_validators.dart';
+import 'package:chat_app/features/auth/presentation/auth/string_validators.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
