@@ -16,7 +16,7 @@ class HomeNavigation extends StatelessWidget {
         routes: const [
           ExploreRoute(),
           ChatsRoute(),
-          ProfileRoute(),
+          PrivateProfileRoute(),
         ],
         bottomNavigationBuilder: (_, tabsRouter) {
           return BottomNavigationBar(

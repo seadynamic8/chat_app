@@ -31,7 +31,7 @@ class AppRouter extends $AppRouter {
             AutoRoute(
               page: ProfileNavigation.page,
               children: [
-                AutoRoute(page: ProfileRoute.page, initial: true),
+                AutoRoute(page: PrivateProfileRoute.page, initial: true),
                 AutoRoute(page: SettingsRoute.page),
               ],
             ),

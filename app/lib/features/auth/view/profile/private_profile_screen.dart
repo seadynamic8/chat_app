@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:i18n_extension/i18n_widget.dart';
 
 @RoutePage()
-class ProfileScreen extends ConsumerWidget {
-  const ProfileScreen({super.key});
+class PrivateProfileScreen extends ConsumerWidget {
+  const PrivateProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -11,9 +11,10 @@
 import 'package:auto_route/auto_route.dart' as _i10;
 import 'package:chat_app/features/auth/view/auth/auth_form_state.dart' as _i12;
 import 'package:chat_app/features/auth/view/auth/auth_screen.dart' as _i1;
-import 'package:chat_app/features/auth/view/profile/profile_navigation.dart'
+import 'package:chat_app/features/auth/view/profile/private_profile_screen.dart'
     as _i6;
-import 'package:chat_app/features/auth/view/profile/profile_screen.dart' as _i7;
+import 'package:chat_app/features/auth/view/profile/profile_navigation.dart'
+    as _i7;
 import 'package:chat_app/features/auth/view/profile/settings_screen.dart'
     as _i9;
 import 'package:chat_app/features/chat/view/chats_screen.dart' as _i2;
@@ -63,16 +64,16 @@ abstract class $AppRouter extends _i10.RootStackRouter {
         child: const _i5.HomeNavigation(),
       );
     },
+    PrivateProfileRoute.name: (routeData) {
+      return _i10.AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const _i6.PrivateProfileScreen(),
+      );
+    },
     ProfileNavigation.name: (routeData) {
       return _i10.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i6.ProfileNavigation(),
-      );
-    },
-    ProfileRoute.name: (routeData) {
-      return _i10.AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const _i7.ProfileScreen(),
+        child: const _i7.ProfileNavigation(),
       );
     },
     SearchRoute.name: (routeData) {
@@ -190,7 +191,21 @@ class HomeNavigation extends _i10.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i6.ProfileNavigation]
+/// [_i6.PrivateProfileScreen]
+class PrivateProfileRoute extends _i10.PageRouteInfo<void> {
+  const PrivateProfileRoute({List<_i10.PageRouteInfo>? children})
+      : super(
+          PrivateProfileRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'PrivateProfileRoute';
+
+  static const _i10.PageInfo<void> page = _i10.PageInfo<void>(name);
+}
+
+/// generated route for
+/// [_i7.ProfileNavigation]
 class ProfileNavigation extends _i10.PageRouteInfo<void> {
   const ProfileNavigation({List<_i10.PageRouteInfo>? children})
       : super(
@@ -199,20 +214,6 @@ class ProfileNavigation extends _i10.PageRouteInfo<void> {
         );
 
   static const String name = 'ProfileNavigation';
-
-  static const _i10.PageInfo<void> page = _i10.PageInfo<void>(name);
-}
-
-/// generated route for
-/// [_i7.ProfileScreen]
-class ProfileRoute extends _i10.PageRouteInfo<void> {
-  const ProfileRoute({List<_i10.PageRouteInfo>? children})
-      : super(
-          ProfileRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'ProfileRoute';
 
   static const _i10.PageInfo<void> page = _i10.PageInfo<void>(name);
 }
