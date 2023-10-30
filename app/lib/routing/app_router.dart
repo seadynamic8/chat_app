@@ -24,7 +24,8 @@ class AppRouter extends $AppRouter {
               initial: true,
               children: [
                 AutoRoute(page: ExploreRoute.page, initial: true),
-                AutoRoute(page: SearchRoute.page)
+                AutoRoute(page: SearchRoute.page),
+                AutoRoute(page: PublicProfileRoute.page),
               ],
             ),
             AutoRoute(page: ChatsRoute.page),
