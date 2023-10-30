@@ -14,7 +14,7 @@ class HomeNavigation extends StatelessWidget {
     return I18n(
       child: AutoTabsScaffold(
         routes: const [
-          ContactsRoute(),
+          ExploreRoute(),
           ChatsRoute(),
           ProfileRoute(),
         ],

@@ -17,7 +17,7 @@ import 'package:chat_app/features/auth/view/profile/profile_screen.dart' as _i6;
 import 'package:chat_app/features/auth/view/profile/profile_settings_screen.dart'
     as _i7;
 import 'package:chat_app/features/chat/view/chats_screen.dart' as _i2;
-import 'package:chat_app/features/contacts/view/contacts_screen.dart' as _i3;
+import 'package:chat_app/features/explore/view/explore_screen.dart' as _i3;
 import 'package:chat_app/features/home/view/home_navigation.dart' as _i4;
 import 'package:flutter/material.dart' as _i9;
 
@@ -43,10 +43,10 @@ abstract class $AppRouter extends _i8.RootStackRouter {
         child: const _i2.ChatsScreen(),
       );
     },
-    ContactsRoute.name: (routeData) {
+    ExploreRoute.name: (routeData) {
       return _i8.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i3.ContactsScreen(),
+        child: const _i3.ExploreScreen(),
       );
     },
     HomeNavigation.name: (routeData) {
@@ -134,15 +134,15 @@ class ChatsRoute extends _i8.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i3.ContactsScreen]
-class ContactsRoute extends _i8.PageRouteInfo<void> {
-  const ContactsRoute({List<_i8.PageRouteInfo>? children})
+/// [_i3.ExploreScreen]
+class ExploreRoute extends _i8.PageRouteInfo<void> {
+  const ExploreRoute({List<_i8.PageRouteInfo>? children})
       : super(
-          ContactsRoute.name,
+          ExploreRoute.name,
           initialChildren: children,
         );
 
-  static const String name = 'ContactsRoute';
+  static const String name = 'ExploreRoute';
 
   static const _i8.PageInfo<void> page = _i8.PageInfo<void>(name);
 }
