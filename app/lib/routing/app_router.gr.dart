@@ -14,13 +14,13 @@ import 'package:chat_app/features/auth/view/auth/auth_screen.dart' as _i1;
 import 'package:chat_app/features/auth/view/profile/profile_navigation.dart'
     as _i6;
 import 'package:chat_app/features/auth/view/profile/profile_screen.dart' as _i7;
-import 'package:chat_app/features/auth/view/profile/profile_settings_screen.dart'
-    as _i8;
+import 'package:chat_app/features/auth/view/profile/settings_screen.dart'
+    as _i9;
 import 'package:chat_app/features/chat/view/chats_screen.dart' as _i2;
 import 'package:chat_app/features/explore/view/explore_navigation.dart' as _i3;
 import 'package:chat_app/features/explore/view/explore_screen.dart' as _i4;
 import 'package:chat_app/features/home/view/home_navigation.dart' as _i5;
-import 'package:chat_app/features/search/view/search_screen.dart' as _i9;
+import 'package:chat_app/features/search/view/search_screen.dart' as _i8;
 import 'package:flutter/material.dart' as _i11;
 
 abstract class $AppRouter extends _i10.RootStackRouter {
@@ -75,16 +75,16 @@ abstract class $AppRouter extends _i10.RootStackRouter {
         child: const _i7.ProfileScreen(),
       );
     },
-    ProfileSettingsRoute.name: (routeData) {
-      return _i10.AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const _i8.ProfileSettingsScreen(),
-      );
-    },
     SearchRoute.name: (routeData) {
       return _i10.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i9.SearchScreen(),
+        child: const _i8.SearchScreen(),
+      );
+    },
+    SettingsRoute.name: (routeData) {
+      return _i10.AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const _i9.SettingsScreen(),
       );
     },
   };
@@ -218,21 +218,7 @@ class ProfileRoute extends _i10.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i8.ProfileSettingsScreen]
-class ProfileSettingsRoute extends _i10.PageRouteInfo<void> {
-  const ProfileSettingsRoute({List<_i10.PageRouteInfo>? children})
-      : super(
-          ProfileSettingsRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'ProfileSettingsRoute';
-
-  static const _i10.PageInfo<void> page = _i10.PageInfo<void>(name);
-}
-
-/// generated route for
-/// [_i9.SearchScreen]
+/// [_i8.SearchScreen]
 class SearchRoute extends _i10.PageRouteInfo<void> {
   const SearchRoute({List<_i10.PageRouteInfo>? children})
       : super(
@@ -241,6 +227,20 @@ class SearchRoute extends _i10.PageRouteInfo<void> {
         );
 
   static const String name = 'SearchRoute';
+
+  static const _i10.PageInfo<void> page = _i10.PageInfo<void>(name);
+}
+
+/// generated route for
+/// [_i9.SettingsScreen]
+class SettingsRoute extends _i10.PageRouteInfo<void> {
+  const SettingsRoute({List<_i10.PageRouteInfo>? children})
+      : super(
+          SettingsRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'SettingsRoute';
 
   static const _i10.PageInfo<void> page = _i10.PageInfo<void>(name);
 }

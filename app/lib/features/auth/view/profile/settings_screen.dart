@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:i18n_extension/i18n_widget.dart';
 
 @RoutePage()
-class ProfileSettingsScreen extends ConsumerWidget {
-  const ProfileSettingsScreen({super.key});
+class SettingsScreen extends ConsumerWidget {
+  const SettingsScreen({super.key});
 
   void _logOut(BuildContext context, WidgetRef ref) async {
     final router = context.router;

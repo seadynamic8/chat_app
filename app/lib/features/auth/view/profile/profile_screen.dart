@@ -21,8 +21,7 @@ class ProfileScreen extends ConsumerWidget {
             title: Text('Profile'.i18n),
             actions: [
               IconButton(
-                  onPressed: () =>
-                      context.router.push(const ProfileSettingsRoute()),
+                  onPressed: () => context.router.push(const SettingsRoute()),
                   icon: const Icon(Icons.settings))
             ],
           ),
