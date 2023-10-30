@@ -1,4 +1,4 @@
-import 'package:chat_app/features/profile/domain/profile.dart';
+import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide Provider;
 import 'package:riverpod_annotation/riverpod_annotation.dart';

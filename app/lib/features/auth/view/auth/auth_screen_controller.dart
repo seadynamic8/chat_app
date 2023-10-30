@@ -1,4 +1,4 @@
-import 'package:chat_app/features/auth/presentation/auth/auth_form_state.dart';
+import 'package:chat_app/features/auth/view/auth/auth_form_state.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
