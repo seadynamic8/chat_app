@@ -15,7 +15,7 @@ class SettingsScreen extends ConsumerWidget {
 
     await ref.read(authRepositoryProvider).signOut();
 
-    router.replaceAll([const HomeNavigation()]);
+    router.replaceAll([const MainNavigation()]);
   }
 
   @override

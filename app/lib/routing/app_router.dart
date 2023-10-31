@@ -15,27 +15,33 @@ class AppRouter extends $AppRouter {
   List<AutoRoute> get routes => [
         AutoRoute(page: AuthRoute.page),
         AutoRoute(
-          page: HomeNavigation.page,
+          page: MainNavigation.page,
           initial: true,
           guards: [authGuard],
           children: [
             AutoRoute(
-              page: ExploreNavigation.page,
+              page: TabsNavigation.page,
               initial: true,
               children: [
-                AutoRoute(page: ExploreRoute.page, initial: true),
-                AutoRoute(page: SearchRoute.page),
-                AutoRoute(page: PublicProfileRoute.page),
+                AutoRoute(
+                  page: ExploreNavigation.page,
+                  initial: true,
+                  children: [
+                    AutoRoute(page: ExploreRoute.page, initial: true),
+                  ],
+                ),
+                AutoRoute(page: ChatLobbyRoute.page),
+                AutoRoute(
+                  page: ProfileNavigation.page,
+                  children: [
+                    AutoRoute(page: PrivateProfileRoute.page, initial: true),
+                    AutoRoute(page: SettingsRoute.page),
+                  ],
+                ),
               ],
-            ),
-            AutoRoute(page: ChatLobbyRoute.page),
-            AutoRoute(
-              page: ProfileNavigation.page,
-              children: [
-                AutoRoute(page: PrivateProfileRoute.page, initial: true),
-                AutoRoute(page: SettingsRoute.page),
-              ],
-            ),
+            ), // End TabsNavigationRoute
+            AutoRoute(page: SearchRoute.page),
+            AutoRoute(page: PublicProfileRoute.page),
           ],
         ),
       ];
