@@ -11,6 +11,22 @@ class ChatRepository {
 
   final SupabaseClient supabase;
 
+  Future<Room?> findRoomByProfiles({
+    required String currentProfileId,
+    required String otherProfileId,
+  }) async {
+    final room = await supabase
+        .from('rooms')
+        .select<List<Map<String, dynamic>>>(
+            'id, c1:chat_users!inner(), c2:chat_users!inner()')
+        .eq('c1.profile_id', currentProfileId)
+        .eq('c2.profile_id', otherProfileId);
+
+    if (room.isEmpty) return null;
+
+    return Room.fromMap(room.first);
+  }
+
   Future<Room> createRoom() async {
     final roomResponse = await supabase
         .from('rooms')

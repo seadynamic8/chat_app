@@ -10,25 +10,37 @@ class PublicProfileController extends _$PublicProfileController {
   @override
   void build() {}
 
-  Future<Room> createRoom() async {
-    return await ref.read(chatRepositoryProvider).createRoom();
+  Future<Room> findOrCreateRoom(String viewingProfileId) async {
+    final currentProfileId = ref.read(authRepositoryProvider).currentUserId!;
+
+    // Find room with other user
+    var room = await ref.read(chatRepositoryProvider).findRoomByProfiles(
+        currentProfileId: currentProfileId, otherProfileId: viewingProfileId);
+
+    if (room != null) return room;
+
+    // If no current room exists, create new and join both users and return room
+    return await _createRoomAndJoin(viewingProfileId);
   }
 
-  Future<void> addUserToRoom(String profileId, String roomId) async {
-    await ref.read(chatRepositoryProvider).addUserToRoom(profileId, roomId);
+  Future<Room> _createRoomAndJoin(String viewingProfileId) async {
+    final room = await ref.read(chatRepositoryProvider).createRoom();
+
+    await _addBothUsersToRoom(
+        viewingProfileId: viewingProfileId, roomId: room.id);
+
+    return room;
   }
 
-  Future<void> addBothUsersToRoom({
+  Future<void> _addBothUsersToRoom({
     required String viewingProfileId,
     required String roomId,
   }) async {
     final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
 
+    await ref.read(chatRepositoryProvider).addUserToRoom(currentUserId, roomId);
     await ref
-        .read(publicProfileControllerProvider.notifier)
-        .addUserToRoom(currentUserId, roomId);
-    await ref
-        .read(publicProfileControllerProvider.notifier)
+        .read(chatRepositoryProvider)
         .addUserToRoom(viewingProfileId, roomId);
   }
 }

@@ -14,17 +14,12 @@ class PublicProfileScreen extends ConsumerWidget {
 
   final String profileId;
 
-  void _goToNewChatRoom(BuildContext context, WidgetRef ref) async {
+  void _goToChatRoom(BuildContext context, WidgetRef ref) async {
     final routerContext = context.router;
 
-    // Create New Room
-    final room =
-        await ref.read(publicProfileControllerProvider.notifier).createRoom();
-
-    // Add Users to Room
-    await ref
+    final room = await ref
         .read(publicProfileControllerProvider.notifier)
-        .addBothUsersToRoom(viewingProfileId: profileId, roomId: room.id);
+        .findOrCreateRoom(profileId);
 
     routerContext
         .push(ChatRoomRoute(roomId: room.id, otherProfileId: profileId));
@@ -93,7 +88,7 @@ class PublicProfileScreen extends ConsumerWidget {
               icon: const Icon(Icons.message),
               label: const Text('Send Message'),
               heroTag: 'tag1',
-              onPressed: () => _goToNewChatRoom(context, ref),
+              onPressed: () => _goToChatRoom(context, ref),
             ),
             // TODO: Add Follow Button
             // FloatingActionButton.extended(
