@@ -11,11 +11,13 @@ class SearchRepository {
   final SupabaseClient supabase;
 
   Future<List<Profile>> searchProfiles(String searchString) async {
+    final currentUserId = supabase.auth.currentUser!.id;
     // Search by username for now
     final profiles = await supabase
         .from('profiles')
         .select<List<Map<String, dynamic>>>('id, username')
         .ilike('username', '%$searchString%')
+        .neq('id', currentUserId)
         .limit(200);
 
     return profiles.map((profile) => Profile.fromMap(profile)).toList();
