@@ -54,6 +54,19 @@ class ChatRepository {
         profile['id']: Profile.fromMap(profile)
     };
   }
+
+  Future<List<Room>> getAllRoomsByUser(String userId) async {
+    final roomsList =
+        await supabase.from('rooms').select<List<Map<String, dynamic>>>('''
+          id,
+          p1:profiles!inner (),
+          p2:profiles!inner (id, username, avatar_url)
+        ''').eq('p1.id', userId).neq('p2.id', userId);
+
+    return roomsList
+        .map((room) => Room.fromMapWithCustomProfile(room))
+        .toList();
+  }
 }
 
 @riverpod
@@ -67,4 +80,11 @@ FutureOr<Map<String, Profile>> getProfilesForRoom(
     GetProfilesForRoomRef ref, String roomId) {
   final chatRepository = ref.watch(chatRepositoryProvider);
   return chatRepository.getProfilesForRoom(roomId);
+}
+
+@riverpod
+FutureOr<List<Room>> getAllRooms(GetAllRoomsRef ref) {
+  final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
+  final chatRepository = ref.watch(chatRepositoryProvider);
+  return chatRepository.getAllRoomsByUser(currentUserId);
 }

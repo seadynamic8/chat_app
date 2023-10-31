@@ -175,5 +175,20 @@ class _GetProfilesForRoomProviderElement
   @override
   String get roomId => (origin as GetProfilesForRoomProvider).roomId;
 }
+
+String _$getAllRoomsHash() => r'c1bc1fad121c5e99d0bc76e33556ed65ef063e9b';
+
+/// See also [getAllRooms].
+@ProviderFor(getAllRooms)
+final getAllRoomsProvider = AutoDisposeFutureProvider<List<Room>>.internal(
+  getAllRooms,
+  name: r'getAllRoomsProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$getAllRoomsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef GetAllRoomsRef = AutoDisposeFutureProviderRef<List<Room>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
