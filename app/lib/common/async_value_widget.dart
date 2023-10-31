@@ -1,4 +1,5 @@
 import 'package:chat_app/common/error_message_widget.dart';
+import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,9 +13,12 @@ class AsyncValueWidget<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return value.when(
       data: data,
-      error: (e, st) => Center(
-        child: ErrorMessageWidget(e.toString()),
-      ),
+      error: (e, st) {
+        logger.e('Error', error: e, stackTrace: st);
+        return const Center(
+          child: ErrorMessageWidget('Error: Something went wrong'),
+        );
+      },
       loading: () => const Center(child: CircularProgressIndicator()),
     );
   }
