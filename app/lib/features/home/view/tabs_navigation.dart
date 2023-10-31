@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:i18n_extension/i18n_widget.dart';
 
 @RoutePage()
-class HomeNavigation extends StatelessWidget {
-  const HomeNavigation({super.key});
+class TabsNavigation extends StatelessWidget {
+  const TabsNavigation({super.key});
 
   @override
   Widget build(BuildContext context) {
