@@ -57,7 +57,7 @@ abstract class $AppRouter extends _i13.RootStackRouter {
         child: _i3.ChatRoomScreen(
           key: args.key,
           roomId: args.roomId,
-          otherUserId: args.otherUserId,
+          otherProfileId: args.otherProfileId,
         ),
       );
     },
@@ -188,14 +188,14 @@ class ChatRoomRoute extends _i13.PageRouteInfo<ChatRoomRouteArgs> {
   ChatRoomRoute({
     _i14.Key? key,
     required String roomId,
-    required String otherUserId,
+    required String otherProfileId,
     List<_i13.PageRouteInfo>? children,
   }) : super(
           ChatRoomRoute.name,
           args: ChatRoomRouteArgs(
             key: key,
             roomId: roomId,
-            otherUserId: otherUserId,
+            otherProfileId: otherProfileId,
           ),
           rawPathParams: {'id': roomId},
           initialChildren: children,
@@ -211,18 +211,18 @@ class ChatRoomRouteArgs {
   const ChatRoomRouteArgs({
     this.key,
     required this.roomId,
-    required this.otherUserId,
+    required this.otherProfileId,
   });
 
   final _i14.Key? key;
 
   final String roomId;
 
-  final String otherUserId;
+  final String otherProfileId;
 
   @override
   String toString() {
-    return 'ChatRoomRouteArgs{key: $key, roomId: $roomId, otherUserId: $otherUserId}';
+    return 'ChatRoomRouteArgs{key: $key, roomId: $roomId, otherProfileId: $otherProfileId}';
   }
 }
 

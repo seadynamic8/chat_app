@@ -42,6 +42,7 @@ class AppRouter extends $AppRouter {
             ), // End TabsNavigationRoute
             AutoRoute(page: SearchRoute.page),
             AutoRoute(page: PublicProfileRoute.page),
+            AutoRoute(page: ChatRoomRoute.page),
           ],
         ),
       ];

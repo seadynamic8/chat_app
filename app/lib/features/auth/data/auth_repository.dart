@@ -13,12 +13,14 @@ class AuthRepository {
 
   Stream<AuthState> onAuthStateChanges() => supabase.auth.onAuthStateChange;
 
+  String? get currentUserId => supabase.auth.currentUser?.id;
+
   Future<Profile?> get currentProfile async {
-    final authUser = supabase.auth.currentUser!;
+    final authUserId = currentUserId!;
     final profileUser = await supabase
         .from('profiles')
         .select<Map<String, dynamic>>()
-        .eq('id', authUser.id)
+        .eq('id', authUserId)
         .single();
 
     return Profile.fromMap(profileUser);

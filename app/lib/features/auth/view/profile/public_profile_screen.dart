@@ -1,4 +1,6 @@
 import 'package:chat_app/common/async_value_widget.dart';
+import 'package:chat_app/features/auth/view/profile/public_profile_controller.dart';
+import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/search/data/search_repository.dart';
@@ -11,6 +13,22 @@ class PublicProfileScreen extends ConsumerWidget {
       {super.key, @PathParam('id') required this.profileId});
 
   final String profileId;
+
+  void _goToNewChatRoom(BuildContext context, WidgetRef ref) async {
+    final routerContext = context.router;
+
+    // Create New Room
+    final room =
+        await ref.read(publicProfileControllerProvider.notifier).createRoom();
+
+    // Add Users to Room
+    await ref
+        .read(publicProfileControllerProvider.notifier)
+        .addBothUsersToRoom(viewingProfileId: profileId, roomId: room.id);
+
+    routerContext
+        .push(ChatRoomRoute(roomId: room.id, otherProfileId: profileId));
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -74,15 +92,19 @@ class PublicProfileScreen extends ConsumerWidget {
             FloatingActionButton.extended(
               icon: const Icon(Icons.message),
               label: const Text('Send Message'),
-              onPressed: () {},
+              heroTag: 'tag1',
+              onPressed: () => _goToNewChatRoom(context, ref),
             ),
-            FloatingActionButton.extended(
-              icon: const Icon(Icons.video_call),
-              label: const Text('Call now'),
-              onPressed: () {},
-            )
+            // TODO: Add Follow Button
+            // FloatingActionButton.extended(
+            //   icon: const Icon(Icons.follow),
+            //   label: const Text('Follow'),
+            //   heroTag: 'tag2',
+            //   onPressed: () {},
+            // )
           ],
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }
