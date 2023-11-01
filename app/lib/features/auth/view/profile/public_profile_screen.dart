@@ -1,4 +1,5 @@
 import 'package:chat_app/common/async_value_widget.dart';
+import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/view/profile/public_profile_controller.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +14,10 @@ class PublicProfileScreen extends ConsumerWidget {
       {super.key, @PathParam('id') required this.profileId});
 
   final String profileId;
+
+  bool isCurrentUser(WidgetRef ref) {
+    return profileId == ref.watch(authRepositoryProvider).currentUserId!;
+  }
 
   void _goToChatRoom(BuildContext context, WidgetRef ref) async {
     final routerContext = context.router;
@@ -81,25 +86,29 @@ class PublicProfileScreen extends ConsumerWidget {
             ],
           ),
         ),
-        floatingActionButton: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            FloatingActionButton.extended(
-              icon: const Icon(Icons.message),
-              label: const Text('Send Message'),
-              heroTag: 'tag1',
-              onPressed: () => _goToChatRoom(context, ref),
-            ),
-            // TODO: Add Follow Button
-            // FloatingActionButton.extended(
-            //   icon: const Icon(Icons.follow),
-            //   label: const Text('Follow'),
-            //   heroTag: 'tag2',
-            //   onPressed: () {},
-            // )
-          ],
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: isCurrentUser(ref)
+            ? null
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  FloatingActionButton.extended(
+                    icon: const Icon(Icons.message),
+                    label: const Text('Send Message'),
+                    heroTag: 'tag1',
+                    onPressed: () => _goToChatRoom(context, ref),
+                  ),
+                  // TODO: Add Follow Button
+                  // FloatingActionButton.extended(
+                  //   icon: const Icon(Icons.follow),
+                  //   label: const Text('Follow'),
+                  //   heroTag: 'tag2',
+                  //   onPressed: () {},
+                  // )
+                ],
+              ),
+        floatingActionButtonLocation: isCurrentUser(ref)
+            ? null
+            : FloatingActionButtonLocation.centerFloat,
       ),
     );
   }

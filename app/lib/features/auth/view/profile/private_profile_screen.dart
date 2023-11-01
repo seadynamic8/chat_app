@@ -31,14 +31,31 @@ class PrivateProfileScreen extends ConsumerWidget {
             data: (profile) => ListView(
               children: [
                 const SizedBox(height: 30),
-                CircleAvatar(
-                  radius: 70,
-                  child: CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    backgroundImage: AssetImage(profile.avatarUrl ??
-                        'assets/images/user_default_image.png'),
-                    radius: 70,
+                InkWell(
+                  child: Stack(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: CircleAvatar(
+                          radius: 70,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.grey,
+                            backgroundImage: AssetImage(profile.avatarUrl ??
+                                'assets/images/user_default_image.png'),
+                            radius: 70,
+                          ),
+                        ),
+                      ),
+                      const Positioned(
+                        top: 0,
+                        bottom: 0,
+                        right: 40,
+                        child: Icon(Icons.keyboard_arrow_right),
+                      ),
+                    ],
                   ),
+                  onTap: () => context.router
+                      .push(PublicProfileRoute(profileId: profile.id)),
                 ),
                 const SizedBox(height: 12),
                 Padding(
