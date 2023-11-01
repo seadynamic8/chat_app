@@ -79,14 +79,29 @@ class ChatRepository {
     });
   }
 
-  Stream<List<Map<String, dynamic>>> watchMessagesForRoom(String roomId) {
-    final messagesStream = supabase
+  Future<List<Message>> getAllMessagesForRoom(String roomId) async {
+    final messages = await supabase
         .from('messages')
-        .stream(primaryKey: ['id'])
-        .eq('room_id', roomId)
-        .order('created_at', ascending: false);
+        .select<List<Map<String, dynamic>>>('id, content, profile_id')
+        .eq('room_id', roomId);
 
-    return messagesStream;
+    return messages.map((message) => Message.fromMap(message)).toList();
+  }
+
+  void watchNewMessageForRoom(
+      String roomId, void Function(Map<String, dynamic> payload) callback) {
+    supabase.channel('public:messages:room=eq.$roomId').on(
+      RealtimeListenTypes.postgresChanges,
+      ChannelFilter(
+        event: 'INSERT',
+        schema: 'public',
+        table: 'messages',
+        filter: 'room_id=eq.$roomId',
+      ),
+      (payload, [ref]) {
+        callback(payload);
+      },
+    ).subscribe();
   }
 }
 
@@ -108,11 +123,4 @@ FutureOr<List<Room>> getAllRooms(GetAllRoomsRef ref) {
   final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
   final chatRepository = ref.watch(chatRepositoryProvider);
   return chatRepository.getAllRoomsByUser(currentUserId);
-}
-
-@riverpod
-Stream<List<Map<String, dynamic>>> watchMessagesForRoom(
-    WatchMessagesForRoomRef ref, String roomId) {
-  final chatRepository = ref.watch(chatRepositoryProvider);
-  return chatRepository.watchMessagesForRoom(roomId);
 }
