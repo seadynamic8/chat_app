@@ -191,14 +191,15 @@ final getAllRoomsProvider = AutoDisposeFutureProvider<List<Room>>.internal(
 
 typedef GetAllRoomsRef = AutoDisposeFutureProviderRef<List<Room>>;
 String _$watchMessagesForRoomHash() =>
-    r'64b88df4b1e83ac25e775325bd2c2ef8c26b7b3b';
+    r'73866d935549968e337309ea06cf929c8fa7df7a';
 
 /// See also [watchMessagesForRoom].
 @ProviderFor(watchMessagesForRoom)
 const watchMessagesForRoomProvider = WatchMessagesForRoomFamily();
 
 /// See also [watchMessagesForRoom].
-class WatchMessagesForRoomFamily extends Family<AsyncValue<List<Message>>> {
+class WatchMessagesForRoomFamily
+    extends Family<AsyncValue<List<Map<String, dynamic>>>> {
   /// See also [watchMessagesForRoom].
   const WatchMessagesForRoomFamily();
 
@@ -237,7 +238,7 @@ class WatchMessagesForRoomFamily extends Family<AsyncValue<List<Message>>> {
 
 /// See also [watchMessagesForRoom].
 class WatchMessagesForRoomProvider
-    extends AutoDisposeStreamProvider<List<Message>> {
+    extends AutoDisposeStreamProvider<List<Map<String, dynamic>>> {
   /// See also [watchMessagesForRoom].
   WatchMessagesForRoomProvider(
     String roomId,
@@ -272,7 +273,9 @@ class WatchMessagesForRoomProvider
 
   @override
   Override overrideWith(
-    Stream<List<Message>> Function(WatchMessagesForRoomRef provider) create,
+    Stream<List<Map<String, dynamic>>> Function(
+            WatchMessagesForRoomRef provider)
+        create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -289,7 +292,7 @@ class WatchMessagesForRoomProvider
   }
 
   @override
-  AutoDisposeStreamProviderElement<List<Message>> createElement() {
+  AutoDisposeStreamProviderElement<List<Map<String, dynamic>>> createElement() {
     return _WatchMessagesForRoomProviderElement(this);
   }
 
@@ -307,13 +310,14 @@ class WatchMessagesForRoomProvider
   }
 }
 
-mixin WatchMessagesForRoomRef on AutoDisposeStreamProviderRef<List<Message>> {
+mixin WatchMessagesForRoomRef
+    on AutoDisposeStreamProviderRef<List<Map<String, dynamic>>> {
   /// The parameter `roomId` of this provider.
   String get roomId;
 }
 
 class _WatchMessagesForRoomProviderElement
-    extends AutoDisposeStreamProviderElement<List<Message>>
+    extends AutoDisposeStreamProviderElement<List<Map<String, dynamic>>>
     with WatchMessagesForRoomRef {
   _WatchMessagesForRoomProviderElement(super.provider);
 

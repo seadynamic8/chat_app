@@ -79,17 +79,14 @@ class ChatRepository {
     });
   }
 
-  Stream<List<Message>> watchMessagesForRoom(String roomId) async* {
+  Stream<List<Map<String, dynamic>>> watchMessagesForRoom(String roomId) {
     final messagesStream = supabase
         .from('messages')
         .stream(primaryKey: ['id'])
         .eq('room_id', roomId)
-        .order('created_at', ascending: false)
-        .asBroadcastStream();
+        .order('created_at', ascending: false);
 
-    await for (final messagesList in messagesStream) {
-      yield messagesList.map((message) => Message.fromMap(message)).toList();
-    }
+    return messagesStream;
   }
 }
 
@@ -114,7 +111,7 @@ FutureOr<List<Room>> getAllRooms(GetAllRoomsRef ref) {
 }
 
 @riverpod
-Stream<List<Message>> watchMessagesForRoom(
+Stream<List<Map<String, dynamic>>> watchMessagesForRoom(
     WatchMessagesForRoomRef ref, String roomId) {
   final chatRepository = ref.watch(chatRepositoryProvider);
   return chatRepository.watchMessagesForRoom(roomId);

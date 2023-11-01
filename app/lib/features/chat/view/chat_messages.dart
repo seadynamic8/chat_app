@@ -1,6 +1,7 @@
 import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
+import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/view/message_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,9 +33,11 @@ class _ChatMessagesState extends ConsumerState<ChatMessages> {
                 shrinkWrap: true,
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
+                  final message = Message.fromMap(messages[index]);
+
                   return MessageBubble(
-                    message: messages[index],
-                    profile: widget.profiles[messages[index].profileId],
+                    message: message,
+                    profile: widget.profiles[message.profileId],
                   );
                 },
               );
