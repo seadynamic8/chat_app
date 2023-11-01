@@ -190,5 +190,135 @@ final getAllRoomsProvider = AutoDisposeFutureProvider<List<Room>>.internal(
 );
 
 typedef GetAllRoomsRef = AutoDisposeFutureProviderRef<List<Room>>;
+String _$watchMessagesForRoomHash() =>
+    r'64b88df4b1e83ac25e775325bd2c2ef8c26b7b3b';
+
+/// See also [watchMessagesForRoom].
+@ProviderFor(watchMessagesForRoom)
+const watchMessagesForRoomProvider = WatchMessagesForRoomFamily();
+
+/// See also [watchMessagesForRoom].
+class WatchMessagesForRoomFamily extends Family<AsyncValue<List<Message>>> {
+  /// See also [watchMessagesForRoom].
+  const WatchMessagesForRoomFamily();
+
+  /// See also [watchMessagesForRoom].
+  WatchMessagesForRoomProvider call(
+    String roomId,
+  ) {
+    return WatchMessagesForRoomProvider(
+      roomId,
+    );
+  }
+
+  @override
+  WatchMessagesForRoomProvider getProviderOverride(
+    covariant WatchMessagesForRoomProvider provider,
+  ) {
+    return call(
+      provider.roomId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'watchMessagesForRoomProvider';
+}
+
+/// See also [watchMessagesForRoom].
+class WatchMessagesForRoomProvider
+    extends AutoDisposeStreamProvider<List<Message>> {
+  /// See also [watchMessagesForRoom].
+  WatchMessagesForRoomProvider(
+    String roomId,
+  ) : this._internal(
+          (ref) => watchMessagesForRoom(
+            ref as WatchMessagesForRoomRef,
+            roomId,
+          ),
+          from: watchMessagesForRoomProvider,
+          name: r'watchMessagesForRoomProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$watchMessagesForRoomHash,
+          dependencies: WatchMessagesForRoomFamily._dependencies,
+          allTransitiveDependencies:
+              WatchMessagesForRoomFamily._allTransitiveDependencies,
+          roomId: roomId,
+        );
+
+  WatchMessagesForRoomProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.roomId,
+  }) : super.internal();
+
+  final String roomId;
+
+  @override
+  Override overrideWith(
+    Stream<List<Message>> Function(WatchMessagesForRoomRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: WatchMessagesForRoomProvider._internal(
+        (ref) => create(ref as WatchMessagesForRoomRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        roomId: roomId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<List<Message>> createElement() {
+    return _WatchMessagesForRoomProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is WatchMessagesForRoomProvider && other.roomId == roomId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, roomId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin WatchMessagesForRoomRef on AutoDisposeStreamProviderRef<List<Message>> {
+  /// The parameter `roomId` of this provider.
+  String get roomId;
+}
+
+class _WatchMessagesForRoomProviderElement
+    extends AutoDisposeStreamProviderElement<List<Message>>
+    with WatchMessagesForRoomRef {
+  _WatchMessagesForRoomProviderElement(super.provider);
+
+  @override
+  String get roomId => (origin as WatchMessagesForRoomProvider).roomId;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

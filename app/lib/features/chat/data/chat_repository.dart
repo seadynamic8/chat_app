@@ -1,5 +1,6 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
+import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/domain/room.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -67,6 +68,29 @@ class ChatRepository {
         .map((room) => Room.fromMapWithCustomProfile(room))
         .toList();
   }
+
+  // * Messages
+
+  Future<void> saveMessage(String roomId, Message message) async {
+    await supabase.from('messages').insert({
+      'content': message.content,
+      'profile_id': message.profileId,
+      'room_id': roomId,
+    });
+  }
+
+  Stream<List<Message>> watchMessagesForRoom(String roomId) async* {
+    final messagesStream = supabase
+        .from('messages')
+        .stream(primaryKey: ['id'])
+        .eq('room_id', roomId)
+        .order('created_at', ascending: false)
+        .asBroadcastStream();
+
+    await for (final messagesList in messagesStream) {
+      yield messagesList.map((message) => Message.fromMap(message)).toList();
+    }
+  }
 }
 
 @riverpod
@@ -87,4 +111,11 @@ FutureOr<List<Room>> getAllRooms(GetAllRoomsRef ref) {
   final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
   final chatRepository = ref.watch(chatRepositoryProvider);
   return chatRepository.getAllRoomsByUser(currentUserId);
+}
+
+@riverpod
+Stream<List<Message>> watchMessagesForRoom(
+    WatchMessagesForRoomRef ref, String roomId) {
+  final chatRepository = ref.watch(chatRepositoryProvider);
+  return chatRepository.watchMessagesForRoom(roomId);
 }

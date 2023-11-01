@@ -48,6 +48,11 @@ class ChatLobbyScreen extends ConsumerWidget {
                   radius: 15,
                 ),
                 title: Text(rooms[index].otherProfile!.username!),
+                onTap: () {
+                  context.router.push(ChatRoomRoute(
+                      roomId: rooms[index].id,
+                      otherProfileId: rooms[index].otherProfile!.id));
+                },
               ),
             ),
           ),
