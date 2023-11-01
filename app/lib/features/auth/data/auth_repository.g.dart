@@ -50,11 +50,11 @@ final currentSessionProvider = Provider<Session?>.internal(
 );
 
 typedef CurrentSessionRef = ProviderRef<Session?>;
-String _$currentProfileHash() => r'47d092cf8b04cfaf76454eeadfb6687665341e5d';
+String _$currentProfileHash() => r'ba027875d3087399a1c7c3f2cb07d7662aa5b768';
 
 /// See also [currentProfile].
 @ProviderFor(currentProfile)
-final currentProfileProvider = AutoDisposeFutureProvider<Profile?>.internal(
+final currentProfileProvider = AutoDisposeFutureProvider<Profile>.internal(
   currentProfile,
   name: r'currentProfileProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -64,6 +64,6 @@ final currentProfileProvider = AutoDisposeFutureProvider<Profile?>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef CurrentProfileRef = AutoDisposeFutureProviderRef<Profile?>;
+typedef CurrentProfileRef = AutoDisposeFutureProviderRef<Profile>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

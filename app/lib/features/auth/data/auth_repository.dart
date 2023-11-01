@@ -15,7 +15,7 @@ class AuthRepository {
 
   String? get currentUserId => supabase.auth.currentUser?.id;
 
-  Future<Profile?> get currentProfile async {
+  Future<Profile> get currentProfile async {
     final authUserId = currentUserId!;
     final profileUser = await supabase
         .from('profiles')
@@ -76,6 +76,6 @@ Session? currentSession(CurrentSessionRef ref) {
 }
 
 @riverpod
-FutureOr<Profile?> currentProfile(CurrentProfileRef ref) async {
+FutureOr<Profile> currentProfile(CurrentProfileRef ref) async {
   return ref.watch(authRepositoryProvider).currentProfile;
 }

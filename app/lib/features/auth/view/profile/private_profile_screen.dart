@@ -1,3 +1,4 @@
+import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
@@ -12,7 +13,7 @@ class PrivateProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profileUser = ref.watch(currentProfileProvider).value;
+    final profileUserValue = ref.watch(currentProfileProvider);
 
     return I18n(
       child: SafeArea(
@@ -25,47 +26,50 @@ class PrivateProfileScreen extends ConsumerWidget {
                   icon: const Icon(Icons.settings))
             ],
           ),
-          body: ListView(
-            children: [
-              const SizedBox(height: 30),
-              CircleAvatar(
-                radius: 70,
-                child: CircleAvatar(
-                  backgroundColor: Colors.grey,
-                  backgroundImage: AssetImage(profileUser?.avatarUrl ??
-                      'assets/images/user_default_image.png'),
+          body: AsyncValueWidget(
+            value: profileUserValue,
+            data: (profile) => ListView(
+              children: [
+                const SizedBox(height: 30),
+                CircleAvatar(
                   radius: 70,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.grey,
+                    backgroundImage: AssetImage(profile.avatarUrl ??
+                        'assets/images/user_default_image.png'),
+                    radius: 70,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      profileUser?.username ?? 'Default User',
-                      textAlign: TextAlign.center,
-                    ),
-                    const Chip(
-                      avatar: Icon(Icons.male),
-                      label: Text('37'),
-                    )
-                  ],
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        profile.username ?? 'Default User',
+                        textAlign: TextAlign.center,
+                      ),
+                      const Chip(
+                        avatar: Icon(Icons.male),
+                        label: Text('37'),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              // TODO: Insert Flag and Country
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  '*** BIO *** Reprehenderit nostrud nostrud ex dolor irure ullamco anim amet excepteur tempor in aute ad. Qui quis anim do in. Lorem pariatur sint duis tempor magna ea enim id ad quis consectetur. Sunt duis aute est occaecat fugiat eu sunt eu laborum cupidatat est consequat proident veniam. Nostrud et aliqua officia laboris aliqua aute dolor occaecat laborum est dolore. Voluptate commodo ad in ullamco amet excepteur sint laborum id deserunt duis exercitation fugiat.',
-                  textAlign: TextAlign.center,
-                ),
-              )
-              // TODO: Insert # of Follow, Followers, and Views
-              // TODO: Insert # Coins and Buy Coins
-            ],
+                const SizedBox(height: 20),
+                // TODO: Insert Flag and Country
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    '*** BIO *** Reprehenderit nostrud nostrud ex dolor irure ullamco anim amet excepteur tempor in aute ad. Qui quis anim do in. Lorem pariatur sint duis tempor magna ea enim id ad quis consectetur. Sunt duis aute est occaecat fugiat eu sunt eu laborum cupidatat est consequat proident veniam. Nostrud et aliqua officia laboris aliqua aute dolor occaecat laborum est dolore. Voluptate commodo ad in ullamco amet excepteur sint laborum id deserunt duis exercitation fugiat.',
+                    textAlign: TextAlign.center,
+                  ),
+                )
+                // TODO: Insert # of Follow, Followers, and Views
+                // TODO: Insert # Coins and Buy Coins
+              ],
+            ),
           ),
         ),
       ),
