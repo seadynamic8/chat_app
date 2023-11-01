@@ -10,9 +10,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final container = ProviderContainer();
+  // final env = await container.read(envProvider.future);
+  final env = await EnvRepository.getEnv();
 
-  final env = await container.read(envProvider.future);
+  final container = ProviderContainer(overrides: [
+    envProvider.overrideWithValue(env),
+  ]);
 
   await Supabase.initialize(
     url: env.supabaseUrl,
@@ -22,8 +25,9 @@ void main() async {
   );
 
   runApp(
-    const ProviderScope(
-      child: MyApp(),
+    UncontrolledProviderScope(
+      container: container,
+      child: const MyApp(),
     ),
   );
 }
