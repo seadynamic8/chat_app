@@ -13,29 +13,30 @@ class ChatMessagesController extends _$ChatMessagesController {
 
   @override
   PagingController<int, Message> build(String roomId) {
-    final chatRepository = ref.watch(chatRepositoryProvider);
-    chatRepository.watchNewMessageForRoom(roomId, _handleNewMessage);
-
-    const firstPage = 0; // Our paging algorithm starts at 0
+    ref
+        .watch(chatRepositoryProvider)
+        .watchNewMessageForRoom(roomId, _handleNewMessage);
 
     final PagingController<int, Message> pagingController =
-        PagingController(firstPageKey: firstPage);
+        PagingController(firstPageKey: 0); // Our paging algorithm starts at 0
 
-    pagingController.addPageRequestListener((pageKey) async {
-      final messages = await chatRepository.getAllMessagesForRoom(
-          roomId, pageKey, numberOfMessagesPerRequest);
-
-      final isLastPage = messages.length < numberOfMessagesPerRequest;
-
-      if (isLastPage) {
-        pagingController.appendLastPage(messages);
-      } else {
-        final nextPageKey = pageKey + 1;
-        pagingController.appendPage(messages, nextPageKey);
-      }
-    });
+    pagingController.addPageRequestListener(_handlePageRequest);
 
     return pagingController;
+  }
+
+  void _handlePageRequest(int pageKey) async {
+    final messages = await ref
+        .watch(chatRepositoryProvider)
+        .getAllMessagesForRoom(roomId, pageKey, numberOfMessagesPerRequest);
+
+    final isLastPage = messages.length < numberOfMessagesPerRequest;
+    if (isLastPage) {
+      state.appendLastPage(messages);
+    } else {
+      final nextPageKey = pageKey + 1;
+      state.appendPage(messages, nextPageKey);
+    }
   }
 
   void _handleNewMessage(Map<String, dynamic> payload) async {
@@ -58,6 +59,7 @@ class ChatMessagesController extends _$ChatMessagesController {
     final translatedText = await ref
         .read(translationServiceProvider)
         .getTranslation(message.content);
+
     if (translatedText == null) return;
 
     // Update the message with translation
