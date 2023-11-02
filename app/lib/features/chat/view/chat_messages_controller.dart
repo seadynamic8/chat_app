@@ -2,27 +2,53 @@ import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/data/translate_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chat_messages_controller.g.dart';
 
 @riverpod
 class ChatMessagesController extends _$ChatMessagesController {
+  static const numberOfMessagesPerRequest = 10;
+
   @override
-  Future<List<Message>> build(String roomId) async {
+  PagingController<int, Message> build(String roomId) {
     final chatRepository = ref.watch(chatRepositoryProvider);
     chatRepository.watchNewMessageForRoom(roomId, _handleNewMessage);
 
-    return await chatRepository.getAllMessagesForRoom(roomId);
+    const firstPage = 0; // Our paging algorithm starts at 0
+
+    final PagingController<int, Message> pagingController =
+        PagingController(firstPageKey: firstPage);
+
+    pagingController.addPageRequestListener((pageKey) async {
+      final messages = await chatRepository.getAllMessagesForRoom(
+          roomId, pageKey, numberOfMessagesPerRequest);
+
+      final isLastPage = messages.length < numberOfMessagesPerRequest;
+
+      if (isLastPage) {
+        pagingController.appendLastPage(messages);
+      } else {
+        final nextPageKey = pageKey + 1;
+        pagingController.appendPage(messages, nextPageKey);
+      }
+    });
+
+    return pagingController;
   }
 
   void _handleNewMessage(Map<String, dynamic> payload) async {
     final newMessage = Message.fromMap(payload['new']);
 
     // Add new message first
-    final old = await future;
-    state = AsyncData([newMessage, ...old]);
+    if (state.itemList == null) {
+      state.itemList = [newMessage];
+    } else {
+      state.itemList = [newMessage, ...state.itemList!];
+    }
 
+    // Then fetch translation and save
     final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
     // TODO: Also check if both users locale are the same, then don't translate
     if (newMessage.profileId != currentUserId) {
@@ -32,13 +58,13 @@ class ChatMessagesController extends _$ChatMessagesController {
 
   void _updateNewMessageTranslation(Message message) async {
     final translatedText = await _getTranslation(message.content);
-
     if (translatedText == null) return;
 
-    var old = await future;
-    final messageIndex = old.indexWhere((m) => m.id == message.id);
-    old[messageIndex] = old[messageIndex].copyWith(translation: translatedText);
-    state = AsyncData([...old]);
+    final newList = [...state.itemList!];
+    final messageIndex = newList.indexWhere((m) => m.id == message.id);
+    newList[messageIndex] =
+        newList[messageIndex].copyWith(translation: translatedText);
+    state.itemList = newList;
 
     _saveTranslation(message, translatedText);
   }

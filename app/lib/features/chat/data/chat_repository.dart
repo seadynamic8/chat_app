@@ -2,6 +2,7 @@ import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/domain/room.dart';
+import 'package:chat_app/utils/pagination.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -79,14 +80,21 @@ class ChatRepository {
     });
   }
 
-  Future<List<Message>> getAllMessagesForRoom(String roomId) async {
-    final messages =
-        await supabase.from('messages').select<List<Map<String, dynamic>>>('''
+  Future<List<Message>> getAllMessagesForRoom(
+      String roomId, int page, int range) async {
+    final (from: from, to: to) = getPagination(page: page, defaultRange: range);
+
+    final messages = await supabase
+        .from('messages')
+        .select<List<Map<String, dynamic>>>('''
           id,
           content,
           profile_id,
           translation
-        ''').eq('room_id', roomId).order('created_at', ascending: false);
+        ''')
+        .eq('room_id', roomId)
+        .order('created_at', ascending: false)
+        .range(from, to);
 
     return messages.map((message) => Message.fromMap(message)).toList();
   }

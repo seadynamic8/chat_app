@@ -7,7 +7,7 @@ part of 'chat_messages_controller.dart';
 // **************************************************************************
 
 String _$chatMessagesControllerHash() =>
-    r'bee8741844ca814698818829bcfaba210605816e';
+    r'6c815be6d8656d575984d6b6acf5512af5687a62';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,10 +31,10 @@ class _SystemHash {
 }
 
 abstract class _$ChatMessagesController
-    extends BuildlessAutoDisposeAsyncNotifier<List<Message>> {
+    extends BuildlessAutoDisposeNotifier<PagingController<int, Message>> {
   late final String roomId;
 
-  Future<List<Message>> build(
+  PagingController<int, Message> build(
     String roomId,
   );
 }
@@ -44,7 +44,8 @@ abstract class _$ChatMessagesController
 const chatMessagesControllerProvider = ChatMessagesControllerFamily();
 
 /// See also [ChatMessagesController].
-class ChatMessagesControllerFamily extends Family<AsyncValue<List<Message>>> {
+class ChatMessagesControllerFamily
+    extends Family<PagingController<int, Message>> {
   /// See also [ChatMessagesController].
   const ChatMessagesControllerFamily();
 
@@ -82,9 +83,8 @@ class ChatMessagesControllerFamily extends Family<AsyncValue<List<Message>>> {
 }
 
 /// See also [ChatMessagesController].
-class ChatMessagesControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<ChatMessagesController,
-        List<Message>> {
+class ChatMessagesControllerProvider extends AutoDisposeNotifierProviderImpl<
+    ChatMessagesController, PagingController<int, Message>> {
   /// See also [ChatMessagesController].
   ChatMessagesControllerProvider(
     String roomId,
@@ -115,7 +115,7 @@ class ChatMessagesControllerProvider
   final String roomId;
 
   @override
-  Future<List<Message>> runNotifierBuild(
+  PagingController<int, Message> runNotifierBuild(
     covariant ChatMessagesController notifier,
   ) {
     return notifier.build(
@@ -140,8 +140,8 @@ class ChatMessagesControllerProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<ChatMessagesController, List<Message>>
-      createElement() {
+  AutoDisposeNotifierProviderElement<ChatMessagesController,
+      PagingController<int, Message>> createElement() {
     return _ChatMessagesControllerProviderElement(this);
   }
 
@@ -160,14 +160,14 @@ class ChatMessagesControllerProvider
 }
 
 mixin ChatMessagesControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<List<Message>> {
+    on AutoDisposeNotifierProviderRef<PagingController<int, Message>> {
   /// The parameter `roomId` of this provider.
   String get roomId;
 }
 
 class _ChatMessagesControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<ChatMessagesController,
-        List<Message>> with ChatMessagesControllerRef {
+    extends AutoDisposeNotifierProviderElement<ChatMessagesController,
+        PagingController<int, Message>> with ChatMessagesControllerRef {
   _ChatMessagesControllerProviderElement(super.provider);
 
   @override
