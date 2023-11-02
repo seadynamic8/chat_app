@@ -1,6 +1,6 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/chat/application/translation_service.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
-import 'package:chat_app/features/chat/data/translate_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -42,11 +42,9 @@ class ChatMessagesController extends _$ChatMessagesController {
     final newMessage = Message.fromMap(payload['new']);
 
     // Add new message first
-    if (state.itemList == null) {
-      state.itemList = [newMessage];
-    } else {
-      state.itemList = [newMessage, ...state.itemList!];
-    }
+    state.itemList = state.itemList == null
+        ? [newMessage]
+        : [newMessage, ...state.itemList!];
 
     // Then fetch translation and save
     final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
@@ -57,33 +55,20 @@ class ChatMessagesController extends _$ChatMessagesController {
   }
 
   void _updateNewMessageTranslation(Message message) async {
-    final translatedText = await _getTranslation(message.content);
+    final translatedText = await ref
+        .read(translationServiceProvider)
+        .getTranslation(message.content);
     if (translatedText == null) return;
 
+    // Update the message with translation
     final newList = [...state.itemList!];
     final messageIndex = newList.indexWhere((m) => m.id == message.id);
     newList[messageIndex] =
         newList[messageIndex].copyWith(translation: translatedText);
     state.itemList = newList;
 
-    _saveTranslation(message, translatedText);
-  }
-
-  Future<String?> _getTranslation(String messageText) async {
-    final translateRepository = ref.read(translateRepositoryProvider);
-
-    // TODO: Need to update this to update this  to use user profile locale
-    // final languageCode = I18n.language; // Current locale
-    // also, if message locale is the same as (user's locale), then return
-    const languageCode = 'es'; // For testing, use Spanish
-
-    return await translateRepository.translate(
-        text: messageText, toLangCode: languageCode);
-  }
-
-  void _saveTranslation(Message message, String translation) {
     ref
         .read(chatRepositoryProvider)
-        .saveTranslationForMessage(message.id!, translation);
+        .saveTranslationForMessage(message.id!, translatedText);
   }
 }
