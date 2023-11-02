@@ -10,7 +10,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // final env = await container.read(envProvider.future);
   final env = await EnvRepository.getEnv();
 
   final container = ProviderContainer(overrides: [

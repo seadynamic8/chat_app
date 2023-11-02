@@ -10,9 +10,13 @@ class Robot {
   final PatrolIntegrationTester $;
 
   Future<void> pumpAndSettleMyApp() async {
-    final container = ProviderContainer();
+    // Don't need WidgetsFlutterBinding.ensureInitialized() because Patrol does it
 
-    final env = await container.read(envProvider.future);
+    final env = await EnvRepository.getEnv();
+
+    final container = ProviderContainer(overrides: [
+      envProvider.overrideWithValue(env),
+    ]);
 
     await Supabase.initialize(
       url: env.supabaseUrl,
@@ -22,8 +26,9 @@ class Robot {
     );
 
     await $.pumpWidgetAndSettle(
-      const ProviderScope(
-        child: MyApp(),
+      UncontrolledProviderScope(
+        container: container,
+        child: const MyApp(),
       ),
     );
   }
