@@ -80,10 +80,13 @@ class ChatRepository {
   }
 
   Future<List<Message>> getAllMessagesForRoom(String roomId) async {
-    final messages = await supabase
-        .from('messages')
-        .select<List<Map<String, dynamic>>>('id, content, profile_id')
-        .eq('room_id', roomId);
+    final messages =
+        await supabase.from('messages').select<List<Map<String, dynamic>>>('''
+          id,
+          content,
+          profile_id,
+          translation
+        ''').eq('room_id', roomId).order('created_at', ascending: false);
 
     return messages.map((message) => Message.fromMap(message)).toList();
   }
@@ -102,6 +105,12 @@ class ChatRepository {
         callback(payload);
       },
     ).subscribe();
+  }
+
+  void saveTranslationForMessage(String messageId, String translation) async {
+    await supabase
+        .from('messages')
+        .update({'translation': translation}).eq('id', messageId);
   }
 }
 

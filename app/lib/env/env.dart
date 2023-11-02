@@ -10,4 +10,7 @@ abstract class Env {
 
   String get supabaseUrl;
   String get supabaseKey;
+
+  String get azureKey;
+  String get azureRegion;
 }

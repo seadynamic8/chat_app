@@ -42,8 +42,8 @@ class MessageBubble extends ConsumerWidget {
               Container(
                 decoration: BoxDecoration(
                   color: isCurrentUser(ref)
-                      ? Colors.grey[300]
-                      : themeContext.colorScheme.secondary.withAlpha(200),
+                      ? Colors.grey[700]
+                      : themeContext.colorScheme.secondary,
                   borderRadius: BorderRadius.only(
                     topLeft: !isCurrentUser(ref)
                         ? Radius.zero
@@ -56,17 +56,57 @@ class MessageBubble extends ConsumerWidget {
                   ),
                 ),
                 constraints: const BoxConstraints(maxWidth: 200),
-                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 12),
-                child: Text(
-                  message.content,
-                  style: TextStyle(
-                    height: 1.3,
-                    color: isCurrentUser(ref)
-                        ? Colors.black87
-                        : themeContext.colorScheme.onSecondary,
-                  ),
-                  softWrap: true,
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 4),
+                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                child: Column(
+                  crossAxisAlignment: isCurrentUser(ref)
+                      ? CrossAxisAlignment.end
+                      : CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 2, horizontal: 4),
+                      child: Text(
+                        message.content,
+                        style: TextStyle(
+                          height: 1.3,
+                          color: isCurrentUser(ref)
+                              ? themeContext.colorScheme.onBackground
+                                  .withAlpha(200)
+                              : themeContext.colorScheme.onSecondary,
+                        ),
+                        softWrap: true,
+                      ),
+                    ),
+                    if (message.translation != null && !isCurrentUser(ref))
+                      Container(
+                        decoration: BoxDecoration(
+                          color: isCurrentUser(ref)
+                              ? Colors.grey.withAlpha(200)
+                              : themeContext.colorScheme.background
+                                  .withAlpha(100),
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.zero,
+                            topRight: Radius.zero,
+                            bottomLeft: Radius.circular(9),
+                            bottomRight: Radius.circular(9),
+                          ),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 4),
+                        child: Text(
+                          message.translation!,
+                          style: TextStyle(
+                            height: 1.3,
+                            color: isCurrentUser(ref)
+                                ? Colors.black87
+                                : themeContext.colorScheme.onBackground
+                                    .withAlpha(200),
+                          ),
+                          softWrap: true,
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ],
