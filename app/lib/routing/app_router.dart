@@ -30,7 +30,13 @@ class AppRouter extends $AppRouter {
                     AutoRoute(page: ExploreRoute.page, initial: true),
                   ],
                 ),
-                AutoRoute(page: ChatLobbyRoute.page),
+                AutoRoute(
+                  page: ChatNavigation.page,
+                  children: [
+                    AutoRoute(page: ChatLobbyRoute.page, initial: true),
+                    AutoRoute(page: VideoRoomRoute.page)
+                  ],
+                ),
                 AutoRoute(
                   page: ProfileNavigation.page,
                   children: [

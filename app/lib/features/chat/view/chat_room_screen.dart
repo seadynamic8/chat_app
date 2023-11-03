@@ -2,6 +2,7 @@ import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/view/chat_messages.dart';
 import 'package:chat_app/features/chat/view/new_message.dart';
+import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,12 @@ class ChatRoomScreen extends ConsumerWidget {
                   Text(profiles[otherProfileId]?.username ?? 'Chat Room'),
                 ],
               ),
+              actions: [
+                IconButton(
+                  onPressed: () => context.router.push(const VideoRoomRoute()),
+                  icon: const Icon(Icons.video_call),
+                ),
+              ],
             ),
             body: Column(
               children: [
