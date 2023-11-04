@@ -12,22 +12,6 @@ class ChatLobbyScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // This beginning code here is because AutoRoute tabs keep state when
-    // changing tabs, which causes Riverpod to not refresh the state.
-
-    // Probably a better way to get the tabsRouter
-    final tabsRouter =
-        context.router.innerRouterOf<TabsRouter>(TabsNavigation.name);
-    // Add a listener on the parent router
-    // Once the tabs router comes back, it will invalidate the cached rooms
-    // Thereby re-fetching new rooms.
-    context.router.parent()!.addListener(() {
-      // 1 = Chats Lobby Route
-      if (tabsRouter!.activeIndex == 1) {
-        ref.invalidate(getAllRoomsProvider);
-      }
-    });
-
     final roomsValue = ref.watch(getAllRoomsProvider);
 
     return I18n(
