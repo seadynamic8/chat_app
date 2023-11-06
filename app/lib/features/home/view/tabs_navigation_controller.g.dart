@@ -7,7 +7,7 @@ part of 'tabs_navigation_controller.dart';
 // **************************************************************************
 
 String _$tabsNavigationControllerHash() =>
-    r'815259beb49d56205454f309ced5b2bbde012eb8';
+    r'70b9de34a42f617332fbbf05f3dc46276100e946';
 
 /// Copied from Dart SDK
 class _SystemHash {

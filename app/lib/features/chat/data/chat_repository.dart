@@ -57,17 +57,20 @@ class ChatRepository {
     };
   }
 
-  Future<List<Room>> getAllRoomsByUser(String userId) async {
-    final roomsList =
-        await supabase.from('rooms').select<List<Map<String, dynamic>>>('''
+  Future<List<Room>> getAllRoomsByUser(String currentUserId) async {
+    final roomsList = await supabase
+        .from('rooms')
+        .select<List<Map<String, dynamic>>>('''
           id,
-          p1:profiles!inner (),
-          p2:profiles!inner (id, username, avatar_url)
-        ''').eq('p1.id', userId).neq('p2.id', userId);
+          profiles!inner (id, username, avatar_url),
+          messages (id, profile_id, content, translation, created_at)
+        ''')
+        .neq('profiles.id', currentUserId)
+        .limit(1, foreignTable: 'profiles')
+        .order('created_at', foreignTable: 'messages', ascending: false)
+        .limit(1, foreignTable: 'messages');
 
-    return roomsList
-        .map((room) => Room.fromMapWithCustomProfile(room))
-        .toList();
+    return roomsList.map((room) => Room.fromMap(room)).toList();
   }
 
   // * Messages

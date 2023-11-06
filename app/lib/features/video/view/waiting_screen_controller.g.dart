@@ -7,7 +7,7 @@ part of 'waiting_screen_controller.dart';
 // **************************************************************************
 
 String _$waitingScreenControllerHash() =>
-    r'01c3a565b1e21dea32cc85159990d5a0806aaf3d';
+    r'4a11138d9ff7620920fd9594820a5cfa6c28a706';
 
 /// Copied from Dart SDK
 class _SystemHash {

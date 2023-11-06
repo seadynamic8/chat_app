@@ -5,19 +5,22 @@ class Message {
     required this.content,
     this.translation,
     required this.profileId,
+    this.createdAt,
   });
 
-  String? id;
+  final String? id;
   final String content;
-  String? translation;
+  final String? translation;
   final String profileId;
+  final DateTime? createdAt;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
       'content': content,
       'translation': translation,
-      'profile_id': profileId,
+      'profileId': profileId,
+      'createdAt': createdAt?.millisecondsSinceEpoch,
     };
   }
 
@@ -28,6 +31,9 @@ class Message {
       translation:
           map['translation'] != null ? map['translation'] as String : null,
       profileId: map['profile_id'] as String,
+      createdAt: map['created_at'] != null
+          ? DateTime.parse(map['created_at'] as String)
+          : null,
     );
   }
 
@@ -36,12 +42,19 @@ class Message {
     String? content,
     String? translation,
     String? profileId,
+    DateTime? createdAt,
   }) {
     return Message(
       id: id ?? this.id,
       content: content ?? this.content,
       translation: translation ?? this.translation,
       profileId: profileId ?? this.profileId,
+      createdAt: createdAt ?? this.createdAt,
     );
+  }
+
+  @override
+  String toString() {
+    return 'Message(id: $id, content: $content, translation: $translation, profileId: $profileId, createdAt: $createdAt)';
   }
 }
