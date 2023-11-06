@@ -29,7 +29,9 @@ class VideoRoomScreen extends ConsumerWidget {
         child: Scaffold(
           body: Stack(
             children: [
-              Expanded(
+              SizedBox(
+                width: double.infinity,
+                height: double.infinity,
                 child: RemoteTile(
                     isLoading: state.isLoading, remoteParticipants: const []),
               ),
