@@ -14,9 +14,9 @@ class TabsNavigation extends StatelessWidget {
     return I18n(
       child: AutoTabsScaffold(
         routes: const [
-          ExploreRoute(),
-          ChatLobbyRoute(),
-          PrivateProfileRoute(),
+          ExploreNavigation(),
+          ChatNavigation(),
+          ProfileNavigation(),
         ],
         bottomNavigationBuilder: (_, tabsRouter) {
           return BottomNavigationBar(
