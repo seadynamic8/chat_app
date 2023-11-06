@@ -14,6 +14,8 @@ class AuthRepository {
   Stream<AuthState> onAuthStateChanges() => supabase.auth.onAuthStateChange;
 
   String? get currentUserId => supabase.auth.currentUser?.id;
+  String? get currentUserName =>
+      supabase.auth.currentUser?.userMetadata?['username'];
 
   Future<Profile> get currentProfile async {
     final authUserId = currentUserId!;
@@ -26,18 +28,31 @@ class AuthRepository {
     return Profile.fromMap(profileUser);
   }
 
+  Future<Profile> getProfile(String profileId) async {
+    final profileUser = await supabase
+        .from('profiles')
+        .select<Map<String, dynamic>>('*')
+        .eq('id', profileId)
+        .single();
+
+    return Profile.fromMap(profileUser);
+  }
+
   // Create New User
   Future<AuthResponse> signUp({
     required String email,
     required String password,
-    String? username,
+    required String username,
   }) async {
-    final userCreateResponse = await supabase.auth.signUp(
-      email: email,
-      password: password,
-    );
+    final userCreateResponse =
+        await supabase.auth.signUp(email: email, password: password, data: {
+      'username': username,
+    });
 
-    if (userCreateResponse.session != null && username != null) {
+    // We could just use a DB trigger to copy username from the user table, but
+    // later there may be other fields, and it makes sense to need to insert
+    // into profiles table too.
+    if (userCreateResponse.session != null) {
       await supabase.from('profiles').insert({
         'username': username,
       });
