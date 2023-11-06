@@ -1,16 +1,31 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:chat_app/features/home/view/incoming_call_banner.dart';
+import 'package:chat_app/features/home/view/tabs_navigation_controller.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n_extension/i18n_widget.dart';
 
 @RoutePage()
-class TabsNavigation extends StatelessWidget {
+class TabsNavigation extends ConsumerWidget {
   const TabsNavigation({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // This incoming call code was put in the tabs navigation, since it is the
+    // first place a user visits after login and is a view with a scaffold.
+    // A scaffold is necessary for material banner, which shows on all scaffolds.
+    final icbanner = IncomingCallBanner(
+      ref: ref,
+      router: context.router,
+      sMessenger: ScaffoldMessenger.of(context),
+    );
+    // Setup user channel and callbacks when there is a logged in user
+    ref.watch(tabsNavigationControllerProvider(
+        icbanner.showIncomingCallBanner, icbanner.closeIncomingCallBanner));
+
     return I18n(
       child: AutoTabsScaffold(
         routes: const [

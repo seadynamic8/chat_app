@@ -10,7 +10,9 @@ import 'package:videosdk/videosdk.dart';
 
 @RoutePage()
 class VideoRoomScreen extends ConsumerWidget {
-  const VideoRoomScreen({super.key});
+  const VideoRoomScreen({super.key, required this.videoRoomId});
+
+  final String videoRoomId;
 
   void _endCall(BuildContext context) {
     logger.i('ending call, leaving room');

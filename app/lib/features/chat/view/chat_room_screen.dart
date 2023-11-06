@@ -33,17 +33,18 @@ class ChatRoomScreen extends ConsumerWidget {
                 children: [
                   CircleAvatar(
                     backgroundImage: AssetImage(
-                        profiles[otherProfileId]?.avatarUrl ??
+                        profiles[otherProfileId]!.avatarUrl ??
                             'assets/images/user_default_image.png'),
                     radius: 15,
                   ),
                   const SizedBox(width: 15),
-                  Text(profiles[otherProfileId]?.username ?? 'Chat Room'),
+                  Text(profiles[otherProfileId]!.username ?? 'Chat Room'),
                 ],
               ),
               actions: [
                 IconButton(
-                  onPressed: () => context.router.push(const VideoRoomRoute()),
+                  onPressed: () => context.router.push(
+                      WaitingRoute(otherProfile: profiles[otherProfileId]!)),
                   icon: const Icon(Icons.video_call),
                 ),
               ],

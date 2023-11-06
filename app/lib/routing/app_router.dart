@@ -49,6 +49,8 @@ class AppRouter extends $AppRouter {
             AutoRoute(page: SearchRoute.page),
             AutoRoute(page: PublicProfileRoute.page),
             AutoRoute(page: ChatRoomRoute.page),
+            AutoRoute(page: WaitingRoute.page),
+            AutoRoute(page: VideoRoomRoute.page),
           ],
         ),
       ];
