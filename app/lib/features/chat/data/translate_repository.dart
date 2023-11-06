@@ -1,5 +1,6 @@
 import 'package:chat_app/env/env.dart';
 import 'package:chat_app/env/environment.dart';
+import 'package:chat_app/utils/dio_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -8,10 +9,10 @@ part 'translate_repository.g.dart';
 const baseUrl = 'https://api.cognitive.microsofttranslator.com';
 
 class TranslateRepository {
-  TranslateRepository({required this.env});
+  TranslateRepository({required this.env, required this.dio});
 
   final Env env;
-  final dio = Dio();
+  final Dio dio;
 
   Future<String?> translate({
     required String text,
@@ -63,5 +64,6 @@ class TranslateRepository {
 @riverpod
 TranslateRepository translateRepository(TranslateRepositoryRef ref) {
   final env = ref.watch(envProvider);
-  return TranslateRepository(env: env);
+  final dio = ref.watch(dioProvider);
+  return TranslateRepository(env: env, dio: dio);
 }
