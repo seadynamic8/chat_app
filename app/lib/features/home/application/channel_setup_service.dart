@@ -39,9 +39,10 @@ class ChannelSetupService {
   // Join lobby channel on startup, to notify others that we have signed on
   void _setupLobbyChannel() async {
     final lobbyChannel = await ref
-        .watch(lobbySubscribedChannelProvider(lobbyChannelName).future);
-    lobbyChannel
-        .onUpdate(ref.watch(onlinePresencesProvider.notifier).updatePresences);
+        .refresh(lobbySubscribedChannelProvider(lobbyChannelName).future);
+    final updateHandler =
+        ref.watch(onlinePresencesProvider.notifier).updatePresences;
+    lobbyChannel.onUpdate(updateHandler);
   }
 
   void _closeLobbyChannel() async {
@@ -49,9 +50,6 @@ class ChannelSetupService {
     final lobbyChannel =
         await ref.read(lobbySubscribedChannelProvider(lobbyChannelName).future);
     lobbyChannel.close();
-
-    // Invalidate the channel so that it refreshes on login
-    ref.invalidate(lobbySubscribedChannelProvider(lobbyChannelName));
   }
 }
 
