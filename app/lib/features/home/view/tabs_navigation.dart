@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:chat_app/features/home/domain/incoming_call_state.dart';
 import 'package:chat_app/features/home/view/incoming_call_banner.dart';
-import 'package:chat_app/features/home/view/tabs_navigation_controller.dart';
+import 'package:chat_app/features/home/view/incoming_call_controller.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/keys.dart';
@@ -22,9 +23,20 @@ class TabsNavigation extends ConsumerWidget {
       router: context.router,
       sMessenger: ScaffoldMessenger.of(context),
     );
-    // Setup user channel and callbacks when there is a logged in user
-    ref.watch(tabsNavigationControllerProvider(
-        icbanner.showIncomingCallBanner, icbanner.closeIncomingCallBanner));
+    ref.listen<IncomingCallState>(incomingCallControllerProvider,
+        (prev, state) {
+      switch (state.callType) {
+        case IncomingCallType.newCall:
+          icbanner.showIncomingCallBanner(
+              state.otherUsername!, state.videoRoomId!);
+          break;
+        case IncomingCallType.cancelCall:
+          icbanner.closeIncomingCallBanner();
+          ref.read(incomingCallControllerProvider.notifier).resetToWaiting();
+          break;
+        default:
+      }
+    });
 
     return I18n(
       child: AutoTabsScaffold(

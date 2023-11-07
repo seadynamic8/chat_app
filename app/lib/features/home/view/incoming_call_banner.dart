@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:chat_app/features/home/view/tabs_navigation_controller.dart';
+import 'package:chat_app/features/home/view/incoming_call_controller.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
@@ -32,11 +32,7 @@ class IncomingCallBanner {
     logger.t('click accept call');
     final contextRouter = router;
 
-    ref
-        .read(tabsNavigationControllerProvider(
-                showIncomingCallBanner, closeIncomingCallBanner)
-            .notifier)
-        .sendAcceptCall(otherUsername, videoRoomId);
+    ref.read(incomingCallControllerProvider.notifier).sendAcceptCall();
 
     closeIncomingCallBanner();
 
@@ -45,11 +41,7 @@ class IncomingCallBanner {
 
   void _rejectCall(String otherUsername) {
     logger.t('click reject call');
-    ref
-        .read(tabsNavigationControllerProvider(
-                showIncomingCallBanner, closeIncomingCallBanner)
-            .notifier)
-        .sendRejectCall(otherUsername);
+    ref.read(incomingCallControllerProvider.notifier).sendRejectCall();
 
     closeIncomingCallBanner();
   }

@@ -6,7 +6,7 @@ part of 'channel_repository.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$channelRepositoryHash() => r'55ab4100665841d02214b5312702828268c0f7e8';
+String _$channelRepositoryHash() => r'eaf912d3cb0550b0d678ae03ff39ac82bd396e68';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -40,12 +40,10 @@ class ChannelRepositoryFamily extends Family<ChannelRepository> {
 
   /// See also [channelRepository].
   ChannelRepositoryProvider call(
-    String channelName, [
-    void Function(List<OnlineState>)? updateCallback,
-  ]) {
+    String channelName,
+  ) {
     return ChannelRepositoryProvider(
       channelName,
-      updateCallback,
     );
   }
 
@@ -55,7 +53,6 @@ class ChannelRepositoryFamily extends Family<ChannelRepository> {
   ) {
     return call(
       provider.channelName,
-      provider.updateCallback,
     );
   }
 
@@ -78,13 +75,11 @@ class ChannelRepositoryFamily extends Family<ChannelRepository> {
 class ChannelRepositoryProvider extends Provider<ChannelRepository> {
   /// See also [channelRepository].
   ChannelRepositoryProvider(
-    String channelName, [
-    void Function(List<OnlineState>)? updateCallback,
-  ]) : this._internal(
+    String channelName,
+  ) : this._internal(
           (ref) => channelRepository(
             ref as ChannelRepositoryRef,
             channelName,
-            updateCallback,
           ),
           from: channelRepositoryProvider,
           name: r'channelRepositoryProvider',
@@ -96,7 +91,6 @@ class ChannelRepositoryProvider extends Provider<ChannelRepository> {
           allTransitiveDependencies:
               ChannelRepositoryFamily._allTransitiveDependencies,
           channelName: channelName,
-          updateCallback: updateCallback,
         );
 
   ChannelRepositoryProvider._internal(
@@ -107,11 +101,9 @@ class ChannelRepositoryProvider extends Provider<ChannelRepository> {
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.channelName,
-    required this.updateCallback,
   }) : super.internal();
 
   final String channelName;
-  final void Function(List<OnlineState>)? updateCallback;
 
   @override
   Override overrideWith(
@@ -127,7 +119,6 @@ class ChannelRepositoryProvider extends Provider<ChannelRepository> {
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         channelName: channelName,
-        updateCallback: updateCallback,
       ),
     );
   }
@@ -140,15 +131,13 @@ class ChannelRepositoryProvider extends Provider<ChannelRepository> {
   @override
   bool operator ==(Object other) {
     return other is ChannelRepositoryProvider &&
-        other.channelName == channelName &&
-        other.updateCallback == updateCallback;
+        other.channelName == channelName;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, channelName.hashCode);
-    hash = _SystemHash.combine(hash, updateCallback.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -157,9 +146,6 @@ class ChannelRepositoryProvider extends Provider<ChannelRepository> {
 mixin ChannelRepositoryRef on ProviderRef<ChannelRepository> {
   /// The parameter `channelName` of this provider.
   String get channelName;
-
-  /// The parameter `updateCallback` of this provider.
-  void Function(List<OnlineState>)? get updateCallback;
 }
 
 class _ChannelRepositoryProviderElement
@@ -168,9 +154,6 @@ class _ChannelRepositoryProviderElement
 
   @override
   String get channelName => (origin as ChannelRepositoryProvider).channelName;
-  @override
-  void Function(List<OnlineState>)? get updateCallback =>
-      (origin as ChannelRepositoryProvider).updateCallback;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

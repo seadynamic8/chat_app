@@ -78,14 +78,9 @@ class ChannelRepository {
 
 @Riverpod(keepAlive: true)
 ChannelRepository channelRepository(
-    ChannelRepositoryRef ref, String channelName,
-    [void Function(List<OnlineState> onlineStates)? updateCallback]) {
+    ChannelRepositoryRef ref, String channelName) {
   final supabase = ref.watch(supabaseProvider);
 
   return ChannelRepository(
-    supabase: supabase,
-    channelName: channelName,
-    ref: ref,
-    updateCallback: updateCallback,
-  );
+      supabase: supabase, channelName: channelName, ref: ref);
 }
