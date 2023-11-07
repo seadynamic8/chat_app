@@ -47,7 +47,7 @@ class ChannelSetupService {
     final lobbyChannel = await ref
         .refresh(lobbySubscribedChannelProvider(lobbyChannelName).future);
     final updateHandler =
-        ref.watch(onlinePresencesProvider.notifier).updatePresences;
+        ref.read(onlinePresencesProvider.notifier).updatePresences;
     lobbyChannel.onUpdate(updateHandler);
   }
 
