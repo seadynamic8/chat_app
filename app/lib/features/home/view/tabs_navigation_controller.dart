@@ -1,5 +1,5 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/video/data/channel_repository.dart';
+import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

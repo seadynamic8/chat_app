@@ -1,7 +1,7 @@
 import 'package:chat_app/env/environment.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
-import 'package:chat_app/features/video/data/channel_repository.dart';
+import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:chat_app/features/video/data/video_repository.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/widgets.dart';
