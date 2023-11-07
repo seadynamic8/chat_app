@@ -1,5 +1,6 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
+import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide Provider;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -17,17 +18,15 @@ class ChannelSetupService {
     ref.listen<AsyncValue<AuthState>>(
       authStateChangesProvider,
       (previous, next) {
-        final onlinePresences = ref.watch(onlinePresencesProvider.notifier);
-
         final currentState = next.value;
         if (currentState != null) {
           final event = currentState.event;
           switch (event) {
             case AuthChangeEvent.signedIn:
-              _setupLobbyChannel(onlinePresences);
+              _setupLobbyChannel();
               break;
             case AuthChangeEvent.signedOut:
-              _closeLobbyChannel(onlinePresences);
+              _closeLobbyChannel();
               break;
             default:
               break;
@@ -38,21 +37,21 @@ class ChannelSetupService {
   }
 
   // Join lobby channel on startup, to notify others that we have signed on
-  void _setupLobbyChannel(OnlinePresences onlinePresences) {
-    ref.watch(lobbySubscribedChannelProvider(
-        lobbyChannelName, onlinePresences.updateHandler));
+  void _setupLobbyChannel() async {
+    final lobbyChannel = await ref
+        .watch(lobbySubscribedChannelProvider(lobbyChannelName).future);
+    lobbyChannel
+        .onUpdate(ref.watch(onlinePresencesProvider.notifier).updatePresences);
   }
 
-  void _closeLobbyChannel(OnlinePresences onlinePresences) async {
+  void _closeLobbyChannel() async {
     // Unsubscribe from the channel
-    final lobbyChannel = await ref.read(lobbySubscribedChannelProvider(
-            lobbyChannelName, onlinePresences.updateHandler)
-        .future);
+    final lobbyChannel =
+        await ref.read(lobbySubscribedChannelProvider(lobbyChannelName).future);
     lobbyChannel.close();
 
     // Invalidate the channel so that it refreshes on login
-    ref.invalidate(lobbySubscribedChannelProvider(
-        lobbyChannelName, onlinePresences.updateHandler));
+    ref.invalidate(lobbySubscribedChannelProvider(lobbyChannelName));
   }
 }
 

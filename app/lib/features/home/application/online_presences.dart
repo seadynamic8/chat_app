@@ -14,7 +14,7 @@ class OnlinePresences extends _$OnlinePresences {
     return {};
   }
 
-  void updateHandler(List<OnlineState> onlineStates) {
+  void updatePresences(List<OnlineState> onlineStates) {
     final Map<String, OnlineState> newState = {};
     for (final onlineState in onlineStates) {
       newState[onlineState.profileId] = onlineState;
@@ -25,14 +25,12 @@ class OnlinePresences extends _$OnlinePresences {
 
 @Riverpod(keepAlive: true)
 FutureOr<ChannelRepository> lobbySubscribedChannel(
-    LobbySubscribedChannelRef ref, String channelName,
-    [void Function(List<OnlineState> onlineStates)? updateCallback]) async {
+    LobbySubscribedChannelRef ref, String channelName) async {
   final supabase = ref.watch(supabaseProvider);
 
   return await ChannelRepository.makeSubscribedChannel(
     supabase: supabase,
     channelName: channelName,
     ref: ref,
-    updateCallback: updateCallback,
   );
 }

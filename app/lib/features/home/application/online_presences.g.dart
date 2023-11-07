@@ -7,7 +7,7 @@ part of 'online_presences.dart';
 // **************************************************************************
 
 String _$lobbySubscribedChannelHash() =>
-    r'e4f9cb4afd2391633af0bdfe5b7203a117086251';
+    r'53eb522bad814f13da5c3faae2470d1aa3ae97c0';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -42,12 +42,10 @@ class LobbySubscribedChannelFamily
 
   /// See also [lobbySubscribedChannel].
   LobbySubscribedChannelProvider call(
-    String channelName, [
-    void Function(List<OnlineState>)? updateCallback,
-  ]) {
+    String channelName,
+  ) {
     return LobbySubscribedChannelProvider(
       channelName,
-      updateCallback,
     );
   }
 
@@ -57,7 +55,6 @@ class LobbySubscribedChannelFamily
   ) {
     return call(
       provider.channelName,
-      provider.updateCallback,
     );
   }
 
@@ -80,13 +77,11 @@ class LobbySubscribedChannelFamily
 class LobbySubscribedChannelProvider extends FutureProvider<ChannelRepository> {
   /// See also [lobbySubscribedChannel].
   LobbySubscribedChannelProvider(
-    String channelName, [
-    void Function(List<OnlineState>)? updateCallback,
-  ]) : this._internal(
+    String channelName,
+  ) : this._internal(
           (ref) => lobbySubscribedChannel(
             ref as LobbySubscribedChannelRef,
             channelName,
-            updateCallback,
           ),
           from: lobbySubscribedChannelProvider,
           name: r'lobbySubscribedChannelProvider',
@@ -98,7 +93,6 @@ class LobbySubscribedChannelProvider extends FutureProvider<ChannelRepository> {
           allTransitiveDependencies:
               LobbySubscribedChannelFamily._allTransitiveDependencies,
           channelName: channelName,
-          updateCallback: updateCallback,
         );
 
   LobbySubscribedChannelProvider._internal(
@@ -109,11 +103,9 @@ class LobbySubscribedChannelProvider extends FutureProvider<ChannelRepository> {
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.channelName,
-    required this.updateCallback,
   }) : super.internal();
 
   final String channelName;
-  final void Function(List<OnlineState>)? updateCallback;
 
   @override
   Override overrideWith(
@@ -130,7 +122,6 @@ class LobbySubscribedChannelProvider extends FutureProvider<ChannelRepository> {
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         channelName: channelName,
-        updateCallback: updateCallback,
       ),
     );
   }
@@ -143,15 +134,13 @@ class LobbySubscribedChannelProvider extends FutureProvider<ChannelRepository> {
   @override
   bool operator ==(Object other) {
     return other is LobbySubscribedChannelProvider &&
-        other.channelName == channelName &&
-        other.updateCallback == updateCallback;
+        other.channelName == channelName;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, channelName.hashCode);
-    hash = _SystemHash.combine(hash, updateCallback.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -160,9 +149,6 @@ class LobbySubscribedChannelProvider extends FutureProvider<ChannelRepository> {
 mixin LobbySubscribedChannelRef on FutureProviderRef<ChannelRepository> {
   /// The parameter `channelName` of this provider.
   String get channelName;
-
-  /// The parameter `updateCallback` of this provider.
-  void Function(List<OnlineState>)? get updateCallback;
 }
 
 class _LobbySubscribedChannelProviderElement
@@ -173,12 +159,9 @@ class _LobbySubscribedChannelProviderElement
   @override
   String get channelName =>
       (origin as LobbySubscribedChannelProvider).channelName;
-  @override
-  void Function(List<OnlineState>)? get updateCallback =>
-      (origin as LobbySubscribedChannelProvider).updateCallback;
 }
 
-String _$onlinePresencesHash() => r'97c187deaabe9600c1140f9bfa9f5e23f7307180';
+String _$onlinePresencesHash() => r'a745313eebfcde3a35ea6a0aa6348f8190123d03';
 
 /// See also [OnlinePresences].
 @ProviderFor(OnlinePresences)
