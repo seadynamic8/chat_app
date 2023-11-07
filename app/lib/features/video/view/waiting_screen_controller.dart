@@ -72,6 +72,13 @@ class WaitingScreenController extends _$WaitingScreenController {
     otherUserChannel.send('cancel_call', payload: {
       'fromUsername': currentProfile.username,
     });
+
+    // Add a little delay and send again just to make sure the other user
+    // receives it.
+    await Future.delayed(const Duration(milliseconds: 300));
+    otherUserChannel.send('cancel_call', payload: {
+      'fromUsername': currentProfile.username,
+    });
   }
 
   // * Callback Handlers
