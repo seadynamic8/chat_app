@@ -1,4 +1,5 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -12,11 +13,8 @@ class TabsNavigationController extends _$TabsNavigationController {
     void Function(String otherUsername, String videoRoomId) showBanner,
     void Function() closeBanner,
   ) async {
-    logger.t('TabsNavigationState init()');
-
     // Join own channel
     final currentUserName = ref.watch(authRepositoryProvider).currentUserName!;
-
     // Since we "keep alive" this repository, we don't want to resubscribe
     // or re-add initial handlers if this page controller reloads.
     if (!ref.exists(channelRepositoryProvider(currentUserName))) {
@@ -28,10 +26,6 @@ class TabsNavigationController extends _$TabsNavigationController {
       myChannel.on('new_call', _newCallCallback);
       myChannel.on('cancel_call', _cancelCallCallback);
     }
-
-    ref.onDispose(() {
-      logger.t('TabsNavigationState dispose()');
-    });
   }
 
   void sendAcceptCall(String otherUsername, String videoRoomId) async {

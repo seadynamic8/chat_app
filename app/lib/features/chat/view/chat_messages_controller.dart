@@ -13,10 +13,12 @@ class ChatMessagesController extends _$ChatMessagesController {
 
   @override
   PagingController<int, Message> build(String roomId) {
+    // Setup handlers for any new messages
     ref
         .watch(chatRepositoryProvider)
         .watchNewMessageForRoom(roomId, _handleNewMessage);
 
+    // Setup paging controller
     final PagingController<int, Message> pagingController =
         PagingController(firstPageKey: 0); // Our paging algorithm starts at 0
 

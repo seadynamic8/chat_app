@@ -1,12 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'channel_repository.dart';
+part of 'online_presences.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$channelRepositoryHash() => r'55ab4100665841d02214b5312702828268c0f7e8';
+String _$lobbySubscribedChannelHash() =>
+    r'e4f9cb4afd2391633af0bdfe5b7203a117086251';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,29 +30,30 @@ class _SystemHash {
   }
 }
 
-/// See also [channelRepository].
-@ProviderFor(channelRepository)
-const channelRepositoryProvider = ChannelRepositoryFamily();
+/// See also [lobbySubscribedChannel].
+@ProviderFor(lobbySubscribedChannel)
+const lobbySubscribedChannelProvider = LobbySubscribedChannelFamily();
 
-/// See also [channelRepository].
-class ChannelRepositoryFamily extends Family<ChannelRepository> {
-  /// See also [channelRepository].
-  const ChannelRepositoryFamily();
+/// See also [lobbySubscribedChannel].
+class LobbySubscribedChannelFamily
+    extends Family<AsyncValue<ChannelRepository>> {
+  /// See also [lobbySubscribedChannel].
+  const LobbySubscribedChannelFamily();
 
-  /// See also [channelRepository].
-  ChannelRepositoryProvider call(
+  /// See also [lobbySubscribedChannel].
+  LobbySubscribedChannelProvider call(
     String channelName, [
     void Function(List<OnlineState>)? updateCallback,
   ]) {
-    return ChannelRepositoryProvider(
+    return LobbySubscribedChannelProvider(
       channelName,
       updateCallback,
     );
   }
 
   @override
-  ChannelRepositoryProvider getProviderOverride(
-    covariant ChannelRepositoryProvider provider,
+  LobbySubscribedChannelProvider getProviderOverride(
+    covariant LobbySubscribedChannelProvider provider,
   ) {
     return call(
       provider.channelName,
@@ -71,35 +73,35 @@ class ChannelRepositoryFamily extends Family<ChannelRepository> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'channelRepositoryProvider';
+  String? get name => r'lobbySubscribedChannelProvider';
 }
 
-/// See also [channelRepository].
-class ChannelRepositoryProvider extends Provider<ChannelRepository> {
-  /// See also [channelRepository].
-  ChannelRepositoryProvider(
+/// See also [lobbySubscribedChannel].
+class LobbySubscribedChannelProvider extends FutureProvider<ChannelRepository> {
+  /// See also [lobbySubscribedChannel].
+  LobbySubscribedChannelProvider(
     String channelName, [
     void Function(List<OnlineState>)? updateCallback,
   ]) : this._internal(
-          (ref) => channelRepository(
-            ref as ChannelRepositoryRef,
+          (ref) => lobbySubscribedChannel(
+            ref as LobbySubscribedChannelRef,
             channelName,
             updateCallback,
           ),
-          from: channelRepositoryProvider,
-          name: r'channelRepositoryProvider',
+          from: lobbySubscribedChannelProvider,
+          name: r'lobbySubscribedChannelProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$channelRepositoryHash,
-          dependencies: ChannelRepositoryFamily._dependencies,
+                  : _$lobbySubscribedChannelHash,
+          dependencies: LobbySubscribedChannelFamily._dependencies,
           allTransitiveDependencies:
-              ChannelRepositoryFamily._allTransitiveDependencies,
+              LobbySubscribedChannelFamily._allTransitiveDependencies,
           channelName: channelName,
           updateCallback: updateCallback,
         );
 
-  ChannelRepositoryProvider._internal(
+  LobbySubscribedChannelProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -115,12 +117,13 @@ class ChannelRepositoryProvider extends Provider<ChannelRepository> {
 
   @override
   Override overrideWith(
-    ChannelRepository Function(ChannelRepositoryRef provider) create,
+    FutureOr<ChannelRepository> Function(LobbySubscribedChannelRef provider)
+        create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: ChannelRepositoryProvider._internal(
-        (ref) => create(ref as ChannelRepositoryRef),
+      override: LobbySubscribedChannelProvider._internal(
+        (ref) => create(ref as LobbySubscribedChannelRef),
         from: from,
         name: null,
         dependencies: null,
@@ -133,13 +136,13 @@ class ChannelRepositoryProvider extends Provider<ChannelRepository> {
   }
 
   @override
-  ProviderElement<ChannelRepository> createElement() {
-    return _ChannelRepositoryProviderElement(this);
+  FutureProviderElement<ChannelRepository> createElement() {
+    return _LobbySubscribedChannelProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is ChannelRepositoryProvider &&
+    return other is LobbySubscribedChannelProvider &&
         other.channelName == channelName &&
         other.updateCallback == updateCallback;
   }
@@ -154,7 +157,7 @@ class ChannelRepositoryProvider extends Provider<ChannelRepository> {
   }
 }
 
-mixin ChannelRepositoryRef on ProviderRef<ChannelRepository> {
+mixin LobbySubscribedChannelRef on FutureProviderRef<ChannelRepository> {
   /// The parameter `channelName` of this provider.
   String get channelName;
 
@@ -162,15 +165,34 @@ mixin ChannelRepositoryRef on ProviderRef<ChannelRepository> {
   void Function(List<OnlineState>)? get updateCallback;
 }
 
-class _ChannelRepositoryProviderElement
-    extends ProviderElement<ChannelRepository> with ChannelRepositoryRef {
-  _ChannelRepositoryProviderElement(super.provider);
+class _LobbySubscribedChannelProviderElement
+    extends FutureProviderElement<ChannelRepository>
+    with LobbySubscribedChannelRef {
+  _LobbySubscribedChannelProviderElement(super.provider);
 
   @override
-  String get channelName => (origin as ChannelRepositoryProvider).channelName;
+  String get channelName =>
+      (origin as LobbySubscribedChannelProvider).channelName;
   @override
   void Function(List<OnlineState>)? get updateCallback =>
-      (origin as ChannelRepositoryProvider).updateCallback;
+      (origin as LobbySubscribedChannelProvider).updateCallback;
 }
+
+String _$onlinePresencesHash() => r'97c187deaabe9600c1140f9bfa9f5e23f7307180';
+
+/// See also [OnlinePresences].
+@ProviderFor(OnlinePresences)
+final onlinePresencesProvider =
+    NotifierProvider<OnlinePresences, Map<String, OnlineState>>.internal(
+  OnlinePresences.new,
+  name: r'onlinePresencesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$onlinePresencesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$OnlinePresences = Notifier<Map<String, OnlineState>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

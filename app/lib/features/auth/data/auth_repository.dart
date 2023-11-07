@@ -90,6 +90,12 @@ Session? currentSession(CurrentSessionRef ref) {
   return ref.watch(authRepositoryProvider).currentSession;
 }
 
+@Riverpod(keepAlive: true)
+Stream<AuthState> authStateChanges(AuthStateChangesRef ref) {
+  final authRepository = ref.watch(authRepositoryProvider);
+  return authRepository.onAuthStateChanges();
+}
+
 @riverpod
 FutureOr<Profile> currentProfile(CurrentProfileRef ref) async {
   return ref.watch(authRepositoryProvider).currentProfile;

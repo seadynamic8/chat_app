@@ -50,6 +50,21 @@ final currentSessionProvider = Provider<Session?>.internal(
 );
 
 typedef CurrentSessionRef = ProviderRef<Session?>;
+String _$authStateChangesHash() => r'8ecee23e1696539e0ec184eaf34c7a3bb35414f8';
+
+/// See also [authStateChanges].
+@ProviderFor(authStateChanges)
+final authStateChangesProvider = StreamProvider<AuthState>.internal(
+  authStateChanges,
+  name: r'authStateChangesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$authStateChangesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef AuthStateChangesRef = StreamProviderRef<AuthState>;
 String _$currentProfileHash() => r'ba027875d3087399a1c7c3f2cb07d7662aa5b768';
 
 /// See also [currentProfile].
