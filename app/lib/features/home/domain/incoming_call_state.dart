@@ -1,4 +1,12 @@
-enum IncomingCallType { newCall, cancelCall, waiting }
+enum IncomingCallType {
+  waiting,
+  // Callee receive
+  newCall,
+  cancelCall,
+  // Caller receive
+  acceptCall,
+  rejectCall,
+}
 
 class IncomingCallState {
   IncomingCallState({

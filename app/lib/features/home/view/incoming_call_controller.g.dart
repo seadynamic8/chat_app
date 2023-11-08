@@ -7,7 +7,7 @@ part of 'incoming_call_controller.dart';
 // **************************************************************************
 
 String _$incomingCallControllerHash() =>
-    r'3f191f78109111a6cddb7ade097361fd733372d4';
+    r'5dc49dd94117d830f7d58d92178ef59e09d501eb';
 
 /// See also [IncomingCallController].
 @ProviderFor(IncomingCallController)

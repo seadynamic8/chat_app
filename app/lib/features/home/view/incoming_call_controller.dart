@@ -1,3 +1,4 @@
+import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:chat_app/features/home/domain/incoming_call_state.dart';
@@ -17,13 +18,14 @@ class IncomingCallController extends _$IncomingCallController {
     state = IncomingCallState(callType: IncomingCallType.waiting);
   }
 
-  // Incoming Messages
+  // * Incoming Messages
 
-  void setIncomingCall(Map<String, dynamic> payload) {
-    if (!payload.containsKey('fromId') ||
-        !payload.containsKey('fromUsername') ||
+  // Callee receive
+
+  void onNewCall(Map<String, dynamic> payload) {
+    // TODO: maybe handle in the view?
+    if (!payload.containsKey('fromUsername') ||
         !payload.containsKey('videoRoomId') ||
-        payload['fromId'].isEmpty ||
         payload['fromUsername'].isEmpty ||
         payload['videoRoomId'].isEmpty) {
       logger.w('Invalid new_call request!');
@@ -31,16 +33,76 @@ class IncomingCallController extends _$IncomingCallController {
     }
 
     state = IncomingCallState(
-        otherUsername: payload['fromUsername'],
-        videoRoomId: payload['videoRoomId'],
-        callType: IncomingCallType.newCall);
+      callType: IncomingCallType.newCall,
+      otherUsername: payload['fromUsername'],
+      videoRoomId: payload['videoRoomId'],
+    );
   }
 
-  void setCancelCall(Map<String, dynamic> payload) {
+  void onCancelCall(Map<String, dynamic> payload) {
     state = IncomingCallState(callType: IncomingCallType.cancelCall);
   }
 
-  // Outgoing Messages
+  // Caller receive
+
+  void onAcceptCall(Map<String, dynamic> payload) async {
+    if (!payload.containsKey('videoRoomId') || payload['videoRoomId'].isEmpty) {
+      logger.w('Invalid accept_call message!');
+      return;
+    }
+    state = IncomingCallState(
+      callType: IncomingCallType.acceptCall,
+      videoRoomId: payload['videoRoomId'],
+    );
+  }
+
+  void onRejectCall(Map<String, dynamic> payload) async {
+    state = IncomingCallState(callType: IncomingCallType.rejectCall);
+  }
+
+  // * Outgoing Messages
+
+  // From Caller
+
+  Future<void> sendNewCall(String videoRoomId, String channelName) async {
+    final currentProfile =
+        await ref.watch(authRepositoryProvider).currentProfile;
+    await _sendMessageToOtherUser(
+      channelName: channelName,
+      event: 'new_call',
+      payload: {
+        'fromUsername': currentProfile.username,
+        'videoRoomId': videoRoomId,
+      },
+    );
+    resetToWaiting();
+  }
+
+  Future<void> sendCancelCall(String channelName) async {
+    final currentProfile =
+        await ref.watch(authRepositoryProvider).currentProfile;
+    await _sendMessageToOtherUser(
+      channelName: channelName,
+      event: 'cancel_call',
+      payload: {
+        'fromUsername': currentProfile.username,
+      },
+    );
+
+    // Add a little delay and send again just to make sure the other user
+    // receives it.
+    await Future.delayed(const Duration(milliseconds: 300));
+
+    await _sendMessageToOtherUser(
+      channelName: channelName,
+      event: 'cancel_call',
+      payload: {
+        'fromUsername': currentProfile.username,
+      },
+    );
+  }
+
+  // From Callee
 
   void sendAcceptCall() async {
     await _sendMessageToOtherUser(

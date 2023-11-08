@@ -71,8 +71,13 @@ class ChannelSetupService {
     final incomingCallController =
         ref.read(incomingCallControllerProvider.notifier);
 
-    myChannel.on('new_call', incomingCallController.setIncomingCall);
-    myChannel.on('cancel_call', incomingCallController.setCancelCall);
+    // Callee receives
+    myChannel.on('new_call', incomingCallController.onNewCall);
+    myChannel.on('cancel_call', incomingCallController.onCancelCall);
+
+    // Caller receives
+    myChannel.on('accept_call', incomingCallController.onAcceptCall);
+    myChannel.on('reject_call', incomingCallController.onRejectCall);
   }
 }
 

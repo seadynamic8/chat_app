@@ -1,17 +1,18 @@
-import 'package:chat_app/features/home/application/online_presences.dart';
-import 'package:chat_app/features/home/domain/online_state.dart';
+import 'package:chat_app/features/home/domain/incoming_call_state.dart';
+import 'package:chat_app/features/home/view/incoming_call_controller.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
-import 'package:chat_app/features/video/view/waiting_screen_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:i18n_extension/i18n_widget.dart';
 
 @RoutePage()
 class WaitingScreen extends ConsumerStatefulWidget {
-  const WaitingScreen({super.key, required this.otherProfile});
+  const WaitingScreen(
+      {super.key, required this.videoRoomId, required this.otherProfile});
 
+  final String videoRoomId;
   final Profile otherProfile;
 
   @override
@@ -19,34 +20,30 @@ class WaitingScreen extends ConsumerStatefulWidget {
 }
 
 class _WaitingScreenState extends ConsumerState<WaitingScreen> {
-  void initiateCall(String videoRoomId) async {
-    final router = context.router;
-
-    await ref
-        .read(onlinePresencesProvider.notifier)
-        .updateCurrentUserPresence(OnlineStatus.busy);
-
-    router.replace(VideoRoomRoute(videoRoomId: videoRoomId));
-  }
-
-  void cancelWait() {
+  void _cancelWait() {
     context.router.pop();
   }
 
   void _cancelCall() async {
     await ref
-        .read(waitingScreenControllerProvider(
-                widget.otherProfile, initiateCall, cancelWait)
-            .notifier)
-        .sendCancelCall();
+        .read(incomingCallControllerProvider.notifier)
+        .sendCancelCall(widget.otherProfile.username!);
 
-    cancelWait();
+    _cancelWait();
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(waitingScreenControllerProvider(
-        widget.otherProfile, initiateCall, cancelWait));
+    ref.listen<IncomingCallState>(incomingCallControllerProvider, (_, state) {
+      switch (state.callType) {
+        case IncomingCallType.acceptCall:
+          context.router
+              .replace(VideoRoomRoute(videoRoomId: widget.videoRoomId));
+        case IncomingCallType.rejectCall:
+          _cancelWait();
+        default:
+      }
+    });
 
     return I18n(
       child: SafeArea(
