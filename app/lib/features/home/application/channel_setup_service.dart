@@ -26,6 +26,8 @@ class ChannelSetupService {
           final event = currentState.event;
           switch (event) {
             case AuthChangeEvent.signedIn:
+            case AuthChangeEvent.tokenRefreshed:
+            case AuthChangeEvent.userUpdated:
               logger.i('sign in');
               _setupLobbyChannel();
               _setupUserChannel();
@@ -61,7 +63,7 @@ class ChannelSetupService {
   void _setupUserChannel() async {
     final currentUserName = ref.watch(authRepositoryProvider).currentUserName!;
 
-    final myChannel = ref.watch(channelRepositoryProvider(currentUserName));
+    final myChannel = ref.refresh(channelRepositoryProvider(currentUserName));
     await myChannel.subscribed();
 
     // Interesting, here, don't need to delay after subscribe to add callback handlers
