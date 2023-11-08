@@ -1,4 +1,4 @@
-import 'package:chat_app/features/home/domain/incoming_call_state.dart';
+import 'package:chat_app/features/home/domain/call_request_state.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

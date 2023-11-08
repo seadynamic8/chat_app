@@ -1,7 +1,7 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
-import 'package:chat_app/features/home/domain/incoming_call_state.dart';
+import 'package:chat_app/features/home/domain/call_request_state.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

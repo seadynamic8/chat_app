@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:chat_app/features/home/domain/incoming_call_state.dart';
+import 'package:chat_app/features/home/domain/call_request_state.dart';
 import 'package:chat_app/features/home/view/call_request_banner.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/i18n/localizations.dart';
