@@ -1,6 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
+import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
@@ -23,13 +25,17 @@ class MessageBubble extends ConsumerWidget {
       children: [
         Positioned(
           right: isCurrentUser(ref) ? 0 : null,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: CircleAvatar(
-              backgroundImage: AssetImage(
-                  profile?.avatarUrl ?? 'assets/images/user_default_image.png'),
-              radius: 15,
+          child: InkWell(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: CircleAvatar(
+                backgroundImage: AssetImage(profile?.avatarUrl ??
+                    'assets/images/user_default_image.png'),
+                radius: 15,
+              ),
             ),
+            onTap: () =>
+                context.router.push(PublicProfileRoute(profileId: profile!.id)),
           ),
         ),
         Container(

@@ -23,21 +23,26 @@ class ChatRoomTopBar extends ConsumerWidget implements PreferredSizeWidget {
     final userStatus = getUserStatus(onlineStates[otherProfile.username]);
 
     return AppBar(
-      title: Row(
-        children: [
-          Stack(
-            children: [
-              CircleAvatar(
-                backgroundImage: AssetImage(otherProfile.avatarUrl ??
-                    'assets/images/user_default_image.png'),
-                radius: 15,
-              ),
-              ChatOnlineStatusIcon(username: otherProfile.username!)
-            ],
-          ),
-          const SizedBox(width: 15),
-          Text(otherProfile.username!),
-        ],
+      title: InkWell(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Stack(
+              children: [
+                CircleAvatar(
+                  backgroundImage: AssetImage(otherProfile.avatarUrl ??
+                      'assets/images/user_default_image.png'),
+                  radius: 15,
+                ),
+                ChatOnlineStatusIcon(username: otherProfile.username!)
+              ],
+            ),
+            const SizedBox(width: 15),
+            Text(otherProfile.username!),
+          ],
+        ),
+        onTap: () =>
+            context.router.push(PublicProfileRoute(profileId: otherProfile.id)),
       ),
       actions: [
         IconButton(
