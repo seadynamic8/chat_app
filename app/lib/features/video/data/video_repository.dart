@@ -33,6 +33,8 @@ class VideoRepository {
       // that falls out of the range of 2xx and is also not 304.
       if (e.response != null) {
         logger.e('Error Data: ${e.response!.data}');
+        logger
+            .e('Error request options: ${e.response!.requestOptions.headers}');
       } else {
         logger.e('Error message: ${e.message}', stackTrace: e.stackTrace);
       }

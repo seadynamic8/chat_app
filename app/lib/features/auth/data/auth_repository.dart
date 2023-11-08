@@ -72,6 +72,12 @@ class AuthRepository {
   Future<void> signOut() async {
     await supabase.auth.signOut();
   }
+
+  Future<String> generateJWTToken() async {
+    final jwtResponse = await supabase.functions
+        .invoke('jwt_token', responseType: ResponseType.text);
+    return (jwtResponse.data as String).replaceAll('"', '');
+  }
 }
 
 @Riverpod(keepAlive: true)

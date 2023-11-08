@@ -1,11 +1,9 @@
-import 'package:chat_app/env/environment.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:chat_app/features/video/data/video_repository.dart';
 import 'package:chat_app/utils/logger.dart';
-import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'waiting_screen_controller.g.dart';
@@ -17,16 +15,10 @@ class WaitingScreenController extends _$WaitingScreenController {
       void Function() cancelWait) async {
     logger.t('WaitingRoomState init()');
 
-    // Temporarily use a hardcoded environment token
-    // TODO: Need to generate token, since temp will expire and insecure
-    final token = ref.read(envProvider).videoSdkTokenTemp;
-
     // Create room id (with token)
+    final token = await ref.watch(authRepositoryProvider).generateJWTToken();
     final videoRoomId =
         await ref.watch(videoRepositoryProvider).getRoomId(token);
-    if (videoRoomId == null) throw ErrorDescription('Failed to get room id');
-
-    logger.i('videoRoomId: $videoRoomId');
 
     // Setting up my own handlers
     final currentProfile =
