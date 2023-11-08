@@ -14,6 +14,7 @@ class ChatMessages extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final pagingController = ref.watch(chatMessagesControllerProvider(roomId));
 
     return Column(
@@ -32,6 +33,17 @@ class ChatMessages extends ConsumerWidget {
                   profile: profiles[message.profileId],
                 );
               },
+              noItemsFoundIndicatorBuilder: (context) => SizedBox(
+                height: 100,
+                child: Center(
+                  child: Text(
+                    'Send your first message =)',
+                    style: theme.textTheme.labelLarge!.copyWith(
+                      color: theme.hintColor,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
