@@ -10,7 +10,9 @@ class ChatOnlineStatusIcon extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final onlineStates = ref.watch(onlinePresencesProvider);
+    final userStatus = ref
+        .watch(onlinePresencesProvider.notifier)
+        .getUserOnlineStatus(username);
 
     return Positioned(
       bottom: 0,
@@ -18,9 +20,9 @@ class ChatOnlineStatusIcon extends ConsumerWidget {
       child: Icon(
         Icons.circle,
         size: 10,
-        color: onlineStates[username] == null
+        color: userStatus == OnlineStatus.offline
             ? Colors.grey
-            : onlineStates[username]!.status == OnlineStatus.online
+            : userStatus == OnlineStatus.online
                 ? Colors.green
                 : Colors.red,
       ),

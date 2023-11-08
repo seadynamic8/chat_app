@@ -12,15 +12,11 @@ class ChatRoomTopBar extends ConsumerWidget implements PreferredSizeWidget {
 
   final Profile otherProfile;
 
-  OnlineStatus getUserStatus(OnlineState? onlineState) {
-    if (onlineState == null) return OnlineStatus.offline;
-    return onlineState.status;
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final onlineStates = ref.watch(onlinePresencesProvider);
-    final userStatus = getUserStatus(onlineStates[otherProfile.username]);
+    final userStatus = ref
+        .watch(onlinePresencesProvider.notifier)
+        .getUserOnlineStatus(otherProfile.username!);
 
     return AppBar(
       title: InkWell(
