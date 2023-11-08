@@ -58,15 +58,18 @@ class ChatRepository {
   }
 
   Future<List<Room>> getAllRoomsByUser(String currentUserId) async {
+    // p1 is to make sure that the current user is also in the room.
+    // p2 is the other user in the room.
     final roomsList = await supabase
         .from('rooms')
         .select<List<Map<String, dynamic>>>('''
           id,
-          profiles!inner (id, username, avatar_url),
+          p1:profiles!inner (),
+          p2:profiles!inner (id, username, avatar_url),
           messages (id, profile_id, content, translation, created_at)
         ''')
-        .neq('profiles.id', currentUserId)
-        .limit(1, foreignTable: 'profiles')
+        .eq('p1.id', currentUserId)
+        .neq('p2.id', currentUserId)
         .order('created_at', foreignTable: 'messages', ascending: false)
         .limit(1, foreignTable: 'messages');
 
