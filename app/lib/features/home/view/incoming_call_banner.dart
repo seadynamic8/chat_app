@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
-import 'package:chat_app/features/home/view/incoming_call_controller.dart';
+import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +34,7 @@ class IncomingCallBanner {
     logger.t('click accept call');
     final contextRouter = router;
 
-    ref.read(incomingCallControllerProvider.notifier).sendAcceptCall();
+    ref.read(callRequestControllerProvider.notifier).sendAcceptCall();
 
     closeIncomingCallBanner();
 
@@ -47,7 +47,7 @@ class IncomingCallBanner {
 
   void _rejectCall(String otherUsername) {
     logger.t('click reject call');
-    ref.read(incomingCallControllerProvider.notifier).sendRejectCall();
+    ref.read(callRequestControllerProvider.notifier).sendRejectCall();
 
     closeIncomingCallBanner();
   }

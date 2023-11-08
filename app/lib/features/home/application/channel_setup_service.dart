@@ -2,7 +2,7 @@ import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
-import 'package:chat_app/features/home/view/incoming_call_controller.dart';
+import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide Provider;
@@ -68,16 +68,16 @@ class ChannelSetupService {
 
     // Interesting, here, don't need to delay after subscribe to add callback handlers
 
-    final incomingCallController =
-        ref.read(incomingCallControllerProvider.notifier);
+    final callRequestController =
+        ref.read(callRequestControllerProvider.notifier);
 
     // Callee receives
-    myChannel.on('new_call', incomingCallController.onNewCall);
-    myChannel.on('cancel_call', incomingCallController.onCancelCall);
+    myChannel.on('new_call', callRequestController.onNewCall);
+    myChannel.on('cancel_call', callRequestController.onCancelCall);
 
     // Caller receives
-    myChannel.on('accept_call', incomingCallController.onAcceptCall);
-    myChannel.on('reject_call', incomingCallController.onRejectCall);
+    myChannel.on('accept_call', callRequestController.onAcceptCall);
+    myChannel.on('reject_call', callRequestController.onRejectCall);
   }
 }
 

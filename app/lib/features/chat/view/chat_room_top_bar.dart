@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/home/view/incoming_call_controller.dart';
+import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/features/video/data/video_repository.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -48,7 +48,7 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar> {
 
     // Send new call
     await ref
-        .read(incomingCallControllerProvider.notifier)
+        .read(callRequestControllerProvider.notifier)
         .sendNewCall(videoRoomId, widget.otherProfile.username!);
 
     // Go to waiting route to wait for other user to respond.

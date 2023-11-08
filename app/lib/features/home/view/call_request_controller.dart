@@ -5,10 +5,10 @@ import 'package:chat_app/features/home/domain/incoming_call_state.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'incoming_call_controller.g.dart';
+part 'call_request_controller.g.dart';
 
 @Riverpod(keepAlive: true)
-class IncomingCallController extends _$IncomingCallController {
+class CallRequestController extends _$CallRequestController {
   @override
   IncomingCallState build() {
     return IncomingCallState();

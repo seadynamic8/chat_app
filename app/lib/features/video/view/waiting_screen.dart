@@ -1,5 +1,5 @@
 import 'package:chat_app/features/home/domain/incoming_call_state.dart';
-import 'package:chat_app/features/home/view/incoming_call_controller.dart';
+import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
@@ -26,7 +26,7 @@ class _WaitingScreenState extends ConsumerState<WaitingScreen> {
 
   void _cancelCall() async {
     await ref
-        .read(incomingCallControllerProvider.notifier)
+        .read(callRequestControllerProvider.notifier)
         .sendCancelCall(widget.otherProfile.username!);
 
     _cancelWait();
@@ -34,7 +34,7 @@ class _WaitingScreenState extends ConsumerState<WaitingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<IncomingCallState>(incomingCallControllerProvider, (_, state) {
+    ref.listen<IncomingCallState>(callRequestControllerProvider, (_, state) {
       switch (state.callType) {
         case IncomingCallType.acceptCall:
           context.router

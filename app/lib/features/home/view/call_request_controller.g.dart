@@ -1,27 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'incoming_call_controller.dart';
+part of 'call_request_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$incomingCallControllerHash() =>
-    r'5dc49dd94117d830f7d58d92178ef59e09d501eb';
+String _$callRequestControllerHash() =>
+    r'0e7b02c121a1488442147ce7e478ea4fceb38022';
 
-/// See also [IncomingCallController].
-@ProviderFor(IncomingCallController)
-final incomingCallControllerProvider =
-    NotifierProvider<IncomingCallController, IncomingCallState>.internal(
-  IncomingCallController.new,
-  name: r'incomingCallControllerProvider',
+/// See also [CallRequestController].
+@ProviderFor(CallRequestController)
+final callRequestControllerProvider =
+    NotifierProvider<CallRequestController, IncomingCallState>.internal(
+  CallRequestController.new,
+  name: r'callRequestControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$incomingCallControllerHash,
+      : _$callRequestControllerHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$IncomingCallController = Notifier<IncomingCallState>;
+typedef _$CallRequestController = Notifier<IncomingCallState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
