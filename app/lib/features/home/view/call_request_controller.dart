@@ -88,18 +88,6 @@ class CallRequestController extends _$CallRequestController {
         'fromUsername': currentProfile.username,
       },
     );
-
-    // Add a little delay and send again just to make sure the other user
-    // receives it.
-    await Future.delayed(const Duration(milliseconds: 300));
-
-    await _sendMessageToOtherUser(
-      channelName: channelName,
-      event: 'cancel_call',
-      payload: {
-        'fromUsername': currentProfile.username,
-      },
-    );
   }
 
   // From Callee
