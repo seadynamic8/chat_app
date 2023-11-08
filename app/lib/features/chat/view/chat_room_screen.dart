@@ -1,6 +1,7 @@
 import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/view/chat_messages.dart';
+import 'package:chat_app/features/chat/view/chat_online_status_icon.dart';
 import 'package:chat_app/features/chat/view/new_message.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,11 +32,17 @@ class ChatRoomScreen extends ConsumerWidget {
             appBar: AppBar(
               title: Row(
                 children: [
-                  CircleAvatar(
-                    backgroundImage: AssetImage(
-                        profiles[otherProfileId]!.avatarUrl ??
-                            'assets/images/user_default_image.png'),
-                    radius: 15,
+                  Stack(
+                    children: [
+                      CircleAvatar(
+                        backgroundImage: AssetImage(
+                            profiles[otherProfileId]!.avatarUrl ??
+                                'assets/images/user_default_image.png'),
+                        radius: 15,
+                      ),
+                      ChatOnlineStatusIcon(
+                          username: profiles[otherProfileId]!.username!)
+                    ],
                   ),
                   const SizedBox(width: 15),
                   Text(profiles[otherProfileId]!.username ?? 'Chat Room'),
