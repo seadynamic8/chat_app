@@ -1,6 +1,7 @@
 import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/view/profile/public_profile_controller.dart';
+import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
@@ -32,60 +33,84 @@ class PublicProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final profileValue = ref.watch(getProfileProvider(profileId));
 
     return I18n(
       child: Scaffold(
         body: AsyncValueWidget(
-          value: profileValue,
-          data: (profile) => ListView(
-            children: [
-              Stack(
+            value: profileValue,
+            data: (profile) {
+              final userStatus = ref
+                  .watch(onlinePresencesProvider.notifier)
+                  .getUserOnlineStatus(profile.username!);
+
+              return ListView(
                 children: [
-                  Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.black26,
-                    ),
-                    width: double.infinity,
-                    height: 400,
-                    child: Padding(
-                      padding: const EdgeInsets.all(70.0),
-                      child: Image.asset(
-                        profile.avatarUrl ??
-                            'assets/images/user_default_image.png',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    left: 5,
-                    top: 10,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () {
-                        context.router.pop();
-                      },
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 40,
-                    left: 40,
-                    child: Text(
-                      profile.username ?? '',
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            fontSize: 20,
+                  Stack(
+                    children: [
+                      // Main User Image
+                      Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.black26,
+                        ),
+                        width: double.infinity,
+                        height: 400,
+                        child: Padding(
+                          padding: const EdgeInsets.all(70.0),
+                          child: Image.asset(
+                            profile.avatarUrl ??
+                                'assets/images/user_default_image.png',
+                            fit: BoxFit.cover,
                           ),
-                    ),
+                        ),
+                      ),
+                      // Back Button
+                      Positioned(
+                        left: 5,
+                        top: 10,
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () {
+                            context.router.pop();
+                          },
+                        ),
+                      ),
+                      // Username (and online status)
+                      Positioned(
+                        bottom: 25,
+                        left: 40,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              profile.username ?? '',
+                              style: theme.textTheme.bodyLarge!.copyWith(
+                                fontSize: 20,
+                              ),
+                            ),
+                            const SizedBox(width: 15),
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: userStatus.color,
+                              ),
+                              padding: const EdgeInsets.all(6),
+                              child: Text(userStatus.name,
+                                  style: theme.textTheme.labelMedium),
+                            )
+                          ],
+                        ),
+                      ),
+                      // TODO: Follow button
+                    ],
                   ),
-                  // TODO: Follow button
+                  // TODO: Age, Gender, Location
+                  // TODO: How many follows
+                  // TODO: Posts (or Moments)
                 ],
-              ),
-              // TODO: Age, Gender, Location
-              // TODO: How many follows
-              // TODO: Posts (or Moments)
-            ],
-          ),
-        ),
+              );
+            }),
         floatingActionButton: isCurrentUser(ref)
             ? null
             : Row(

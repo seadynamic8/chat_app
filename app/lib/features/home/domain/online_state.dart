@@ -1,5 +1,14 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-enum OnlineStatus { online, busy, offline }
+import 'package:flutter/material.dart';
+
+enum OnlineStatus {
+  online(color: Colors.green),
+  busy(color: Colors.red),
+  offline(color: Colors.grey);
+
+  const OnlineStatus({required this.color});
+
+  final MaterialColor color;
+}
 
 class OnlineState {
   OnlineState({
