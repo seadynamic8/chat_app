@@ -7,8 +7,8 @@ import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class IncomingCallBanner {
-  IncomingCallBanner({
+class CallRequestBanner {
+  CallRequestBanner({
     required this.sMessenger,
     required this.ref,
     required this.router,
@@ -18,15 +18,15 @@ class IncomingCallBanner {
   final WidgetRef ref;
   final StackRouter router;
 
-  void showIncomingCallBanner(String otherUsername, String videoRoomId) {
-    logger.t('show incoming call banner');
+  void showCallRequestBanner(String otherUsername, String videoRoomId) {
+    logger.t('show call request banner');
     sMessenger.clearMaterialBanners();
     sMessenger
-        .showMaterialBanner(_incomingCallBanner(otherUsername, videoRoomId));
+        .showMaterialBanner(_callRequestBanner(otherUsername, videoRoomId));
   }
 
-  void closeIncomingCallBanner() {
-    logger.t('close incoming call banner');
+  void closeCallRequestBanner() {
+    logger.t('close call request banner');
     sMessenger.hideCurrentMaterialBanner();
   }
 
@@ -36,7 +36,7 @@ class IncomingCallBanner {
 
     ref.read(callRequestControllerProvider.notifier).sendAcceptCall();
 
-    closeIncomingCallBanner();
+    closeCallRequestBanner();
 
     await ref
         .read(onlinePresencesProvider.notifier)
@@ -49,10 +49,10 @@ class IncomingCallBanner {
     logger.t('click reject call');
     ref.read(callRequestControllerProvider.notifier).sendRejectCall();
 
-    closeIncomingCallBanner();
+    closeCallRequestBanner();
   }
 
-  MaterialBanner _incomingCallBanner(String otherUsername, String videoRoomId) {
+  MaterialBanner _callRequestBanner(String otherUsername, String videoRoomId) {
     return MaterialBanner(
       leading: const Icon(Icons.info_outline),
       content: Text('Incoming Call from: $otherUsername'),

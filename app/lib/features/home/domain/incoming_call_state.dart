@@ -1,4 +1,4 @@
-enum IncomingCallType {
+enum CallRequestType {
   waiting,
   // Callee receive
   newCall,
@@ -8,14 +8,14 @@ enum IncomingCallType {
   rejectCall,
 }
 
-class IncomingCallState {
-  IncomingCallState({
+class CallRequestState {
+  CallRequestState({
     this.otherUsername,
     this.videoRoomId,
-    this.callType = IncomingCallType.waiting,
+    this.callType = CallRequestType.waiting,
   });
 
   final String? otherUsername;
   final String? videoRoomId;
-  IncomingCallType callType;
+  CallRequestType callType;
 }

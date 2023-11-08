@@ -10,12 +10,12 @@ part 'call_request_controller.g.dart';
 @Riverpod(keepAlive: true)
 class CallRequestController extends _$CallRequestController {
   @override
-  IncomingCallState build() {
-    return IncomingCallState();
+  CallRequestState build() {
+    return CallRequestState();
   }
 
   void resetToWaiting() {
-    state = IncomingCallState(callType: IncomingCallType.waiting);
+    state = CallRequestState(callType: CallRequestType.waiting);
   }
 
   // * Incoming Messages
@@ -32,15 +32,15 @@ class CallRequestController extends _$CallRequestController {
       return;
     }
 
-    state = IncomingCallState(
-      callType: IncomingCallType.newCall,
+    state = CallRequestState(
+      callType: CallRequestType.newCall,
       otherUsername: payload['fromUsername'],
       videoRoomId: payload['videoRoomId'],
     );
   }
 
   void onCancelCall(Map<String, dynamic> payload) {
-    state = IncomingCallState(callType: IncomingCallType.cancelCall);
+    state = CallRequestState(callType: CallRequestType.cancelCall);
   }
 
   // Caller receive
@@ -50,14 +50,14 @@ class CallRequestController extends _$CallRequestController {
       logger.w('Invalid accept_call message!');
       return;
     }
-    state = IncomingCallState(
-      callType: IncomingCallType.acceptCall,
+    state = CallRequestState(
+      callType: CallRequestType.acceptCall,
       videoRoomId: payload['videoRoomId'],
     );
   }
 
   void onRejectCall(Map<String, dynamic> payload) async {
-    state = IncomingCallState(callType: IncomingCallType.rejectCall);
+    state = CallRequestState(callType: CallRequestType.rejectCall);
   }
 
   // * Outgoing Messages

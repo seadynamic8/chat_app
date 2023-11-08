@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/home/domain/incoming_call_state.dart';
-import 'package:chat_app/features/home/view/incoming_call_banner.dart';
+import 'package:chat_app/features/home/view/call_request_banner.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
@@ -18,19 +18,19 @@ class TabsNavigation extends ConsumerWidget {
     // This incoming call code was put in the tabs navigation, since it is the
     // first place a user visits after login and is a view with a scaffold.
     // A scaffold is necessary for material banner, which shows on all scaffolds.
-    final icbanner = IncomingCallBanner(
+    final cqbanner = CallRequestBanner(
       ref: ref,
       router: context.router,
       sMessenger: ScaffoldMessenger.of(context),
     );
-    ref.listen<IncomingCallState>(callRequestControllerProvider, (prev, state) {
+    ref.listen<CallRequestState>(callRequestControllerProvider, (prev, state) {
       switch (state.callType) {
-        case IncomingCallType.newCall:
-          icbanner.showIncomingCallBanner(
+        case CallRequestType.newCall:
+          cqbanner.showCallRequestBanner(
               state.otherUsername!, state.videoRoomId!);
           break;
-        case IncomingCallType.cancelCall:
-          icbanner.closeIncomingCallBanner();
+        case CallRequestType.cancelCall:
+          cqbanner.closeCallRequestBanner();
           ref.read(callRequestControllerProvider.notifier).resetToWaiting();
           break;
         default:

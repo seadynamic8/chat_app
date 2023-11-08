@@ -34,12 +34,12 @@ class _WaitingScreenState extends ConsumerState<WaitingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<IncomingCallState>(callRequestControllerProvider, (_, state) {
+    ref.listen<CallRequestState>(callRequestControllerProvider, (_, state) {
       switch (state.callType) {
-        case IncomingCallType.acceptCall:
+        case CallRequestType.acceptCall:
           context.router
               .replace(VideoRoomRoute(videoRoomId: widget.videoRoomId));
-        case IncomingCallType.rejectCall:
+        case CallRequestType.rejectCall:
           _cancelWait();
         default:
       }
