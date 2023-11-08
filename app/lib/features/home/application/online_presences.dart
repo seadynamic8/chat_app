@@ -14,7 +14,7 @@ class OnlinePresences extends _$OnlinePresences {
     return {};
   }
 
-  void updatePresences(List<OnlineState> onlineStates) {
+  void updateAllPresences(List<OnlineState> onlineStates) {
     final Map<String, OnlineState> newState = {};
     for (final onlineState in onlineStates) {
       newState[onlineState.profileId] = onlineState;
