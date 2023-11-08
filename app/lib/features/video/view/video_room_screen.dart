@@ -1,4 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:chat_app/features/home/application/online_presences.dart';
+import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/features/video/view/local_tile.dart';
 import 'package:chat_app/features/video/view/remote_tile.dart';
 import 'package:chat_app/features/video/view/video_controls.dart';
@@ -14,11 +16,19 @@ class VideoRoomScreen extends ConsumerWidget {
 
   final String videoRoomId;
 
-  void _endCall(BuildContext context) {
+  void _endCall(BuildContext context, WidgetRef ref) async {
     logger.i('ending call, leaving room');
+
+    final router = context.router;
     // ref.read(videoRoomProvider.notifier).leaveRoom();
-    Navigator.pop(context);
-    context.router.pop();
+
+    await ref
+        .read(onlinePresencesProvider.notifier)
+        .updateCurrentUserPresence(OnlineStatus.online);
+
+    // If was in chat room, go back to chat room (and not waiting room)
+    // If was somewhere else, go back there? or root?
+    router.pop();
   }
 
   @override
@@ -41,7 +51,7 @@ class VideoRoomScreen extends ConsumerWidget {
                 top: 10,
                 left: 15,
                 child: IconButton(
-                  onPressed: () => _endCall(context),
+                  onPressed: () => _endCall(context, ref),
                   color: Colors.white.withAlpha(200),
                   icon: const Icon(Icons.arrow_back),
                 ),
@@ -51,7 +61,7 @@ class VideoRoomScreen extends ConsumerWidget {
                 top: 50,
                 left: 15,
                 child: VideoControls(
-                  onEndCall: () => _endCall(context),
+                  onEndCall: () => _endCall(context, ref),
                   // onToggleMic: ref.read(videoRoomProvider.notifier).toggleMic,
                   onToggleMic: () {},
                   // TODO : check that other side is disabled too when off

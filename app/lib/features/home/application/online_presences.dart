@@ -1,4 +1,5 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -20,6 +21,13 @@ class OnlinePresences extends _$OnlinePresences {
       newState[onlineState.profileId] = onlineState;
     }
     state = newState;
+  }
+
+  Future<void> updateCurrentUserPresence(OnlineStatus onlineStatus) async {
+    final lobbyChannel =
+        await ref.read(lobbySubscribedChannelProvider(lobbyChannelName).future);
+    final currentUserName = ref.read(authRepositoryProvider).currentUserName!;
+    await lobbyChannel.udpatePresence(currentUserName, onlineStatus);
   }
 }
 

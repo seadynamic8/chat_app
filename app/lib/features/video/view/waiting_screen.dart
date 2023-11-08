@@ -1,3 +1,5 @@
+import 'package:chat_app/features/home/application/online_presences.dart';
+import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
@@ -17,8 +19,14 @@ class WaitingScreen extends ConsumerStatefulWidget {
 }
 
 class _WaitingScreenState extends ConsumerState<WaitingScreen> {
-  void initiateCall(String videoRoomId) {
-    context.router.push(VideoRoomRoute(videoRoomId: videoRoomId));
+  void initiateCall(String videoRoomId) async {
+    final router = context.router;
+
+    await ref
+        .read(onlinePresencesProvider.notifier)
+        .updateCurrentUserPresence(OnlineStatus.busy);
+
+    router.push(VideoRoomRoute(videoRoomId: videoRoomId));
   }
 
   void cancelWait() {

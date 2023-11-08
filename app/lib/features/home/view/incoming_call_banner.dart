@@ -1,4 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:chat_app/features/home/application/online_presences.dart';
+import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/features/home/view/incoming_call_controller.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/logger.dart';
@@ -35,6 +37,10 @@ class IncomingCallBanner {
     ref.read(incomingCallControllerProvider.notifier).sendAcceptCall();
 
     closeIncomingCallBanner();
+
+    await ref
+        .read(onlinePresencesProvider.notifier)
+        .updateCurrentUserPresence(OnlineStatus.busy);
 
     contextRouter.push(VideoRoomRoute(videoRoomId: videoRoomId));
   }
