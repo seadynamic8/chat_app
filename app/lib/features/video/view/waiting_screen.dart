@@ -26,7 +26,7 @@ class _WaitingScreenState extends ConsumerState<WaitingScreen> {
         .read(onlinePresencesProvider.notifier)
         .updateCurrentUserPresence(OnlineStatus.busy);
 
-    router.push(VideoRoomRoute(videoRoomId: videoRoomId));
+    router.replace(VideoRoomRoute(videoRoomId: videoRoomId));
   }
 
   void cancelWait() {
