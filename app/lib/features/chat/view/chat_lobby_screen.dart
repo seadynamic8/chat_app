@@ -67,6 +67,7 @@ class ChatLobbyScreen extends ConsumerWidget {
                         .textTheme
                         .labelMedium!
                         .copyWith(color: Theme.of(context).hintColor),
+                    overflow: TextOverflow.fade,
                   ),
                   trailing: Text(room.newestMessage != null
                       ? timeago.format(room.newestMessage!.createdAt!)
