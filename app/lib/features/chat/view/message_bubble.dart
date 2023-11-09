@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
+import 'package:chat_app/features/chat/view/message_bubble_content.dart';
+import 'package:chat_app/features/chat/view/message_bubble_translation.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
@@ -12,19 +14,16 @@ class MessageBubble extends ConsumerWidget {
   final Message message;
   final Profile? profile;
 
-  bool isCurrentUser(WidgetRef ref) {
-    final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
-    return message.profileId == currentUserId;
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeContext = Theme.of(context);
+    final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
+    final isCurrentUser = message.profileId == currentUserId;
 
     return Stack(
       children: [
         Positioned(
-          right: isCurrentUser(ref) ? 0 : null,
+          right: isCurrentUser ? 0 : null,
           child: InkWell(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -41,22 +40,20 @@ class MessageBubble extends ConsumerWidget {
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 46),
           child: Row(
-            mainAxisAlignment: isCurrentUser(ref)
-                ? MainAxisAlignment.end
-                : MainAxisAlignment.start,
+            mainAxisAlignment:
+                isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: isCurrentUser(ref)
+                  color: isCurrentUser
                       ? Colors.grey[700]
                       : themeContext.colorScheme.secondary,
                   borderRadius: BorderRadius.only(
-                    topLeft: !isCurrentUser(ref)
+                    topLeft: !isCurrentUser
                         ? Radius.zero
                         : const Radius.circular(12),
-                    topRight: isCurrentUser(ref)
-                        ? Radius.zero
-                        : const Radius.circular(12),
+                    topRight:
+                        isCurrentUser ? Radius.zero : const Radius.circular(12),
                     bottomLeft: const Radius.circular(12),
                     bottomRight: const Radius.circular(12),
                   ),
@@ -65,53 +62,19 @@ class MessageBubble extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 4),
                 margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                 child: Column(
-                  crossAxisAlignment: isCurrentUser(ref)
+                  crossAxisAlignment: isCurrentUser
                       ? CrossAxisAlignment.end
                       : CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 2, horizontal: 4),
-                      child: Text(
-                        message.content,
-                        style: TextStyle(
-                          height: 1.3,
-                          color: isCurrentUser(ref)
-                              ? themeContext.colorScheme.onBackground
-                                  .withAlpha(200)
-                              : themeContext.colorScheme.onSecondary,
-                        ),
-                        softWrap: true,
-                      ),
+                    MessageBubbleContent(
+                      content: message.content,
+                      isCurrentUser: isCurrentUser,
                     ),
-                    if (message.translation != null && !isCurrentUser(ref))
-                      Container(
-                        decoration: BoxDecoration(
-                          color: isCurrentUser(ref)
-                              ? Colors.grey.withAlpha(200)
-                              : themeContext.colorScheme.background
-                                  .withAlpha(100),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.zero,
-                            topRight: Radius.zero,
-                            bottomLeft: Radius.circular(9),
-                            bottomRight: Radius.circular(9),
-                          ),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 4),
-                        child: Text(
-                          message.translation!,
-                          style: TextStyle(
-                            height: 1.3,
-                            color: isCurrentUser(ref)
-                                ? Colors.black87
-                                : themeContext.colorScheme.onBackground
-                                    .withAlpha(200),
-                          ),
-                          softWrap: true,
-                        ),
-                      ),
+                    if (message.translation != null && !isCurrentUser)
+                      MessageBubbleTranslation(
+                        translation: message.translation!,
+                        isCurrentUser: isCurrentUser,
+                      )
                   ],
                 ),
               ),
