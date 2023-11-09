@@ -41,6 +41,8 @@ class VideoRoomScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen<CallRequestState>(callRequestControllerProvider, (_, state) {
       if (state.callType == CallRequestType.endCall) {
+        ref.read(callRequestControllerProvider.notifier).resetToWaiting();
+
         _leaveVideoRoom(context);
       }
     });

@@ -27,7 +27,6 @@ class CallRequestController extends _$CallRequestController {
   // Callee receive
 
   void onNewCall(Map<String, dynamic> payload) {
-    // TODO: maybe handle in the view?
     if (!payload.containsKey('fromUserId') ||
         !payload.containsKey('fromUsername') ||
         !payload.containsKey('videoRoomId') ||
@@ -38,7 +37,7 @@ class CallRequestController extends _$CallRequestController {
       return;
     }
 
-    state = CallRequestState(
+    state = state.copyWith(
       callType: CallRequestType.newCall,
       otherUserId: payload['fromUserId'],
       otherUsername: payload['fromUsername'],
@@ -57,13 +56,16 @@ class CallRequestController extends _$CallRequestController {
       logger.w('Invalid accept_call message!');
       return;
     }
-    state = CallRequestState(
-      callType: CallRequestType.acceptCall,
-      videoRoomId: payload['videoRoomId'],
-    );
+
+    if (!isCorrectUserOrRoom(payload)) return;
+
+    state = state.copyWith(callType: CallRequestType.acceptCall);
   }
 
   void onRejectCall(Map<String, dynamic> payload) async {
+    // Won't check correct user or room here, because for some reason
+    // after the accept call, the state gets wiped away.
+
     await ref
         .read(onlinePresencesProvider.notifier)
         .updateCurrentUserPresence(OnlineStatus.online);
@@ -71,7 +73,12 @@ class CallRequestController extends _$CallRequestController {
     state = CallRequestState(callType: CallRequestType.rejectCall);
   }
 
+  // Receive From Call Ender
+
   void onEndCall(Map<String, dynamic> payload) async {
+    // Won't check correct user or room here, because for some reason
+    // after the send accept call, the state gets wiped away.
+
     await ref
         .read(onlinePresencesProvider.notifier)
         .updateCurrentUserPresence(OnlineStatus.online);
@@ -81,7 +88,7 @@ class CallRequestController extends _$CallRequestController {
 
   // * Outgoing Messages
 
-  // From Caller
+  // Caller Send
 
   Future<void> sendNewCall(String videoRoomId, Profile otherProfile) async {
     createChatMessageForVideoStatus(VideoStatus.started, otherProfile.id);
@@ -97,38 +104,46 @@ class CallRequestController extends _$CallRequestController {
         'videoRoomId': videoRoomId,
       },
     );
+
+    state = state.copyWith(
+      otherUserId: otherProfile.id,
+      otherUsername: otherProfile.username,
+      videoRoomId: videoRoomId,
+    );
   }
 
-  Future<void> sendCancelCall(Profile otherProfile) async {
+  Future<void> sendCancelCall() async {
     await ref
         .read(onlinePresencesProvider.notifier)
         .updateCurrentUserPresence(OnlineStatus.online);
 
-    createChatMessageForVideoStatus(VideoStatus.cancelled, otherProfile.id);
+    createChatMessageForVideoStatus(VideoStatus.cancelled, state.otherUserId!);
 
     final currentProfile =
         await ref.watch(authRepositoryProvider).currentProfile;
     await _sendMessageToOtherUser(
-      channelName: otherProfile.username!,
+      channelName: state.otherUsername!,
       event: 'cancel_call',
       payload: {
         'fromUsername': currentProfile.username,
       },
     );
+    resetToWaiting();
   }
 
-  // From Callee
+  // Callee Send
 
-  void sendAcceptCall() async {
+  Future<void> sendAcceptCall() async {
     await _sendMessageToOtherUser(
       channelName: state.otherUsername!,
       event: 'accept_call',
       payload: {'videoRoomId': state.videoRoomId!},
     );
-    resetToWaiting();
   }
 
   void sendRejectCall() async {
+    // Don't need to set online status, since it never changed.
+
     // This chat message needs to be done before the send message or else the
     // state gets cleared for some reason?
     createChatMessageForVideoStatus(VideoStatus.rejected, state.otherUserId!);
@@ -139,7 +154,7 @@ class CallRequestController extends _$CallRequestController {
     resetToWaiting();
   }
 
-  // From Call Ender
+  // Call Ender Send
 
   void sendEndCall(String videoRoomId, Profile otherProfile) async {
     await ref
@@ -155,17 +170,17 @@ class CallRequestController extends _$CallRequestController {
       event: 'end_call',
       payload: {'videoRoomId': videoRoomId},
     );
+    resetToWaiting();
   }
+
+  // * Private Methods
 
   Future<void> _sendMessageToOtherUser({
     required String channelName,
     required String event,
     Map<String, dynamic>? payload,
   }) async {
-    final otherUserChannel = ref.watch(channelRepositoryProvider(channelName));
-    await otherUserChannel.subscribed();
-
-    await Future.delayed(const Duration(milliseconds: 1000));
+    final otherUserChannel = await _getOtherUserChannel(channelName);
 
     otherUserChannel.send(event, payload: payload);
 
@@ -173,6 +188,15 @@ class CallRequestController extends _$CallRequestController {
     // For some reason, even if we do this, channel repository comes back
     // Maybe because of keep alive, but what's invalidate for then?
     ref.invalidate(channelRepositoryProvider(channelName));
+  }
+
+  Future<ChannelRepository> _getOtherUserChannel(String channelName) async {
+    final otherUserChannel = ref.watch(channelRepositoryProvider(channelName));
+    await otherUserChannel.subscribed();
+
+    await Future.delayed(const Duration(milliseconds: 1000));
+
+    return otherUserChannel;
   }
 
   Future<void> createChatMessageForVideoStatus(
@@ -190,5 +214,9 @@ class CallRequestController extends _$CallRequestController {
           roomId: chatRoom!.id,
           currentProfileId: currentProfile.id,
         );
+  }
+
+  bool isCorrectUserOrRoom(Map<String, dynamic> payload) {
+    return payload['videoRoomId'] == state.videoRoomId;
   }
 }

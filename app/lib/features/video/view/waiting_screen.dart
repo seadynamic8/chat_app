@@ -9,10 +9,8 @@ import 'package:i18n_extension/i18n_widget.dart';
 
 @RoutePage()
 class WaitingScreen extends ConsumerStatefulWidget {
-  const WaitingScreen(
-      {super.key, required this.videoRoomId, required this.otherProfile});
+  const WaitingScreen({super.key, required this.otherProfile});
 
-  final String videoRoomId;
   final Profile otherProfile;
 
   @override
@@ -25,10 +23,7 @@ class _WaitingScreenState extends ConsumerState<WaitingScreen> {
   }
 
   void _cancelCall() async {
-    await ref
-        .read(callRequestControllerProvider.notifier)
-        .sendCancelCall(widget.otherProfile);
-
+    await ref.read(callRequestControllerProvider.notifier).sendCancelCall();
     _cancelWait();
   }
 
@@ -37,11 +32,13 @@ class _WaitingScreenState extends ConsumerState<WaitingScreen> {
     ref.listen<CallRequestState>(callRequestControllerProvider, (_, state) {
       switch (state.callType) {
         case CallRequestType.acceptCall:
+          // Use 'replace' here so that users wont' return here after the call.
           context.router.replace(VideoRoomRoute(
-            videoRoomId: widget.videoRoomId,
+            videoRoomId: state.videoRoomId!,
             otherProfile: widget.otherProfile,
           ));
         case CallRequestType.rejectCall:
+          ref.read(callRequestControllerProvider.notifier).resetToWaiting();
           _cancelWait();
         default:
       }

@@ -63,10 +63,7 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
         .sendNewCall(videoRoomId, widget.otherProfile);
 
     // Go to waiting route to wait for other user to respond.
-    router.push(WaitingRoute(
-      videoRoomId: videoRoomId,
-      otherProfile: widget.otherProfile,
-    ));
+    router.push(WaitingRoute(otherProfile: widget.otherProfile));
   }
 
   @override
