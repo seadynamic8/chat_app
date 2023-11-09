@@ -18,11 +18,10 @@ class CallRequestBanner {
   final WidgetRef ref;
   final StackRouter router;
 
-  void showCallRequestBanner(String otherUsername, String videoRoomId) {
+  void showCallRequestBanner() {
     logger.t('show call request banner');
     sMessenger.clearMaterialBanners();
-    sMessenger
-        .showMaterialBanner(_callRequestBanner(otherUsername, videoRoomId));
+    sMessenger.showMaterialBanner(_callRequestBanner());
   }
 
   void closeCallRequestBanner() {
@@ -30,7 +29,7 @@ class CallRequestBanner {
     sMessenger.hideCurrentMaterialBanner();
   }
 
-  void _acceptCall(String otherUsername, String videoRoomId) async {
+  void _acceptCall(String videoRoomId) async {
     logger.t('click accept call');
     final contextRouter = router;
 
@@ -45,14 +44,18 @@ class CallRequestBanner {
     contextRouter.push(VideoRoomRoute(videoRoomId: videoRoomId));
   }
 
-  void _rejectCall(String otherUsername) {
+  void _rejectCall() {
     logger.t('click reject call');
     ref.read(callRequestControllerProvider.notifier).sendRejectCall();
 
     closeCallRequestBanner();
   }
 
-  MaterialBanner _callRequestBanner(String otherUsername, String videoRoomId) {
+  MaterialBanner _callRequestBanner() {
+    final otherUsername =
+        ref.watch(callRequestControllerProvider).otherUsername;
+    final videoRoomId = ref.watch(callRequestControllerProvider).videoRoomId!;
+
     return MaterialBanner(
       leading: const Icon(Icons.info_outline),
       content: Text('Incoming Call from: $otherUsername'),
@@ -64,7 +67,7 @@ class CallRequestBanner {
             Icons.call,
             color: Colors.green,
           ),
-          onPressed: () => _acceptCall(otherUsername, videoRoomId),
+          onPressed: () => _acceptCall(videoRoomId),
         ),
         const SizedBox(width: 10),
         IconButton(
@@ -72,7 +75,7 @@ class CallRequestBanner {
             Icons.call_end,
             color: Colors.red,
           ),
-          onPressed: () => _rejectCall(otherUsername),
+          onPressed: () => _rejectCall(),
         ),
       ],
     );

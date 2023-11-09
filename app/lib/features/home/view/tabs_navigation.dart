@@ -26,8 +26,7 @@ class TabsNavigation extends ConsumerWidget {
     ref.listen<CallRequestState>(callRequestControllerProvider, (prev, state) {
       switch (state.callType) {
         case CallRequestType.newCall:
-          cqbanner.showCallRequestBanner(
-              state.otherUsername!, state.videoRoomId!);
+          cqbanner.showCallRequestBanner();
           break;
         case CallRequestType.cancelCall:
           cqbanner.closeCallRequestBanner();
