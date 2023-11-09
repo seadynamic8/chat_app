@@ -10,11 +10,11 @@ import 'dart:convert';
 class Profile {
   const Profile({
     required this.id,
-    required this.email,
-    required this.username,
-    required this.avatarUrl,
-    required this.bio,
-    required this.birthdate,
+    this.email,
+    this.username,
+    this.avatarUrl,
+    this.bio,
+    this.birthdate,
   });
 
   final String id;

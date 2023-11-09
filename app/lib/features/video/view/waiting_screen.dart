@@ -27,7 +27,7 @@ class _WaitingScreenState extends ConsumerState<WaitingScreen> {
   void _cancelCall() async {
     await ref
         .read(callRequestControllerProvider.notifier)
-        .sendCancelCall(widget.otherProfile.username!);
+        .sendCancelCall(widget.otherProfile);
 
     _cancelWait();
   }
@@ -37,8 +37,10 @@ class _WaitingScreenState extends ConsumerState<WaitingScreen> {
     ref.listen<CallRequestState>(callRequestControllerProvider, (_, state) {
       switch (state.callType) {
         case CallRequestType.acceptCall:
-          context.router
-              .replace(VideoRoomRoute(videoRoomId: widget.videoRoomId));
+          context.router.replace(VideoRoomRoute(
+            videoRoomId: widget.videoRoomId,
+            otherProfile: widget.otherProfile,
+          ));
         case CallRequestType.rejectCall:
           _cancelWait();
         default:

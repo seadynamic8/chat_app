@@ -60,11 +60,13 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
     // Send new call
     await ref
         .read(callRequestControllerProvider.notifier)
-        .sendNewCall(videoRoomId, widget.otherProfile.username!);
+        .sendNewCall(videoRoomId, widget.otherProfile);
 
     // Go to waiting route to wait for other user to respond.
     router.push(WaitingRoute(
-        videoRoomId: videoRoomId, otherProfile: widget.otherProfile));
+      videoRoomId: videoRoomId,
+      otherProfile: widget.otherProfile,
+    ));
   }
 
   @override

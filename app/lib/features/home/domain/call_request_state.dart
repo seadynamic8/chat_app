@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 enum CallRequestType {
   waiting,
   // Callee receive
@@ -6,16 +7,24 @@ enum CallRequestType {
   // Caller receive
   acceptCall,
   rejectCall,
+  // Call end
+  endCall
 }
 
 class CallRequestState {
   CallRequestState({
+    this.otherUserId,
     this.otherUsername,
     this.videoRoomId,
     this.callType = CallRequestType.waiting,
   });
 
+  final String? otherUserId;
   final String? otherUsername;
   final String? videoRoomId;
   CallRequestType callType;
+
+  @override
+  String toString() =>
+      'CallRequestState(otherUserId: $otherUserId, otherUsername: $otherUsername, videoRoomId: $videoRoomId, callType: ${callType.name})';
 }

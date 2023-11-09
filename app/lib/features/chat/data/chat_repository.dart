@@ -8,6 +8,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chat_repository.g.dart';
 
+enum VideoStatus { started, cancelled, rejected, ended }
+
 class ChatRepository {
   ChatRepository({required this.supabase});
 
@@ -94,6 +96,7 @@ class ChatRepository {
         .from('messages')
         .select<List<Map<String, dynamic>>>('''
           id,
+          type,
           content,
           profile_id,
           translation
@@ -125,6 +128,21 @@ class ChatRepository {
     await supabase
         .from('messages')
         .update({'translation': translation}).eq('id', messageId);
+  }
+
+  // * Video Status (Stored as a Chat Message)
+
+  Future<void> updateVideoStatus({
+    required VideoStatus status,
+    required String roomId,
+    required String currentProfileId,
+  }) async {
+    await supabase.from('messages').insert({
+      'type': 'video',
+      'content': status.name,
+      'room_id': roomId,
+      'profile_id': currentProfileId
+    });
   }
 }
 

@@ -78,6 +78,9 @@ class ChannelSetupService {
     // Caller receives
     myChannel.on('accept_call', callRequestController.onAcceptCall);
     myChannel.on('reject_call', callRequestController.onRejectCall);
+
+    // Call ended
+    myChannel.on('end_call', callRequestController.onEndCall);
   }
 }
 

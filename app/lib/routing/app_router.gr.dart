@@ -139,6 +139,7 @@ abstract class $AppRouter extends _i16.RootStackRouter {
         child: _i14.VideoRoomScreen(
           key: args.key,
           videoRoomId: args.videoRoomId,
+          otherProfile: args.otherProfile,
         ),
       );
     },
@@ -428,12 +429,14 @@ class VideoRoomRoute extends _i16.PageRouteInfo<VideoRoomRouteArgs> {
   VideoRoomRoute({
     _i17.Key? key,
     required String videoRoomId,
+    required _i19.Profile otherProfile,
     List<_i16.PageRouteInfo>? children,
   }) : super(
           VideoRoomRoute.name,
           args: VideoRoomRouteArgs(
             key: key,
             videoRoomId: videoRoomId,
+            otherProfile: otherProfile,
           ),
           initialChildren: children,
         );
@@ -448,15 +451,18 @@ class VideoRoomRouteArgs {
   const VideoRoomRouteArgs({
     this.key,
     required this.videoRoomId,
+    required this.otherProfile,
   });
 
   final _i17.Key? key;
 
   final String videoRoomId;
 
+  final _i19.Profile otherProfile;
+
   @override
   String toString() {
-    return 'VideoRoomRouteArgs{key: $key, videoRoomId: $videoRoomId}';
+    return 'VideoRoomRouteArgs{key: $key, videoRoomId: $videoRoomId, otherProfile: $otherProfile}';
   }
 }
 

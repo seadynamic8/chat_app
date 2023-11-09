@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:chat_app/features/home/application/online_presences.dart';
-import 'package:chat_app/features/home/domain/online_state.dart';
+import 'package:chat_app/features/auth/domain/profile.dart';
+import 'package:chat_app/features/home/domain/call_request_state.dart';
+import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/features/video/view/local_tile.dart';
 import 'package:chat_app/features/video/view/remote_tile.dart';
 import 'package:chat_app/features/video/view/video_controls.dart';
@@ -12,27 +13,38 @@ import 'package:videosdk/videosdk.dart';
 
 @RoutePage()
 class VideoRoomScreen extends ConsumerWidget {
-  const VideoRoomScreen({super.key, required this.videoRoomId});
+  const VideoRoomScreen({
+    super.key,
+    required this.videoRoomId,
+    required this.otherProfile,
+  });
 
   final String videoRoomId;
+  final Profile otherProfile;
+
+  void _leaveVideoRoom(BuildContext context) {
+    logger.i('leaving video room');
+    context.router.pop();
+  }
 
   void _endCall(BuildContext context, WidgetRef ref) async {
-    logger.i('ending call, leaving room');
+    logger.i('click end video call');
 
-    final router = context.router;
-    // ref.read(videoRoomProvider.notifier).leaveRoom();
+    ref
+        .read(callRequestControllerProvider.notifier)
+        .sendEndCall(videoRoomId, otherProfile);
 
-    await ref
-        .read(onlinePresencesProvider.notifier)
-        .updateCurrentUserPresence(OnlineStatus.online);
-
-    // If was in chat room, go back to chat room (and not waiting room)
-    // If was somewhere else, go back there? or root?
-    router.pop();
+    _leaveVideoRoom(context);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen<CallRequestState>(callRequestControllerProvider, (_, state) {
+      if (state.callType == CallRequestType.endCall) {
+        _leaveVideoRoom(context);
+      }
+    });
+
     const AsyncValue state = AsyncData(null);
     const List<Participant> remoteParticipants = [];
 

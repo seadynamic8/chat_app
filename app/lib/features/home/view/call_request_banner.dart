@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
+import 'package:chat_app/features/home/domain/call_request_state.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
@@ -29,7 +31,7 @@ class CallRequestBanner {
     sMessenger.hideCurrentMaterialBanner();
   }
 
-  void _acceptCall(String videoRoomId) async {
+  void _acceptCall(CallRequestState callRequestState) async {
     logger.t('click accept call');
     final contextRouter = router;
 
@@ -41,7 +43,13 @@ class CallRequestBanner {
         .read(onlinePresencesProvider.notifier)
         .updateCurrentUserPresence(OnlineStatus.busy);
 
-    contextRouter.push(VideoRoomRoute(videoRoomId: videoRoomId));
+    contextRouter.push(VideoRoomRoute(
+      videoRoomId: callRequestState.videoRoomId!,
+      otherProfile: Profile(
+        id: callRequestState.otherUserId!,
+        username: callRequestState.otherUsername,
+      ),
+    ));
   }
 
   void _rejectCall() {
@@ -52,13 +60,11 @@ class CallRequestBanner {
   }
 
   MaterialBanner _callRequestBanner() {
-    final otherUsername =
-        ref.watch(callRequestControllerProvider).otherUsername;
-    final videoRoomId = ref.watch(callRequestControllerProvider).videoRoomId!;
+    final callRequestState = ref.watch(callRequestControllerProvider);
 
     return MaterialBanner(
       leading: const Icon(Icons.info_outline),
-      content: Text('Incoming Call from: $otherUsername'),
+      content: Text('Incoming Call from: ${callRequestState.otherUsername}'),
       elevation: 1,
       padding: const EdgeInsets.all(8),
       actions: [
@@ -67,7 +73,7 @@ class CallRequestBanner {
             Icons.call,
             color: Colors.green,
           ),
-          onPressed: () => _acceptCall(videoRoomId),
+          onPressed: () => _acceptCall(callRequestState),
         ),
         const SizedBox(width: 10),
         IconButton(
