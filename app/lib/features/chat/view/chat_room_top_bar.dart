@@ -115,7 +115,13 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
               );
             }
           },
-          icon: const Icon(Icons.video_call),
+          icon: Icon(
+            userStatus == OnlineStatus.online
+                ? Icons.video_call
+                : Icons.videocam_off_outlined,
+            color:
+                userStatus == OnlineStatus.online ? Colors.white : Colors.grey,
+          ),
         ),
       ],
     );
