@@ -1,7 +1,9 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:chat_app/features/home/domain/call_request_state.dart';
+import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -57,6 +59,10 @@ class CallRequestController extends _$CallRequestController {
   }
 
   void onRejectCall(Map<String, dynamic> payload) async {
+    await ref
+        .read(onlinePresencesProvider.notifier)
+        .updateCurrentUserPresence(OnlineStatus.online);
+
     state = CallRequestState(callType: CallRequestType.rejectCall);
   }
 
@@ -75,10 +81,13 @@ class CallRequestController extends _$CallRequestController {
         'videoRoomId': videoRoomId,
       },
     );
-    resetToWaiting();
   }
 
   Future<void> sendCancelCall(String channelName) async {
+    await ref
+        .read(onlinePresencesProvider.notifier)
+        .updateCurrentUserPresence(OnlineStatus.online);
+
     final currentProfile =
         await ref.watch(authRepositoryProvider).currentProfile;
     await _sendMessageToOtherUser(

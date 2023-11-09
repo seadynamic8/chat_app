@@ -3,6 +3,7 @@ import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/features/video/data/video_repository.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
+import 'package:chat_app/utils/user_online_status.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/view/chat_online_status_icon.dart';
@@ -23,7 +24,8 @@ class ChatRoomTopBar extends ConsumerStatefulWidget
   ConsumerState<ChatRoomTopBar> createState() => _ChatRoomTopBarState();
 }
 
-class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar> {
+class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
+    with UserOnlineStatus {
   Future<String?> _getVideoRoomId() async {
     // Create room id (with token)
     final token = await ref.watch(authRepositoryProvider).generateJWTToken();
@@ -58,9 +60,9 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar> {
 
   @override
   Widget build(BuildContext context) {
-    final userStatus = ref
-        .watch(onlinePresencesProvider.notifier)
-        .getUserOnlineStatus(widget.otherProfile.username!);
+    final onlinePresences = ref.watch(onlinePresencesProvider);
+    final userStatus =
+        getUserOnlineStatus(onlinePresences, widget.otherProfile.username!);
 
     return AppBar(
       title: InkWell(

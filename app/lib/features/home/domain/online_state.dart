@@ -51,5 +51,5 @@ class OnlineState {
 
   @override
   String toString() =>
-      'OnlineState(profileId: $profileId, status: $status, enteredAt: $enteredAt)';
+      'OnlineState(profileId: $profileId, status: ${status.name}, enteredAt: $enteredAt)';
 }

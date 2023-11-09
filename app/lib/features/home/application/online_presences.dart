@@ -15,11 +15,6 @@ class OnlinePresences extends _$OnlinePresences {
     return {};
   }
 
-  OnlineStatus getUserOnlineStatus(String profileId) {
-    if (!state.containsKey(profileId)) return OnlineStatus.offline;
-    return state[profileId]!.status;
-  }
-
   void updateAllPresences(List<OnlineState> onlineStates) {
     final Map<String, OnlineState> newState = {};
     for (final onlineState in onlineStates) {

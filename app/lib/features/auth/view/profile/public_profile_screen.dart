@@ -3,6 +3,7 @@ import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/view/profile/public_profile_controller.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
+import 'package:chat_app/utils/user_online_status.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/search/data/search_repository.dart';
@@ -10,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:i18n_extension/i18n_widget.dart';
 
 @RoutePage()
-class PublicProfileScreen extends ConsumerWidget {
+class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
   const PublicProfileScreen(
       {super.key, @PathParam('id') required this.profileId});
 
@@ -41,9 +42,9 @@ class PublicProfileScreen extends ConsumerWidget {
         body: AsyncValueWidget(
             value: profileValue,
             data: (profile) {
-              final userStatus = ref
-                  .watch(onlinePresencesProvider.notifier)
-                  .getUserOnlineStatus(profile.username!);
+              final onlinePresences = ref.watch(onlinePresencesProvider);
+              final userStatus =
+                  getUserOnlineStatus(onlinePresences, profile.username!);
 
               return ListView(
                 children: [
