@@ -2,7 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/features/video/data/video_repository.dart';
+import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
+import 'package:chat_app/utils/logger.dart';
 import 'package:chat_app/utils/user_online_status.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
@@ -26,20 +28,27 @@ class ChatRoomTopBar extends ConsumerStatefulWidget
 
 class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
     with UserOnlineStatus {
-  Future<String?> _getVideoRoomId() async {
-    // Create room id (with token)
-    final token = await ref.watch(authRepositoryProvider).generateJWTToken();
-    return await ref.watch(videoRepositoryProvider).getRoomId(token);
+  Future<String?> _getVideoRoomId(ScaffoldMessengerState sMessenger) async {
+    try {
+      final token = await ref.watch(authRepositoryProvider).generateJWTToken();
+      return await ref.watch(videoRepositoryProvider).getRoomId(token);
+    } catch (error) {
+      logger.e(error.toString());
+      return null;
+    }
   }
 
   void _setupVideoCallAndWait(ScaffoldMessengerState sMessenger) async {
     final router = context.router;
 
     // Create a new video room id
-    final videoRoomId = await _getVideoRoomId();
+    final videoRoomId = await _getVideoRoomId(sMessenger);
     if (videoRoomId == null) {
-      sMessenger.showSnackBar(const SnackBar(
-          content: Text('Something went wrong, please try again later.')));
+      sMessenger.showSnackBar(SnackBar(
+        content: Text(
+            'Unable to create video call right now, please try again later.'
+                .i18n),
+      ));
       return;
     }
 

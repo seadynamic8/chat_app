@@ -38,6 +38,7 @@ class VideoRepository {
       } else {
         logger.e('Error message: ${e.message}', stackTrace: e.stackTrace);
       }
+      throw Exception('Failed to retrieve room id, ${e.message}');
     }
 
     return response.data!['roomId'] as String;

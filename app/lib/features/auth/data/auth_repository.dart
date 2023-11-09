@@ -76,6 +76,11 @@ class AuthRepository {
   Future<String> generateJWTToken() async {
     final jwtResponse = await supabase.functions
         .invoke('jwt_token', responseType: ResponseType.text);
+
+    if (jwtResponse.status != null && jwtResponse.status! > 400) {
+      throw Exception(
+          'JWT Token failed to be retrieved, Response Code: ${jwtResponse.status}');
+    }
     return (jwtResponse.data as String).replaceAll('"', '');
   }
 }
