@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
+import 'package:chat_app/features/video/data/video_settings_provider.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
@@ -43,12 +45,19 @@ class CallRequestBanner {
         .read(onlinePresencesProvider.notifier)
         .updateCurrentUserPresence(OnlineStatus.busy);
 
-    contextRouter.push(VideoRoomRoute(
-        videoRoomId: callRequestState.videoRoomId!,
-        otherProfile: Profile(
-          id: callRequestState.otherUserId!,
-          username: callRequestState.otherUsername,
-        )));
+    final token = await ref.read(authRepositoryProvider).generateJWTToken();
+    ref
+        .read(videoSettingsProvider.notifier)
+        .updateSettings(token: token, roomId: callRequestState.videoRoomId!);
+
+    contextRouter.push(
+      VideoRoomRoute(
+          videoRoomId: callRequestState.videoRoomId!,
+          otherProfile: Profile(
+            id: callRequestState.otherUserId!,
+            username: callRequestState.otherUsername,
+          )),
+    );
   }
 
   void _rejectCall() {

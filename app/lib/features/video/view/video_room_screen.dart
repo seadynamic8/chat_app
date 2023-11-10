@@ -1,15 +1,15 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/home/domain/call_request_state.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/features/video/view/local_tile.dart';
 import 'package:chat_app/features/video/view/remote_tile.dart';
-import 'package:chat_app/features/video/view/video_controls.dart';
+import 'package:chat_app/features/video/view/video_room_controller.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n_extension/i18n_widget.dart';
-import 'package:videosdk/videosdk.dart';
 
 @RoutePage()
 class VideoRoomScreen extends ConsumerWidget {
@@ -34,6 +34,14 @@ class VideoRoomScreen extends ConsumerWidget {
         .read(callRequestControllerProvider.notifier)
         .sendEndCall(videoRoomId, otherProfile);
 
+    try {
+      ref.read(videoRoomControllerProvider.notifier).endCall();
+    } catch (error) {
+      // Sometimes we try to end the call when the remote hasn't appeared yet,
+      // or they leave too fast, and it gives error because it can't end it.
+      logger.w('Error ending call: $error', stackTrace: StackTrace.current);
+    }
+
     _leaveVideoRoom(context);
   }
 
@@ -47,49 +55,37 @@ class VideoRoomScreen extends ConsumerWidget {
       }
     });
 
-    const AsyncValue state = AsyncData(null);
-    const List<Participant> remoteParticipants = [];
+    final stateValue = ref.watch(videoRoomControllerProvider);
 
     return I18n(
       child: SafeArea(
         child: Scaffold(
-          body: Stack(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                height: double.infinity,
-                child: RemoteTile(
-                    isLoading: state.isLoading, remoteParticipants: const []),
-              ),
-              Positioned(
-                top: 10,
-                left: 15,
-                child: IconButton(
-                  onPressed: () => _endCall(context, ref),
-                  color: Colors.white.withAlpha(200),
-                  icon: const Icon(Icons.arrow_back),
+          body: AsyncValueWidget(
+            value: stateValue,
+            data: (state) => Stack(
+              children: [
+                RemoteTile(
+                  isLoading: state.remoteParticipants.isEmpty ||
+                      state.remoteParticipants[otherProfile.id] == null,
+                  remoteParticipant: state.remoteParticipants[otherProfile.id],
                 ),
-              ),
-              // LocalTile(isLoading: state.isLoading, localParticipant: Participant.null)
-              Positioned(
-                top: 50,
-                left: 15,
-                child: VideoControls(
-                  onEndCall: () => _endCall(context, ref),
-                  // onToggleMic: ref.read(videoRoomProvider.notifier).toggleMic,
-                  onToggleMic: () {},
-                  // TODO : check that other side is disabled too when off
-                  // onToggleCamera: ref.read(videoRoomProvider.notifier).toggleCamera,
-                  onToggleCamera: () {},
-                  // onSwitchNextCamera:
-                  // ref.read(videoRoomProvider.notifier).switchNextCamera,
-                  onSwitchNextCamera: () {},
-                  // allCameras: [],
-                  // selectedCameraDeviceId: _room.selectedCamId,
-                  // onChangeCamera: (deviceId) => _room.changeCam(deviceId),
+                Positioned(
+                  top: 10,
+                  left: 15,
+                  child: IconButton(
+                    onPressed: () => _endCall(context, ref),
+                    color: Colors.white.withAlpha(200),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      shadows: [
+                        Shadow(color: Colors.black, blurRadius: 1),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ],
+                LocalTile(localParticipant: state.localParticipant),
+              ],
+            ),
           ),
         ),
       ),

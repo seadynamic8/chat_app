@@ -1,23 +1,21 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:chat_app/features/video/domain/video_participant.dart';
+import 'package:chat_app/features/video/view/video_tile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:videosdk/videosdk.dart';
 
-class VideoTile extends StatefulWidget {
+class VideoTile extends ConsumerWidget {
   const VideoTile({super.key, required this.participant});
 
-  final Participant participant;
+  final VideoParticipant participant;
 
   @override
-  State<VideoTile> createState() => _VideoTileState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final videoStream = ref.watch(videoTileControllerProvider(participant));
 
-class _VideoTileState extends State<VideoTile> {
-  Stream? videoStream;
-
-  @override
-  Widget build(BuildContext context) {
-    return videoStream != null
+    return videoStream != null && videoStream.renderer != null
         ? RTCVideoView(
-            videoStream!.renderer as RTCVideoRenderer,
+            videoStream.renderer!,
             objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
           )
         : const Center(
