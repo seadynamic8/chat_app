@@ -3,10 +3,10 @@ import 'package:chat_app/utils/logger.dart';
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'video_repository.g.dart';
+part 'video_api.g.dart';
 
-class VideoRepository {
-  VideoRepository({required this.dio});
+class VideoApi {
+  VideoApi({required this.dio});
 
   final Dio dio;
 
@@ -46,7 +46,7 @@ class VideoRepository {
 }
 
 @riverpod
-VideoRepository videoRepository(VideoRepositoryRef ref) {
+VideoApi videoApi(VideoApiRef ref) {
   final dio = ref.watch(dioProvider);
-  return VideoRepository(dio: dio);
+  return VideoApi(dio: dio);
 }

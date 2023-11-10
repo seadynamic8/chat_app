@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
+import 'package:chat_app/features/video/data/video_api.dart';
 import 'package:chat_app/features/video/data/video_repository.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
@@ -31,7 +32,7 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
   Future<String?> _getVideoRoomId(ScaffoldMessengerState sMessenger) async {
     try {
       final token = await ref.watch(authRepositoryProvider).generateJWTToken();
-      return await ref.watch(videoRepositoryProvider).getRoomId(token);
+      return await ref.watch(videoApiProvider).getRoomId(token);
     } catch (error) {
       logger.e(error.toString());
       return null;
