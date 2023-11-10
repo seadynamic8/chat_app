@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/video/data/video_settings_provider.dart';
+import 'package:chat_app/features/video/domain/device_info.dart';
 import 'package:chat_app/features/video/domain/video_participant.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/foundation.dart';
@@ -33,6 +34,11 @@ class VideoRepository {
       camEnabled: camEnabled,
       defaultCameraIndex: defaultCameraIndex ?? ((kIsWeb) ? 0 : 1),
     );
+
+    videoRoom.on(Events.error, (error) {
+      logger.e(
+          "VIDEOSDK ERROR :: ${error['code']}  :: ${error['name']} :: ${error['message']}");
+    });
   }
 
   VideoParticipant get localParticipant =>
@@ -43,9 +49,19 @@ class VideoRepository {
         MapEntry(id, VideoParticipant(participant: participant)));
   }
 
+  String? get selectedCamId => videoRoom.selectedCamId;
+
+  List<DeviceInfo> get cameras {
+    return videoRoom.getCameras().map((mdi) => DeviceInfo(mdi: mdi)).toList();
+  }
+
+  // * Join Call
+
   Future<void> join() async {
     await videoRoom.join();
   }
+
+  // * Events
 
   void onLocalParticipantJoin([void Function()? callback]) {
     videoRoom.on(Events.roomJoined, () {
@@ -77,6 +93,8 @@ class VideoRepository {
     });
   }
 
+  // * End call
+
   // This just removes the current participant from the video room.
   void leave() {
     videoRoom.leave();
@@ -86,6 +104,28 @@ class VideoRepository {
   // * Usally what we want since, otherwise the room and stream stays open.
   void end() {
     videoRoom.end();
+  }
+
+  // * Actions
+
+  Future<void> muteMic() async {
+    await videoRoom.muteMic();
+  }
+
+  Future<void> unmuteMic() async {
+    await videoRoom.unmuteMic();
+  }
+
+  Future<void> disableCam() async {
+    await videoRoom.disableCam();
+  }
+
+  Future<void> enableCam() async {
+    await videoRoom.enableCam();
+  }
+
+  Future<void> changeCam(String deviceId) async {
+    await videoRoom.changeCam(deviceId);
   }
 }
 

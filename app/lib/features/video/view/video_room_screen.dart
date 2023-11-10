@@ -5,6 +5,7 @@ import 'package:chat_app/features/home/domain/call_request_state.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/features/video/view/local_tile.dart';
 import 'package:chat_app/features/video/view/remote_tile.dart';
+import 'package:chat_app/features/video/view/video_controls.dart';
 import 'package:chat_app/features/video/view/video_room_controller.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
@@ -84,6 +85,11 @@ class VideoRoomScreen extends ConsumerWidget {
                   ),
                 ),
                 LocalTile(localParticipant: state.localParticipant),
+                const Positioned(
+                  top: 50,
+                  left: 15,
+                  child: VideoControls(),
+                ),
               ],
             ),
           ),
