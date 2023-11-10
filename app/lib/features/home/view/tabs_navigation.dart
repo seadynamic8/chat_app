@@ -1,41 +1,16 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:chat_app/features/home/domain/call_request_state.dart';
-import 'package:chat_app/features/home/view/call_request_banner.dart';
-import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n_extension/i18n_widget.dart';
 
 @RoutePage()
-class TabsNavigation extends ConsumerWidget {
+class TabsNavigation extends StatelessWidget {
   const TabsNavigation({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // This incoming call code was put in the tabs navigation, since it is the
-    // first place a user visits after login and is a view with a scaffold.
-    // A scaffold is necessary for material banner, which shows on all scaffolds.
-    final cqbanner = CallRequestBanner(
-      ref: ref,
-      router: context.router,
-      sMessenger: ScaffoldMessenger.of(context),
-    );
-    ref.listen<CallRequestState>(callRequestControllerProvider, (prev, state) {
-      switch (state.callType) {
-        case CallRequestType.newCall:
-          cqbanner.showCallRequestBanner();
-          break;
-        case CallRequestType.cancelCall:
-          cqbanner.closeCallRequestBanner();
-          ref.read(callRequestControllerProvider.notifier).resetToWaiting();
-          break;
-        default:
-      }
-    });
-
+  Widget build(BuildContext context) {
     return I18n(
       child: AutoTabsScaffold(
         routes: const [
