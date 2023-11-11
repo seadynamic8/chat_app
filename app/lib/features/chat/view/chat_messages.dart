@@ -17,37 +17,31 @@ class ChatMessages extends ConsumerWidget {
     final theme = Theme.of(context);
     final pagingController = ref.watch(chatMessagesControllerProvider(roomId));
 
-    return Column(
-      children: [
-        Expanded(
-          child: PagedListView<int, Message>(
-            pagingController: pagingController,
-            reverse: true,
-            shrinkWrap: true,
-            builderDelegate: PagedChildBuilderDelegate(
-              itemBuilder: (context, item, index) {
-                final message = item;
+    return PagedListView<int, Message>(
+      pagingController: pagingController,
+      reverse: true,
+      shrinkWrap: true,
+      builderDelegate: PagedChildBuilderDelegate(
+        itemBuilder: (context, item, index) {
+          final message = item;
 
-                return MessageBubble(
-                  message: message,
-                  profile: profiles[message.profileId],
-                );
-              },
-              noItemsFoundIndicatorBuilder: (context) => SizedBox(
-                height: 100,
-                child: Center(
-                  child: Text(
-                    'Send your first message =)',
-                    style: theme.textTheme.labelLarge!.copyWith(
-                      color: theme.hintColor,
-                    ),
-                  ),
-                ),
+          return MessageBubble(
+            message: message,
+            profile: profiles[message.profileId],
+          );
+        },
+        noItemsFoundIndicatorBuilder: (context) => SizedBox(
+          height: 100,
+          child: Center(
+            child: Text(
+              'Send your first message =)',
+              style: theme.textTheme.labelLarge!.copyWith(
+                color: theme.hintColor,
               ),
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }
