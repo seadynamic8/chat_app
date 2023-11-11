@@ -70,8 +70,8 @@ class VideoRoomScreen extends ConsumerWidget {
                 data: (state) => Stack(
                   children: [
                     RemoteTile(
-                  isLoading: state.remoteParticipants.isEmpty ||
-                      state.remoteParticipants[otherProfile.id] == null,
+                      isLoading: !state.remoteJoined ||
+                          state.remoteParticipants[otherProfile.id] == null,
                       remoteParticipant:
                           state.remoteParticipants[otherProfile.id],
                     ),
@@ -82,32 +82,32 @@ class VideoRoomScreen extends ConsumerWidget {
                       child: VideoChatOverlay(),
                     ),
                     // Back Button
-                Positioned(
-                  top: 10,
-                  left: 15,
-                  child: IconButton(
-                    onPressed: () => _endCall(context, ref),
-                    color: Colors.white.withAlpha(200),
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      shadows: [
-                        Shadow(color: Colors.black, blurRadius: 1),
-                      ],
+                    Positioned(
+                      top: 10,
+                      left: 15,
+                      child: IconButton(
+                        onPressed: () => _endCall(context, ref),
+                        color: Colors.white.withAlpha(200),
+                        icon: const Icon(
+                          Icons.arrow_back,
+                          shadows: [
+                            Shadow(color: Colors.black, blurRadius: 1),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ),
                     Positioned(
                       top: 60,
                       right: 20,
                       child:
-                LocalTile(localParticipant: state.localParticipant),
+                          LocalTile(localParticipant: state.localParticipant),
                     ),
-                const Positioned(
-                  top: 50,
-                  left: 15,
-                  child: VideoControls(),
-                ),
-              ],
+                    const Positioned(
+                      top: 50,
+                      left: 15,
+                      child: VideoControls(),
+                    ),
+                  ],
                 ),
               ),
             ),
