@@ -9,14 +9,10 @@ class LocalTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: 60,
-      right: 20,
-      child: SizedBox(
-        height: 170,
-        width: 120,
-        child: VideoTile(participant: localParticipant),
-      ),
+    return SizedBox(
+      height: 170,
+      width: 120,
+      child: VideoTile(participant: localParticipant),
     );
   }
 }

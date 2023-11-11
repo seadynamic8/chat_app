@@ -84,7 +84,12 @@ class VideoRoomScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
+                    Positioned(
+                      top: 60,
+                      right: 20,
+                      child:
                 LocalTile(localParticipant: state.localParticipant),
+                    ),
                 const Positioned(
                   top: 50,
                   left: 15,
