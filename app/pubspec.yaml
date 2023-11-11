@@ -51,6 +51,7 @@ dependencies:
   infinite_scroll_pagination: ^4.0.0
   videosdk: ^1.1.7
   timeago: ^3.6.0
+  flutter_keyboard_visibility: ^5.4.1
   
 
 dev_dependencies:
