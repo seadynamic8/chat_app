@@ -10,7 +10,8 @@ class VideoControls extends ConsumerWidget {
     final state = ref.watch(videoControlsControllerProvider);
     final stateNotifier = ref.read(videoControlsControllerProvider.notifier);
 
-    const iconShadow = Shadow(color: Colors.black, blurRadius: 1);
+    const iconShadow =
+        Shadow(color: Colors.black54, blurRadius: 1, offset: Offset(0.3, 0.3));
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

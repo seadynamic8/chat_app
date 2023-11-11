@@ -37,8 +37,10 @@ class VideoRoomController extends _$VideoRoomController {
     final remoteParticipants = {...oldState.remoteParticipants};
     remoteParticipants[videoParticipant.id] = videoParticipant;
 
-    state =
-        AsyncData(oldState.copyWith(remoteParticipants: remoteParticipants));
+    state = AsyncData(oldState.copyWith(
+      remoteParticipants: remoteParticipants,
+      remoteJoined: true,
+    ));
   }
 
   void _removeRemoteParticipant(String videoParticipantId) async {

@@ -7,7 +7,7 @@ part of 'video_tile_controller.dart';
 // **************************************************************************
 
 String _$videoTileControllerHash() =>
-    r'8b7f47b41a35eb94119efb8016b967365ae6e229';
+    r'28b12ecf1609c2969dd37d71bbad5e604e619714';
 
 /// Copied from Dart SDK
 class _SystemHash {

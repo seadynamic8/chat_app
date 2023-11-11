@@ -7,8 +7,10 @@ import 'package:chat_app/features/video/view/local_tile.dart';
 import 'package:chat_app/features/video/view/remote_tile.dart';
 import 'package:chat_app/features/video/view/video_controls.dart';
 import 'package:chat_app/features/video/view/video_room_controller.dart';
+import 'package:chat_app/features/video_chat/view/video_chat_overlay.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n_extension/i18n_widget.dart';
 
@@ -61,15 +63,25 @@ class VideoRoomScreen extends ConsumerWidget {
     return I18n(
       child: SafeArea(
         child: Scaffold(
-          body: AsyncValueWidget(
-            value: stateValue,
-            data: (state) => Stack(
-              children: [
-                RemoteTile(
+          body: KeyboardDismissOnTap(
+            child: KeyboardVisibilityProvider(
+              child: AsyncValueWidget(
+                value: stateValue,
+                data: (state) => Stack(
+                  children: [
+                    RemoteTile(
                   isLoading: state.remoteParticipants.isEmpty ||
                       state.remoteParticipants[otherProfile.id] == null,
-                  remoteParticipant: state.remoteParticipants[otherProfile.id],
-                ),
+                      remoteParticipant:
+                          state.remoteParticipants[otherProfile.id],
+                    ),
+                    const Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: VideoChatOverlay(),
+                    ),
+                    // Back Button
                 Positioned(
                   top: 10,
                   left: 15,
@@ -96,6 +108,8 @@ class VideoRoomScreen extends ConsumerWidget {
                   child: VideoControls(),
                 ),
               ],
+                ),
+              ),
             ),
           ),
         ),
