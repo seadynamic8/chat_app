@@ -22,10 +22,14 @@ class VideoTileController extends _$VideoTileController {
   }
 
   void _streamEnabled(VideoStream videoStream) {
-    state = videoStream;
+    if (videoStream.kind == 'video') {
+      state = videoStream;
+    }
   }
 
   void _streamDisabled(VideoStream videoStream) {
-    state = videoStream;
+    if (videoStream.kind == 'video') {
+      state = null;
+    }
   }
 }

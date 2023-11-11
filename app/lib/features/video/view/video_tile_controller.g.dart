@@ -32,10 +32,10 @@ class _SystemHash {
 
 abstract class _$VideoTileController
     extends BuildlessAutoDisposeNotifier<VideoStream?> {
-  late final InvalidType videoParticipant;
+  late final VideoParticipant videoParticipant;
 
   VideoStream? build(
-    InvalidType videoParticipant,
+    VideoParticipant videoParticipant,
   );
 }
 
@@ -50,7 +50,7 @@ class VideoTileControllerFamily extends Family<VideoStream?> {
 
   /// See also [VideoTileController].
   VideoTileControllerProvider call(
-    InvalidType videoParticipant,
+    VideoParticipant videoParticipant,
   ) {
     return VideoTileControllerProvider(
       videoParticipant,
@@ -86,7 +86,7 @@ class VideoTileControllerProvider
     extends AutoDisposeNotifierProviderImpl<VideoTileController, VideoStream?> {
   /// See also [VideoTileController].
   VideoTileControllerProvider(
-    InvalidType videoParticipant,
+    VideoParticipant videoParticipant,
   ) : this._internal(
           () => VideoTileController()..videoParticipant = videoParticipant,
           from: videoTileControllerProvider,
@@ -111,7 +111,7 @@ class VideoTileControllerProvider
     required this.videoParticipant,
   }) : super.internal();
 
-  final InvalidType videoParticipant;
+  final VideoParticipant videoParticipant;
 
   @override
   VideoStream? runNotifierBuild(
@@ -161,7 +161,7 @@ class VideoTileControllerProvider
 
 mixin VideoTileControllerRef on AutoDisposeNotifierProviderRef<VideoStream?> {
   /// The parameter `videoParticipant` of this provider.
-  InvalidType get videoParticipant;
+  VideoParticipant get videoParticipant;
 }
 
 class _VideoTileControllerProviderElement
@@ -170,7 +170,7 @@ class _VideoTileControllerProviderElement
   _VideoTileControllerProviderElement(super.provider);
 
   @override
-  InvalidType get videoParticipant =>
+  VideoParticipant get videoParticipant =>
       (origin as VideoTileControllerProvider).videoParticipant;
 }
 // ignore_for_file: type=lint
