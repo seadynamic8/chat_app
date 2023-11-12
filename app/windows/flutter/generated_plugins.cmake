@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   app_links
   flutter_webrtc
+  smart_auth
   url_launcher_windows
   videosdk
 )
