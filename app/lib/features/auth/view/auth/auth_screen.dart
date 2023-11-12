@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/error_snackbar.dart';
 import 'package:chat_app/features/auth/view/auth/auth_form_state.dart';
 import 'package:chat_app/features/auth/view/auth/auth_screen_controller.dart';
-import 'package:chat_app/features/auth/view/auth/string_validators.dart';
+import 'package:chat_app/utils/string_validators.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:chat_app/utils/logger.dart';
