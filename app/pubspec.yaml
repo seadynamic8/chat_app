@@ -54,6 +54,7 @@ dependencies:
   flutter_keyboard_visibility: ^5.4.1
   pinput: ^3.0.1
   datepicker_dropdown: ^0.0.8
+  image_picker: ^1.0.4
   
 
 dev_dependencies:
