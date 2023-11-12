@@ -4,6 +4,7 @@ import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/view/chat_online_status_icon.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
+import 'package:chat_app/utils/constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -48,8 +49,8 @@ class ChatLobbyScreen extends ConsumerWidget {
                   leading: Stack(
                     children: [
                       CircleAvatar(
-                        backgroundImage: AssetImage(otherProfile.avatarUrl ??
-                            'assets/images/user_default_image.png'),
+                        backgroundImage: AssetImage(
+                            otherProfile.avatarUrl ?? defaultAvatarImage),
                         radius: 15,
                       ),
                       ChatOnlineStatusIcon(userId: otherProfile.id!)

@@ -3,6 +3,7 @@ import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/view/profile/public_profile_controller.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
+import 'package:chat_app/utils/constants.dart';
 import 'package:chat_app/utils/user_online_status.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
@@ -60,8 +61,7 @@ class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
                         child: Padding(
                           padding: const EdgeInsets.all(70.0),
                           child: Image.asset(
-                            profile.avatarUrl ??
-                                'assets/images/user_default_image.png',
+                            profile.avatarUrl ?? defaultAvatarImage,
                             fit: BoxFit.cover,
                           ),
                         ),

@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/features/search/view/search_controller.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
+import 'package:chat_app/utils/constants.dart';
 import 'package:chat_app/utils/debouncer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -66,8 +67,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                 leading: CircleAvatar(
                   backgroundColor: Colors.grey,
-                  backgroundImage: AssetImage(profiles[index].avatarUrl ??
-                      'assets/images/user_default_image.png'),
+                  backgroundImage: AssetImage(
+                      profiles[index].avatarUrl ?? defaultAvatarImage),
                   radius: 25,
                 ),
                 title: Text(profiles[index].username ?? ''),

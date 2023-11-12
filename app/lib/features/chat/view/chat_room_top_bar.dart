@@ -5,6 +5,7 @@ import 'package:chat_app/features/video/data/video_api.dart';
 import 'package:chat_app/features/video/data/video_settings_provider.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
+import 'package:chat_app/utils/constants.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:chat_app/utils/user_online_status.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -87,8 +88,8 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
             Stack(
               children: [
                 CircleAvatar(
-                  backgroundImage: AssetImage(widget.otherProfile.avatarUrl ??
-                      'assets/images/user_default_image.png'),
+                  backgroundImage: AssetImage(
+                      widget.otherProfile.avatarUrl ?? defaultAvatarImage),
                   radius: 15,
                 ),
                 ChatOnlineStatusIcon(userId: widget.otherProfile.id!)

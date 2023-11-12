@@ -1,4 +1,5 @@
 import 'package:chat_app/features/auth/data/current_profile_provider.dart';
+import 'package:chat_app/utils/constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/i18n/localizations.dart';
@@ -40,6 +41,12 @@ class PrivateProfileScreen extends ConsumerWidget {
                           backgroundImage: AssetImage(profile.avatarUrl ??
                               'assets/images/user_default_image.png'),
                           radius: 70,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.grey,
+                            backgroundImage: AssetImage(
+                                profile.avatarUrl ?? defaultAvatarImage),
+                            radius: 70,
+                          ),
                         ),
                       ),
                     ),

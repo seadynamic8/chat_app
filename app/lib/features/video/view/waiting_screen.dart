@@ -1,6 +1,7 @@
 import 'package:chat_app/features/home/domain/call_request_state.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
+import 'package:chat_app/utils/constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
@@ -52,8 +53,8 @@ class _WaitingScreenState extends ConsumerState<WaitingScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CircleAvatar(
-                  backgroundImage: AssetImage(widget.otherProfile.avatarUrl ??
-                      'assets/images/user_default_image.png'),
+                  backgroundImage: AssetImage(
+                      widget.otherProfile.avatarUrl ?? defaultAvatarImage),
                   radius: 70,
                 ),
                 const SizedBox(height: 15),

@@ -1,5 +1,6 @@
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/video_chat/domain/video_chat_message.dart';
+import 'package:chat_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class VideoChatMessageBubble extends StatelessWidget {
@@ -21,8 +22,8 @@ class VideoChatMessageBubble extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: CircleAvatar(
-              backgroundImage: AssetImage(
-                  profile?.avatarUrl ?? 'assets/images/user_default_image.png'),
+              backgroundImage:
+                  AssetImage(profile?.avatarUrl ?? defaultAvatarImage),
               radius: 15,
             ),
           ),
