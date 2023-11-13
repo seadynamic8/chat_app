@@ -18,10 +18,8 @@ class ChatLobbyScreen extends ConsumerWidget {
     if (newestMessage == null) return '';
 
     if (newestMessage.translation != null) {
-      // For now, we use username for tracking presence since it's easier to debug
-      final currentUserName =
-          ref.watch(authRepositoryProvider).currentUserName!;
-      if (newestMessage.profileId != currentUserName) {
+      final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
+      if (newestMessage.profileId != currentUserId) {
         return newestMessage.translation!;
       }
     }
@@ -54,7 +52,7 @@ class ChatLobbyScreen extends ConsumerWidget {
                             'assets/images/user_default_image.png'),
                         radius: 15,
                       ),
-                      ChatOnlineStatusIcon(username: otherProfile.username!)
+                      ChatOnlineStatusIcon(userId: otherProfile.id!)
                     ],
                   ),
                   title: Text(
@@ -74,7 +72,7 @@ class ChatLobbyScreen extends ConsumerWidget {
                       : ''),
                   onTap: () {
                     context.router.push(ChatRoomRoute(
-                        roomId: room.id, otherProfileId: otherProfile.id));
+                        roomId: room.id, otherProfileId: otherProfile.id!));
                   },
                 );
               },

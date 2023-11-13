@@ -33,8 +33,8 @@ class MessageBubble extends ConsumerWidget {
                 radius: 15,
               ),
             ),
-            onTap: () =>
-                context.router.push(PublicProfileRoute(profileId: profile!.id)),
+            onTap: () => context.router
+                .push(PublicProfileRoute(profileId: profile!.id!)),
           ),
         ),
         Container(

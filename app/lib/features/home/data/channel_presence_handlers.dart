@@ -70,17 +70,16 @@ extension ChannelPresenceHandlers on ChannelRepository {
 
   Future<void> subscribed() async {
     final completer = Completer<void>();
-    final currentUsername = ref.watch(authRepositoryProvider).currentUserName!;
+    final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
 
     channel.subscribe((status, [ref]) async {
       if (status == 'SUBSCRIBED') {
-        // For now, we use username for tracking presence since it's easier to debug
-        udpatePresence(currentUsername, OnlineStatus.online);
-        logger.i('${channel.subTopic} | $currentUsername | Subscribed');
+        udpatePresence(currentUserId, OnlineStatus.online);
+        logger.i('${channel.subTopic} | $currentUserId | Subscribed');
 
         completer.complete();
       } else {
-        logger.t('${channel.subTopic} | $currentUsername | Status: $status');
+        logger.t('${channel.subTopic} | $currentUserId | Status: $status');
       }
     });
     return completer.future;

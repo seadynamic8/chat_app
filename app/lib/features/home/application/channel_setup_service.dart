@@ -1,4 +1,5 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
@@ -29,6 +30,7 @@ class ChannelSetupService {
             case AuthChangeEvent.tokenRefreshed:
             case AuthChangeEvent.userUpdated:
               logger.i('sign in');
+              _loadUserProfile();
               _setupLobbyChannel();
               _setupUserChannel();
               break;
@@ -42,6 +44,10 @@ class ChannelSetupService {
         }
       },
     );
+  }
+
+  void _loadUserProfile() async {
+    await ref.read(currentProfileProvider.notifier).load();
   }
 
   // Join lobby channel on startup, to notify others that we have signed on
@@ -61,9 +67,9 @@ class ChannelSetupService {
   }
 
   void _setupUserChannel() async {
-    final currentUserName = ref.watch(authRepositoryProvider).currentUserName!;
+    final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
 
-    final myChannel = ref.refresh(channelRepositoryProvider(currentUserName));
+    final myChannel = ref.refresh(channelRepositoryProvider(currentUserId));
     await myChannel.subscribed();
 
     // Interesting, here, don't need to delay after subscribe to add callback handlers

@@ -4,14 +4,14 @@ import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:flutter/material.dart';
 
 class ChatOnlineStatusIcon extends ConsumerWidget with UserOnlineStatus {
-  const ChatOnlineStatusIcon({super.key, required this.username});
+  const ChatOnlineStatusIcon({super.key, required this.userId});
 
-  final String username;
+  final String userId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final onlinePresences = ref.watch(onlinePresencesProvider);
-    final userStatus = getUserOnlineStatus(onlinePresences, username);
+    final userStatus = getUserOnlineStatus(onlinePresences, userId);
 
     return Positioned(
       bottom: 0,

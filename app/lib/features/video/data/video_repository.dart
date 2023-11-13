@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/video/data/video_settings_provider.dart';
 import 'package:chat_app/features/video/domain/device_info.dart';
 import 'package:chat_app/features/video/domain/video_participant.dart';
@@ -132,7 +133,7 @@ class VideoRepository {
 @riverpod
 VideoRepository videoRepository(VideoRepositoryRef ref) {
   final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
-  final currentUserName = ref.watch(authRepositoryProvider).currentUserName!;
+  final currentUserName = ref.watch(currentProfileProvider).username!;
   final videoSettings = ref.watch(videoSettingsProvider);
 
   return VideoRepository.createVideoRoom(

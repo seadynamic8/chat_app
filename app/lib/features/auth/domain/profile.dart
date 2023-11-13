@@ -9,7 +9,7 @@ import 'dart:convert';
 
 class Profile {
   const Profile({
-    required this.id,
+    this.id,
     this.email,
     this.username,
     this.avatarUrl,
@@ -17,7 +17,7 @@ class Profile {
     this.birthdate,
   });
 
-  final String id;
+  final String? id;
   final String? email;
   final String? username;
   final String? avatarUrl;
@@ -29,21 +29,21 @@ class Profile {
       'id': id,
       'email': email,
       'username': username,
-      'avatarUrl': avatarUrl,
+      'avatar_url': avatarUrl,
       'bio': bio,
-      'birthdate': birthdate?.millisecondsSinceEpoch,
+      'birthdate': birthdate?.toIso8601String(),
     };
   }
 
   factory Profile.fromMap(Map<String, dynamic> map) {
     return Profile(
-      id: map['id'] as String,
+      id: map['id'] != null ? map['id'] as String : null,
       email: map['email'] != null ? map['email'] as String : null,
       username: map['username'] != null ? map['username'] as String : null,
-      avatarUrl: map['avatarUrl'] != null ? map['avatarUrl'] as String : null,
+      avatarUrl: map['avatar_url'] != null ? map['avatar_url'] as String : null,
       bio: map['bio'] != null ? map['bio'] as String : null,
       birthdate: map['birthdate'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['birthdate'] as int)
+          ? DateTime.parse(map['birthdate'] as String)
           : null,
     );
   }

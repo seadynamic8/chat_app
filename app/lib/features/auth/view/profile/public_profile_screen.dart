@@ -44,7 +44,7 @@ class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
             data: (profile) {
               final onlinePresences = ref.watch(onlinePresencesProvider);
               final userStatus =
-                  getUserOnlineStatus(onlinePresences, profile.username!);
+                  getUserOnlineStatus(onlinePresences, profile.id!);
 
               return ListView(
                 children: [

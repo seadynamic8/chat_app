@@ -1,25 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'video_repository.dart';
+part of 'current_profile_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$videoRepositoryHash() => r'd001d8f815eb3d250ce8a3c57c301ed5576a6d2d';
+String _$currentProfileHash() => r'7d04c9b980b11db72bd70e03cc83ccea95eb433a';
 
-/// See also [videoRepository].
-@ProviderFor(videoRepository)
-final videoRepositoryProvider = AutoDisposeProvider<VideoRepository>.internal(
-  videoRepository,
-  name: r'videoRepositoryProvider',
+/// See also [CurrentProfile].
+@ProviderFor(CurrentProfile)
+final currentProfileProvider =
+    NotifierProvider<CurrentProfile, Profile>.internal(
+  CurrentProfile.new,
+  name: r'currentProfileProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$videoRepositoryHash,
+      : _$currentProfileHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef VideoRepositoryRef = AutoDisposeProviderRef<VideoRepository>;
+typedef _$CurrentProfile = Notifier<Profile>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

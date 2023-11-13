@@ -72,7 +72,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 ),
                 title: Text(profiles[index].username ?? ''),
                 onTap: () => context.router
-                    .push(PublicProfileRoute(profileId: profiles[index].id)),
+                    .push(PublicProfileRoute(profileId: profiles[index].id!)),
               ),
             ),
           ),

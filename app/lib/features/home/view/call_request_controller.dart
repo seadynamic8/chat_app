@@ -1,4 +1,4 @@
-import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
@@ -91,12 +91,11 @@ class CallRequestController extends _$CallRequestController {
   // Caller Send
 
   Future<void> sendNewCall(String videoRoomId, Profile otherProfile) async {
-    createChatMessageForVideoStatus(VideoStatus.started, otherProfile.id);
+    createChatMessageForVideoStatus(VideoStatus.started, otherProfile.id!);
 
-    final currentProfile =
-        await ref.watch(authRepositoryProvider).currentProfile;
+    final currentProfile = ref.read(currentProfileProvider);
     await _sendMessageToOtherUser(
-      channelName: otherProfile.username!,
+      channelName: otherProfile.id!,
       event: 'new_call',
       payload: {
         'fromUserId': currentProfile.id,
@@ -119,10 +118,9 @@ class CallRequestController extends _$CallRequestController {
 
     createChatMessageForVideoStatus(VideoStatus.cancelled, state.otherUserId!);
 
-    final currentProfile =
-        await ref.watch(authRepositoryProvider).currentProfile;
+    final currentProfile = ref.read(currentProfileProvider);
     await _sendMessageToOtherUser(
-      channelName: state.otherUsername!,
+      channelName: state.otherUserId!,
       event: 'cancel_call',
       payload: {
         'fromUsername': currentProfile.username,
@@ -135,7 +133,7 @@ class CallRequestController extends _$CallRequestController {
 
   Future<void> sendAcceptCall() async {
     await _sendMessageToOtherUser(
-      channelName: state.otherUsername!,
+      channelName: state.otherUserId!,
       event: 'accept_call',
       payload: {'videoRoomId': state.videoRoomId!},
     );
@@ -149,7 +147,7 @@ class CallRequestController extends _$CallRequestController {
     createChatMessageForVideoStatus(VideoStatus.rejected, state.otherUserId!);
 
     await _sendMessageToOtherUser(
-        channelName: state.otherUsername!, event: 'reject_call');
+        channelName: state.otherUserId!, event: 'reject_call');
 
     resetToWaiting();
   }
@@ -163,10 +161,10 @@ class CallRequestController extends _$CallRequestController {
 
     await ref
         .read(callRequestControllerProvider.notifier)
-        .createChatMessageForVideoStatus(VideoStatus.ended, otherProfile.id);
+        .createChatMessageForVideoStatus(VideoStatus.ended, otherProfile.id!);
 
     await _sendMessageToOtherUser(
-      channelName: otherProfile.username!,
+      channelName: otherProfile.id!,
       event: 'end_call',
       payload: {'videoRoomId': videoRoomId},
     );
@@ -203,16 +201,15 @@ class CallRequestController extends _$CallRequestController {
     VideoStatus status,
     String otherProfileId,
   ) async {
-    final currentProfile =
-        await ref.watch(authRepositoryProvider).currentProfile;
+    final currentProfile = ref.read(currentProfileProvider);
     final chatRoom = await ref.read(chatRepositoryProvider).findRoomByProfiles(
-          currentProfileId: currentProfile.id,
+          currentProfileId: currentProfile.id!,
           otherProfileId: otherProfileId,
         );
     ref.read(chatRepositoryProvider).updateVideoStatus(
           status: status,
           roomId: chatRoom!.id,
-          currentProfileId: currentProfile.id,
+          currentProfileId: currentProfile.id!,
         );
   }
 

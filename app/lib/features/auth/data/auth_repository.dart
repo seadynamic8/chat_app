@@ -14,19 +14,6 @@ class AuthRepository {
   Stream<AuthState> onAuthStateChanges() => supabase.auth.onAuthStateChange;
 
   String? get currentUserId => supabase.auth.currentUser?.id;
-  String? get currentUserName =>
-      supabase.auth.currentUser?.userMetadata?['username'];
-
-  Future<Profile> get currentProfile async {
-    final authUserId = currentUserId!;
-    final profileUser = await supabase
-        .from('profiles')
-        .select<Map<String, dynamic>>()
-        .eq('id', authUserId)
-        .single();
-
-    return Profile.fromMap(profileUser);
-  }
 
   Future<Profile> getProfile(String profileId) async {
     final profileUser = await supabase
@@ -105,9 +92,4 @@ Session? currentSession(CurrentSessionRef ref) {
 Stream<AuthState> authStateChanges(AuthStateChangesRef ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   return authRepository.onAuthStateChanges();
-}
-
-@riverpod
-FutureOr<Profile> currentProfile(CurrentProfileRef ref) async {
-  return ref.watch(authRepositoryProvider).currentProfile;
 }

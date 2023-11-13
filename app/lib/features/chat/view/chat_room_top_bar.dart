@@ -77,7 +77,7 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
   Widget build(BuildContext context) {
     final onlinePresences = ref.watch(onlinePresencesProvider);
     final userStatus =
-        getUserOnlineStatus(onlinePresences, widget.otherProfile.username!);
+        getUserOnlineStatus(onlinePresences, widget.otherProfile.id!);
 
     return AppBar(
       title: InkWell(
@@ -91,7 +91,7 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
                       'assets/images/user_default_image.png'),
                   radius: 15,
                 ),
-                ChatOnlineStatusIcon(username: widget.otherProfile.username!)
+                ChatOnlineStatusIcon(userId: widget.otherProfile.id!)
               ],
             ),
             const SizedBox(width: 15),
@@ -99,7 +99,7 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
           ],
         ),
         onTap: () => context.router
-            .push(PublicProfileRoute(profileId: widget.otherProfile.id)),
+            .push(PublicProfileRoute(profileId: widget.otherProfile.id!)),
       ),
       actions: [
         IconButton(

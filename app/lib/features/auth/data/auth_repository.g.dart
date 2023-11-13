@@ -65,20 +65,5 @@ final authStateChangesProvider = StreamProvider<AuthState>.internal(
 );
 
 typedef AuthStateChangesRef = StreamProviderRef<AuthState>;
-String _$currentProfileHash() => r'ba027875d3087399a1c7c3f2cb07d7662aa5b768';
-
-/// See also [currentProfile].
-@ProviderFor(currentProfile)
-final currentProfileProvider = AutoDisposeFutureProvider<Profile>.internal(
-  currentProfile,
-  name: r'currentProfileProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$currentProfileHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef CurrentProfileRef = AutoDisposeFutureProviderRef<Profile>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
