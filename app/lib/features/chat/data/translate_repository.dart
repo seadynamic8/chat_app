@@ -1,6 +1,7 @@
 import 'package:chat_app/env/env.dart';
 import 'package:chat_app/env/environment.dart';
 import 'package:chat_app/utils/dio_provider.dart';
+import 'package:chat_app/utils/logger.dart';
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -41,12 +42,28 @@ class TranslateRepository {
       {'Text': text}
     ];
 
-    final response = await dio.post<List<dynamic>>(
-      '$baseUrl/translate',
-      options: options,
-      queryParameters: queryParams,
-      data: bodyData,
-    );
+    late Response<List<dynamic>> response;
+
+    try {
+      response = await dio.post<List<dynamic>>(
+        '$baseUrl/translate',
+        options: options,
+        queryParameters: queryParams,
+        data: bodyData,
+      );
+    } on DioException catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e.response != null) {
+        logger.e('Translate Error Data: ${e.response!.data}');
+        logger.e(
+            'Translate Error request options: ${e.response!.requestOptions.headers}');
+      } else {
+        logger.e('Translate Error message: ${e.message}',
+            stackTrace: e.stackTrace);
+      }
+      throw Exception('Translate: Failed to retrieve translate: ${e.message}');
+    }
 
     // Sample response
     // response: [{translations: [{text: Hola, to: es}]}]

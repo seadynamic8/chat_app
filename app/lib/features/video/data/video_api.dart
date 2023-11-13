@@ -32,13 +32,14 @@ class VideoApi {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
       if (e.response != null) {
-        logger.e('Error Data: ${e.response!.data}');
-        logger
-            .e('Error request options: ${e.response!.requestOptions.headers}');
+        logger.e('VideoApi Error Data: ${e.response!.data}');
+        logger.e(
+            'VideoApi Error request options: ${e.response!.requestOptions.headers}');
       } else {
-        logger.e('Error message: ${e.message}', stackTrace: e.stackTrace);
+        logger.e('VideoApi Error message: ${e.message}',
+            stackTrace: e.stackTrace);
       }
-      throw Exception('Failed to retrieve room id, ${e.message}');
+      throw Exception('VideoApi: Failed to retrieve room id: ${e.message}');
     }
 
     return response.data!['roomId'] as String;
