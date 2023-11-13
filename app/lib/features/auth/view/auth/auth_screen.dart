@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/error_snackbar.dart';
+import 'package:chat_app/features/auth/data/resolver_provider.dart';
 import 'package:chat_app/features/auth/view/auth/auth_form_state.dart';
 import 'package:chat_app/features/auth/view/auth/auth_screen_controller.dart';
+import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/string_validators.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/utils/keys.dart';
@@ -14,14 +16,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 @RoutePage()
 class AuthScreen extends ConsumerStatefulWidget {
-  const AuthScreen(
-      {super.key, required this.formType, required this.onAuthResult});
+  const AuthScreen({super.key, required this.formType});
 
-  // Default form type to use
   final AuthFormType formType;
-
-  // Callback for AutoRoute to redirect on success
-  final void Function(bool isSuccess) onAuthResult;
 
   @override
   ConsumerState<AuthScreen> createState() => _AuthScreenState();
@@ -36,24 +33,35 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   var _submitted = false;
 
   final _emailController = TextEditingController();
-  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
   String get email => _emailController.text.trim();
-  String get username => _usernameController.text.trim();
   String get password => _passwordController.text.trim();
 
-  void _submit() async {
+  void _submit(AuthFormState state) async {
     setState(() => _submitted = true);
 
     if (!_form.currentState!.validate()) return;
 
-    try {
-      final response = await ref
-          .read(authScreenControllerProvider(widget.formType).notifier)
-          .submit(email: email, password: password, username: username);
+    final router = context.router;
 
-      if (response.value != null) widget.onAuthResult(true);
+    try {
+      final responseValue = await ref
+          .read(authScreenControllerProvider(widget.formType).notifier)
+          .submit(email: email, password: password);
+
+      responseValue.whenData((profile) {
+        if (profile == null) {
+          logger.e('AuthScreen: Failed to submit auth, profile null');
+          return;
+        }
+        if (state.formType == AuthFormType.login) {
+          ref.read(resolverProvider)!.resolveNext(true);
+        } else {
+          // Navigate to Auth Verify OTP Screen
+          router.push(AuthVerifyRoute(email: email));
+        }
+      });
     } on AuthException catch (error) {
       if (!context.mounted) return;
       context.showErrorSnackBar(error.message);
@@ -70,19 +78,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     }
   }
 
-  void _usernameEditingComplete(AuthFormState state) {
-    if (!state.canSubmitEmail(email)) {
-      _node.previousFocus();
-    } else if (state.canSubmitUsername(username)) {
-      _node.nextFocus();
-    }
-  }
-
   void _passwordEditingComplete(AuthFormState state) {
-    if (!state.canSubmitUsername(username)) {
-      _node.previousFocus();
-    } else if (state.canSubmitPassword(password)) {
-      _submit();
+    if (state.canSubmitPassword(password)) {
+      _submit(state);
     }
   }
 
@@ -98,7 +96,6 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   void dispose() {
     _node.dispose();
     _emailController.dispose();
-    _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -138,31 +135,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                       ? AutovalidateMode.onUserInteraction
                       : AutovalidateMode.disabled,
                   validator: (email) => state.emailErrorText(email ?? ''),
-                  // state.emailErrorText(email ?? ''),
                 ),
                 if (state.formType == AuthFormType.signup)
                   const SizedBox(width: 16, height: 16),
-                if (state.formType == AuthFormType.signup)
-                  TextFormField(
-                    key: K.authFormUsernameField,
-                    controller: _usernameController,
-                    decoration: InputDecoration(
-                      labelText: 'Username*'.i18n,
-                      helperText:
-                          'If blank, random username will be used (can be updated later)'
-                              .i18n,
-                      enabled: !state.value.isLoading,
-                    ),
-                    autocorrect: false,
-                    textInputAction: TextInputAction.next,
-                    onEditingComplete: () => _usernameEditingComplete(state),
-                    autovalidateMode: _submitted
-                        ? AutovalidateMode.onUserInteraction
-                        : AutovalidateMode.disabled,
-                    validator: (username) =>
-                        state.usernameErrorText(username ?? ''),
-                  ),
-                const SizedBox(width: 16, height: 16),
                 TextFormField(
                   key: K.authFormPasswordField,
                   controller: _passwordController,
@@ -183,7 +158,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 const SizedBox(width: 16, height: 16),
                 ElevatedButton(
                   key: K.authFormSubmitButton,
-                  onPressed: state.value.isLoading ? null : _submit,
+                  onPressed:
+                      state.value.isLoading ? null : () => _submit(state),
                   child: state.value.isLoading
                       ? const CircularProgressIndicator()
                       : Text(state.primaryButtonText),

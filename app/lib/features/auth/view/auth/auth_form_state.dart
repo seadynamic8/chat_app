@@ -6,8 +6,6 @@ enum AuthFormType { login, signup }
 
 mixin EmailAndPasswordValidators {
   final StringValidator emailSubmitValidator = EmailSubmitRegexValidator();
-  final StringValidator usernameSubmitValidator =
-      UsernameSubmitRegexValidator();
   final StringValidator passwordSignupSubmitValidator =
       MinLengthStringValidator(8);
   final StringValidator passwordLogInSubmitValidator =
@@ -103,10 +101,6 @@ extension AuthFormStateX on AuthFormState {
     return emailSubmitValidator.isValid(email);
   }
 
-  bool canSubmitUsername(String username) {
-    return usernameSubmitValidator.isValid(username);
-  }
-
   bool canSubmitPassword(String password) {
     if (formType == AuthFormType.signup) {
       return passwordSignupSubmitValidator.isValid(password);
@@ -118,13 +112,6 @@ extension AuthFormStateX on AuthFormState {
     final bool showErrorText = !canSubmitEmail(email);
     final String errorText =
         email.isEmpty ? 'Email can\'t be empty'.i18n : 'Invalid email'.i18n;
-    return showErrorText ? errorText : null;
-  }
-
-  String? usernameErrorText(String username) {
-    final bool showErrorText = !canSubmitUsername(username);
-    final String errorText =
-        'Username needs 3-24 characters with alphanumeric or underscore'.i18n;
     return showErrorText ? errorText : null;
   }
 

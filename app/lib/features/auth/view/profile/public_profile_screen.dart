@@ -58,13 +58,16 @@ class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
                         ),
                         width: double.infinity,
                         height: 400,
-                        child: Padding(
-                          padding: const EdgeInsets.all(70.0),
-                          child: Image.asset(
-                            profile.avatarUrl ?? defaultAvatarImage,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                        child: profile.avatarUrl != null
+                            ? Image.network(profile.avatarUrl!,
+                                fit: BoxFit.cover)
+                            : Padding(
+                                padding: const EdgeInsets.all(70.0),
+                                child: Image.asset(
+                                  defaultAvatarImage,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                       ),
                       // Back Button
                       Positioned(

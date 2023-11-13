@@ -21,4 +21,16 @@ class CurrentProfile extends _$CurrentProfile {
       state = await ref.read(authRepositoryProvider).getProfile(currentUserId);
     }
   }
+
+  void updateValues(Map<String, dynamic> newValues) {
+    state = state.copyWithMap(newValues);
+  }
+
+  // Not sure to put it here, maybe controller, but don't want to create one for now.
+  Future<void> saveProfileToDatabase(Map<String, dynamic> newValues) async {
+    // Save to it's own state first
+    updateValues(newValues);
+
+    await ref.read(authRepositoryProvider).updateProfile(state);
+  }
 }

@@ -55,8 +55,7 @@ class EmailSubmitRegexValidator extends RegexValidator {
 }
 
 class UsernameSubmitRegexValidator extends RegexValidator {
-  UsernameSubmitRegexValidator()
-      : super(regexSource: '^[A-Za-z0-9_]{3,24}\$|^\$');
+  UsernameSubmitRegexValidator() : super(regexSource: '^.{3,24}\$|^\$');
 }
 
 class NonEmptyStringValidator extends StringValidator {

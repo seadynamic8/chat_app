@@ -67,7 +67,7 @@ class ChannelSetupService {
   }
 
   void _setupUserChannel() async {
-    final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
+    final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
 
     final myChannel = ref.refresh(channelRepositoryProvider(currentUserId));
     await myChannel.subscribed();

@@ -20,7 +20,7 @@ final supabaseProvider = Provider<SupabaseClient>.internal(
 );
 
 typedef SupabaseRef = ProviderRef<SupabaseClient>;
-String _$authRepositoryHash() => r'19330163c4b4d15fbdf307885d1f886386311816';
+String _$authRepositoryHash() => r'a40a84abda126a0001e5e6c00e78bb0bb9d6a877';
 
 /// See also [authRepository].
 @ProviderFor(authRepository)

@@ -1,8 +1,7 @@
+import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/auth/view/auth/auth_form_state.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:username_generator/username_generator.dart';
 
 part 'auth_screen_controller.g.dart';
 
@@ -13,7 +12,7 @@ class AuthScreenController extends _$AuthScreenController {
     return AuthFormState(formType: formType);
   }
 
-  Future<AsyncValue<AuthResponse>> submit({
+  Future<AsyncValue<Profile?>> submit({
     required String email,
     required String password,
     String? username,
@@ -21,7 +20,7 @@ class AuthScreenController extends _$AuthScreenController {
     state = state.copyWith(value: const AsyncLoading());
 
     final result = await AsyncValue.guard(
-      () => _authenticate(email: email, password: password, username: username),
+      () => _authenticate(email: email, password: password),
     );
 
     state = state.copyWith(value: result);
@@ -29,10 +28,9 @@ class AuthScreenController extends _$AuthScreenController {
     return result;
   }
 
-  Future<AuthResponse> _authenticate({
+  Future<Profile?> _authenticate({
     required String email,
     required String password,
-    String? username,
   }) {
     switch (state.formType) {
       case AuthFormType.login:
@@ -40,13 +38,9 @@ class AuthScreenController extends _$AuthScreenController {
             .watch(authRepositoryProvider)
             .signInWithEmailAndPassword(email: email, password: password);
       case AuthFormType.signup:
-        if (username == null || username.isEmpty) {
-          username = UsernameGenerator().generateRandom();
-        }
-
         return ref
             .watch(authRepositoryProvider)
-            .signUp(email: email, password: password, username: username);
+            .signUp(email: email, password: password);
     }
   }
 

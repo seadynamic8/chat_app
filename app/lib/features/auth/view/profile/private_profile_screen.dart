@@ -1,4 +1,5 @@
 import 'package:chat_app/features/auth/data/current_profile_provider.dart';
+import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/utils/constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
@@ -37,16 +38,11 @@ class PrivateProfileScreen extends ConsumerWidget {
                       child: CircleAvatar(
                         radius: 70,
                         child: CircleAvatar(
-                          backgroundColor: Colors.grey,
-                          backgroundImage: AssetImage(profile.avatarUrl ??
-                              'assets/images/user_default_image.png'),
+                          backgroundImage: const AssetImage(defaultAvatarImage),
+                          foregroundImage: profile.avatarUrl == null
+                              ? null
+                              : NetworkImage(profile.avatarUrl!),
                           radius: 70,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.grey,
-                            backgroundImage: AssetImage(
-                                profile.avatarUrl ?? defaultAvatarImage),
-                            radius: 70,
-                          ),
                         ),
                       ),
                     ),
@@ -68,22 +64,24 @@ class PrivateProfileScreen extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
-                      profile.username ?? 'Default User',
+                      profile.username!,
                       textAlign: TextAlign.center,
                     ),
-                    const Chip(
-                      avatar: Icon(Icons.male),
-                      label: Text('37'),
+                    Chip(
+                      avatar: Icon(profile.gender == Gender.male
+                          ? Icons.male
+                          : Icons.female),
+                      label: Text(profile.age!),
                     )
                   ],
                 ),
               ),
               const SizedBox(height: 20),
               // TODO: Insert Flag and Country
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  '*** BIO *** Reprehenderit nostrud nostrud ex dolor irure ullamco anim amet excepteur tempor in aute ad. Qui quis anim do in. Lorem pariatur sint duis tempor magna ea enim id ad quis consectetur. Sunt duis aute est occaecat fugiat eu sunt eu laborum cupidatat est consequat proident veniam. Nostrud et aliqua officia laboris aliqua aute dolor occaecat laborum est dolore. Voluptate commodo ad in ullamco amet excepteur sint laborum id deserunt duis exercitation fugiat.',
+                  profile.bio ?? 'Add something interesting here 😀'.i18n,
                   textAlign: TextAlign.center,
                 ),
               )
