@@ -42,7 +42,7 @@ void main() {
       await $(K.authFormPasswordField).enterText(password);
       await $(K.authFormSubmitButton).tap();
 
-      expect($('Contacts'), findsWidgets);
+      expect($('Explore'), findsWidgets);
 
       // Logout
       await $(K.profileTab).tap();
