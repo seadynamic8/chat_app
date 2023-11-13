@@ -41,9 +41,14 @@ class AuthRepository {
     }).eq('id', currentUserId);
   }
 
-  // Returns image path on server (NOT Public URL)
-  Future<String> storeAvatar(String imagePath, File image) async {
-    return await supabase.storage.from('avatars').upload(imagePath, image);
+  // The custom imagePath below is not the same as returned by API call
+  // The custom imagePath is returned because it is used for getting public URL
+  Future<String> storeAvatar(File image) async {
+    final currentProfileId = ref.read(currentProfileProvider).id!;
+    final imagePath = '${currentProfileId}_${DateTime.timestamp()}.jpg';
+    // Returns image path on server from root, and not the same as the custom imagePath
+    await supabase.storage.from('avatars').upload(imagePath, image);
+    return imagePath;
   }
 
   String getAvatarPublicURL(String imagePath) {

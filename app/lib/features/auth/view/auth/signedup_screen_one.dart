@@ -2,10 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/error_snackbar.dart';
 import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
+import 'package:chat_app/features/auth/view/common/birthdate_picker.dart';
 import 'package:chat_app/features/auth/view/auth/gender_selector.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
-import 'package:datepicker_dropdown/datepicker_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n_extension/i18n_widget.dart';
@@ -19,22 +19,8 @@ class SignedupScreenOne extends ConsumerStatefulWidget {
 }
 
 class _SignedupScreenOneState extends ConsumerState<SignedupScreenOne> {
-  final _today = DateTime.now();
-  late final int _endYear;
-  int _selectedDay = 1;
-  int _selectedMonth = 1;
-  late int _selectedYear;
-
+  DateTime? _selectedBirthDate;
   Gender? _selectedGender;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Set 15 years ago as the initial year
-    _endYear = _today.year - 15; // At least 14/15 years old to use this app
-    _selectedYear = _endYear;
-  }
 
   void _submit() {
     if (_selectedGender == null) {
@@ -42,22 +28,21 @@ class _SignedupScreenOneState extends ConsumerState<SignedupScreenOne> {
       return;
     }
 
-    final selectedBirthDate =
-        DateTime(_selectedYear, _selectedMonth, _selectedDay);
-
     ref.read(currentProfileProvider.notifier).updateValues({
-      'birthdate': selectedBirthDate,
+      'birthdate': _selectedBirthDate,
       'gender': _selectedGender,
     });
 
     context.router.push(const SignedupRouteTwo());
   }
 
+  void _updateBirthdate(int year, int month, int day) {
+    _selectedBirthDate = DateTime(year, month, day);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    final datePickerBgColor = theme.colorScheme.secondary;
 
     return I18n(
       child: Scaffold(
@@ -90,25 +75,8 @@ class _SignedupScreenOneState extends ConsumerState<SignedupScreenOne> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Container(
-                  color: datePickerBgColor,
-                  padding: const EdgeInsets.all(8),
-                  child: Theme(
-                    data: theme.copyWith(
-                      canvasColor: datePickerBgColor,
-                    ),
-                    child: DropdownDatePicker(
-                      endYear: _endYear,
-                      selectedDay: _selectedDay,
-                      selectedMonth: _selectedMonth,
-                      selectedYear: _selectedYear,
-                      onChangedDay: (value) => _selectedDay = int.parse(value!),
-                      onChangedMonth: (value) =>
-                          _selectedMonth = int.parse(value!),
-                      onChangedYear: (value) =>
-                          _selectedYear = int.parse(value!),
-                    ),
-                  ),
+                BirthdatePicker(
+                  updateBirthdate: _updateBirthdate,
                 ),
                 const SizedBox(height: 20),
                 // GENDER

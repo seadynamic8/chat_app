@@ -23,6 +23,11 @@ class PrivateProfileScreen extends ConsumerWidget {
             title: Text('Profile'.i18n),
             actions: [
               IconButton(
+                onPressed: () =>
+                    context.router.push(ProfileEditRoute(profile: profile)),
+                icon: const Icon(Icons.edit),
+              ),
+              IconButton(
                   onPressed: () => context.router.push(const SettingsRoute()),
                   icon: const Icon(Icons.settings))
             ],

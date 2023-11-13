@@ -4,7 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/data/resolver_provider.dart';
-import 'package:chat_app/features/auth/view/auth/profile_image_picker.dart';
+import 'package:chat_app/features/auth/view/common/profile_image_picker.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/utils/string_validators.dart';
 import 'package:flutter/material.dart';
@@ -36,13 +36,14 @@ class _SignedupScreenTwoState extends ConsumerState<SignedupScreenTwo> {
     setState(() => _submitted = true);
 
     if (!_form.currentState!.validate()) return;
+    _form.currentState!.save();
 
     Map<String, dynamic> updateValues = {};
     if (username.isNotEmpty) {
       updateValues['username'] = username;
     }
     if (_selectedImage != null) {
-      updateValues = await _saveSelectedImage(updateValues);
+      updateValues['avatarUrl'] = await _saveSelectedImage();
     }
 
     await ref
@@ -54,18 +55,10 @@ class _SignedupScreenTwoState extends ConsumerState<SignedupScreenTwo> {
     ref.invalidate(resolverProvider);
   }
 
-  Future<Map<String, dynamic>> _saveSelectedImage(
-      Map<String, dynamic> updateValues) async {
-    final currentProfileId = ref.read(currentProfileProvider).id!;
-    final imagePath = '$currentProfileId.jpg';
-    await ref
-        .read(authRepositoryProvider)
-        .storeAvatar(imagePath, _selectedImage!);
-    final imageUrlPath =
-        ref.read(authRepositoryProvider).getAvatarPublicURL(imagePath);
-
-    updateValues['avatarUrl'] = imageUrlPath;
-    return updateValues;
+  Future<String> _saveSelectedImage() async {
+    final imagePath =
+        await ref.read(authRepositoryProvider).storeAvatar(_selectedImage!);
+    return ref.read(authRepositoryProvider).getAvatarPublicURL(imagePath);
   }
 
   void _usernameEditingComplete() {
@@ -87,7 +80,6 @@ class _SignedupScreenTwoState extends ConsumerState<SignedupScreenTwo> {
   @override
   void dispose() {
     _usernameController.dispose();
-    // _node.dispose();
     super.dispose();
   }
 
@@ -108,9 +100,15 @@ class _SignedupScreenTwoState extends ConsumerState<SignedupScreenTwo> {
                     horizontal: mediaQuery.size.width * 0.2),
                 children: [
                   // AVATAR
+                  Text(
+                    'Please choose an image:'.i18n,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 15),
                   ProfileImagePicker(
                       onPickImage: (pickedImage) =>
                           _selectedImage = pickedImage),
+                  const SizedBox(height: 35),
 
                   // USERNAME
                   TextFormField(
