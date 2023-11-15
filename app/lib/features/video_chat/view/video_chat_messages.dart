@@ -5,25 +5,33 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
 class VideoChatMessages extends ConsumerWidget {
-  const VideoChatMessages({super.key});
+  const VideoChatMessages({super.key, required this.otherProfileId});
+
+  final String otherProfileId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final messagesValue = ref.watch(videoChatControllerProvider);
+    final stateValue = ref.watch(videoChatControllerProvider(otherProfileId));
     final mediaQuery = MediaQuery.of(context);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10),
       width: mediaQuery.size.width * 0.7,
       child: AsyncValueWidget(
-        value: messagesValue,
-        data: (messages) => ListView.builder(
-          itemCount: messages.length,
-          itemBuilder: (context, index) {
-            final message = messages[index];
-            return VideoChatMessageBubble(message: message);
-          },
-        ),
+        value: stateValue,
+        data: (state) {
+          final messages = state.messages;
+          return ListView.builder(
+            itemCount: messages.length,
+            itemBuilder: (context, index) {
+              final message = messages[index];
+              return VideoChatMessageBubble(
+                message: message,
+                profile: state.profiles[message.senderId]!,
+              );
+            },
+          );
+        },
       ),
     );
   }

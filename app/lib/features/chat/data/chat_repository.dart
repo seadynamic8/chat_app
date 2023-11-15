@@ -59,6 +59,22 @@ class ChatRepository {
     };
   }
 
+  Future<Map<String, Profile>> getBothProfiles({
+    required String currentProfileId,
+    required String otherProfileId,
+  }) async {
+    final profilesList = await supabase
+        .from('profiles')
+        .select<List<Map<String, dynamic>>>(
+            'id, username, avatar_url, language')
+        .in_('id', [currentProfileId, otherProfileId]);
+
+    return {
+      for (final profile in profilesList)
+        profile['id']: Profile.fromMap(profile)
+    };
+  }
+
   Future<List<Room>> getAllRoomsByUser(String currentUserId) async {
     // p1 is to make sure that the current user is also in the room.
     // p2 is the other user in the room.

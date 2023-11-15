@@ -1,5 +1,5 @@
 import 'package:chat_app/common/error_snackbar.dart';
-import 'package:chat_app/features/video_chat/view/video_chat_controller.dart';
+import 'package:chat_app/features/video_chat/data/video_chat_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -24,9 +24,11 @@ class _VideoChatNewMessageState extends ConsumerState<VideoChatNewMessage> {
     FocusScope.of(context).unfocus();
     _messageController.clear();
 
-    ref
-        .read(videoChatControllerProvider.notifier)
-        .sendVideoChatMessage(messageText);
+    _sendVideoChatMessage(messageText);
+  }
+
+  void _sendVideoChatMessage(String message) async {
+    await ref.watch(videoChatRepositoryProvider).send(message: message);
   }
 
   @override

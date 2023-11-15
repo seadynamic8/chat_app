@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 
 class VideoChatMessageBubble extends StatelessWidget {
   const VideoChatMessageBubble(
-      {super.key, required this.message, this.profile});
+      {super.key, required this.message, required this.profile});
 
   final VideoChatMessage message;
-  final Profile? profile;
+  final Profile profile;
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +22,10 @@ class VideoChatMessageBubble extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: CircleAvatar(
-              backgroundImage:
-                  AssetImage(profile?.avatarUrl ?? defaultAvatarImage),
+              backgroundImage: const AssetImage(defaultAvatarImage),
+              foregroundImage: profile.avatarUrl == null
+                  ? null
+                  : NetworkImage(profile.avatarUrl!),
               radius: 15,
             ),
           ),

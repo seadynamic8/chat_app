@@ -314,7 +314,6 @@ class ChatRoomRoute extends _i20.PageRouteInfo<ChatRoomRouteArgs> {
             roomId: roomId,
             otherProfileId: otherProfileId,
           ),
-          rawPathParams: {'id': roomId},
           initialChildren: children,
         );
 

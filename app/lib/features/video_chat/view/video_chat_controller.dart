@@ -1,7 +1,9 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat/application/translation_service.dart';
+import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/video_chat/data/video_chat_repository.dart';
 import 'package:chat_app/features/video_chat/domain/video_chat_message.dart';
+import 'package:chat_app/features/video_chat/domain/video_chat_state.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -10,7 +12,7 @@ part 'video_chat_controller.g.dart';
 @riverpod
 class VideoChatController extends _$VideoChatController {
   @override
-  FutureOr<List<VideoChatMessage>> build() async {
+  FutureOr<VideoChatState> build(String otherProfileId) async {
     final videoChatRepository = ref.watch(videoChatRepositoryProvider);
 
     await videoChatRepository.subscribe(_addVideoChatMessage);
@@ -21,16 +23,17 @@ class VideoChatController extends _$VideoChatController {
       });
     });
 
-    return [];
-  }
+    final currentProfileId = ref.watch(authRepositoryProvider).currentUserId!;
+    final profiles = await ref.watch(chatRepositoryProvider).getBothProfiles(
+        currentProfileId: currentProfileId, otherProfileId: otherProfileId);
 
-  Future<void> sendVideoChatMessage(String message) async {
-    await ref.watch(videoChatRepositoryProvider).send(message: message);
+    return VideoChatState(messages: [], profiles: profiles);
   }
 
   Future<void> _addVideoChatMessage(VideoChatMessage videoChatMessage) async {
     final oldState = await future;
-    state = AsyncData([...oldState, videoChatMessage]);
+    state = AsyncData(
+        oldState.copyWith(messages: [...oldState.messages, videoChatMessage]));
 
     final currentUserId = ref.read(authRepositoryProvider).currentUserId;
     if (videoChatMessage.senderId != currentUserId) {
@@ -39,17 +42,17 @@ class VideoChatController extends _$VideoChatController {
   }
 
   void _updateNewMessageTranslation(VideoChatMessage message) async {
-    // TODO: Pass otherProfile locale here to use for translation
+    final oldState = await future;
+
     final translatedText = await ref
         .read(translationServiceProvider)
         .getTranslation(
-            null, message.content); // TODO: Replace null with locale
+            oldState.profiles[message.senderId]!.language!, message.content);
 
     if (translatedText == null) return;
 
     // Update the message with translation
-    final oldState = await future;
-    final newList = [...oldState];
+    final newList = [...oldState.messages];
 
     // Instead of just using last message, search by id to make sure to find
     // correct message to add translation.
@@ -57,6 +60,6 @@ class VideoChatController extends _$VideoChatController {
     newList[messageIndex] =
         newList[messageIndex].copyWith(translation: translatedText);
 
-    state = AsyncData(newList);
+    state = AsyncData(oldState.copyWith(messages: newList));
   }
 }

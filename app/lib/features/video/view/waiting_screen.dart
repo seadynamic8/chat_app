@@ -53,8 +53,10 @@ class _WaitingScreenState extends ConsumerState<WaitingScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CircleAvatar(
-                  backgroundImage: AssetImage(
-                      widget.otherProfile.avatarUrl ?? defaultAvatarImage),
+                  backgroundImage: const AssetImage(defaultAvatarImage),
+                  foregroundImage: widget.otherProfile.avatarUrl == null
+                      ? null
+                      : NetworkImage(widget.otherProfile.avatarUrl!),
                   radius: 70,
                 ),
                 const SizedBox(height: 15),

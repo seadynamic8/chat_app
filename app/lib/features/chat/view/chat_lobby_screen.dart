@@ -49,8 +49,10 @@ class ChatLobbyScreen extends ConsumerWidget {
                   leading: Stack(
                     children: [
                       CircleAvatar(
-                        backgroundImage: AssetImage(
-                            otherProfile.avatarUrl ?? defaultAvatarImage),
+                        backgroundImage: const AssetImage(defaultAvatarImage),
+                        foregroundImage: otherProfile.avatarUrl == null
+                            ? null
+                            : NetworkImage(otherProfile.avatarUrl!),
                         radius: 15,
                       ),
                       ChatOnlineStatusIcon(userId: otherProfile.id!)

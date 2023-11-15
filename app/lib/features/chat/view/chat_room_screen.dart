@@ -13,7 +13,7 @@ import 'package:i18n_extension/i18n_widget.dart';
 class ChatRoomScreen extends ConsumerWidget {
   const ChatRoomScreen({
     super.key,
-    @PathParam('id') required this.roomId,
+    required this.roomId,
     required this.otherProfileId,
   });
 

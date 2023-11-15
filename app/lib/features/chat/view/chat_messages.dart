@@ -28,7 +28,7 @@ class ChatMessages extends ConsumerWidget {
 
           return MessageBubble(
             message: message,
-            profile: profiles[message.profileId],
+            profile: profiles[message.profileId]!,
           );
         },
         noItemsFoundIndicatorBuilder: (context) => SizedBox(

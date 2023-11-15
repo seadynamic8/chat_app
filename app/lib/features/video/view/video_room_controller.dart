@@ -1,3 +1,5 @@
+import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/video/data/video_repository.dart';
 import 'package:chat_app/features/video/domain/video_participant.dart';
 import 'package:chat_app/features/video/domain/video_room_state.dart';
@@ -8,7 +10,7 @@ part 'video_room_controller.g.dart';
 @riverpod
 class VideoRoomController extends _$VideoRoomController {
   @override
-  Future<VideoRoomState> build() async {
+  Future<VideoRoomState> build(String otherProfileId) async {
     final videoRepository = ref.watch(videoRepositoryProvider);
 
     videoRepository.onLocalParticipantJoin();
@@ -18,9 +20,14 @@ class VideoRoomController extends _$VideoRoomController {
 
     await videoRepository.join();
 
+    final currentProfileId = ref.watch(authRepositoryProvider).currentUserId!;
+    final profiles = await ref.watch(chatRepositoryProvider).getBothProfiles(
+        currentProfileId: currentProfileId, otherProfileId: otherProfileId);
+
     return VideoRoomState(
       localParticipant: videoRepository.localParticipant,
       remoteParticipants: videoRepository.remoteParticipants,
+      profiles: profiles,
     );
   }
 

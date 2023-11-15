@@ -88,8 +88,10 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
             Stack(
               children: [
                 CircleAvatar(
-                  backgroundImage: AssetImage(
-                      widget.otherProfile.avatarUrl ?? defaultAvatarImage),
+                  backgroundImage: const AssetImage(defaultAvatarImage),
+                  foregroundImage: widget.otherProfile.avatarUrl == null
+                      ? null
+                      : NetworkImage(widget.otherProfile.avatarUrl!),
                   radius: 15,
                 ),
                 ChatOnlineStatusIcon(userId: widget.otherProfile.id!)

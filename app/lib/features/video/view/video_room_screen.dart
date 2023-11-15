@@ -4,6 +4,7 @@ import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/home/domain/call_request_state.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/features/video/view/local_tile.dart';
+import 'package:chat_app/features/video/view/remote_badge.dart';
 import 'package:chat_app/features/video/view/remote_tile.dart';
 import 'package:chat_app/features/video/view/video_controls.dart';
 import 'package:chat_app/features/video/view/video_room_controller.dart';
@@ -38,7 +39,9 @@ class VideoRoomScreen extends ConsumerWidget {
         .sendEndCall(videoRoomId, otherProfile);
 
     try {
-      ref.read(videoRoomControllerProvider.notifier).endCall();
+      ref
+          .read(videoRoomControllerProvider(otherProfile.id!).notifier)
+          .endCall();
     } catch (error) {
       // Sometimes we try to end the call when the remote hasn't appeared yet,
       // or they leave too fast, and it gives error because it can't end it.
@@ -58,7 +61,7 @@ class VideoRoomScreen extends ConsumerWidget {
       }
     });
 
-    final stateValue = ref.watch(videoRoomControllerProvider);
+    final stateValue = ref.watch(videoRoomControllerProvider(otherProfile.id!));
 
     return I18n(
       child: SafeArea(
@@ -75,25 +78,34 @@ class VideoRoomScreen extends ConsumerWidget {
                       remoteParticipant:
                           state.remoteParticipants[otherProfile.id],
                     ),
-                    const Positioned(
+                    Positioned(
                       bottom: 0,
                       left: 0,
                       right: 0,
-                      child: VideoChatOverlay(),
+                      child: VideoChatOverlay(
+                        isRemoteReady: state.remoteJoined,
+                        otherProfileId: otherProfile.id!,
+                      ),
                     ),
-                    // Back Button
                     Positioned(
                       top: 10,
                       left: 15,
-                      child: IconButton(
-                        onPressed: () => _endCall(context, ref),
-                        color: Colors.white.withAlpha(200),
-                        icon: const Icon(
-                          Icons.arrow_back,
-                          shadows: [
-                            Shadow(color: Colors.black, blurRadius: 1),
-                          ],
-                        ),
+                      child: Row(
+                        children: [
+                          // BACK BUTTON
+                          IconButton(
+                            onPressed: () => _endCall(context, ref),
+                            color: Colors.white.withAlpha(200),
+                            icon: const Icon(
+                              Icons.arrow_back,
+                              shadows: [
+                                Shadow(color: Colors.black, blurRadius: 1),
+                              ],
+                            ),
+                          ),
+                          RemoteBadge(
+                              otherProfile: state.profiles[otherProfile.id]!),
+                        ],
                       ),
                     ),
                     Positioned(

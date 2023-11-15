@@ -16,11 +16,10 @@ class TranslationService {
   final Ref ref;
   final TranslateRepository translateRepository;
 
-  // TODO: For now optional locale, but should update to mandatory other locale
   Future<String?> getTranslation(
-      Locale? otherProfileLocale, String messageText) async {
+      Locale otherProfileLocale, String messageText) async {
     final currentProfileLang = ref.read(appLocaleProvider)!.languageCode;
-    final otherProfileLang = otherProfileLocale?.languageCode;
+    final otherProfileLang = otherProfileLocale.languageCode;
 
     // Don't translate when both have the same language
     if (currentProfileLang == otherProfileLang) return null;

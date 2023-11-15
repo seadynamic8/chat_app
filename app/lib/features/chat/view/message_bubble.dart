@@ -10,10 +10,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
 class MessageBubble extends ConsumerWidget {
-  const MessageBubble({super.key, required this.message, this.profile});
+  const MessageBubble(
+      {super.key, required this.message, required this.profile});
 
   final Message message;
-  final Profile? profile;
+  final Profile profile;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,13 +30,15 @@ class MessageBubble extends ConsumerWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: CircleAvatar(
-                backgroundImage:
-                    AssetImage(profile?.avatarUrl ?? defaultAvatarImage),
+                backgroundImage: const AssetImage(defaultAvatarImage),
+                foregroundImage: profile.avatarUrl == null
+                    ? null
+                    : NetworkImage(profile.avatarUrl!),
                 radius: 15,
               ),
             ),
-            onTap: () => context.router
-                .push(PublicProfileRoute(profileId: profile!.id!)),
+            onTap: () =>
+                context.router.push(PublicProfileRoute(profileId: profile.id!)),
           ),
         ),
         Container(
