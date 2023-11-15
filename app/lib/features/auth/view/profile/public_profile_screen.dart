@@ -1,15 +1,18 @@
 import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/auth/view/profile/public_profile_controller.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/constants.dart';
 import 'package:chat_app/utils/user_online_status.dart';
+import 'package:country_flags/country_flags.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/search/data/search_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:i18n_extension/i18n_widget.dart';
+import 'package:locale_names/locale_names.dart';
 
 @RoutePage()
 class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
@@ -81,35 +84,72 @@ class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
                         ),
                       ),
                       // Username (and online status)
-                      Positioned(
-                        bottom: 25,
-                        left: 40,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              profile.username ?? '',
-                              style: theme.textTheme.bodyLarge!.copyWith(
-                                fontSize: 20,
-                              ),
-                            ),
-                            const SizedBox(width: 15),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: userStatus.color,
-                              ),
-                              padding: const EdgeInsets.all(6),
-                              child: Text(userStatus.name,
-                                  style: theme.textTheme.labelMedium),
-                            )
-                          ],
-                        ),
-                      ),
-                      // TODO: Follow button
                     ],
                   ),
-                  // TODO: Age, Gender, Location
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 15),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // USERNAME
+                        Text(
+                          profile.username ?? '',
+                          style: theme.textTheme.bodyLarge!.copyWith(
+                            fontSize: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 15),
+
+                        // ONLINE STATUS
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: userStatus.color,
+                          ),
+                          padding: const EdgeInsets.all(6),
+                          child: Text(userStatus.name,
+                              style: theme.textTheme.labelMedium),
+                        )
+                        // TODO: Follow button
+                      ],
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        // GENDER AND AGE
+                        Chip(
+                          avatar: Icon(profile.gender == Gender.male
+                              ? Icons.male
+                              : Icons.female),
+                          label: Text(profile.age ?? ''),
+                        ),
+                        const SizedBox(width: 12),
+
+                        // COUNTRY
+                        CountryFlag.fromCountryCode(
+                          profile.country!,
+                          height: 15,
+                          width: 25,
+                        ),
+                        const SizedBox(width: 5),
+                        Text(Locale.fromSubtags(countryCode: profile.country!)
+                            .nativeDisplayCountry),
+                      ],
+                    ),
+                  ),
+
+                  // BIO
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 12),
+                    child: Text(profile.bio ?? 'Nothing here yet 😀'),
+                  ),
+
                   // TODO: How many follows
                   // TODO: Posts (or Moments)
                 ],

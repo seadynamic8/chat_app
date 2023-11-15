@@ -66,7 +66,7 @@ class ChatRepository {
     final profilesList = await supabase
         .from('profiles')
         .select<List<Map<String, dynamic>>>(
-            'id, username, avatar_url, language')
+            'id, username, avatar_url, language, country')
         .in_('id', [currentProfileId, otherProfileId]);
 
     return {

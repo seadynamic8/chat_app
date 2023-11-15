@@ -83,7 +83,8 @@ class VideoRoomScreen extends ConsumerWidget {
                       left: 0,
                       right: 0,
                       child: VideoChatOverlay(
-                        isRemoteReady: state.remoteJoined,
+                        isRemoteReady: state.remoteJoined &&
+                            state.remoteParticipants[otherProfile.id] != null,
                         otherProfileId: otherProfile.id!,
                       ),
                     ),
@@ -103,8 +104,10 @@ class VideoRoomScreen extends ConsumerWidget {
                               ],
                             ),
                           ),
-                          RemoteBadge(
-                              otherProfile: state.profiles[otherProfile.id]!),
+                          if (state.remoteJoined &&
+                              state.remoteParticipants[otherProfile.id] != null)
+                            RemoteBadge(
+                                otherProfile: state.profiles[otherProfile.id]!),
                         ],
                       ),
                     ),
