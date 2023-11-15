@@ -21,6 +21,8 @@ class Resolver extends _$Resolver {
       return;
     }
 
+    // - Setting reevalute next to false will stop the rest of the stack from
+    // being reevaluated here when a new auth state changed.
     state!.resolveNext(continueNav, reevaluateNext: reevaluateNext);
   }
 }

@@ -52,6 +52,7 @@ abstract class $AppRouter extends _i20.RootStackRouter {
         child: _i1.AuthScreen(
           key: args.key,
           formType: args.formType,
+          resolver: args.resolver,
         ),
       );
     },
@@ -201,12 +202,14 @@ class AuthRoute extends _i20.PageRouteInfo<AuthRouteArgs> {
   AuthRoute({
     _i21.Key? key,
     required _i22.AuthFormType formType,
+    required _i20.NavigationResolver resolver,
     List<_i20.PageRouteInfo>? children,
   }) : super(
           AuthRoute.name,
           args: AuthRouteArgs(
             key: key,
             formType: formType,
+            resolver: resolver,
           ),
           initialChildren: children,
         );
@@ -221,15 +224,18 @@ class AuthRouteArgs {
   const AuthRouteArgs({
     this.key,
     required this.formType,
+    required this.resolver,
   });
 
   final _i21.Key? key;
 
   final _i22.AuthFormType formType;
 
+  final _i20.NavigationResolver resolver;
+
   @override
   String toString() {
-    return 'AuthRouteArgs{key: $key, formType: $formType}';
+    return 'AuthRouteArgs{key: $key, formType: $formType, resolver: $resolver}';
   }
 }
 

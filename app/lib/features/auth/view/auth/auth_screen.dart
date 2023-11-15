@@ -16,9 +16,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 @RoutePage()
 class AuthScreen extends ConsumerStatefulWidget {
-  const AuthScreen({super.key, required this.formType});
+  const AuthScreen({super.key, required this.formType, required this.resolver});
 
   final AuthFormType formType;
+  final NavigationResolver resolver;
 
   @override
   ConsumerState<AuthScreen> createState() => _AuthScreenState();
@@ -45,31 +46,36 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
     final router = context.router;
 
-    try {
-      final responseValue = await ref
-          .read(authScreenControllerProvider(widget.formType).notifier)
-          .submit(email: email, password: password);
+    final responseValue = await ref
+        .read(authScreenControllerProvider(widget.formType).notifier)
+        .submit(email: email, password: password);
 
-      responseValue.whenData((profile) {
+    responseValue.when(
+      data: (profile) {
         if (profile == null) {
           logger.e('AuthScreen: Failed to submit auth, profile null');
           return;
         }
         if (state.formType == AuthFormType.login) {
-          ref.read(resolverProvider)!.resolveNext(true);
+          widget.resolver.resolveNext(true, reevaluateNext: false);
         } else {
+          // Store resolver for signup process, so it doesn't need to pass it around from page to page.
+          ref.read(resolverProvider.notifier).set(widget.resolver);
           // Navigate to Auth Verify OTP Screen
           router.push(AuthVerifyRoute(email: email));
         }
-      });
-    } on AuthException catch (error) {
-      if (!context.mounted) return;
-      context.showErrorSnackBar(error.message);
-    } catch (error) {
-      if (!context.mounted) return;
-      logger.e(error.toString());
-      context.showErrorSnackBar(unexpectedErrorMessage);
-    }
+      },
+      error: (error, stackTrace) {
+        if (error is AuthException) {
+          if (!context.mounted) return;
+          context.showErrorSnackBar(error.message);
+        } else {
+          logger.e(error.toString());
+          context.showErrorSnackBar(unexpectedErrorMessage);
+        }
+      },
+      loading: () => null,
+    );
   }
 
   void _emailEditingComplete(AuthFormState state) {
