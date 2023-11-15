@@ -1167,11 +1167,12 @@ packages:
   secure_dotenv_generator:
     dependency: "direct dev"
     description:
-      name: secure_dotenv_generator
-      sha256: c4d2df5d31fea805474d75359df93430aec0e9f7387957a7ce424d8367d19ac8
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
+      path: secure_dotenv_generator
+      ref: HEAD
+      resolved-ref: "4670480d0e2e7cf4ac962ecb547b7b2fb6a158ae"
+      url: "https://github.com/seadynamic8/secure_dotenv.dart.git"
+    source: git
+    version: "1.0.0"
   shared_preferences:
     dependency: transitive
     description:
