@@ -71,8 +71,7 @@ class MessageBubble extends ConsumerWidget {
                       : CrossAxisAlignment.start,
                   children: [
                     MessageBubbleContent(
-                      type: message.type!,
-                      content: message.filteredContent(isCurrentUser),
+                      message: message,
                       isCurrentUser: isCurrentUser,
                     ),
                     if (message.translation != null && !isCurrentUser)

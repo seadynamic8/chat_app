@@ -15,16 +15,23 @@ import 'package:timeago/timeago.dart' as timeago;
 class ChatLobbyScreen extends ConsumerWidget {
   const ChatLobbyScreen({super.key});
 
-  String newestMessage(WidgetRef ref, Message? newestMessage) {
+  String _filterNewestMessage(WidgetRef ref, Message? newestMessage) {
     if (newestMessage == null) return '';
 
-    if (newestMessage.translation != null) {
-      final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
-      if (newestMessage.profileId != currentUserId) {
-        return newestMessage.translation!;
-      }
+    final isCurrentUser = _messageIsCurrentUser(ref, newestMessage);
+
+    if (newestMessage.type == 'video') {
+      return '[ ${newestMessage.videoLabel(isCurrentUser)} ]';
+    }
+    if (newestMessage.translation != null && !isCurrentUser) {
+      return newestMessage.translation!;
     }
     return newestMessage.content;
+  }
+
+  bool _messageIsCurrentUser(WidgetRef ref, Message message) {
+    final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
+    return message.profileId == currentUserId;
   }
 
   @override
@@ -63,7 +70,7 @@ class ChatLobbyScreen extends ConsumerWidget {
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                   subtitle: Text(
-                    newestMessage(ref, room.newestMessage),
+                    _filterNewestMessage(ref, room.newestMessage),
                     style: Theme.of(context)
                         .textTheme
                         .labelMedium!

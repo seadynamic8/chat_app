@@ -18,6 +18,18 @@ class Message {
   final String profileId;
   final DateTime? createdAt;
 
+  bool missed(bool isCurrentUser) =>
+      _getVideoContent(isCurrentUser) == 'missed';
+
+  String videoLabel(bool isCurrentUser) {
+    final videoContent = _getVideoContent(isCurrentUser);
+
+    if (videoContent == 'missed') {
+      return 'Missed video call'.i18n;
+    }
+    return 'Video call '.i18n + videoContent;
+  }
+
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
@@ -66,14 +78,13 @@ class Message {
     return 'Message(id: $id, type: $type, content: $content, translation: $translation, profileId: $profileId, createdAt: $createdAt)';
   }
 
-  // Give friendly video status
-  String filteredContent(bool isCurrentUser) {
+  // Friendly video status
+  String _getVideoContent(bool isCurrentUser) {
     if (type == 'video') {
       if (content == 'rejected') return 'ended'.i18n;
 
       if (content == 'cancelled' && !isCurrentUser) return 'missed'.i18n;
     }
-
     return content;
   }
 }

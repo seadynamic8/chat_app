@@ -84,7 +84,7 @@ class ChatRepository {
           id,
           p1:profiles!inner (),
           p2:profiles!inner (id, username, avatar_url),
-          messages (id, profile_id, content, translation, created_at)
+          messages (id, profile_id, content, translation, type, created_at)
         ''')
         .eq('p1.id', currentUserId)
         .neq('p2.id', currentUserId)

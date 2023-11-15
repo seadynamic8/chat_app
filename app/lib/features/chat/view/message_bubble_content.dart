@@ -1,26 +1,15 @@
-import 'package:chat_app/i18n/localizations.dart';
+import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:flutter/material.dart';
 
 class MessageBubbleContent extends StatelessWidget {
   const MessageBubbleContent({
     super.key,
-    required this.type,
-    required this.content,
+    required this.message,
     required this.isCurrentUser,
   });
 
-  final String type;
-  final String content;
+  final Message message;
   final bool isCurrentUser;
-
-  bool get missed => content == 'missed';
-
-  String get videoLabel {
-    if (missed) {
-      return 'Missed video call'.i18n;
-    }
-    return 'Video call '.i18n + content;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +17,7 @@ class MessageBubbleContent extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-      child: type == 'video'
+      child: message.type == 'video'
           ? Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -36,10 +25,12 @@ class MessageBubbleContent extends StatelessWidget {
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
-                    color: missed ? Colors.red : Colors.grey,
+                    color: message.missed(isCurrentUser)
+                        ? Colors.red
+                        : Colors.grey,
                   ),
                   child: Icon(
-                    missed
+                    message.missed(isCurrentUser)
                         ? Icons.missed_video_call_rounded
                         : Icons.videocam_rounded,
                     size: 20,
@@ -47,14 +38,14 @@ class MessageBubbleContent extends StatelessWidget {
                 ),
                 const SizedBox(width: 5),
                 Text(
-                  videoLabel,
+                  message.videoLabel(isCurrentUser),
                   style: theme.textTheme.labelLarge,
                   overflow: TextOverflow.fade,
                 )
               ],
             )
           : Text(
-              content,
+              message.content,
               style: TextStyle(
                 height: 1.3,
                 color: isCurrentUser
