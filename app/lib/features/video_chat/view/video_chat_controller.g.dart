@@ -7,7 +7,7 @@ part of 'video_chat_controller.dart';
 // **************************************************************************
 
 String _$videoChatControllerHash() =>
-    r'eb1308097376bd8a3b006721f3834e7620a15885';
+    r'477e09de183c019d00ded1b85b7c4643027d55f6';
 
 /// See also [VideoChatController].
 @ProviderFor(VideoChatController)

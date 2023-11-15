@@ -1,4 +1,5 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/application/translation_service.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
@@ -12,7 +13,8 @@ class ChatMessagesController extends _$ChatMessagesController {
   static const numberOfMessagesPerRequest = 10;
 
   @override
-  PagingController<int, Message> build(String roomId) {
+  PagingController<int, Message> build(
+      String roomId, Map<String, Profile> profiles) {
     // Setup handlers for any new messages
     ref
         .watch(chatRepositoryProvider)
@@ -51,7 +53,6 @@ class ChatMessagesController extends _$ChatMessagesController {
 
     // Then fetch translation and save
     final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
-    // TODO: Also check if both users locale are the same, then don't translate
     if (newMessage.profileId != currentUserId) {
       _updateNewMessageTranslation(newMessage);
     }
@@ -60,7 +61,8 @@ class ChatMessagesController extends _$ChatMessagesController {
   void _updateNewMessageTranslation(Message message) async {
     final translatedText = await ref
         .read(translationServiceProvider)
-        .getTranslation(message.content);
+        .getTranslation(
+            profiles[message.profileId]!.language!, message.content);
 
     if (translatedText == null) return;
 

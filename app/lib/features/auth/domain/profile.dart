@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:age_calculator/age_calculator.dart';
 
@@ -23,6 +24,8 @@ class Profile {
     this.bio,
     this.birthdate,
     this.gender,
+    this.language,
+    this.country,
   });
 
   final String? id;
@@ -32,6 +35,8 @@ class Profile {
   final String? bio;
   final DateTime? birthdate;
   final Gender? gender;
+  final Locale? language;
+  final String? country;
 
   String? get age {
     if (birthdate == null) return null;
@@ -47,10 +52,30 @@ class Profile {
       'bio': bio,
       'birthdate': birthdate?.toIso8601String(),
       'gender': gender?.name,
+      'language': language,
+      'country': country,
     };
   }
 
   factory Profile.fromMap(Map<String, dynamic> map) {
+    Locale? langLocale;
+    if (map['language'] != null) {
+      final langStr = (map['language'] as String).split('_');
+
+      langLocale = switch (langStr.length) {
+        3 => Locale.fromSubtags(
+            languageCode: langStr[0],
+            scriptCode: langStr[1],
+            countryCode: langStr[2],
+          ),
+        2 => Locale.fromSubtags(
+            languageCode: langStr[0],
+            countryCode: langStr[1],
+          ),
+        _ => Locale.fromSubtags(languageCode: langStr[0])
+      };
+    }
+
     return Profile(
       id: map['id'] != null ? map['id'] as String : null,
       email: map['email'] != null ? map['email'] as String : null,
@@ -63,6 +88,8 @@ class Profile {
       gender: map['gender'] != null
           ? Gender.values.byName(map['gender'] as String)
           : null,
+      language: langLocale,
+      country: map['country'] != null ? map['country'] as String : null,
     );
   }
 
@@ -79,6 +106,8 @@ class Profile {
     String? bio,
     DateTime? birthdate,
     Gender? gender,
+    Locale? language,
+    String? country,
   }) {
     return Profile(
       id: id ?? this.id,
@@ -88,6 +117,8 @@ class Profile {
       bio: bio ?? this.bio,
       birthdate: birthdate ?? this.birthdate,
       gender: gender ?? this.gender,
+      language: language ?? this.language,
+      country: country ?? this.country,
     );
   }
 
@@ -100,11 +131,13 @@ class Profile {
       bio: map['bio'] ?? bio,
       birthdate: map['birthdate'] ?? birthdate,
       gender: map['gender'] ?? gender,
+      language: map['language'] ?? language,
+      country: map['country'] ?? country,
     );
   }
 
   @override
   String toString() {
-    return 'Profile(id: $id, email: $email, username: $username, avatarUrl: $avatarUrl, bio: $bio, birthdate: $birthdate, gender: $gender)';
+    return 'Profile(id: $id, email: $email, username: $username, avatarUrl: $avatarUrl, bio: $bio, birthdate: $birthdate, gender: $gender, language: $language, country: $country)';
   }
 }

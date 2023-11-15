@@ -7,7 +7,7 @@ part of 'chat_messages_controller.dart';
 // **************************************************************************
 
 String _$chatMessagesControllerHash() =>
-    r'98d0cf399270b27a65c4e6c058cae325a197d03c';
+    r'dff9924ed1996e8cb4eb2a62d54563078a4e74b3';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -33,9 +33,11 @@ class _SystemHash {
 abstract class _$ChatMessagesController
     extends BuildlessAutoDisposeNotifier<PagingController<int, Message>> {
   late final String roomId;
+  late final Map<String, Profile> profiles;
 
   PagingController<int, Message> build(
     String roomId,
+    Map<String, Profile> profiles,
   );
 }
 
@@ -52,9 +54,11 @@ class ChatMessagesControllerFamily
   /// See also [ChatMessagesController].
   ChatMessagesControllerProvider call(
     String roomId,
+    Map<String, Profile> profiles,
   ) {
     return ChatMessagesControllerProvider(
       roomId,
+      profiles,
     );
   }
 
@@ -64,6 +68,7 @@ class ChatMessagesControllerFamily
   ) {
     return call(
       provider.roomId,
+      provider.profiles,
     );
   }
 
@@ -88,8 +93,11 @@ class ChatMessagesControllerProvider extends AutoDisposeNotifierProviderImpl<
   /// See also [ChatMessagesController].
   ChatMessagesControllerProvider(
     String roomId,
+    Map<String, Profile> profiles,
   ) : this._internal(
-          () => ChatMessagesController()..roomId = roomId,
+          () => ChatMessagesController()
+            ..roomId = roomId
+            ..profiles = profiles,
           from: chatMessagesControllerProvider,
           name: r'chatMessagesControllerProvider',
           debugGetCreateSourceHash:
@@ -100,6 +108,7 @@ class ChatMessagesControllerProvider extends AutoDisposeNotifierProviderImpl<
           allTransitiveDependencies:
               ChatMessagesControllerFamily._allTransitiveDependencies,
           roomId: roomId,
+          profiles: profiles,
         );
 
   ChatMessagesControllerProvider._internal(
@@ -110,9 +119,11 @@ class ChatMessagesControllerProvider extends AutoDisposeNotifierProviderImpl<
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.roomId,
+    required this.profiles,
   }) : super.internal();
 
   final String roomId;
+  final Map<String, Profile> profiles;
 
   @override
   PagingController<int, Message> runNotifierBuild(
@@ -120,6 +131,7 @@ class ChatMessagesControllerProvider extends AutoDisposeNotifierProviderImpl<
   ) {
     return notifier.build(
       roomId,
+      profiles,
     );
   }
 
@@ -128,13 +140,16 @@ class ChatMessagesControllerProvider extends AutoDisposeNotifierProviderImpl<
     return ProviderOverride(
       origin: this,
       override: ChatMessagesControllerProvider._internal(
-        () => create()..roomId = roomId,
+        () => create()
+          ..roomId = roomId
+          ..profiles = profiles,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         roomId: roomId,
+        profiles: profiles,
       ),
     );
   }
@@ -147,13 +162,16 @@ class ChatMessagesControllerProvider extends AutoDisposeNotifierProviderImpl<
 
   @override
   bool operator ==(Object other) {
-    return other is ChatMessagesControllerProvider && other.roomId == roomId;
+    return other is ChatMessagesControllerProvider &&
+        other.roomId == roomId &&
+        other.profiles == profiles;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, roomId.hashCode);
+    hash = _SystemHash.combine(hash, profiles.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -163,6 +181,9 @@ mixin ChatMessagesControllerRef
     on AutoDisposeNotifierProviderRef<PagingController<int, Message>> {
   /// The parameter `roomId` of this provider.
   String get roomId;
+
+  /// The parameter `profiles` of this provider.
+  Map<String, Profile> get profiles;
 }
 
 class _ChatMessagesControllerProviderElement
@@ -172,6 +193,9 @@ class _ChatMessagesControllerProviderElement
 
   @override
   String get roomId => (origin as ChatMessagesControllerProvider).roomId;
+  @override
+  Map<String, Profile> get profiles =>
+      (origin as ChatMessagesControllerProvider).profiles;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

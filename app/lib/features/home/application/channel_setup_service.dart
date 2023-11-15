@@ -1,5 +1,6 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/data/current_profile_provider.dart';
+import 'package:chat_app/features/home/application/app_locale_provider.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
@@ -21,7 +22,7 @@ class ChannelSetupService {
   void _init() {
     ref.listen<AsyncValue<AuthState>>(
       authStateChangesProvider,
-      (previous, next) {
+      (previous, next) async {
         final currentState = next.value;
         if (currentState != null) {
           final event = currentState.event;
@@ -30,9 +31,10 @@ class ChannelSetupService {
             case AuthChangeEvent.tokenRefreshed:
             case AuthChangeEvent.userUpdated:
               logger.i('sign in');
-              _loadUserProfile();
-              _setupLobbyChannel();
-              _setupUserChannel();
+              await _loadUserProfile();
+              _setLocale();
+              await _setupLobbyChannel();
+              await _setupUserChannel();
               break;
             case AuthChangeEvent.signedOut:
               logger.i('sign out');
@@ -46,12 +48,21 @@ class ChannelSetupService {
     );
   }
 
-  void _loadUserProfile() async {
+  Future<void> _loadUserProfile() async {
     await ref.read(currentProfileProvider.notifier).load();
   }
 
+  void _setLocale() {
+    final currentProfile = ref.read(currentProfileProvider);
+    final currentLocale = ref.read(appLocaleProvider);
+
+    if (currentLocale != currentProfile.language!) {
+      ref.read(appLocaleProvider.notifier).set(currentProfile.language!);
+    }
+  }
+
   // Join lobby channel on startup, to notify others that we have signed on
-  void _setupLobbyChannel() async {
+  Future<void> _setupLobbyChannel() async {
     final lobbyChannel = await ref
         .refresh(lobbySubscribedChannelProvider(lobbyChannelName).future);
     final updateHandler =
@@ -59,14 +70,14 @@ class ChannelSetupService {
     lobbyChannel.onUpdate(updateHandler);
   }
 
-  void _closeLobbyChannel() async {
+  Future<void> _closeLobbyChannel() async {
     // Unsubscribe from the channel
     final lobbyChannel =
         await ref.read(lobbySubscribedChannelProvider(lobbyChannelName).future);
     lobbyChannel.close();
   }
 
-  void _setupUserChannel() async {
+  Future<void> _setupUserChannel() async {
     final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
 
     final myChannel = ref.refresh(channelRepositoryProvider(currentUserId));

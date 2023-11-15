@@ -35,9 +35,11 @@ class AuthRepository {
     await supabase.from('profiles').update({
       'id': profile.id!,
       'username': profile.username!,
-      'birthdate': profile.birthdate!.toIso8601String(),
+      'birthdate': profile.birthdate?.toIso8601String(),
       'avatar_url': profile.avatarUrl,
-      'gender': profile.gender!.name,
+      'gender': profile.gender?.name,
+      'language': profile.language.toString(),
+      'country': profile.country,
     }).eq('id', currentUserId);
   }
 

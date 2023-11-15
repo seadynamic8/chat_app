@@ -58,6 +58,8 @@ dependencies:
   age_calculator: ^1.0.0
   country_flags: ^2.1.1
   country_picker: ^2.0.22
+  locale_names: ^1.1.1
+  language_picker: ^0.4.3
   
 
 dev_dependencies:

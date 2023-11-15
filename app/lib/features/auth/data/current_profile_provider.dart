@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
+import 'package:i18n_extension/i18n_widget.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'current_profile_provider.g.dart';
@@ -8,7 +11,11 @@ part 'current_profile_provider.g.dart';
 class CurrentProfile extends _$CurrentProfile {
   @override
   Profile build() {
-    return const Profile();
+    return Profile(
+      // Set language and country to system at first
+      language: Locale(I18n.locale.languageCode),
+      country: I18n.locale.countryCode,
+    );
   }
 
   void set(Profile profile) {

@@ -7,7 +7,7 @@ part of 'translation_service.dart';
 // **************************************************************************
 
 String _$translationServiceHash() =>
-    r'980d4b7aea59f83aea1383fe75133575007b7817';
+    r'5b23bd6a635b2eb222536b0837734ab436bbcc21';
 
 /// See also [translationService].
 @ProviderFor(translationService)

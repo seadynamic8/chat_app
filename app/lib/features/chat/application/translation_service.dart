@@ -1,28 +1,39 @@
+import 'dart:ui';
+
 import 'package:chat_app/features/chat/data/translate_repository.dart';
+import 'package:chat_app/features/home/application/app_locale_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'translation_service.g.dart';
 
 class TranslationService {
   TranslationService({
+    required this.ref,
     required this.translateRepository,
   });
 
+  final Ref ref;
   final TranslateRepository translateRepository;
 
-  Future<String?> getTranslation(String messageText) async {
-    // TODO: Need to update this to update this  to use user profile locale
-    // final languageCode = I18n.language; // Current locale
-    // also, if message locale is the same as (user's locale), then return
-    const languageCode = 'es'; // For testing, use Spanish
+  // TODO: For now optional locale, but should update to mandatory other locale
+  Future<String?> getTranslation(
+      Locale? otherProfileLocale, String messageText) async {
+    final currentProfileLang = ref.read(appLocaleProvider)!.languageCode;
+    final otherProfileLang = otherProfileLocale?.languageCode;
+
+    // Don't translate when both have the same language
+    if (currentProfileLang == otherProfileLang) return null;
 
     return await translateRepository.translate(
-        text: messageText, toLangCode: languageCode);
+        text: messageText,
+        toLangCode: currentProfileLang,
+        fromLangCode: otherProfileLang);
   }
 }
 
 @riverpod
 TranslationService translationService(TranslationServiceRef ref) {
   final translateRepository = ref.read(translateRepositoryProvider);
-  return TranslationService(translateRepository: translateRepository);
+  return TranslationService(ref: ref, translateRepository: translateRepository);
 }

@@ -1,12 +1,14 @@
 import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/utils/constants.dart';
+import 'package:country_flags/country_flags.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:i18n_extension/i18n_widget.dart';
+import 'package:locale_names/locale_names.dart';
 
 @RoutePage()
 class PrivateProfileScreen extends ConsumerWidget {
@@ -76,13 +78,35 @@ class PrivateProfileScreen extends ConsumerWidget {
                       avatar: Icon(profile.gender == Gender.male
                           ? Icons.male
                           : Icons.female),
-                      label: Text(profile.age!),
+                      label: Text(profile.age ?? ''),
                     )
                   ],
                 ),
               ),
               const SizedBox(height: 20),
-              // TODO: Insert Flag and Country
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CountryFlag.fromCountryCode(
+                    profile.country!,
+                    height: 15, // Official aspect ratio is 3:5
+                    width: 25,
+                  ),
+                  const SizedBox(width: 15),
+                  Text(
+                    Locale.fromSubtags(countryCode: profile.country)
+                        .nativeDisplayCountry,
+                  ),
+                  const SizedBox(width: 15),
+                  Text(
+                    Locale.fromSubtags(
+                            languageCode: profile.language!.languageCode,
+                            countryCode: profile.language!.countryCode)
+                        .nativeDisplayLanguage,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 30),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(

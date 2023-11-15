@@ -39,9 +39,11 @@ class VideoChatController extends _$VideoChatController {
   }
 
   void _updateNewMessageTranslation(VideoChatMessage message) async {
+    // TODO: Pass otherProfile locale here to use for translation
     final translatedText = await ref
         .read(translationServiceProvider)
-        .getTranslation(message.content);
+        .getTranslation(
+            null, message.content); // TODO: Replace null with locale
 
     if (translatedText == null) return;
 

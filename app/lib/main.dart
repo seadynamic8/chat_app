@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/env/environment.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/home/application/app_locale_provider.dart';
 import 'package:chat_app/i18n/supported_locales_and_delegates.dart';
 import 'package:chat_app/routing/routing_observer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,6 +39,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appRouter = ref.watch(appRouterProvider);
+    final currentLocale = ref.watch(appLocaleProvider);
 
     return MaterialApp.router(
       title: 'Chat With Friends',
@@ -52,10 +54,7 @@ class MyApp extends ConsumerWidget {
       ),
       localizationsDelegates: localizationDelegates,
       supportedLocales: supportedLocales,
-      // *** Change Locale to different to see different language (ex: Locale('es'))
-      // *** Current Locale... can use a button to change if u want
-      // *** or remove to use system locale (meaning will change with user region)
-      locale: const Locale('en'),
+      locale: currentLocale,
     );
   }
 }

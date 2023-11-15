@@ -15,7 +15,8 @@ class ChatMessages extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final pagingController = ref.watch(chatMessagesControllerProvider(roomId));
+    final pagingController =
+        ref.watch(chatMessagesControllerProvider(roomId, profiles));
 
     return PagedListView<int, Message>(
       pagingController: pagingController,

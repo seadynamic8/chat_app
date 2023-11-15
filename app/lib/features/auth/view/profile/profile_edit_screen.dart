@@ -6,11 +6,17 @@ import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/auth/view/common/birthdate_picker.dart';
 import 'package:chat_app/features/auth/view/common/profile_image_picker.dart';
+import 'package:chat_app/features/home/application/app_locale_provider.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/utils/string_validators.dart';
+import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n_extension/i18n_widget.dart';
+import 'package:language_picker/language_picker.dart';
+import 'package:language_picker/languages.dart';
+import 'package:locale_names/locale_names.dart';
 
 @RoutePage()
 class ProfileEditScreen extends ConsumerStatefulWidget {
@@ -30,6 +36,8 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   final StringValidator usernameSubmitValidator =
       UsernameSubmitRegexValidator();
   DateTime? _selectedBirthdate;
+  Country? _selectedCountry;
+  Language? _selectedLanguage;
   var _submitted = false;
 
   String get username => _usernameController.text.trim();
@@ -42,6 +50,9 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     if (widget.profile.bio != null) {
       _bioController.text = widget.profile.bio!;
     }
+    _selectedCountry = Country.parse(widget.profile.country!);
+    _selectedLanguage =
+        Language.fromIsoCode(widget.profile.language!.toString());
   }
 
   void _submit() async {
@@ -63,9 +74,17 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     }
     updateValues['bio'] = bio;
 
+    final selectedCountryCode = _selectedCountry!.countryCode;
+    updateValues['country'] = selectedCountryCode;
+
+    final selectedLocale = Locale(_selectedLanguage!.isoCode);
+    updateValues['language'] = selectedLocale;
+
     await ref
         .read(currentProfileProvider.notifier)
         .saveProfileToDatabase(updateValues);
+
+    ref.read(appLocaleProvider.notifier).set(selectedLocale);
 
     router.pop();
   }
@@ -84,6 +103,36 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     final bool showErrorText = !usernameSubmitValidator.isValid(username);
     final String errorText = 'Username needs 3-24 characters'.i18n;
     return showErrorText ? errorText : null;
+  }
+
+  void _showCountryPicker() {
+    showCountryPicker(
+      context: context,
+      onSelect: (country) {
+        setState(() => _selectedCountry = country);
+      },
+      countryListTheme: CountryListThemeData(
+        bottomSheetHeight: MediaQuery.of(context).size.height * 0.7,
+      ),
+    );
+  }
+
+  // Maybe later add in HK and TW for Chinese support
+  List<Language> get supportedLanguages {
+    // Filtering to match language_picker languages with flutter languages
+    final listOfLangs = [
+      ...kMaterialSupportedLanguages,
+      'zh_Hans',
+      'zh_Hant',
+    ];
+    listOfLangs.remove('nb');
+    listOfLangs.remove('gsw');
+    listOfLangs.remove('fil');
+    listOfLangs.remove('zh');
+
+    return listOfLangs
+        .map((langCode) => Language.fromIsoCode(langCode))
+        .toList();
   }
 
   @override
@@ -120,6 +169,8 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                   onPickImage: (pickedImage) => _selectedImage = pickedImage,
                 ),
                 const SizedBox(height: 20),
+
+                // USERNAME
                 TextFormField(
                   controller: _usernameController,
                   decoration: InputDecoration(
@@ -132,6 +183,8 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                   validator: (username) => usernameErrorText(username ?? ''),
                 ),
                 const SizedBox(height: 20),
+
+                // BIRTHDATE
                 Text(
                   'Birthdate',
                   style: theme.textTheme.labelLarge,
@@ -144,6 +197,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                   updateBirthdate: _updateBirthdate,
                 ),
                 const SizedBox(height: 15),
+
                 // BIO
                 TextFormField(
                   controller: _bioController,
@@ -158,6 +212,63 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                   autocorrect: false,
                 ),
                 const SizedBox(height: 12),
+
+                // COUNTRY
+                InkWell(
+                  onTap: _showCountryPicker,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: Colors.white),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Country'.i18n,
+                          style: theme.textTheme.labelLarge,
+                        ),
+                        const SizedBox(width: 20),
+                        Text(_selectedCountry?.flagEmoji ?? ''),
+                        const SizedBox(width: 5),
+                        Text(_selectedCountry?.name ?? ''),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // LANGUAGE
+                Container(
+                  decoration: const BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: Colors.white),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Language'.i18n,
+                        style: theme.textTheme.labelLarge,
+                      ),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: LanguagePickerDropdown(
+                          initialValue: _selectedLanguage,
+                          languages: supportedLanguages,
+                          itemBuilder: (language) => Text(
+                            Locale.fromSubtags(languageCode: language.isoCode)
+                                .nativeDisplayLanguageScript,
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                          onValuePicked: (Language language) {
+                            setState(() => _selectedLanguage = language);
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                )
               ],
             ),
           ),

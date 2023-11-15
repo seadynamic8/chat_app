@@ -35,7 +35,8 @@ class TranslateRepository {
     final queryParams = {
       'api-version': '3.0',
       'to': toLangCode,
-      'from': fromLangCode,
+      // only use the fromLangCode if detection fails
+      'suggestedFrom': fromLangCode,
     };
 
     final bodyData = [
@@ -70,11 +71,22 @@ class TranslateRepository {
 
     if (response.data == null) return null;
 
-    final translations = response.data![0]['translations'] as List<dynamic>;
-    final translation =
-        translations.firstWhere((t) => t['to'] == toLangCode)['text'];
+    final responseData = response.data![0] as Map<String, dynamic>;
 
-    return translation as String;
+    final translations = responseData['translations'] as List<dynamic>;
+    // Using 'contains' because their languageCode uses the full locale code
+    // ex: [{text: 嘿, to: zh-Hans}]  and also uses the hyphenated locale version.
+    final translation = translations
+        .firstWhere((t) => (t['to'] as String).contains(toLangCode));
+
+    final detectedLang = responseData.containsKey('detectedLanguage')
+        ? responseData['detectedLanguage']['language']
+        : null;
+
+    // Return null if translation Language is the same as the detectedLang
+    if (translation['to'] == detectedLang) return null;
+
+    return translation['text'] as String;
   }
 }
 
