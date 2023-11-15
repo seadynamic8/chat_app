@@ -15,9 +15,6 @@ class VideoChatMessages extends ConsumerWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10),
       width: mediaQuery.size.width * 0.7,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.red), // TODO: For debugging
-      ),
       child: AsyncValueWidget(
         value: messagesValue,
         data: (messages) => ListView.builder(
