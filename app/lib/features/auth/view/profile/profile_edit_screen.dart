@@ -8,6 +8,7 @@ import 'package:chat_app/features/auth/view/common/birthdate_picker.dart';
 import 'package:chat_app/features/auth/view/common/profile_image_picker.dart';
 import 'package:chat_app/features/home/application/app_locale_provider.dart';
 import 'package:chat_app/i18n/localizations.dart';
+import 'package:chat_app/utils/locale_from_string.dart';
 import 'package:chat_app/utils/string_validators.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +78,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     final selectedCountryCode = _selectedCountry!.countryCode;
     updateValues['country'] = selectedCountryCode;
 
-    final selectedLocale = Locale(_selectedLanguage!.isoCode);
+    final selectedLocale = _selectedLanguage!.isoCode.getLocale();
     updateValues['language'] = selectedLocale;
 
     await ref

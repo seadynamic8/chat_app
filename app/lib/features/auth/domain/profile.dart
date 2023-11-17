@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:age_calculator/age_calculator.dart';
+import 'package:chat_app/utils/locale_from_string.dart';
 
 // * Database (Supabase) Stores Auth User and Profile in seperate tables
 // * Auth User (id, email, encrypted_password)
@@ -58,24 +59,6 @@ class Profile {
   }
 
   factory Profile.fromMap(Map<String, dynamic> map) {
-    Locale? langLocale;
-    if (map['language'] != null) {
-      final langStr = (map['language'] as String).split('_');
-
-      langLocale = switch (langStr.length) {
-        3 => Locale.fromSubtags(
-            languageCode: langStr[0],
-            scriptCode: langStr[1],
-            countryCode: langStr[2],
-          ),
-        2 => Locale.fromSubtags(
-            languageCode: langStr[0],
-            countryCode: langStr[1],
-          ),
-        _ => Locale.fromSubtags(languageCode: langStr[0])
-      };
-    }
-
     return Profile(
       id: map['id'] != null ? map['id'] as String : null,
       email: map['email'] != null ? map['email'] as String : null,
@@ -88,7 +71,9 @@ class Profile {
       gender: map['gender'] != null
           ? Gender.values.byName(map['gender'] as String)
           : null,
-      language: langLocale,
+      language: map['language'] != null
+          ? (map['language'] as String).getLocale()
+          : null,
       country: map['country'] != null ? map['country'] as String : null,
     );
   }
