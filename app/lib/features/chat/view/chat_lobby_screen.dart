@@ -1,7 +1,7 @@
 import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
+import 'package:chat_app/features/chat/view/chat_lobby_controller.dart';
 import 'package:chat_app/features/chat/view/chat_online_status_icon.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/constants.dart';
@@ -36,7 +36,7 @@ class ChatLobbyScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final roomsValue = ref.watch(getAllRoomsProvider);
+    final roomsValue = ref.watch(chatLobbyControllerProvider);
 
     return I18n(
       child: SafeArea(

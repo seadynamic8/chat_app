@@ -21,11 +21,13 @@ class Room {
   }
 
   factory Room.fromMap(Map<String, dynamic> map) {
+    final profileKey = map['p2'] ?? map['profiles'];
+
     return Room(
       id: map['id'] as String,
-      otherProfile: map['p2'] != null
-          ? Profile.fromMap(map['p2'].first as Map<String, dynamic>)
-          : null,
+      otherProfile: profileKey == null
+          ? null
+          : Profile.fromMap(profileKey.first as Map<String, dynamic>),
       newestMessage: map['messages'] != null && map['messages'].isNotEmpty
           ? Message.fromMap(map['messages'].first as Map<String, dynamic>)
           : null,

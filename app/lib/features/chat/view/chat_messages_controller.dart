@@ -50,7 +50,7 @@ class ChatMessagesController extends _$ChatMessagesController {
   }
 
   void _handleNewMessage(Map<String, dynamic> payload) async {
-    final newMessage = Message.fromMap(payload['new']);
+    final newMessage = Message.fromMap(payload);
 
     // Add new message first
     final oldState = await future;

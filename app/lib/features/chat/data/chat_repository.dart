@@ -94,6 +94,36 @@ class ChatRepository {
     return roomsList.map((room) => Room.fromMap(room)).toList();
   }
 
+  void watchNewRoomForUser(
+      String currentUserId, void Function(Room newRoom) callback) {
+    supabase.channel('public:chat_users:profile_id=eq.$currentUserId').on(
+      RealtimeListenTypes.postgresChanges,
+      ChannelFilter(
+        event: 'INSERT',
+        schema: 'public',
+        table: 'chat_users',
+        filter: 'profile_id=eq.$currentUserId',
+      ),
+      (payload, [ref]) async {
+        final chatUser = payload['new'];
+
+        final newRoom = await getLatestRoom(chatUser['room_id'], currentUserId);
+        callback(newRoom);
+      },
+    ).subscribe();
+  }
+
+  // This doesn't need to query messages, because the a new room won't have any
+  Future<Room> getLatestRoom(String roomId, String currentUserId) async {
+    final latestRoomMap =
+        await supabase.from('rooms').select<Map<String, dynamic>>('''
+        id,
+        profiles!inner (id, username, avatar_url)
+      ''').eq('id', roomId).neq('profiles.id', currentUserId).single();
+
+    return Room.fromMap(latestRoomMap);
+  }
+
   // * Messages
 
   Future<void> saveMessage(String roomId, Message message) async {
@@ -135,7 +165,7 @@ class ChatRepository {
         filter: 'room_id=eq.$roomId',
       ),
       (payload, [ref]) {
-        callback(payload);
+        callback(payload['new']);
       },
     ).subscribe();
   }
