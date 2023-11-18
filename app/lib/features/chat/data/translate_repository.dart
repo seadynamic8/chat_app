@@ -73,15 +73,15 @@ class TranslateRepository {
 
     final responseData = response.data![0] as Map<String, dynamic>;
 
-    final translations = responseData['translations'] as List<dynamic>;
-    // Using 'contains' because their languageCode uses the full locale code
-    // ex: [{text: 嘿, to: zh-Hans}]  and also uses the hyphenated locale version.
-    final translation = translations
-        .firstWhere((t) => (t['to'] as String).contains(toLangCode));
-
     final detectedLang = responseData.containsKey('detectedLanguage')
         ? responseData['detectedLanguage']['language']
         : null;
+
+    final translations = responseData['translations'] as List<dynamic>;
+    // We would try to match the 'to' to the langCode, but sometimes they are different.
+    // Ex: Ours (no), Theirs (nb)
+    // So since we ask for one translation, the first is fine
+    final translation = translations[0];
 
     // Return null if translation Language is the same as the detectedLang
     if (translation['to'] == detectedLang) return null;
