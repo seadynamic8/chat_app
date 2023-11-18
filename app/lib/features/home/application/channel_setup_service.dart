@@ -33,12 +33,13 @@ class ChannelSetupService {
               logger.i('sign in');
               await _loadUserProfile();
               _setLocale();
-              await _setupLobbyChannel();
-              await _setupUserChannel();
+              await setupLobbyChannel();
+              await setupUserChannel();
               break;
             case AuthChangeEvent.signedOut:
               logger.i('sign out');
-              _closeLobbyChannel();
+              closeLobbyChannel();
+              closeUserChannel();
               break;
             default:
               break;
@@ -62,7 +63,7 @@ class ChannelSetupService {
   }
 
   // Join lobby channel on startup, to notify others that we have signed on
-  Future<void> _setupLobbyChannel() async {
+  Future<void> setupLobbyChannel() async {
     final lobbyChannel = await ref
         .refresh(lobbySubscribedChannelProvider(lobbyChannelName).future);
     final updateHandler =
@@ -70,14 +71,14 @@ class ChannelSetupService {
     lobbyChannel.onUpdate(updateHandler);
   }
 
-  Future<void> _closeLobbyChannel() async {
+  Future<void> closeLobbyChannel() async {
     // Unsubscribe from the channel
     final lobbyChannel =
         await ref.read(lobbySubscribedChannelProvider(lobbyChannelName).future);
     lobbyChannel.close();
   }
 
-  Future<void> _setupUserChannel() async {
+  Future<void> setupUserChannel() async {
     final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
 
     final myChannel = ref.refresh(channelRepositoryProvider(currentUserId));
@@ -98,6 +99,14 @@ class ChannelSetupService {
 
     // Call ended
     myChannel.on('end_call', callRequestController.onEndCall);
+  }
+
+  Future<void> closeUserChannel() async {
+    // Here we need to use currentProfileProvider since authRepository is gone after signOut
+    final currentProfileId = ref.read(currentProfileProvider).id!;
+
+    final myChannel = ref.read(channelRepositoryProvider(currentProfileId));
+    myChannel.close();
   }
 }
 
