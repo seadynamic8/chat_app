@@ -1,48 +1,77 @@
+import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
-import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/view/chat_messages_controller.dart';
 import 'package:chat_app/features/chat/view/message_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-class ChatMessages extends ConsumerWidget {
+class ChatMessages extends ConsumerStatefulWidget {
   const ChatMessages({super.key, required this.roomId, required this.profiles});
 
   final String roomId;
   final Map<String, Profile> profiles;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ChatMessages> createState() => _ChatMessagesState();
+}
+
+class _ChatMessagesState extends ConsumerState<ChatMessages> {
+  final _scrollController = ScrollController();
+
+  void _fetchNewMessages(bool isLastPage) {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+
+    // Set it to update when only 30% of the screen left.
+    final delta = MediaQuery.of(context).size.height * 0.30;
+
+    if (maxScroll - currentScroll <= delta) {
+      if (!isLastPage) {
+        ref
+            .read(chatMessagesControllerProvider(widget.roomId, widget.profiles)
+                .notifier)
+            .getNextPageOfMessages();
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final pagingController =
-        ref.watch(chatMessagesControllerProvider(roomId, profiles));
+    final stateValue = ref
+        .watch(chatMessagesControllerProvider(widget.roomId, widget.profiles));
 
-    return PagedListView<int, Message>(
-      pagingController: pagingController,
-      reverse: true,
-      shrinkWrap: true,
-      builderDelegate: PagedChildBuilderDelegate(
-        itemBuilder: (context, item, index) {
-          final message = item;
+    return AsyncValueWidget(
+      value: stateValue,
+      data: (state) {
+        final messages = state.messages;
 
-          return MessageBubble(
-            message: message,
-            profile: profiles[message.profileId]!,
-          );
-        },
-        noItemsFoundIndicatorBuilder: (context) => SizedBox(
-          height: 100,
-          child: Center(
-            child: Text(
-              'Send your first message =)',
-              style: theme.textTheme.labelLarge!.copyWith(
-                color: theme.hintColor,
-              ),
-            ),
-          ),
-        ),
-      ),
+        _scrollController
+            .addListener(() => _fetchNewMessages(state.isLastPage));
+
+        return messages.isEmpty
+            ? Center(
+                child: Text(
+                  'Send your first message =)',
+                  style: theme.textTheme.labelLarge!.copyWith(
+                    color: theme.hintColor,
+                  ),
+                ),
+              )
+            : ListView.builder(
+                controller: _scrollController,
+                reverse: true,
+                itemCount: messages.length,
+                itemBuilder: (context, index) {
+                  final message = messages[index];
+
+                  return MessageBubble(
+                    message: message,
+                    profile: widget.profiles[message.profileId]!,
+                  );
+                },
+              );
+      },
     );
   }
 }

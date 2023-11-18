@@ -2,54 +2,63 @@ import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/application/translation_service.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
+import 'package:chat_app/features/chat/domain/chat_messages_state.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chat_messages_controller.g.dart';
 
 @riverpod
 class ChatMessagesController extends _$ChatMessagesController {
-  static const numberOfMessagesPerRequest = 10;
+  // Make sure this fills the screen or it won't even scroll.
+  // Also don't make too small since you don't want to query the API too much.
+  static const numberOfMessagesPerRequest = 20;
+  static const initialPage = 0;
 
   @override
-  PagingController<int, Message> build(
-      String roomId, Map<String, Profile> profiles) {
+  FutureOr<ChatMessagesState> build(
+      String roomId, Map<String, Profile> profiles) async {
     // Setup handlers for any new messages
     ref
         .watch(chatRepositoryProvider)
         .watchNewMessageForRoom(roomId, _handleNewMessage);
 
-    // Setup paging controller
-    final PagingController<int, Message> pagingController =
-        PagingController(firstPageKey: 0); // Our paging algorithm starts at 0
-
-    pagingController.addPageRequestListener(_handlePageRequest);
-
-    return pagingController;
-  }
-
-  void _handlePageRequest(int pageKey) async {
+    // Add 10 to initial request to fill the page
+    // subsequent requests will be smaller
     final messages = await ref
         .watch(chatRepositoryProvider)
-        .getAllMessagesForRoom(roomId, pageKey, numberOfMessagesPerRequest);
+        .getAllMessagesForRoom(
+            roomId, initialPage, numberOfMessagesPerRequest + 10);
 
-    final isLastPage = messages.length < numberOfMessagesPerRequest;
-    if (isLastPage) {
-      state.appendLastPage(messages);
-    } else {
-      final nextPageKey = pageKey + 1;
-      state.appendPage(messages, nextPageKey);
-    }
+    return ChatMessagesState(nextPage: initialPage + 1, messages: messages);
+  }
+
+  void getNextPageOfMessages() async {
+    final oldState = await future;
+
+    final newMessages = await ref
+        .watch(chatRepositoryProvider)
+        .getAllMessagesForRoom(
+            roomId, oldState.nextPage, numberOfMessagesPerRequest);
+
+    final isLastPage = newMessages.length < numberOfMessagesPerRequest;
+    state = AsyncData(oldState.copyWith(
+      isLastPage: isLastPage,
+      nextPage: oldState.nextPage + 1,
+      messages: [...oldState.messages, ...newMessages],
+    ));
   }
 
   void _handleNewMessage(Map<String, dynamic> payload) async {
     final newMessage = Message.fromMap(payload['new']);
 
     // Add new message first
-    state.itemList = state.itemList == null
-        ? [newMessage]
-        : [newMessage, ...state.itemList!];
+    final oldState = await future;
+    state = AsyncData(
+      oldState.copyWith(
+        messages: [newMessage, ...oldState.messages],
+      ),
+    );
 
     // Then fetch translation and save
     final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
@@ -67,11 +76,12 @@ class ChatMessagesController extends _$ChatMessagesController {
     if (translatedText == null) return;
 
     // Update the message with translation
-    final newList = [...state.itemList!];
-    final messageIndex = newList.indexWhere((m) => m.id == message.id);
-    newList[messageIndex] =
-        newList[messageIndex].copyWith(translation: translatedText);
-    state.itemList = newList;
+    final oldState = await future;
+    final messageIndex =
+        oldState.messages.indexWhere((m) => m.id == message.id);
+    oldState.messages[messageIndex] =
+        oldState.messages[messageIndex].copyWith(translation: translatedText);
+    state = AsyncData(oldState);
 
     ref
         .read(chatRepositoryProvider)
