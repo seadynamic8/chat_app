@@ -76,6 +76,7 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final onlinePresences = ref.watch(onlinePresencesProvider);
     final userStatus =
         getUserOnlineStatus(onlinePresences, widget.otherProfile.id!);
@@ -98,7 +99,12 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
               ],
             ),
             const SizedBox(width: 15),
-            Text(widget.otherProfile.username!),
+            Text(
+              widget.otherProfile.username!,
+              style: theme.textTheme.labelLarge!.copyWith(
+                fontSize: 15,
+              ),
+            ),
           ],
         ),
         onTap: () => context.router
