@@ -57,21 +57,17 @@ class _MyAppState extends ConsumerState<MyApp> {
         final css = ref.read(channelSetupServiceProvider);
         css.closeLobbyChannel();
         css.closeUserChannel();
-        break;
       case AppLifecycleState.resumed:
         logger.i('appState: resumed');
         final css = ref.read(channelSetupServiceProvider);
         css.setupLobbyChannel();
         css.setupUserChannel();
-        break;
       case AppLifecycleState.inactive:
         logger.t('appState: inactive');
       case AppLifecycleState.detached:
         logger.t('appState: detached');
-        break;
       case AppLifecycleState.hidden:
         logger.t('appState: hidden');
-        break;
       default:
     }
   }

@@ -35,14 +35,11 @@ class ChannelSetupService {
               _setLocale();
               await setupLobbyChannel();
               await setupUserChannel();
-              break;
             case AuthChangeEvent.signedOut:
               logger.i('sign out');
               closeLobbyChannel();
               closeUserChannel();
-              break;
             default:
-              break;
           }
         }
       },

@@ -28,11 +28,9 @@ class ExploreScreen extends ConsumerWidget {
       switch (state.callType) {
         case CallRequestType.newCall:
           cqbanner.showCallRequestBanner();
-          break;
         case CallRequestType.cancelCall:
           cqbanner.closeCallRequestBanner();
           ref.read(callRequestControllerProvider.notifier).resetToWaiting();
-          break;
         default:
       }
     });
