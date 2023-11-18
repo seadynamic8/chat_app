@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
+import 'package:chat_app/utils/username_generate_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide Provider;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:username_generator/username_generator.dart';
+import 'package:username_gen/username_gen.dart';
 
 part 'auth_repository.g.dart';
 
@@ -139,7 +140,11 @@ class AuthRepository {
 
     // Loop until we get a successful generated profile with unique username
     while (success == false && currentTry <= retryTimes) {
-      final username = UsernameGenerator().generateRandom();
+      final usernameGen = UsernameGen()
+        ..setNames(usernameNouns)
+        ..setSeperator('_')
+        ..setAdjectives(usernameAdjectives);
+      final username = usernameGen.generate();
 
       userResponse = await supabase
           .from('profiles')
