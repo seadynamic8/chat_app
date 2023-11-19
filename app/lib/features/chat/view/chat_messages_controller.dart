@@ -19,9 +19,10 @@ class ChatMessagesController extends _$ChatMessagesController {
   FutureOr<ChatMessagesState> build(
       String roomId, Map<String, Profile> profiles) async {
     // Setup handlers for any new messages
-    ref
-        .watch(chatRepositoryProvider)
-        .watchNewMessageForRoom(roomId, _handleNewMessage);
+    ref.listen<AsyncValue<Message>>(watchNewMessagesStreamProvider(roomId),
+        (_, state) {
+      if (state.hasValue) _handleNewMessage(state.value!);
+    });
 
     // Add 10 to initial request to fill the page
     // subsequent requests will be smaller
@@ -49,9 +50,7 @@ class ChatMessagesController extends _$ChatMessagesController {
     ));
   }
 
-  void _handleNewMessage(Map<String, dynamic> payload) async {
-    final newMessage = Message.fromMap(payload);
-
+  void _handleNewMessage(Message newMessage) async {
     // Add new message first
     final oldState = await future;
     state = AsyncData(

@@ -190,5 +190,135 @@ final getAllRoomsProvider = AutoDisposeFutureProvider<List<Room>>.internal(
 );
 
 typedef GetAllRoomsRef = AutoDisposeFutureProviderRef<List<Room>>;
+String _$watchNewMessagesStreamHash() =>
+    r'25c4bc492ee93e4efa44b77e77c79b0a731841fa';
+
+/// See also [watchNewMessagesStream].
+@ProviderFor(watchNewMessagesStream)
+const watchNewMessagesStreamProvider = WatchNewMessagesStreamFamily();
+
+/// See also [watchNewMessagesStream].
+class WatchNewMessagesStreamFamily extends Family<AsyncValue<Message>> {
+  /// See also [watchNewMessagesStream].
+  const WatchNewMessagesStreamFamily();
+
+  /// See also [watchNewMessagesStream].
+  WatchNewMessagesStreamProvider call(
+    String roomId,
+  ) {
+    return WatchNewMessagesStreamProvider(
+      roomId,
+    );
+  }
+
+  @override
+  WatchNewMessagesStreamProvider getProviderOverride(
+    covariant WatchNewMessagesStreamProvider provider,
+  ) {
+    return call(
+      provider.roomId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'watchNewMessagesStreamProvider';
+}
+
+/// See also [watchNewMessagesStream].
+class WatchNewMessagesStreamProvider
+    extends AutoDisposeStreamProvider<Message> {
+  /// See also [watchNewMessagesStream].
+  WatchNewMessagesStreamProvider(
+    String roomId,
+  ) : this._internal(
+          (ref) => watchNewMessagesStream(
+            ref as WatchNewMessagesStreamRef,
+            roomId,
+          ),
+          from: watchNewMessagesStreamProvider,
+          name: r'watchNewMessagesStreamProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$watchNewMessagesStreamHash,
+          dependencies: WatchNewMessagesStreamFamily._dependencies,
+          allTransitiveDependencies:
+              WatchNewMessagesStreamFamily._allTransitiveDependencies,
+          roomId: roomId,
+        );
+
+  WatchNewMessagesStreamProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.roomId,
+  }) : super.internal();
+
+  final String roomId;
+
+  @override
+  Override overrideWith(
+    Stream<Message> Function(WatchNewMessagesStreamRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: WatchNewMessagesStreamProvider._internal(
+        (ref) => create(ref as WatchNewMessagesStreamRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        roomId: roomId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<Message> createElement() {
+    return _WatchNewMessagesStreamProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is WatchNewMessagesStreamProvider && other.roomId == roomId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, roomId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin WatchNewMessagesStreamRef on AutoDisposeStreamProviderRef<Message> {
+  /// The parameter `roomId` of this provider.
+  String get roomId;
+}
+
+class _WatchNewMessagesStreamProviderElement
+    extends AutoDisposeStreamProviderElement<Message>
+    with WatchNewMessagesStreamRef {
+  _WatchNewMessagesStreamProviderElement(super.provider);
+
+  @override
+  String get roomId => (origin as WatchNewMessagesStreamProvider).roomId;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -18,7 +18,14 @@ class ChatMessages extends ConsumerStatefulWidget {
 class _ChatMessagesState extends ConsumerState<ChatMessages> {
   final _scrollController = ScrollController();
 
-  void _fetchNewMessages(bool isLastPage) {
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController.addListener(_fetchNewMessages);
+  }
+
+  void _fetchNewMessages() {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
 
@@ -26,12 +33,10 @@ class _ChatMessagesState extends ConsumerState<ChatMessages> {
     final delta = MediaQuery.of(context).size.height * 0.30;
 
     if (maxScroll - currentScroll <= delta) {
-      if (!isLastPage) {
-        ref
-            .read(chatMessagesControllerProvider(widget.roomId, widget.profiles)
-                .notifier)
-            .getNextPageOfMessages();
-      }
+      ref
+          .read(chatMessagesControllerProvider(widget.roomId, widget.profiles)
+              .notifier)
+          .getNextPageOfMessages();
     }
   }
 
@@ -45,9 +50,6 @@ class _ChatMessagesState extends ConsumerState<ChatMessages> {
       value: stateValue,
       data: (state) {
         final messages = state.messages;
-
-        _scrollController
-            .addListener(() => _fetchNewMessages(state.isLastPage));
 
         return messages.isEmpty
             ? Center(

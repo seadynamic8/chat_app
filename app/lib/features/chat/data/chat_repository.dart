@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/domain/room.dart';
 import 'package:chat_app/utils/pagination.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide Provider;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chat_repository.g.dart';
@@ -154,8 +156,9 @@ class ChatRepository {
     return messages.map((message) => Message.fromMap(message)).toList();
   }
 
-  void watchNewMessageForRoom(
-      String roomId, void Function(Map<String, dynamic> payload) callback) {
+  Stream<Message> watchNewMessageForRoom(String roomId) async* {
+    final streamController = StreamController<Message>();
+
     supabase.channel('public:messages:room=eq.$roomId').on(
       RealtimeListenTypes.postgresChanges,
       ChannelFilter(
@@ -165,9 +168,11 @@ class ChatRepository {
         filter: 'room_id=eq.$roomId',
       ),
       (payload, [ref]) {
-        callback(payload['new']);
+        streamController.add(Message.fromMap(payload['new']));
       },
     ).subscribe();
+
+    yield* streamController.stream;
   }
 
   void saveTranslationForMessage(String messageId, String translation) async {
@@ -210,4 +215,11 @@ FutureOr<List<Room>> getAllRooms(GetAllRoomsRef ref) {
   final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
   final chatRepository = ref.watch(chatRepositoryProvider);
   return chatRepository.getAllRoomsByUser(currentUserId);
+}
+
+@riverpod
+Stream<Message> watchNewMessagesStream(
+    WatchNewMessagesStreamRef ref, String roomId) {
+  final chatRepository = ref.watch(chatRepositoryProvider);
+  return chatRepository.watchNewMessageForRoom(roomId);
 }
