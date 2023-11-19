@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide Provider;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:username_gen/username_gen.dart';
+import 'package:path/path.dart' as p;
 
 part 'auth_repository.g.dart';
 
@@ -47,15 +48,17 @@ class AuthRepository {
   // The custom imagePath below is not the same as returned by API call
   // The custom imagePath is returned because it is used for getting public URL
   Future<String> storeAvatar(File image) async {
+    final extension = p.extension(image.path);
     final currentProfileId = ref.read(currentProfileProvider).id!;
-    final imagePath = '${currentProfileId}_${DateTime.timestamp()}.jpg';
+    final imagePath =
+        '$currentProfileId/images/avatar/${DateTime.timestamp()}$extension';
     // Returns image path on server from root, and not the same as the custom imagePath
-    await supabase.storage.from('avatars').upload(imagePath, image);
+    await supabase.storage.from('media').upload(imagePath, image);
     return imagePath;
   }
 
   String getAvatarPublicURL(String imagePath) {
-    return supabase.storage.from('avatars').getPublicUrl(imagePath);
+    return supabase.storage.from('media').getPublicUrl(imagePath);
   }
 
   // Create New User

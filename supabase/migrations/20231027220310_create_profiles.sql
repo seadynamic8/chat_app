@@ -28,3 +28,9 @@ alter table "public"."profiles" validate constraint "profiles_id_fkey";
 alter table "public"."profiles" add constraint "profiles_username_key" UNIQUE using index "profiles_username_key";
 
 
+-- Create media bucket
+
+insert into storage.buckets
+  (id, name)
+values
+  ('media', 'media');
