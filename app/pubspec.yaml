@@ -41,7 +41,7 @@ dependencies:
   flutter_riverpod: ^2.4.4
   riverpod_annotation: ^2.2.1
   auto_route: ^7.8.4
-  i18n_extension: ^9.0.2
+  i18n_extension: ^10.0.1
   flutter_localizations:
     sdk: flutter
   freezed_annotation: ^2.4.1

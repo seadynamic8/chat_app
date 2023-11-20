@@ -665,10 +665,10 @@ packages:
     dependency: "direct main"
     description:
       name: i18n_extension
-      sha256: db45cd88cf3114f5b9368d975aebebe4ac37fa634fbc5643634289cdfd4d3631
+      sha256: "4ebe7fd4966b4133b06f8ee86460aad08a161c667ce5f7f0a1c348f80d7d308d"
       url: "https://pub.dev"
     source: hosted
-    version: "9.0.2"
+    version: "10.0.1"
   image_picker:
     dependency: "direct main"
     description:
