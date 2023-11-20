@@ -51,3 +51,4 @@ dev-notes.md
 # Encryption keys
 encryption_key.json
 env_encryption.key
+build.yaml

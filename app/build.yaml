@@ -1,8 +1,0 @@
-targets:
-  $default:
-    builders:
-      secure_dotenv_generator|secure_dotenv:
-        options:
-        # This generates an encryption key, by keeping this here, 
-        # its easy to always regenerate when u change the env variables
-          OUTPUT_FILE: encryption_key.json
