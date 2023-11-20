@@ -14,24 +14,19 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final env = await EnvRepository.getEnv();
-
-  final container = ProviderContainer(overrides: [
-    envProvider.overrideWithValue(env),
-  ]);
+  final environment = ProviderContainer().read(environmentProvider);
+  final (supabaseUrl, supabaseKey) = environment.getSupabaseUrlAndKey();
 
   await Supabase.initialize(
-    url: env.supabaseUrl,
-    anonKey: env.supabaseKey,
+    url: supabaseUrl,
+    anonKey: supabaseKey,
     authFlowType: AuthFlowType.pkce,
-    realtimeClientOptions: const RealtimeClientOptions(eventsPerSecond: 2),
+    realtimeClientOptions:
+        const RealtimeClientOptions(eventsPerSecond: 2), // Default is 10
   );
 
   runApp(
-    UncontrolledProviderScope(
-      container: container,
-      child: const MyApp(),
-    ),
+    const ProviderScope(child: MyApp()),
   );
 }
 

@@ -21,6 +21,7 @@ migrate_working_dir/
 # is commented out by default.
 #.vscode/
 .vscode/launch.json
+.vscode/settings.json
 
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -46,3 +47,7 @@ app.*.map.json
 
 # Dev notes
 dev-notes.md
+
+# Encryption keys
+encryption_key.json
+env_encryption.key

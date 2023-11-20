@@ -1,37 +1,47 @@
-import 'dart:convert';
-
 import 'package:chat_app/env/env.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'environment.g.dart';
 
-const encryptionKeyFile = 'assets/config/encryption_key.json';
+class Environment {
+  Environment({required this.ref});
 
-class EnvRepository {
-  // Get Encryption Key from Assets Json File
-  static Future<Map<String, dynamic>> getEncryptionKeyFromFile() async {
-    final jsonString = await rootBundle.loadString(encryptionKeyFile);
-    final jsonData = jsonDecode(jsonString);
+  final Ref ref;
 
-    return jsonData as Map<String, dynamic>;
-  }
+  // This is ugly code, but for now, there's no easy work-around.
+  // For some reason, the Env generator can't generate more than 2 versions of
+  // the Env class, so you could do EnvDev and EnvStage, but not EnvProd.
+  // When you try the 3rd class, the key will fail.
+  (String, String) getSupabaseUrlAndKey() {
+    final env = ref.read(envProvider);
 
-  static Future<Env> getEnv() async {
-    final json = await getEncryptionKeyFromFile();
-
-    return Env(
-      json['ENCRYPTION_KEY'] as String,
-      json['IV'] as String,
-    );
+    late String supabaseUrl;
+    late String supabaseKey;
+    switch (const String.fromEnvironment('ENV')) {
+      case 'PROD' || 'prod' || 'production':
+        supabaseUrl = env.prodSupabaseUrl;
+        supabaseKey = env.prodSupabaseKey;
+      case 'STAG' || 'STAGE' || 'stag' || 'stage' || 'staging':
+        supabaseUrl = env.stageSupabaseUrl;
+        supabaseKey = env.stageSupabaseKey;
+      case 'DEV' || 'dev' || 'development':
+      default:
+        supabaseUrl = env.devSupabaseUrl;
+        supabaseKey = env.devSupabaseKey;
+    }
+    return (supabaseUrl, supabaseKey);
   }
 }
 
-// Create a dummy provider to be overrriden in mart.dart
-// - Because we want an initialized provider, not a future provider, so we need
-// to await for the value before the app starts and then reassign in to this
-// provider.
-@Riverpod(keepAlive: true)
+@riverpod
+Environment environment(EnvironmentRef ref) {
+  return Environment(ref: ref);
+}
+
+@riverpod
 Env env(EnvRef ref) {
-  return throw UnimplementedError();
+  const key = String.fromEnvironment('ENV_ENCRYPTION_KEY');
+  const iv = String.fromEnvironment('ENV_ENCRYPTION_IV');
+  return const Env(key, iv);
 }
