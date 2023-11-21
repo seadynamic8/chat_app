@@ -9,7 +9,7 @@
       "args": [
         "run",
         "build_runner",
-        "watch", // the same stuff but watching this time
+        "build", // the same stuff but watching this time
         "--define",
         "secure_dotenv_generator:secure_dotenv=ENCRYPTION_KEY=${config:custom.env.encryption_key}",
         "--define",
