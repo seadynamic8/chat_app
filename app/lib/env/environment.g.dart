@@ -20,7 +20,7 @@ final environmentProvider = AutoDisposeProvider<Environment>.internal(
 );
 
 typedef EnvironmentRef = AutoDisposeProviderRef<Environment>;
-String _$envHash() => r'84b650d0f0f7858662f6f46161f9babee38d22f8';
+String _$envHash() => r'69c4a5e4d3f7af58f4cc64b0f24dabadd4e72144';
 
 /// See also [env].
 @ProviderFor(env)

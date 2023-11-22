@@ -41,7 +41,7 @@ Environment environment(EnvironmentRef ref) {
 
 @riverpod
 Env env(EnvRef ref) {
-  const key = String.fromEnvironment('ENV_ENCRYPTION_KEY');
-  const iv = String.fromEnvironment('ENV_ENCRYPTION_IV');
+  const key = String.fromEnvironment('ENCRYPTION_KEY');
+  const iv = String.fromEnvironment('IV');
   return const Env(key, iv);
 }
