@@ -6,6 +6,7 @@ import 'package:chat_app/features/home/application/channel_setup_service.dart';
 import 'package:chat_app/i18n/supported_locales_and_delegates.dart';
 import 'package:chat_app/routing/routing_observer.dart';
 import 'package:chat_app/utils/logger.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chat_app/routing/app_router.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,10 @@ void main() async {
     realtimeClientOptions:
         const RealtimeClientOptions(eventsPerSecond: 2), // Default is 10
   );
+
+  await SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp],
+  ); // To turn off landscape mode for now
 
   runApp(
     const ProviderScope(child: MyApp()),
