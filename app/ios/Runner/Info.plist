@@ -8,6 +8,10 @@
 	<string>App Needs Camera Permission To Take Photos</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>App Needs Microphone Permission To Talk To Others</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key><true/>
+	</dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
