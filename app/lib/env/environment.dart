@@ -1,4 +1,5 @@
 import 'package:chat_app/env/env.dart';
+import 'package:chat_app/utils/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -18,7 +19,12 @@ class Environment {
 
     late String supabaseUrl;
     late String supabaseKey;
-    switch (const String.fromEnvironment('ENV')) {
+
+    const currentEnv = String.fromEnvironment('ENV');
+
+    logger.i('Current Env: $currentEnv');
+
+    switch (currentEnv) {
       case 'PROD' || 'prod' || 'production':
         supabaseUrl = env.prodSupabaseUrl;
         supabaseKey = env.prodSupabaseKey;

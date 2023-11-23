@@ -18,6 +18,8 @@ void main() async {
   final environment = ProviderContainer().read(environmentProvider);
   final (supabaseUrl, supabaseKey) = environment.getSupabaseUrlAndKey();
 
+  logger.t('supabaseUrl: $supabaseUrl');
+
   await Supabase.initialize(
     url: supabaseUrl,
     anonKey: supabaseKey,
