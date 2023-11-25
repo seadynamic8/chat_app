@@ -16,7 +16,7 @@ class VideoChatOverlay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mediaQuery = MediaQuery.of(context);
+    final mediaQuerySize = MediaQuery.sizeOf(context);
     final isKeyboardVisible =
         KeyboardVisibilityProvider.isKeyboardVisible(context);
     // This gets inserted into a stack on VideoRoomScreen
@@ -24,8 +24,8 @@ class VideoChatOverlay extends ConsumerWidget {
         ? Container()
         : SizedBox(
             height: isKeyboardVisible
-                ? mediaQuery.size.height * 0.45
-                : mediaQuery.size.height * 0.65,
+                ? mediaQuerySize.height * 0.45
+                : mediaQuerySize.height * 0.65,
             width: double.infinity,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

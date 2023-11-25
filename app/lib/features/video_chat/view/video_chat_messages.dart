@@ -12,11 +12,11 @@ class VideoChatMessages extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final stateValue = ref.watch(videoChatControllerProvider(otherProfileId));
-    final mediaQuery = MediaQuery.of(context);
+    final mediaQuerySize = MediaQuery.sizeOf(context);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10),
-      width: mediaQuery.size.width * 0.7,
+      width: mediaQuerySize.width * 0.7,
       child: AsyncValueWidget(
         value: stateValue,
         data: (state) {

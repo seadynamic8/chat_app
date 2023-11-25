@@ -30,7 +30,7 @@ class _ChatMessagesState extends ConsumerState<ChatMessages> {
     final currentScroll = _scrollController.position.pixels;
 
     // Set it to update when only 30% of the screen left.
-    final delta = MediaQuery.of(context).size.height * 0.30;
+    final delta = MediaQuery.sizeOf(context).height * 0.30;
 
     if (maxScroll - currentScroll <= delta) {
       ref

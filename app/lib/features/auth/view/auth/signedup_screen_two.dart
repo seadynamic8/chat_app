@@ -86,7 +86,7 @@ class _SignedupScreenTwoState extends ConsumerState<SignedupScreenTwo> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final mediaQuery = MediaQuery.of(context);
+    final mediaQuerySize = MediaQuery.sizeOf(context);
 
     return I18n(
       child: Scaffold(
@@ -97,7 +97,7 @@ class _SignedupScreenTwoState extends ConsumerState<SignedupScreenTwo> {
               child: ListView(
                 shrinkWrap: true,
                 padding: EdgeInsets.symmetric(
-                    horizontal: mediaQuery.size.width * 0.2),
+                    horizontal: mediaQuerySize.width * 0.2),
                 children: [
                   // AVATAR
                   Text(

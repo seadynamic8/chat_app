@@ -113,7 +113,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
         setState(() => _selectedCountry = country);
       },
       countryListTheme: CountryListThemeData(
-        bottomSheetHeight: MediaQuery.of(context).size.height * 0.7,
+        bottomSheetHeight: MediaQuery.sizeOf(context).height * 0.7,
       ),
     );
   }
