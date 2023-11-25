@@ -66,24 +66,26 @@ class ChatMessagesController extends _$ChatMessagesController {
     }
   }
 
-  void _updateNewMessageTranslation(Message message) async {
+  void _updateNewMessageTranslation(Message newMessage) async {
     final translatedText = await ref
         .read(translationServiceProvider)
         .getTranslation(
-            profiles[message.profileId]!.language!, message.content);
+            profiles[newMessage.profileId]!.language!, newMessage.content);
 
     if (translatedText == null) return;
 
     // Update the message with translation
     final oldState = await future;
-    final messageIndex =
-        oldState.messages.indexWhere((m) => m.id == message.id);
-    oldState.messages[messageIndex] =
-        oldState.messages[messageIndex].copyWith(translation: translatedText);
-    state = AsyncData(oldState);
+    final newMessages = oldState.messages.map((oldMessage) {
+      if (oldMessage.id == newMessage.id) {
+        return oldMessage.copyWith(translation: translatedText);
+      }
+      return oldMessage;
+    }).toList();
+    state = AsyncData(oldState.copyWith(messages: newMessages));
 
     ref
         .read(chatRepositoryProvider)
-        .saveTranslationForMessage(message.id!, translatedText);
+        .saveTranslationForMessage(newMessage.id!, translatedText);
   }
 }

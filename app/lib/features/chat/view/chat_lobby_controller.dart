@@ -34,19 +34,20 @@ class ChatLobbyController extends _$ChatLobbyController {
     state = AsyncData([...oldState, newRoom]);
   }
 
-  void _setNewestMessage(Room room, Message message) async {
-    final oldState = await future;
-
+  void _setNewestMessage(Room targetRoom, Message message) async {
     // Set newest message first
-    final roomIndex = oldState.indexWhere((r) => r.id == room.id);
-    oldState[roomIndex] = oldState[roomIndex].copyWith(newestMessage: message);
-
-    state = AsyncData(oldState);
+    final oldState = await future;
+    state = AsyncData(oldState.map((room) {
+      if (room.id == targetRoom.id) {
+        return room.copyWith(newestMessage: message);
+      }
+      return room;
+    }).toList());
 
     // Then fetch translation and save
     final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
     if (message.profileId != currentUserId) {
-      _updateNewestMessageTranslation(room.otherProfile!, message);
+      _updateNewestMessageTranslation(targetRoom.otherProfile!, message);
     }
   }
 

@@ -41,25 +41,23 @@ class VideoChatController extends _$VideoChatController {
     }
   }
 
-  void _updateNewMessageTranslation(VideoChatMessage message) async {
+  void _updateNewMessageTranslation(VideoChatMessage newMessage) async {
     final oldState = await future;
 
     final translatedText = await ref
         .read(translationServiceProvider)
-        .getTranslation(
-            oldState.profiles[message.senderId]!.language!, message.content);
+        .getTranslation(oldState.profiles[newMessage.senderId]!.language!,
+            newMessage.content);
 
     if (translatedText == null) return;
 
     // Update the message with translation
-    final newList = [...oldState.messages];
-
-    // Instead of just using last message, search by id to make sure to find
-    // correct message to add translation.
-    final messageIndex = newList.indexWhere((m) => m.id == message.id);
-    newList[messageIndex] =
-        newList[messageIndex].copyWith(translation: translatedText);
-
-    state = AsyncData(oldState.copyWith(messages: newList));
+    final newMessages = oldState.messages.map((oldMessage) {
+      if (oldMessage.id == newMessage.id) {
+        return oldMessage.copyWith(translation: translatedText);
+      }
+      return oldMessage;
+    }).toList();
+    state = AsyncData(oldState.copyWith(messages: newMessages));
   }
 }
