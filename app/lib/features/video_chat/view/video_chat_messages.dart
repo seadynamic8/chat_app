@@ -21,11 +21,14 @@ class VideoChatMessages extends ConsumerWidget {
         value: stateValue,
         data: (state) {
           final messages = state.messages;
+
           return ListView.builder(
             itemCount: messages.length,
             itemBuilder: (context, index) {
               final message = messages[index];
+
               return VideoChatMessageBubble(
+                key: ValueKey(message.id),
                 message: message,
                 profile: state.profiles[message.senderId]!,
               );

@@ -68,6 +68,7 @@ class _ChatMessagesState extends ConsumerState<ChatMessages> {
                   final message = messages[index];
 
                   return MessageBubble(
+                    key: ValueKey(message.id),
                     message: message,
                     profile: widget.profiles[message.profileId]!,
                   );

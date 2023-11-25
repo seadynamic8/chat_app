@@ -53,6 +53,7 @@ class ChatLobbyScreen extends ConsumerWidget {
                 final otherProfile = room.otherProfile!;
 
                 return ListTile(
+                  key: ValueKey(room.id),
                   leading: Stack(
                     children: [
                       CircleAvatar(
