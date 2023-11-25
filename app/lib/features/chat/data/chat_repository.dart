@@ -85,7 +85,7 @@ class ChatRepository {
         .select<List<Map<String, dynamic>>>('''
           id,
           p1:profiles!inner (),
-          p2:profiles!inner (id, username, avatar_url),
+          p2:profiles!inner (id, username, avatar_url, language),
           messages (id, profile_id, content, translation, type, created_at)
         ''')
         .eq('p1.id', currentUserId)
