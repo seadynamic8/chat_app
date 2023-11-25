@@ -1,8 +1,8 @@
-import { create, getNumericDate } from 'https://deno.land/x/djwt@v3.0.0/mod.ts'
+import { create, getNumericDate } from 'https://deno.land/x/djwt@v3.0.1/mod.ts'
 
 console.log("Running JWT Token Function...");
 
-Deno.serve(async (req) => {
+Deno.serve(async (_req) => {
   const API_KEY = Deno.env.get('VIDEOSDK_API_KEY')
   const SECRET_KEY = Deno.env.get('VIDEOSDK_SECRET_KEY')
 
@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
     exp: getNumericDate(10 * 60) // 10 * (60 seconds) = 10 minutes
   }
 
-  const enc = new TextEncoder("utf-8")
+  const enc = new TextEncoder()
 
   const key = await crypto.subtle.importKey(
     "raw",
