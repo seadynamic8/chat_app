@@ -1,4 +1,5 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/utils/keys.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/i18n/localizations.dart';
@@ -29,6 +30,7 @@ class SettingsScreen extends ConsumerWidget {
           body: ListView(
             children: [
               ListTile(
+                key: K.settingsLogoutTile,
                 title: Text('Logout'.i18n),
                 onTap: () => _logOut(context, ref),
               )

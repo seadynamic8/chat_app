@@ -1,3 +1,4 @@
+import 'package:chat_app/utils/keys.dart';
 import 'package:datepicker_dropdown/datepicker_dropdown.dart';
 import 'package:flutter/material.dart';
 
@@ -56,6 +57,7 @@ class _BirthdatePickerState extends State<BirthdatePicker> {
           canvasColor: datePickerBgColor,
         ),
         child: DropdownDatePicker(
+          key: K.signUpBirthdateDropdown,
           endYear: _endYear,
           selectedDay: _selectedDay,
           selectedMonth: _selectedMonth,

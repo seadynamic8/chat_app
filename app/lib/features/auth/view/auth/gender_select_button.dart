@@ -1,4 +1,5 @@
 import 'package:chat_app/features/auth/domain/profile.dart';
+import 'package:chat_app/utils/keys.dart';
 import 'package:flutter/material.dart';
 
 class GenderSelectButton extends StatefulWidget {
@@ -39,6 +40,9 @@ class _GenderSelectButtonState extends State<GenderSelectButton> {
             color: selectedColor,
           ),
           child: IconButton(
+            key: widget.gender == Gender.male
+                ? K.signUpGenderMaleButton
+                : K.signUpGenderFemaleButton,
             onPressed: () {
               widget.onChanged(widget.gender);
             },

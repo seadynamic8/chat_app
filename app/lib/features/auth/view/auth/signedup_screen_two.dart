@@ -6,6 +6,7 @@ import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/data/resolver_provider.dart';
 import 'package:chat_app/features/auth/view/common/profile_image_picker.dart';
 import 'package:chat_app/i18n/localizations.dart';
+import 'package:chat_app/utils/keys.dart';
 import 'package:chat_app/utils/string_validators.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -112,6 +113,7 @@ class _SignedupScreenTwoState extends ConsumerState<SignedupScreenTwo> {
 
                   // USERNAME
                   TextFormField(
+                    key: K.signUpUsernameField,
                     controller: _usernameController,
                     decoration: InputDecoration(
                       labelText: 'Username *'.i18n,
@@ -136,11 +138,13 @@ class _SignedupScreenTwoState extends ConsumerState<SignedupScreenTwo> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
+                        key: K.signUpScreenTwoBackButton,
                         onPressed: () => context.router.pop(),
                         child: Text('Back'.i18n),
                       ),
                       const SizedBox(width: 12),
                       ElevatedButton(
+                        key: K.signUpScreenTwoFinishButton,
                         onPressed: _submit,
                         child: Text('Finish'.i18n),
                       ),

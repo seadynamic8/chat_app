@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:chat_app/features/home/data/image_repository.dart';
 import 'package:chat_app/utils/constants.dart';
+import 'package:chat_app/utils/keys.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,6 +56,7 @@ class _ProfileImagePickerState extends ConsumerState<ProfileImagePicker> {
     return Align(
       alignment: Alignment.center,
       child: InkWell(
+        key: K.signUpImagePicker,
         onTap: _pickImage,
         child: Stack(
           children: [

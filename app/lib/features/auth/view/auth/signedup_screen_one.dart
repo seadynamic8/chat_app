@@ -6,6 +6,7 @@ import 'package:chat_app/features/auth/view/common/birthdate_picker.dart';
 import 'package:chat_app/features/auth/view/auth/gender_selector.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
+import 'package:chat_app/utils/keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n_extension/i18n_widget.dart';
@@ -68,6 +69,8 @@ class _SignedupScreenOneState extends ConsumerState<SignedupScreenOne> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
+
+                // BIRTHDATE
                 Text(
                   'Please enter your birthdate:'.i18n,
                   style: theme.textTheme.headlineMedium!.copyWith(
@@ -79,6 +82,7 @@ class _SignedupScreenOneState extends ConsumerState<SignedupScreenOne> {
                   updateBirthdate: _updateBirthdate,
                 ),
                 const SizedBox(height: 20),
+
                 // GENDER
                 GenderSelector(
                   selectedGender: _selectedGender,
@@ -86,7 +90,9 @@ class _SignedupScreenOneState extends ConsumerState<SignedupScreenOne> {
                       setState(() => _selectedGender = selectedGender),
                 ),
 
+                // NEXT BUTTON
                 ElevatedButton(
+                  key: K.signUpScreenOneNextButton,
                   onPressed: _submit,
                   child: Text('Next'.i18n),
                 )

@@ -1,6 +1,7 @@
 import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/utils/constants.dart';
+import 'package:chat_app/utils/keys.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
@@ -30,6 +31,7 @@ class PrivateProfileScreen extends ConsumerWidget {
                 icon: const Icon(Icons.edit),
               ),
               IconButton(
+                  key: K.privateProfileSettingsBtn,
                   onPressed: () => context.router.push(const SettingsRoute()),
                   icon: const Icon(Icons.settings))
             ],
