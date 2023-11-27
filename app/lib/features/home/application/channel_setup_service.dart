@@ -29,7 +29,6 @@ class ChannelSetupService {
           switch (event) {
             case AuthChangeEvent.signedIn:
             case AuthChangeEvent.tokenRefreshed:
-            case AuthChangeEvent.userUpdated:
               logger.i('sign in');
               await _loadUserProfile();
               _setLocale();

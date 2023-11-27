@@ -32,15 +32,14 @@ void main() {
 
       // Switch to Sign Up form
       await $(K.authFormTypeToggle).tap();
+      expect($('Sign Up'), findsWidgets);
+
       // Sign up
       await $(K.authFormEmailField).enterText(email);
       await $(K.authFormPasswordField).enterText(password);
       await $(K.authFormSubmitButton).tap();
 
-      expect($('Verify PIN'), findsWidgets);
-
-      final pinCode = await r.getEmailOTP(email);
-      await $(K.authVerifyFormPinput).enterText(pinCode);
+      await r.verifyPIN(email);
 
       // Signup Screen One
       expect($('Welcome!'), findsOneWidget);

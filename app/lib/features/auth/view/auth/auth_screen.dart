@@ -59,9 +59,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
         if (state.formType == AuthFormType.login) {
           widget.resolver.resolveNext(true, reevaluateNext: false);
         } else {
-          // Store resolver for signup process, so it doesn't need to pass it around from page to page.
           ref.read(resolverProvider.notifier).set(widget.resolver);
-          // Navigate to Auth Verify OTP Screen
           router.push(AuthVerifyRoute(email: email));
         }
       },
@@ -121,6 +119,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
             child: ListView(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
               children: [
+                // EMAIL
                 TextFormField(
                   key: K.authFormEmailField,
                   controller: _emailController,
@@ -142,8 +141,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                       : AutovalidateMode.disabled,
                   validator: (email) => state.emailErrorText(email ?? ''),
                 ),
-                if (state.formType == AuthFormType.signup)
-                  const SizedBox(width: 16, height: 16),
+                const SizedBox(width: 16, height: 16),
+
+                // PASSWORD
                 TextFormField(
                   key: K.authFormPasswordField,
                   controller: _passwordController,
@@ -162,6 +162,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                       state.passwordErrorText(password ?? ''),
                 ),
                 const SizedBox(width: 16, height: 16),
+
+                // SUBMIT BUTTON
                 ElevatedButton(
                   key: K.authFormSubmitButton,
                   onPressed:
@@ -171,6 +173,19 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                       : Text(state.primaryButtonText),
                 ),
                 const SizedBox(width: 16, height: 16),
+
+                // FORGOT PASSWORD
+                if (state.formType == AuthFormType.login)
+                  TextButton(
+                    key: K.authFormForgotPasswordBtn,
+                    onPressed: () {
+                      ref.read(resolverProvider.notifier).set(widget.resolver);
+                      context.router.push(const ForgotPasswordRoute());
+                    },
+                    child: Text('Forgot Password?'.i18n),
+                  ),
+
+                // LOGIN OR SIGNUP TOGGLE
                 TextButton(
                   key: K.authFormTypeToggle,
                   onPressed: state.value.isLoading

@@ -11,6 +11,7 @@ class Keys {
   static const authFormEmailField = Key('authFormEmailField');
   static const authFormUsernameField = Key('authFormUsernameField');
   static const authFormPasswordField = Key('authFormPasswordField');
+  static const authFormForgotPasswordBtn = Key('authFormForgotPasswordBtn');
   static const authFormSubmitButton = Key('authFormSubmitButton');
   static const authFormTypeToggle = Key('authFormTypeToggle');
 
@@ -30,4 +31,13 @@ class Keys {
   static const privateProfileSettingsBtn = Key('privateProfileSettingsBtn');
 
   static const settingsLogoutTile = Key('settingsLogoutTile');
+
+  static const forgotPasswordPrompt = Key('forgotPasswordPrompt');
+  static const forgotPasswordEmailField = Key('forgotPasswordEmailField');
+  static const forgotPasswordBackButton = Key('forgotPasswordBackButton');
+  static const forgotPasswordSubmitButton = Key('forgotPasswordSubmitButton');
+
+  static const resetPasswordPrompt = Key('resetPasswordPrompt');
+  static const resetPasswordField = Key('resetPasswordField');
+  static const resetPasswordSubmitButton = Key('resetPasswordSubmitButton');
 }

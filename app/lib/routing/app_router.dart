@@ -14,6 +14,8 @@ class AppRouter extends $AppRouter {
   @override
   List<AutoRoute> get routes => [
         AutoRoute(page: AuthRoute.page),
+        AutoRoute(page: ForgotPasswordRoute.page),
+        AutoRoute(page: ResetPasswordRoute.page, guards: [authGuard]),
         AutoRoute(page: AuthVerifyRoute.page),
         AutoRoute(page: SignedupRouteOne.page, guards: [authGuard]),
         AutoRoute(page: SignedupRouteTwo.page, guards: [authGuard]),

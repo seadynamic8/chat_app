@@ -1,5 +1,7 @@
 import 'package:chat_app/main.dart';
+import 'package:chat_app/utils/keys.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:patrol/patrol.dart';
 
 import 'app_initializer.dart';
@@ -18,6 +20,13 @@ class Robot {
     await $.pumpWidgetAndSettle(
       const ProviderScope(child: MyApp()),
     );
+  }
+
+  Future<void> verifyPIN(String email) async {
+    expect($('Verify PIN'), findsWidgets);
+
+    final pinCode = await getEmailOTP(email);
+    await $(K.authVerifyFormPinput).enterText(pinCode);
   }
 
   Future<String> getEmailOTP(String email) async {

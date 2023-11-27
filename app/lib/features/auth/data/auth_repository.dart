@@ -11,6 +11,15 @@ import 'package:path/path.dart' as p;
 
 part 'auth_repository.g.dart';
 
+enum AuthOtpType {
+  signup(otpType: OtpType.signup),
+  recovery(otpType: OtpType.recovery);
+
+  const AuthOtpType({required this.otpType});
+
+  final OtpType otpType;
+}
+
 class AuthRepository {
   AuthRepository({required this.ref, required this.supabase});
 
@@ -81,25 +90,40 @@ class AuthRepository {
     String? email,
     String? phone,
     required String pinCode,
+    required AuthOtpType authOtpType,
   }) async {
     final verifyResponse = await supabase.auth.verifyOTP(
       email: email,
       phone: phone,
       token: pinCode,
-      type: OtpType.signup,
+      type: authOtpType.otpType,
     );
 
     if (verifyResponse.user == null) return null;
 
-    // This is ensure username exists
-    final profile =
-        await _generateProfileWithUniqueUsername(verifyResponse.user!.id);
+    return _getAndSetProfile(
+      verifyResponse.user!.id,
+      isSignUp: authOtpType == AuthOtpType.signup,
+    );
+  }
 
-    if (profile == null) return null;
+  // Sends a reset password email to user
+  // To be used with verifyOTP (type recovery)
+  // and updateUser after they verify the code, they can update the password
+  Future<void> resetPassword(String email) async {
+    await supabase.auth.resetPasswordForEmail(email);
+  }
 
-    ref.read(currentProfileProvider.notifier).set(profile);
-
-    return profile;
+  Future<void> updateUser({
+    String? email,
+    String? password,
+    String? pinCode,
+  }) async {
+    await supabase.auth.updateUser(UserAttributes(
+      email: email,
+      password: password,
+      nonce: pinCode,
+    ));
   }
 
   // Login
@@ -112,10 +136,7 @@ class AuthRepository {
 
     if (response.user == null) return null;
 
-    final profile = await getProfile(response.user!.id);
-    ref.read(currentProfileProvider.notifier).set(profile);
-
-    return profile;
+    return _getAndSetProfile(response.user!.id);
   }
 
   Future<void> signOut() async {
@@ -131,6 +152,24 @@ class AuthRepository {
           'JWT Token failed to be retrieved, Response Code: ${jwtResponse.status}');
     }
     return (jwtResponse.data as String).replaceAll('"', '');
+  }
+
+  Future<Profile?> _getAndSetProfile(
+    String profileId, {
+    bool isSignUp = false,
+  }) async {
+    late Profile? profile;
+    if (isSignUp) {
+      // This ensures username exists
+      profile = await _generateProfileWithUniqueUsername(profileId);
+    } else {
+      profile = await getProfile(profileId);
+    }
+    if (profile == null) return null;
+
+    ref.read(currentProfileProvider.notifier).set(profile);
+
+    return profile;
   }
 
   Future<Profile?> _generateProfileWithUniqueUsername(

@@ -3,6 +3,7 @@ import 'package:chat_app/common/error_snackbar.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
+import 'package:chat_app/utils/keys.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,9 +17,11 @@ class AuthVerifyScreen extends ConsumerStatefulWidget {
   const AuthVerifyScreen({
     super.key,
     required this.email,
+    this.isResetPassword = false,
   });
 
   final String email;
+  final bool isResetPassword;
 
   @override
   ConsumerState<AuthVerifyScreen> createState() => _AuthVerifyScreenState();
@@ -30,15 +33,24 @@ class _AuthVerifyScreenState extends ConsumerState<AuthVerifyScreen> {
   void _submit(String pin) async {
     final router = context.router;
     try {
-      final response = await ref
-          .watch(authRepositoryProvider)
-          .verifyOTP(email: widget.email, pinCode: pin);
+      final response = await ref.watch(authRepositoryProvider).verifyOTP(
+            email: widget.email,
+            pinCode: pin,
+            authOtpType: widget.isResetPassword
+                ? AuthOtpType.recovery
+                : AuthOtpType.signup,
+          );
 
       // Verified (logged in) and created user with generated username
       if (response != null) {
-        // Navigate to user creation process to fill out profile
         // Use replace here, so that users can't come back here
-        router.replace(const SignedupRouteOne());
+        if (widget.isResetPassword) {
+          logger.i('isResetPassword');
+          router.replace(const ResetPasswordRoute());
+        } else {
+          // Navigate to user creation process to fill out profile
+          router.replace(const SignedupRouteOne());
+        }
       }
     } on AuthException catch (error) {
       if (!context.mounted) return;
@@ -112,6 +124,7 @@ class _AuthVerifyScreenState extends ConsumerState<AuthVerifyScreen> {
                 ),
                 const SizedBox(height: 25),
                 Pinput(
+                  key: K.authVerifyFormPinput,
                   controller: _pinController,
                   defaultPinTheme: defaultPinTheme,
                   length: 6,
@@ -141,6 +154,7 @@ class _AuthVerifyScreenState extends ConsumerState<AuthVerifyScreen> {
                 ),
                 const SizedBox(height: 12),
                 ElevatedButton(
+                  key: K.authVerifyFormClearButton,
                   onPressed: () {
                     _pinController.clear();
                   },
