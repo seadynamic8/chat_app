@@ -1,4 +1,5 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/home/application/channel_setup_service.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
@@ -13,6 +14,10 @@ class SettingsScreen extends ConsumerWidget {
 
   void _logOut(BuildContext context, WidgetRef ref) async {
     final router = context.router;
+
+    final css = ref.read(channelSetupServiceProvider);
+    await css.closeLobbyChannel();
+    await css.closeUserChannel();
 
     await ref.read(authRepositoryProvider).signOut();
 

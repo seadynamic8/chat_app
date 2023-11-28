@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/error_snackbar.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/data/resolver_provider.dart';
 import 'package:chat_app/features/auth/view/auth/user_input_validation.dart';
 import 'package:chat_app/i18n/localizations.dart';
+import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +29,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
   String get password => _passwordController.text.trim();
 
   void _submit() async {
+    final router = context.router;
     setState(() => _submitted = true);
 
     if (!_form.currentState!.validate()) return;
@@ -37,8 +38,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
     try {
       await ref.read(authRepositoryProvider).updateUser(password: password);
 
-      ref.read(resolverProvider.notifier).resolveNext(true);
-      ref.invalidate(resolverProvider);
+      router.replaceAll([const MainNavigation()]);
     } on AuthException catch (error) {
       if (!context.mounted) return;
       context.showErrorSnackBar(error.message);

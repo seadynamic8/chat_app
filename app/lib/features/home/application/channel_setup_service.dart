@@ -36,8 +36,6 @@ class ChannelSetupService {
               await setupUserChannel();
             case AuthChangeEvent.signedOut:
               logger.i('sign out');
-              closeLobbyChannel();
-              closeUserChannel();
             default:
           }
         }
@@ -71,7 +69,7 @@ class ChannelSetupService {
     // Unsubscribe from the channel
     final lobbyChannel =
         await ref.read(lobbySubscribedChannelProvider(lobbyChannelName).future);
-    lobbyChannel.close();
+    await lobbyChannel.close();
   }
 
   Future<void> setupUserChannel() async {
@@ -102,7 +100,7 @@ class ChannelSetupService {
     final currentProfileId = ref.read(currentProfileProvider).id!;
 
     final myChannel = ref.read(channelRepositoryProvider(currentProfileId));
-    myChannel.close();
+    await myChannel.close();
   }
 }
 

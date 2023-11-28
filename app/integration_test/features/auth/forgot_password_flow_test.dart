@@ -4,7 +4,7 @@ import 'package:patrol/patrol.dart';
 
 import '../../app_initializer.dart';
 import '../../robot.dart';
-import 'data/auth_admin_repository.dart';
+import '../../common/auth_admin_repository.dart';
 
 void main() {
   const email = 'fake@test.com';

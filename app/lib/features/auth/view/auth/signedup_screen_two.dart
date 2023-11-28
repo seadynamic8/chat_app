@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/data/current_profile_provider.dart';
-import 'package:chat_app/features/auth/data/resolver_provider.dart';
 import 'package:chat_app/features/auth/view/common/profile_image_picker.dart';
 import 'package:chat_app/i18n/localizations.dart';
+import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:chat_app/utils/string_validators.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +34,7 @@ class _SignedupScreenTwoState extends ConsumerState<SignedupScreenTwo> {
   String get username => _usernameController.text.trim();
 
   void _submit() async {
+    final router = context.router;
     setState(() => _submitted = true);
 
     if (!_form.currentState!.validate()) return;
@@ -51,9 +52,7 @@ class _SignedupScreenTwoState extends ConsumerState<SignedupScreenTwo> {
         .read(currentProfileProvider.notifier)
         .saveProfileToDatabase(updateValues);
 
-    // Tell Autorouter to go to next route
-    ref.read(resolverProvider.notifier).resolveNext(true);
-    ref.invalidate(resolverProvider);
+    router.replaceAll([const MainNavigation()]);
   }
 
   Future<String> _saveSelectedImage() async {

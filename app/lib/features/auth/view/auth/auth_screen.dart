@@ -59,7 +59,6 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
         if (state.formType == AuthFormType.login) {
           widget.resolver.resolveNext(true, reevaluateNext: false);
         } else {
-          ref.read(resolverProvider.notifier).set(widget.resolver);
           router.push(AuthVerifyRoute(email: email));
         }
       },
@@ -178,10 +177,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 if (state.formType == AuthFormType.login)
                   TextButton(
                     key: K.authFormForgotPasswordBtn,
-                    onPressed: () {
-                      ref.read(resolverProvider.notifier).set(widget.resolver);
-                      context.router.push(const ForgotPasswordRoute());
-                    },
+                    onPressed: () =>
+                        context.router.push(const ForgotPasswordRoute()),
                     child: Text('Forgot Password?'.i18n),
                   ),
 
