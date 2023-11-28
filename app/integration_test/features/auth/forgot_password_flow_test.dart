@@ -28,8 +28,13 @@ void main() {
     final r = Robot($: $);
     await r.pumpAndSettleMyApp(preSetup: false);
 
+    expect($('Sign Up').exists, equals(true));
+
+    // Toggle to Login Form
+    await $(K.authFormTypeToggle).tap();
     expect($('Log In').exists, equals(true));
 
+    // Tap Forgot Password Button
     await $(K.authFormForgotPasswordBtn).tap();
 
     // Forgot Password Back Button
@@ -62,6 +67,10 @@ void main() {
     await $(K.privateProfileSettingsBtn).tap();
     await $(K.settingsLogoutTile).tap();
 
+    expect($('Sign Up').exists, equals(true));
+
+    // Toggle to Login Form
+    await $(K.authFormTypeToggle).tap();
     expect($('Log In').exists, equals(true));
 
     // Login

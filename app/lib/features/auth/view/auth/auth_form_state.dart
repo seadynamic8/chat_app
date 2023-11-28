@@ -14,7 +14,7 @@ mixin EmailAndPasswordValidators {
 
 class AuthFormState with EmailAndPasswordValidators {
   AuthFormState({
-    this.formType = AuthFormType.login,
+    this.formType = AuthFormType.signup,
     this.value = const AsyncData(null),
   });
 

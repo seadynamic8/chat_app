@@ -24,7 +24,7 @@ class AuthGuard extends AutoRouteGuard {
 
       // - Redirect will remove the redirected route from the stack after completion.
       resolver.redirect(
-        AuthRoute(formType: AuthFormType.login, resolver: resolver),
+        AuthRoute(formType: AuthFormType.signup, resolver: resolver),
       );
     }
   }

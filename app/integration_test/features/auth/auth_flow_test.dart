@@ -28,10 +28,6 @@ void main() {
       final r = Robot($: $);
       await r.pumpAndSettleMyApp(preSetup: false);
 
-      expect($('Log In').exists, equals(true));
-
-      // Switch to Sign Up form
-      await $(K.authFormTypeToggle).tap();
       expect($('Sign Up'), findsWidgets);
 
       // Sign up
@@ -83,6 +79,10 @@ void main() {
       await $(K.privateProfileSettingsBtn).tap();
       await $(K.settingsLogoutTile).tap();
 
+      expect($('Sign Up').exists, equals(true));
+
+      // Toggle to Login Form
+      await $(K.authFormTypeToggle).tap();
       expect($('Log In').exists, equals(true));
 
       // Login
