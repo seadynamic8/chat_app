@@ -64,9 +64,10 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
       error: (error, stackTrace) {
         if (error is AuthException) {
           if (!context.mounted) return;
+          logger.e(error.toString(), stackTrace: stackTrace);
           context.showErrorSnackBar(error.message);
         } else {
-          logger.e(error.toString());
+          logger.e(error.toString(), stackTrace: stackTrace);
           context.showErrorSnackBar(unexpectedErrorMessage);
         }
       },
