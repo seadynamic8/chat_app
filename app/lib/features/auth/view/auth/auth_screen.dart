@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/error_snackbar.dart';
-import 'package:chat_app/features/auth/data/resolver_provider.dart';
 import 'package:chat_app/features/auth/view/auth/auth_form_state.dart';
 import 'package:chat_app/features/auth/view/auth/auth_screen_controller.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
