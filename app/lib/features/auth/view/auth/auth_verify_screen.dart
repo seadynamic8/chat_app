@@ -45,7 +45,6 @@ class _AuthVerifyScreenState extends ConsumerState<AuthVerifyScreen> {
       if (response != null) {
         // Use replace here, so that users can't come back here
         if (widget.isResetPassword) {
-          logger.i('isResetPassword');
           router.replace(const ResetPasswordRoute());
         } else {
           // Navigate to user creation process to fill out profile
@@ -62,6 +61,16 @@ class _AuthVerifyScreenState extends ConsumerState<AuthVerifyScreen> {
       if (!context.mounted) return;
       logger.e(error.toString());
       context.showErrorSnackBar(unexpectedErrorMessage);
+    }
+  }
+
+  void _resendOTP() async {
+    final authRepository = ref.read(authRepositoryProvider);
+    if (widget.isResetPassword) {
+      await authRepository.resetPassword(widget.email);
+    } else {
+      await authRepository.resendOTP(
+          authOtpType: AuthOtpType.signup, email: widget.email);
     }
   }
 
@@ -123,6 +132,8 @@ class _AuthVerifyScreenState extends ConsumerState<AuthVerifyScreen> {
                   ),
                 ),
                 const SizedBox(height: 25),
+
+                // PIN CODE INPUT
                 Pinput(
                   key: K.authVerifyFormPinput,
                   controller: _pinController,
@@ -153,12 +164,26 @@ class _AuthVerifyScreenState extends ConsumerState<AuthVerifyScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                ElevatedButton(
-                  key: K.authVerifyFormClearButton,
-                  onPressed: () {
-                    _pinController.clear();
-                  },
-                  child: Text('Clear'.i18n),
+
+                // ACTION BUTTONS
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      key: K.authVerifyFormClearButton,
+                      onPressed: () {
+                        _pinController.clear();
+                      },
+                      child: Text('Clear'.i18n),
+                    ),
+                    const SizedBox(width: 12),
+                    ElevatedButton(
+                      key: K.authVerifyFormResendButton,
+                      onPressed: _resendOTP,
+                      child: Text('Resend code'.i18n),
+                    ),
+                  ],
                 ),
               ],
             ),

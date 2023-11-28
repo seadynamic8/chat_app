@@ -85,6 +85,15 @@ class AuthRepository {
     return const Profile();
   }
 
+  // Resend only for signup, email change, or phone change
+  // - For resetPassword, use resetPassword
+  Future<void> resendOTP({
+    required AuthOtpType authOtpType,
+    required String email,
+  }) async {
+    await supabase.auth.resend(type: authOtpType.otpType, email: email);
+  }
+
   // Use either email or phone, not both
   Future<Profile?> verifyOTP({
     String? email,

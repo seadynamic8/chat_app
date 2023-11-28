@@ -17,6 +17,7 @@ class Keys {
 
   static const authVerifyFormPinput = Key('authVerifyFormPinput');
   static const authVerifyFormClearButton = Key('authVerifyFormClearButton');
+  static const authVerifyFormResendButton = Key('authVerifyFormResendButton');
 
   static const signUpBirthdateDropdown = Key('signUpBirthdateDropdown');
   static const signUpGenderMaleButton = Key('signUpGenderMaleButton');

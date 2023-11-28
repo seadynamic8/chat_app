@@ -35,6 +35,11 @@ void main() {
       await $(K.authFormPasswordField).enterText(password);
       await $(K.authFormSubmitButton).tap();
 
+      // * Comment out for now because it slows down test considerbly,
+      // * need to wait (delay) 60s for resend email
+      // await $.tester.pump(const Duration(seconds: 60));
+      // await $(K.authVerifyFormResendButton).tap();
+
       await r.verifyPIN(email);
 
       // Signup Screen One
