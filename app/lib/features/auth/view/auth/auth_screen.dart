@@ -104,6 +104,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final state = ref.watch(authScreenControllerProvider(widget.formType));
 
     return I18n(
@@ -161,25 +162,38 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 ),
                 const SizedBox(width: 16, height: 16),
 
+                // FORGOT PASSWORD
+                if (state.formType == AuthFormType.login)
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      key: K.authFormForgotPasswordBtn,
+                      onPressed: () =>
+                          context.router.push(const ForgotPasswordRoute()),
+                      child: Text(
+                        'Forgot Password?'.i18n,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: theme.buttonTheme.colorScheme!.primary
+                              .withOpacity(0.7),
+                        ),
+                      ),
+                    ),
+                  ),
+
                 // SUBMIT BUTTON
                 ElevatedButton(
                   key: K.authFormSubmitButton,
                   onPressed:
                       state.value.isLoading ? null : () => _submit(state),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.buttonTheme.colorScheme!.onPrimary,
+                  ),
                   child: state.value.isLoading
                       ? const CircularProgressIndicator()
                       : Text(state.primaryButtonText),
                 ),
                 const SizedBox(width: 16, height: 16),
-
-                // FORGOT PASSWORD
-                if (state.formType == AuthFormType.login)
-                  TextButton(
-                    key: K.authFormForgotPasswordBtn,
-                    onPressed: () =>
-                        context.router.push(const ForgotPasswordRoute()),
-                    child: Text('Forgot Password?'.i18n),
-                  ),
 
                 // LOGIN OR SIGNUP TOGGLE
                 TextButton(
