@@ -1,4 +1,4 @@
-# chat_app
+# Dazzely
 
 A new Flutter project.
 

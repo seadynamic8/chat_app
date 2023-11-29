@@ -90,7 +90,7 @@ dev_dependencies:
 patrol:
   app_name: Chat App
   android:
-    package_name: com.example.chat_app
+    package_name: com.stcache.dazzely
   ios:
     bundle_id: com.example.ChatApp
 
