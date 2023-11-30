@@ -10,4 +10,7 @@ BEGIN
   SELECT au.id INTO id FROM auth.users au WHERE au.email = $1;
   RETURN id;
 END;
-$function$;
+$function$
+;
+
+
