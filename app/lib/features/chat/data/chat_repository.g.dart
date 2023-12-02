@@ -320,5 +320,134 @@ class _WatchNewMessagesStreamProviderElement
   @override
   String get roomId => (origin as WatchNewMessagesStreamProvider).roomId;
 }
+
+String _$unReadMessagesStreamHash() =>
+    r'7886b36f54db8174e62aad132680b4a88a745fb8';
+
+/// See also [unReadMessagesStream].
+@ProviderFor(unReadMessagesStream)
+const unReadMessagesStreamProvider = UnReadMessagesStreamFamily();
+
+/// See also [unReadMessagesStream].
+class UnReadMessagesStreamFamily extends Family<AsyncValue<int>> {
+  /// See also [unReadMessagesStream].
+  const UnReadMessagesStreamFamily();
+
+  /// See also [unReadMessagesStream].
+  UnReadMessagesStreamProvider call([
+    String? roomId,
+  ]) {
+    return UnReadMessagesStreamProvider(
+      roomId,
+    );
+  }
+
+  @override
+  UnReadMessagesStreamProvider getProviderOverride(
+    covariant UnReadMessagesStreamProvider provider,
+  ) {
+    return call(
+      provider.roomId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'unReadMessagesStreamProvider';
+}
+
+/// See also [unReadMessagesStream].
+class UnReadMessagesStreamProvider extends AutoDisposeStreamProvider<int> {
+  /// See also [unReadMessagesStream].
+  UnReadMessagesStreamProvider([
+    String? roomId,
+  ]) : this._internal(
+          (ref) => unReadMessagesStream(
+            ref as UnReadMessagesStreamRef,
+            roomId,
+          ),
+          from: unReadMessagesStreamProvider,
+          name: r'unReadMessagesStreamProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$unReadMessagesStreamHash,
+          dependencies: UnReadMessagesStreamFamily._dependencies,
+          allTransitiveDependencies:
+              UnReadMessagesStreamFamily._allTransitiveDependencies,
+          roomId: roomId,
+        );
+
+  UnReadMessagesStreamProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.roomId,
+  }) : super.internal();
+
+  final String? roomId;
+
+  @override
+  Override overrideWith(
+    Stream<int> Function(UnReadMessagesStreamRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: UnReadMessagesStreamProvider._internal(
+        (ref) => create(ref as UnReadMessagesStreamRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        roomId: roomId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<int> createElement() {
+    return _UnReadMessagesStreamProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is UnReadMessagesStreamProvider && other.roomId == roomId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, roomId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin UnReadMessagesStreamRef on AutoDisposeStreamProviderRef<int> {
+  /// The parameter `roomId` of this provider.
+  String? get roomId;
+}
+
+class _UnReadMessagesStreamProviderElement
+    extends AutoDisposeStreamProviderElement<int> with UnReadMessagesStreamRef {
+  _UnReadMessagesStreamProviderElement(super.provider);
+
+  @override
+  String? get roomId => (origin as UnReadMessagesStreamProvider).roomId;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -1,4 +1,5 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/application/translation_service.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
@@ -24,12 +25,14 @@ class ChatMessagesController extends _$ChatMessagesController {
       if (state.hasValue) _handleNewMessage(state.value!);
     });
 
+    final chatRepository = ref.watch(chatRepositoryProvider);
     // Add 10 to initial request to fill the page
     // subsequent requests will be smaller
-    final messages = await ref
-        .watch(chatRepositoryProvider)
-        .getAllMessagesForRoom(
-            roomId, initialPage, numberOfMessagesPerRequest + 10);
+    final messages = await chatRepository.getAllMessagesForRoom(
+        roomId, initialPage, numberOfMessagesPerRequest + 10);
+
+    final currentProfileId = ref.read(currentProfileProvider).id!;
+    await chatRepository.markAllMessagesAsReadForRoom(roomId, currentProfileId);
 
     return ChatMessagesState(nextPage: initialPage + 1, messages: messages);
   }
@@ -59,9 +62,10 @@ class ChatMessagesController extends _$ChatMessagesController {
       ),
     );
 
-    // Then fetch translation and save
     final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
     if (newMessage.profileId != currentUserId) {
+      ref.read(chatRepositoryProvider).markMessageAsRead(newMessage.id!);
+
       _updateNewMessageTranslation(newMessage);
     }
   }

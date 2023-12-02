@@ -6,9 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class NewMessage extends ConsumerStatefulWidget {
-  const NewMessage({super.key, required this.roomId});
+  const NewMessage({
+    super.key,
+    required this.roomId,
+    required this.otherProfileId,
+  });
 
   final String roomId;
+  final String otherProfileId;
 
   @override
   ConsumerState<NewMessage> createState() => _NewMessageState();
@@ -31,7 +36,10 @@ class _NewMessageState extends ConsumerState<NewMessage> {
     final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
 
     await ref.read(chatRepositoryProvider).saveMessage(
-        widget.roomId, Message(content: messageText, profileId: currentUserId));
+          widget.roomId,
+          widget.otherProfileId,
+          Message(content: messageText, profileId: currentUserId),
+        );
   }
 
   @override

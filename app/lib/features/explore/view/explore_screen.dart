@@ -4,6 +4,7 @@ import 'package:chat_app/features/home/view/call_request_banner.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
+import 'package:chat_app/utils/keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n_extension/i18n_widget.dart';
@@ -42,6 +43,7 @@ class ExploreScreen extends ConsumerWidget {
             title: Text('Explore'.i18n),
             actions: [
               IconButton(
+                key: K.exploreScreenSearchButton,
                 onPressed: () => context.router.push(const SearchRoute()),
                 icon: const Icon(Icons.search),
               )

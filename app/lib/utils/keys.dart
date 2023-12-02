@@ -41,4 +41,11 @@ class Keys {
   static const resetPasswordPrompt = Key('resetPasswordPrompt');
   static const resetPasswordField = Key('resetPasswordField');
   static const resetPasswordSubmitButton = Key('resetPasswordSubmitButton');
+
+  static const exploreScreenSearchButton = Key('exploreScreenSearchButton');
+
+  static const searchScreenSearchField = Key('searchScreenSearchField');
+  static const searchScreenResultTile = Key('searchScreenResultTile');
+
+  static const chatLobbyUnReadMessageCount = Key('chatLobbyUnReadMessageCount');
 }

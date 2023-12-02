@@ -5,6 +5,7 @@ import 'package:chat_app/features/search/view/search_controller.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/constants.dart';
 import 'package:chat_app/utils/debouncer.dart';
+import 'package:chat_app/utils/keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n_extension/i18n_widget.dart';
@@ -49,6 +50,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         child: Scaffold(
           appBar: AppBar(
             title: TextField(
+              key: K.searchScreenSearchField,
               controller: _searchController,
               decoration: const InputDecoration(
                 hintText: 'Search....',
@@ -67,6 +69,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 final profile = profiles[index];
 
                 return ListTile(
+                  key: K.searchScreenResultTile,
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                   leading: Stack(

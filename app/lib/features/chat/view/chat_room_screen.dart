@@ -36,7 +36,10 @@ class ChatRoomScreen extends ConsumerWidget {
                   Expanded(
                     child: ChatMessages(roomId: roomId, profiles: profiles),
                   ),
-                  NewMessage(roomId: roomId),
+                  NewMessage(
+                    roomId: roomId,
+                    otherProfileId: otherProfileId,
+                  ),
                 ],
               ),
             ),

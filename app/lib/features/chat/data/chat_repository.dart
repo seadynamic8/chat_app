@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/domain/room.dart';
@@ -96,6 +97,29 @@ class ChatRepository {
     return roomsList.map((room) => Room.fromMap(room)).toList();
   }
 
+  Stream<int> watchUnReadMessages({
+    required String profileId,
+    String? roomId,
+  }) {
+    final messagesStream = supabase
+        .from('messages_users')
+        .stream(primaryKey: ['message_id', 'profile_id'])
+        .eq('profile_id', profileId)
+        .order('created_at', ascending: false)
+        .limit(1000);
+
+    // Unfortunately supabase streams only can have one filter
+    // so we need to filter more here
+    return messagesStream.map((messages) {
+      return messages
+          .where((message) =>
+              !message['read'] &&
+              (roomId == null ? true : message['room_id'] == roomId))
+          .toList()
+          .length;
+    });
+  }
+
   void watchNewRoomForUser(
       String currentUserId, void Function(Room newRoom) callback) {
     supabase.channel('public:chat_users:profile_id=eq.$currentUserId').on(
@@ -120,7 +144,7 @@ class ChatRepository {
     final latestRoomMap =
         await supabase.from('rooms').select<Map<String, dynamic>>('''
         id,
-        profiles!inner (id, username, avatar_url)
+        profiles!inner (id, username, avatar_url, language)
       ''').eq('id', roomId).neq('profiles.id', currentUserId).single();
 
     return Room.fromMap(latestRoomMap);
@@ -128,11 +152,23 @@ class ChatRepository {
 
   // * Messages
 
-  Future<void> saveMessage(String roomId, Message message) async {
-    await supabase.from('messages').insert({
-      'content': message.content,
-      'profile_id': message.profileId,
+  Future<void> saveMessage(
+      String roomId, String otherProfileId, Message message) async {
+    final messageResponse = await supabase
+        .from('messages')
+        .insert({
+          'content': message.content,
+          'profile_id': message.profileId,
+          'room_id': roomId,
+        })
+        .select<Map<String, dynamic>>()
+        .single();
+
+    await supabase.from('messages_users').insert({
+      'message_id': messageResponse['id'],
+      'profile_id': otherProfileId,
       'room_id': roomId,
+      'read': false, // Though this is default, setting it to be safe and clear
     });
   }
 
@@ -156,6 +192,14 @@ class ChatRepository {
     return messages.map((message) => Message.fromMap(message)).toList();
   }
 
+  Future<void> markAllMessagesAsReadForRoom(
+      String roomId, String profileId) async {
+    await supabase.from('messages_users').update({
+      'read': true,
+      'read_at': DateTime.now().toIso8601String(),
+    }).match({'room_id': roomId, 'profile_id': profileId});
+  }
+
   Stream<Message> watchNewMessageForRoom(String roomId) async* {
     final streamController = StreamController<Message>();
 
@@ -173,6 +217,13 @@ class ChatRepository {
     ).subscribe();
 
     yield* streamController.stream;
+  }
+
+  Future<void> markMessageAsRead(String messageId) async {
+    await supabase.from('messages_users').update({
+      'read': true,
+      'read_at': DateTime.now().toIso8601String(),
+    }).eq('message_id', messageId);
   }
 
   void saveTranslationForMessage(String messageId, String translation) async {
@@ -222,4 +273,13 @@ Stream<Message> watchNewMessagesStream(
     WatchNewMessagesStreamRef ref, String roomId) {
   final chatRepository = ref.watch(chatRepositoryProvider);
   return chatRepository.watchNewMessageForRoom(roomId);
+}
+
+@riverpod
+Stream<int> unReadMessagesStream(UnReadMessagesStreamRef ref,
+    [String? roomId]) {
+  final currentProfileId = ref.watch(currentProfileProvider).id!;
+  final chatRepository = ref.watch(chatRepositoryProvider);
+  return chatRepository.watchUnReadMessages(
+      profileId: currentProfileId, roomId: roomId);
 }

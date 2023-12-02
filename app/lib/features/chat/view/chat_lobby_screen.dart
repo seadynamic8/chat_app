@@ -3,6 +3,7 @@ import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/view/chat_lobby_controller.dart';
 import 'package:chat_app/features/chat/view/chat_online_status_icon.dart';
+import 'package:chat_app/features/chat/view/un_read_message_count.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -78,9 +79,16 @@ class ChatLobbyScreen extends ConsumerWidget {
                         .copyWith(color: Theme.of(context).hintColor),
                     overflow: TextOverflow.fade,
                   ),
-                  trailing: Text(room.newestMessage != null
-                      ? timeago.format(room.newestMessage!.createdAt!)
-                      : ''),
+                  trailing: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(room.newestMessage != null
+                          ? timeago.format(room.newestMessage!.createdAt!)
+                          : ''),
+                      UnReadMessageCount(roomId: room.id),
+                    ],
+                  ),
                   onTap: () {
                     context.router.push(ChatRoomRoute(
                         roomId: room.id, otherProfileId: otherProfile.id!));
