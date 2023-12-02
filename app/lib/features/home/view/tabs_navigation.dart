@@ -48,7 +48,7 @@ class TabsNavigation extends ConsumerWidget {
               BottomNavigationBarItem(
                 icon: const Icon(
                   Icons.people_alt_outlined,
-                  key: K.contactsTab,
+                  key: K.exploreTab,
                 ),
                 label: 'Explore'.i18n,
               ),
@@ -56,7 +56,7 @@ class TabsNavigation extends ConsumerWidget {
                 icon: unReadMessageCountStream.maybeWhen(
                   data: (unReadMessageCount) => unReadMessageCount > 0
                       ? Badge(
-                          key: K.chatsTab,
+                          key: K.chatsBadgeTab,
                           label: Text(
                               unReadMessagesCountString(unReadMessageCount)),
                           child: const Icon(Icons.message),

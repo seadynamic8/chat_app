@@ -33,4 +33,9 @@ class Robot {
     final pinCode = await TestHelper().getEmailOTP(email);
     await $(K.authVerifyFormPinput).enterText(pinCode);
   }
+
+  Future<void> goBack() async {
+    await $.tester.pageBack();
+    await $.pumpAndSettle();
+  }
 }

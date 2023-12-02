@@ -25,6 +25,7 @@ class UnReadMessageCount extends ConsumerWidget {
     return unReadMessageCountStream.maybeWhen(
       data: (unReadMessageCount) => (unReadMessageCount > 0)
           ? Container(
+              key: K.chatLobbyItemUnReadMsgCount,
               constraints: const BoxConstraints(
                 minWidth: 20,
               ),
@@ -36,7 +37,6 @@ class UnReadMessageCount extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                 child: Text(
-                  key: K.chatLobbyUnReadMessageCount,
                   unReadMessagesCountString(unReadMessageCount),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.labelSmall!.copyWith(

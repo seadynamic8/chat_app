@@ -20,7 +20,7 @@ class ChatMessagesController extends _$ChatMessagesController {
   FutureOr<ChatMessagesState> build(
       String roomId, Map<String, Profile> profiles) async {
     // Setup handlers for any new messages
-    ref.listen<AsyncValue<Message>>(watchNewMessagesStreamProvider(roomId),
+    ref.listen<AsyncValue<Message>>(newMessagesStreamProvider(roomId),
         (_, state) {
       if (state.hasValue) _handleNewMessage(state.value!);
     });

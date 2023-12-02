@@ -15,17 +15,29 @@ class TestHelper {
     await authAdminRepository.deleteUserByEmail(email);
   }
 
-  Future<String> createUser({required String email, String? password}) async {
-    clearUser(email: email);
+  Future<String> createUser({
+    required String email,
+    String? password,
+    String? username,
+  }) async {
+    await clearUser(email: email);
     return await authAdminRepository.createUser(
-        email: email, password: password);
+      email: email,
+      password: password,
+      username: username,
+    );
   }
 
   Future<String> createAndLoginUser({
     required String email,
     required String password,
+    String? username,
   }) async {
-    final userId = await createUser(email: email, password: password);
+    final userId = await createUser(
+      email: email,
+      password: password,
+      username: username,
+    );
     await authRepository.signInWithEmailAndPassword(
         email: email, password: password);
     return userId;

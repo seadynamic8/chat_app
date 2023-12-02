@@ -22,10 +22,10 @@ Deno.serve(async (req) => {
 
     const { email } = await req.json();
 
-    console.log(`Looking for user email: ${email}`)
+    console.log(`Looking for user email: ${email.toLowerCase()}`)
 
     const { data: userId, error } = await supabase.rpc(
-      "get_user_id_by_email", { email: email }
+      "get_user_id_by_email", { email: email.toLowerCase() }
     )
     if (error) {
       throw error

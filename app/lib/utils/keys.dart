@@ -4,8 +4,9 @@ typedef K = Keys;
 
 class Keys {
   // Main Bottom Navigation Tab Buttons
-  static const contactsTab = Key('contactsTab');
+  static const exploreTab = Key('exploreTab');
   static const chatsTab = Key('chatsTab');
+  static const chatsBadgeTab = Key('chatsBadgeTab');
   static const profileTab = Key('profileTab');
 
   static const authFormEmailField = Key('authFormEmailField');
@@ -44,8 +45,21 @@ class Keys {
 
   static const exploreScreenSearchButton = Key('exploreScreenSearchButton');
 
+  static const searchScreen = Key('searchScreen');
   static const searchScreenSearchField = Key('searchScreenSearchField');
   static const searchScreenResultTile = Key('searchScreenResultTile');
 
-  static const chatLobbyUnReadMessageCount = Key('chatLobbyUnReadMessageCount');
+  static const publicProfile = Key('publicProfile');
+  static const publicProfileSendMsgButton = Key('publicProfileSendMsgButton');
+
+  static const chatLobbyItemTilePrefix = 'chatLobbyItemTile-';
+  static const chatLobbyItemAvatar = Key('chatLobbyItemAvatar');
+  static const chatLobbyItemNewestMsg = Key('chatLobbyItemNewestMsg');
+  static const chatLobbyItemNewestMsgTime = Key('chatLobbyItemNewestMsgTime');
+  static const chatLobbyItemUnReadMsgCount = Key('chatLobbyItemUnReadMsgCount');
+
+  static const chatRoom = Key('chatRoom');
+  static const chatRoomNewMessageField = Key('chatRoomNewMessageField');
+  static const chatRoomSendNewMessageBtn = Key('chatRoomSendNewMessageBtn');
+  static const chatRoomMessages = Key('chatRoomMessages');
 }

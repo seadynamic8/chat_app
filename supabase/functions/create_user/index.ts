@@ -19,14 +19,14 @@ Deno.serve(async (req) => {
         }
       }
     )
-    const { email, password, emailConfirm, username } = await req.json();
+    const { email, password, autoConfirmEmail, username } = await req.json();
 
-    console.log(`Creating user: ${email}, email confirm: ${emailConfirm}`)
+    console.log(`Creating user: ${email.toLowerCase()}, auto confirm email: ${autoConfirmEmail}`)
 
     const { data, error } = await supabaseAdmin.auth.admin.createUser({
-      email: email, 
+      email: email.toLowerCase(), 
       password: password, 
-      email_confirm: emailConfirm,
+      email_confirm: autoConfirmEmail,
     })
     if (error) throw error;
 

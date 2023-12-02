@@ -5,6 +5,7 @@ import 'package:chat_app/features/auth/view/profile/public_profile_controller.da
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/constants.dart';
+import 'package:chat_app/utils/keys.dart';
 import 'package:chat_app/utils/user_online_status.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,14 +27,17 @@ class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
   }
 
   void _goToChatRoom(BuildContext context, WidgetRef ref) async {
-    final routerContext = context.router;
+    final router = context.router;
 
     final room = await ref
         .read(publicProfileControllerProvider.notifier)
         .findOrCreateRoom(profileId);
 
-    routerContext
-        .push(ChatRoomRoute(roomId: room.id, otherProfileId: profileId));
+    router.replaceAll([
+      const ChatNavigation(),
+      const ChatLobbyRoute(),
+      ChatRoomRoute(roomId: room.id, otherProfileId: profileId),
+    ]);
   }
 
   @override
@@ -43,6 +47,7 @@ class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
 
     return I18n(
       child: Scaffold(
+        key: K.publicProfile,
         body: AsyncValueWidget(
             value: profileValue,
             data: (profile) {
@@ -161,6 +166,7 @@ class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   FloatingActionButton.extended(
+                    key: K.publicProfileSendMsgButton,
                     icon: const Icon(Icons.message),
                     label: const Text('Send Message'),
                     heroTag: 'tag1',

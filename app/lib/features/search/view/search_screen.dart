@@ -48,6 +48,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     return I18n(
       child: SafeArea(
         child: Scaffold(
+          key: K.searchScreen,
           appBar: AppBar(
             title: TextField(
               key: K.searchScreenSearchField,

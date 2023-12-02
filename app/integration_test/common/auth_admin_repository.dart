@@ -9,19 +9,20 @@ class AuthAdminRepository {
   Future<String> createUser({
     required String email,
     String? password,
-    bool emailConfirm = true,
-    String username = 'fakeUser123456',
+    bool autoConfirmEmail = true,
+    String? username,
   }) async {
     late final FunctionResponse response;
     try {
       response = await supabase.functions.invoke('create_user', body: {
-        'email': email,
+        'email': email.toLowerCase(),
         'password': password,
-        'emailConfirm': emailConfirm,
-        'username': username,
+        'autoConfirmEmail': autoConfirmEmail,
+        'username': username ?? 'fakeUser123456',
       });
     } catch (error) {
-      logger.e('AuthAdminRepository createUser error: $error');
+      logger.e(
+          'AuthAdminRepository createUser error: email[${email.toLowerCase()}] :$error');
     }
     if (response.data.isEmpty) {
       logger.e('AuthAdminRepository createUser error: Empty response');
@@ -33,7 +34,7 @@ class AuthAdminRepository {
 
   Future<String?> getUserIdByEmail(String email) async {
     final response = await supabase.functions
-        .invoke('get_user_id_by_email', body: {'email': email});
+        .invoke('get_user_id_by_email', body: {'email': email.toLowerCase()});
 
     if (response.data == null) {
       logger.w('AuthAdminRespository getUserIdByEmail error: Null response');
@@ -53,7 +54,9 @@ class AuthAdminRepository {
   }
 
   Future<void> deleteUserByEmail(String email) async {
-    final userId = await getUserIdByEmail(email);
-    if (userId != null && userId.isNotEmpty) deleteUser(userId);
+    final userId = await getUserIdByEmail(email.toLowerCase());
+    if (userId != null && userId.isNotEmpty) {
+      await deleteUser(userId);
+    }
   }
 }

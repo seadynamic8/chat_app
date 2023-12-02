@@ -176,7 +176,7 @@ class _GetProfilesForRoomProviderElement
   String get roomId => (origin as GetProfilesForRoomProvider).roomId;
 }
 
-String _$getAllRoomsHash() => r'c1bc1fad121c5e99d0bc76e33556ed65ef063e9b';
+String _$getAllRoomsHash() => r'cb1e6b1d320a2df5187d9b7311a22286bfd8c6cf';
 
 /// See also [getAllRooms].
 @ProviderFor(getAllRooms)
@@ -190,30 +190,29 @@ final getAllRoomsProvider = AutoDisposeFutureProvider<List<Room>>.internal(
 );
 
 typedef GetAllRoomsRef = AutoDisposeFutureProviderRef<List<Room>>;
-String _$watchNewMessagesStreamHash() =>
-    r'25c4bc492ee93e4efa44b77e77c79b0a731841fa';
+String _$newMessagesStreamHash() => r'd67b495c20a979a9bd7447ea68e57f16b84fc7df';
 
-/// See also [watchNewMessagesStream].
-@ProviderFor(watchNewMessagesStream)
-const watchNewMessagesStreamProvider = WatchNewMessagesStreamFamily();
+/// See also [newMessagesStream].
+@ProviderFor(newMessagesStream)
+const newMessagesStreamProvider = NewMessagesStreamFamily();
 
-/// See also [watchNewMessagesStream].
-class WatchNewMessagesStreamFamily extends Family<AsyncValue<Message>> {
-  /// See also [watchNewMessagesStream].
-  const WatchNewMessagesStreamFamily();
+/// See also [newMessagesStream].
+class NewMessagesStreamFamily extends Family<AsyncValue<Message>> {
+  /// See also [newMessagesStream].
+  const NewMessagesStreamFamily();
 
-  /// See also [watchNewMessagesStream].
-  WatchNewMessagesStreamProvider call(
+  /// See also [newMessagesStream].
+  NewMessagesStreamProvider call(
     String roomId,
   ) {
-    return WatchNewMessagesStreamProvider(
+    return NewMessagesStreamProvider(
       roomId,
     );
   }
 
   @override
-  WatchNewMessagesStreamProvider getProviderOverride(
-    covariant WatchNewMessagesStreamProvider provider,
+  NewMessagesStreamProvider getProviderOverride(
+    covariant NewMessagesStreamProvider provider,
   ) {
     return call(
       provider.roomId,
@@ -232,33 +231,32 @@ class WatchNewMessagesStreamFamily extends Family<AsyncValue<Message>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'watchNewMessagesStreamProvider';
+  String? get name => r'newMessagesStreamProvider';
 }
 
-/// See also [watchNewMessagesStream].
-class WatchNewMessagesStreamProvider
-    extends AutoDisposeStreamProvider<Message> {
-  /// See also [watchNewMessagesStream].
-  WatchNewMessagesStreamProvider(
+/// See also [newMessagesStream].
+class NewMessagesStreamProvider extends AutoDisposeStreamProvider<Message> {
+  /// See also [newMessagesStream].
+  NewMessagesStreamProvider(
     String roomId,
   ) : this._internal(
-          (ref) => watchNewMessagesStream(
-            ref as WatchNewMessagesStreamRef,
+          (ref) => newMessagesStream(
+            ref as NewMessagesStreamRef,
             roomId,
           ),
-          from: watchNewMessagesStreamProvider,
-          name: r'watchNewMessagesStreamProvider',
+          from: newMessagesStreamProvider,
+          name: r'newMessagesStreamProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$watchNewMessagesStreamHash,
-          dependencies: WatchNewMessagesStreamFamily._dependencies,
+                  : _$newMessagesStreamHash,
+          dependencies: NewMessagesStreamFamily._dependencies,
           allTransitiveDependencies:
-              WatchNewMessagesStreamFamily._allTransitiveDependencies,
+              NewMessagesStreamFamily._allTransitiveDependencies,
           roomId: roomId,
         );
 
-  WatchNewMessagesStreamProvider._internal(
+  NewMessagesStreamProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -272,12 +270,12 @@ class WatchNewMessagesStreamProvider
 
   @override
   Override overrideWith(
-    Stream<Message> Function(WatchNewMessagesStreamRef provider) create,
+    Stream<Message> Function(NewMessagesStreamRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: WatchNewMessagesStreamProvider._internal(
-        (ref) => create(ref as WatchNewMessagesStreamRef),
+      override: NewMessagesStreamProvider._internal(
+        (ref) => create(ref as NewMessagesStreamRef),
         from: from,
         name: null,
         dependencies: null,
@@ -290,12 +288,12 @@ class WatchNewMessagesStreamProvider
 
   @override
   AutoDisposeStreamProviderElement<Message> createElement() {
-    return _WatchNewMessagesStreamProviderElement(this);
+    return _NewMessagesStreamProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is WatchNewMessagesStreamProvider && other.roomId == roomId;
+    return other is NewMessagesStreamProvider && other.roomId == roomId;
   }
 
   @override
@@ -307,18 +305,18 @@ class WatchNewMessagesStreamProvider
   }
 }
 
-mixin WatchNewMessagesStreamRef on AutoDisposeStreamProviderRef<Message> {
+mixin NewMessagesStreamRef on AutoDisposeStreamProviderRef<Message> {
   /// The parameter `roomId` of this provider.
   String get roomId;
 }
 
-class _WatchNewMessagesStreamProviderElement
+class _NewMessagesStreamProviderElement
     extends AutoDisposeStreamProviderElement<Message>
-    with WatchNewMessagesStreamRef {
-  _WatchNewMessagesStreamProviderElement(super.provider);
+    with NewMessagesStreamRef {
+  _NewMessagesStreamProviderElement(super.provider);
 
   @override
-  String get roomId => (origin as WatchNewMessagesStreamProvider).roomId;
+  String get roomId => (origin as NewMessagesStreamProvider).roomId;
 }
 
 String _$unReadMessagesStreamHash() =>

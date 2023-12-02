@@ -17,7 +17,7 @@ void main() {
     authAdminRepository = AuthAdminRepository();
     await authAdminRepository.deleteUserByEmail(email);
     await authAdminRepository.createUser(
-        email: email, password: oldPassword, emailConfirm: false);
+        email: email, password: oldPassword, autoConfirmEmail: false);
   });
 
   tearDown(() async {

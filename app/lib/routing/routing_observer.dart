@@ -23,19 +23,17 @@ class RoutingObserver extends AutoRouteObserver {
     }
   }
 
-  @override
-  void didInitTabRoute(TabPageRoute route, TabPageRoute? previousRoute) {
-    if (previousRoute?.name == ChatNavigation.name) {
-      ref.invalidate(getAllRoomsProvider);
-    }
-  }
+  // @override
+  // void didInitTabRoute(TabPageRoute route, TabPageRoute? previousRoute) {
+  //   if (previousRoute?.name == ChatNavigation.name) {
+  //   }
+  // }
 
-  @override
-  void didChangeTabRoute(TabPageRoute route, TabPageRoute previousRoute) {
-    if (previousRoute.name == ChatNavigation.name) {
-      ref.invalidate(getAllRoomsProvider);
-    }
-  }
+  // @override
+  // void didChangeTabRoute(TabPageRoute route, TabPageRoute previousRoute) {
+  //   if (previousRoute.name == ChatNavigation.name) {
+  //   }
+  // }
 }
 
 @riverpod

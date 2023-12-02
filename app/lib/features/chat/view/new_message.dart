@@ -2,6 +2,7 @@ import 'package:chat_app/common/error_snackbar.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
+import 'package:chat_app/utils/keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -54,6 +55,7 @@ class _NewMessageState extends ConsumerState<NewMessage> {
         children: [
           Expanded(
             child: TextFormField(
+              key: K.chatRoomNewMessageField,
               controller: _messageController,
               textCapitalization: TextCapitalization.sentences,
               enableSuggestions: true,
@@ -63,6 +65,7 @@ class _NewMessageState extends ConsumerState<NewMessage> {
             ),
           ),
           IconButton(
+            key: K.chatRoomSendNewMessageBtn,
             color: Theme.of(context).colorScheme.primary,
             onPressed: _submitMessage,
             icon: const Icon(Icons.send),

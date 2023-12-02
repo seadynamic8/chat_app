@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
+import 'package:chat_app/features/chat/domain/chat_lobby_item_state.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/domain/room.dart';
 import 'package:chat_app/utils/pagination.dart';
@@ -78,21 +79,35 @@ class ChatRepository {
     };
   }
 
-  Future<List<Room>> getAllRoomsByUser(String currentUserId) async {
-    // p1 is to make sure that the current user is also in the room.
-    // p2 is the other user in the room.
+  Future<ChatLobbyItemState> getChatLobbyItemState(
+    String roomId,
+    String currentProfileId,
+  ) async {
+    final chatLobbyItemResponse = await supabase
+        .from('rooms')
+        .select<Map<String, dynamic>>('''
+          messages (id, profile_id, content, translation, type, created_at),
+          profiles!inner (id, username, avatar_url, language)
+        ''')
+        .eq('id', roomId)
+        .neq('profiles.id', currentProfileId)
+        .order('created_at', foreignTable: 'messages', ascending: false)
+        .limit(1, foreignTable: 'messages')
+        .single();
+
+    return ChatLobbyItemState(
+      otherProfile: Profile.fromMap(chatLobbyItemResponse['profiles'].first),
+      newestMessage: chatLobbyItemResponse['messages'].isNotEmpty
+          ? Message.fromMap(chatLobbyItemResponse['messages'].first)
+          : null,
+    );
+  }
+
+  Future<List<Room>> getAllRooms(String currentUserId) async {
     final roomsList = await supabase
         .from('rooms')
-        .select<List<Map<String, dynamic>>>('''
-          id,
-          p1:profiles!inner (),
-          p2:profiles!inner (id, username, avatar_url, language),
-          messages (id, profile_id, content, translation, type, created_at)
-        ''')
-        .eq('p1.id', currentUserId)
-        .neq('p2.id', currentUserId)
-        .order('created_at', foreignTable: 'messages', ascending: false)
-        .limit(1, foreignTable: 'messages');
+        .select<List<Map<String, dynamic>>>('id, chat_users!inner()')
+        .eq('chat_users.profile_id', currentUserId);
 
     return roomsList.map((room) => Room.fromMap(room)).toList();
   }
@@ -265,12 +280,11 @@ FutureOr<Map<String, Profile>> getProfilesForRoom(
 FutureOr<List<Room>> getAllRooms(GetAllRoomsRef ref) {
   final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
   final chatRepository = ref.watch(chatRepositoryProvider);
-  return chatRepository.getAllRoomsByUser(currentUserId);
+  return chatRepository.getAllRooms(currentUserId);
 }
 
 @riverpod
-Stream<Message> watchNewMessagesStream(
-    WatchNewMessagesStreamRef ref, String roomId) {
+Stream<Message> newMessagesStream(NewMessagesStreamRef ref, String roomId) {
   final chatRepository = ref.watch(chatRepositoryProvider);
   return chatRepository.watchNewMessageForRoom(roomId);
 }
