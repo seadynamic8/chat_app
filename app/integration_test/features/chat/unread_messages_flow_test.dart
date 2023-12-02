@@ -5,7 +5,6 @@ import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/domain/room.dart';
 import 'package:chat_app/utils/keys.dart';
-import 'package:chat_app/utils/logger.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:patrol/patrol.dart';
