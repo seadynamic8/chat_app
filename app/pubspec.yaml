@@ -63,6 +63,7 @@ dependencies:
   path: ^1.8.3
   flutter_launcher_icons: ^0.13.1
   mocktail: ^1.0.1
+  shimmer: ^3.0.0
   
 
 dev_dependencies:
