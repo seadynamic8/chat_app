@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/utils/pagination.dart';
@@ -17,20 +18,6 @@ class ChatRepository {
   final SupabaseClient supabase;
 
   // * Get Profiles for the rooms
-
-  // This one and the method below basically do the same thing, one for chat
-  // one for video, see if we can combine
-  Future<Map<String, Profile>> getProfilesForRoom(String roomId) async {
-    final profilesList = await supabase
-        .from('profiles')
-        .select<List<Map<String, dynamic>>>(
-            'id, username, avatar_url, language, rooms!inner()');
-
-    return {
-      for (final profile in profilesList)
-        profile['id']: Profile.fromMap(profile)
-    };
-  }
 
   Future<Map<String, Profile>> getBothProfiles({
     required String currentProfileId,
@@ -167,9 +154,11 @@ ChatRepository chatRepository(ChatRepositoryRef ref) {
 
 @riverpod
 FutureOr<Map<String, Profile>> getProfilesForRoom(
-    GetProfilesForRoomRef ref, String roomId) {
+    GetProfilesForRoomRef ref, String otherProfileId) {
+  final currentProfileId = ref.watch(currentProfileProvider).id!;
   final chatRepository = ref.watch(chatRepositoryProvider);
-  return chatRepository.getProfilesForRoom(roomId);
+  return chatRepository.getBothProfiles(
+      currentProfileId: currentProfileId, otherProfileId: otherProfileId);
 }
 
 @riverpod

@@ -22,7 +22,7 @@ final chatRepositoryProvider = AutoDisposeProvider<ChatRepository>.internal(
 
 typedef ChatRepositoryRef = AutoDisposeProviderRef<ChatRepository>;
 String _$getProfilesForRoomHash() =>
-    r'87615ca4c5a0fd3e31fa6453cb07e6c7e0440a34';
+    r'c139f41c702774f246cd4d267503f4c7bd63d043';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -57,10 +57,10 @@ class GetProfilesForRoomFamily
 
   /// See also [getProfilesForRoom].
   GetProfilesForRoomProvider call(
-    String roomId,
+    String otherProfileId,
   ) {
     return GetProfilesForRoomProvider(
-      roomId,
+      otherProfileId,
     );
   }
 
@@ -69,7 +69,7 @@ class GetProfilesForRoomFamily
     covariant GetProfilesForRoomProvider provider,
   ) {
     return call(
-      provider.roomId,
+      provider.otherProfileId,
     );
   }
 
@@ -93,11 +93,11 @@ class GetProfilesForRoomProvider
     extends AutoDisposeFutureProvider<Map<String, Profile>> {
   /// See also [getProfilesForRoom].
   GetProfilesForRoomProvider(
-    String roomId,
+    String otherProfileId,
   ) : this._internal(
           (ref) => getProfilesForRoom(
             ref as GetProfilesForRoomRef,
-            roomId,
+            otherProfileId,
           ),
           from: getProfilesForRoomProvider,
           name: r'getProfilesForRoomProvider',
@@ -108,7 +108,7 @@ class GetProfilesForRoomProvider
           dependencies: GetProfilesForRoomFamily._dependencies,
           allTransitiveDependencies:
               GetProfilesForRoomFamily._allTransitiveDependencies,
-          roomId: roomId,
+          otherProfileId: otherProfileId,
         );
 
   GetProfilesForRoomProvider._internal(
@@ -118,10 +118,10 @@ class GetProfilesForRoomProvider
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.roomId,
+    required this.otherProfileId,
   }) : super.internal();
 
-  final String roomId;
+  final String otherProfileId;
 
   @override
   Override overrideWith(
@@ -137,7 +137,7 @@ class GetProfilesForRoomProvider
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        roomId: roomId,
+        otherProfileId: otherProfileId,
       ),
     );
   }
@@ -149,13 +149,14 @@ class GetProfilesForRoomProvider
 
   @override
   bool operator ==(Object other) {
-    return other is GetProfilesForRoomProvider && other.roomId == roomId;
+    return other is GetProfilesForRoomProvider &&
+        other.otherProfileId == otherProfileId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, roomId.hashCode);
+    hash = _SystemHash.combine(hash, otherProfileId.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -163,8 +164,8 @@ class GetProfilesForRoomProvider
 
 mixin GetProfilesForRoomRef
     on AutoDisposeFutureProviderRef<Map<String, Profile>> {
-  /// The parameter `roomId` of this provider.
-  String get roomId;
+  /// The parameter `otherProfileId` of this provider.
+  String get otherProfileId;
 }
 
 class _GetProfilesForRoomProviderElement
@@ -173,7 +174,8 @@ class _GetProfilesForRoomProviderElement
   _GetProfilesForRoomProviderElement(super.provider);
 
   @override
-  String get roomId => (origin as GetProfilesForRoomProvider).roomId;
+  String get otherProfileId =>
+      (origin as GetProfilesForRoomProvider).otherProfileId;
 }
 
 String _$newMessagesStreamHash() => r'd67b495c20a979a9bd7447ea68e57f16b84fc7df';

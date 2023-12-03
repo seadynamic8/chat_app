@@ -1,4 +1,3 @@
-import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/video/data/video_repository.dart';
 import 'package:chat_app/features/video/domain/video_participant.dart';
@@ -21,9 +20,8 @@ class VideoRoomController extends _$VideoRoomController {
 
     await videoRepository.join();
 
-    final currentProfileId = ref.watch(authRepositoryProvider).currentUserId!;
-    final profiles = await ref.watch(chatRepositoryProvider).getBothProfiles(
-        currentProfileId: currentProfileId, otherProfileId: otherProfileId);
+    final profiles =
+        await ref.watch(getProfilesForRoomProvider(otherProfileId).future);
 
     WakelockPlus.enable();
 

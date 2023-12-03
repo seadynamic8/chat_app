@@ -23,7 +23,7 @@ class ChatRoomScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profilesValue = ref.watch(getProfilesForRoomProvider(roomId));
+    final profilesValue = ref.watch(getProfilesForRoomProvider(otherProfileId));
 
     return I18n(
       child: SafeArea(
