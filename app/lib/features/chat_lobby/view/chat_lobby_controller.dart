@@ -1,6 +1,6 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/chat/data/chat_repository.dart';
-import 'package:chat_app/features/chat/domain/room.dart';
+import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
+import 'package:chat_app/features/chat_lobby/domain/room.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chat_lobby_controller.g.dart';
@@ -10,11 +10,11 @@ class ChatLobbyController extends _$ChatLobbyController {
   @override
   FutureOr<List<Room>> build() async {
     final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
-    final chatRepository = ref.watch(chatRepositoryProvider);
+    final chatLobbyRepository = ref.watch(chatLobbyRepositoryProvider);
 
-    final allRooms = await chatRepository.getAllRooms(currentUserId);
+    final allRooms = await chatLobbyRepository.getAllRooms(currentUserId);
 
-    chatRepository.watchNewRoomForUser(currentUserId, _addNewRoom);
+    chatLobbyRepository.watchNewRoomForUser(currentUserId, _addNewRoom);
 
     return allRooms;
   }

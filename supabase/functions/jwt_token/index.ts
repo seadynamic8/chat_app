@@ -8,10 +8,10 @@ Deno.serve(async (req) => {
     if (req.method === 'OPTIONS') {
       return new Response('ok', { headers: corsHeaders })
     }
-
+    
     const API_KEY = Deno.env.get('VIDEOSDK_API_KEY')
     const SECRET_KEY = Deno.env.get('VIDEOSDK_SECRET_KEY')
-
+    
     const payload = {
       apikey: API_KEY,
       permissions: ["allow_join"], // also accepts "ask_join" || "allow_mod"
@@ -19,7 +19,7 @@ Deno.serve(async (req) => {
       roles: ['CRAWLER'],
       exp: getNumericDate(10 * 60) // 10 * (60 seconds) = 10 minutes
     }
-
+    
     const enc = new TextEncoder()
 
     const key = await crypto.subtle.importKey(
@@ -33,7 +33,11 @@ Deno.serve(async (req) => {
       ["sign", "verify"],
     )
 
+    console.log('About to create token...');
+
     const token = await create({ alg: "HS256", typ: "JWT" }, payload, key)
+
+    console.log(`Got token, returning.`);
 
     return new Response(
       JSON.stringify(token),

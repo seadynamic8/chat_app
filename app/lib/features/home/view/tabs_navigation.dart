@@ -1,6 +1,6 @@
+import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/keys.dart';

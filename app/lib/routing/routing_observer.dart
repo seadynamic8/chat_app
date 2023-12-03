@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/home/application/channel_setup_service.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/logger.dart';

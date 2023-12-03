@@ -1,6 +1,6 @@
 import 'package:chat_app/common/async_value_widget.dart';
-import 'package:chat_app/features/chat/view/chat_lobby_controller.dart';
-import 'package:chat_app/features/chat/view/chat_lobby_item.dart';
+import 'package:chat_app/features/chat_lobby/view/chat_lobby_controller.dart';
+import 'package:chat_app/features/chat_lobby/view/chat_lobby_item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';

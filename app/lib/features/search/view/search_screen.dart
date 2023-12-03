@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/async_value_widget.dart';
-import 'package:chat_app/features/chat/view/chat_online_status_icon.dart';
+import 'package:chat_app/common/chat_online_status_icon.dart';
 import 'package:chat_app/features/search/view/search_controller.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/constants.dart';

@@ -7,7 +7,7 @@ part of 'public_profile_controller.dart';
 // **************************************************************************
 
 String _$publicProfileControllerHash() =>
-    r'b0c32f870503c0a3990545bb740f51830149c0f8';
+    r'7a8c7199076f8505213298dd2b85f83ca87ccbc4';
 
 /// See also [PublicProfileController].
 @ProviderFor(PublicProfileController)

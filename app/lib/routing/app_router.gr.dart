@@ -32,9 +32,10 @@ import 'package:chat_app/features/auth/view/profile/public_profile_screen.dart'
     as _i13;
 import 'package:chat_app/features/auth/view/profile/settings_screen.dart'
     as _i16;
-import 'package:chat_app/features/chat/view/chat_lobby_screen.dart' as _i3;
 import 'package:chat_app/features/chat/view/chat_navigation.dart' as _i4;
 import 'package:chat_app/features/chat/view/chat_room_screen.dart' as _i5;
+import 'package:chat_app/features/chat_lobby/view/chat_lobby_screen.dart'
+    as _i3;
 import 'package:chat_app/features/explore/view/explore_navigation.dart' as _i6;
 import 'package:chat_app/features/explore/view/explore_screen.dart' as _i7;
 import 'package:chat_app/features/home/view/main_navigation.dart' as _i9;

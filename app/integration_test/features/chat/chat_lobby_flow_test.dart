@@ -1,6 +1,7 @@
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
-import 'package:chat_app/features/chat/view/chat_lobby_item.dart';
+import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
+import 'package:chat_app/features/chat_lobby/view/chat_lobby_item.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +23,7 @@ void main() {
   const fakeUserTwoUsername = 'fakeOtherUser2';
 
   late final TestHelper t;
+  late final ChatLobbyRepository chatLobbyRepository;
   late final ChatRepository chatRepository;
   late final String currentProfileId;
 
@@ -40,6 +42,7 @@ void main() {
       password: password,
       username: fakeUserTwoUsername,
     );
+    chatLobbyRepository = ProviderContainer().read(chatLobbyRepositoryProvider);
     chatRepository = ProviderContainer().read(chatRepositoryProvider);
   });
 
@@ -76,7 +79,7 @@ void main() {
     await r.goBack();
 
     // FAKE ROOM ONE CREATED, FIND ID
-    final fakeRoomOne = await chatRepository.findRoomByProfiles(
+    final fakeRoomOne = await chatLobbyRepository.findRoomByProfiles(
         currentProfileId: currentProfileId, otherProfileId: fakeUserOneId);
     final fakeRoomOneId = fakeRoomOne!.id;
     final chatLobbyItemTileFakeRoomOne =
@@ -155,10 +158,10 @@ void main() {
     expect($(K.chatsBadgeTab).$('1'), findsOneWidget);
 
     // Mock - otherUser2 enters chatRoom2 with you
-    final fakeRoomTwo = await chatRepository.createRoom();
+    final fakeRoomTwo = await chatLobbyRepository.createRoom();
     final fakeRoomTwoId = fakeRoomTwo.id;
-    await chatRepository.addUserToRoom(currentProfileId, fakeRoomTwoId);
-    await chatRepository.addUserToRoom(fakeUserTwoId, fakeRoomTwoId);
+    await chatLobbyRepository.addUserToRoom(currentProfileId, fakeRoomTwoId);
+    await chatLobbyRepository.addUserToRoom(fakeUserTwoId, fakeRoomTwoId);
     final chatLobbyItemTileFakeRoomTwo =
         ValueKey('${K.chatLobbyItemTilePrefix}$fakeRoomTwoId');
     await $.pumpAndSettle();

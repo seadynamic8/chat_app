@@ -1,11 +1,11 @@
 import 'package:chat_app/common/async_value_widget.dart';
+import 'package:chat_app/features/chat_lobby/view/chat_lobby_item_controller.dart';
+import 'package:chat_app/features/chat_lobby/view/newest_message_content.dart';
+import 'package:chat_app/features/chat_lobby/view/un_read_message_count.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:chat_app/features/chat/view/chat_lobby_item_controller.dart';
-import 'package:chat_app/features/chat/view/chat_online_status_icon.dart';
-import 'package:chat_app/features/chat/view/newest_message_content.dart';
-import 'package:chat_app/features/chat/view/un_read_message_count.dart';
+import 'package:chat_app/common/chat_online_status_icon.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/constants.dart';
 import 'package:flutter/material.dart';

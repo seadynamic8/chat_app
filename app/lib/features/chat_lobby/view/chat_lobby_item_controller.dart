@@ -1,7 +1,8 @@
 import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/chat/application/translation_service.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
-import 'package:chat_app/features/chat/domain/chat_lobby_item_state.dart';
+import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
+import 'package:chat_app/features/chat_lobby/domain/chat_lobby_item_state.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -13,7 +14,7 @@ class ChatLobbyItemController extends _$ChatLobbyItemController {
   FutureOr<ChatLobbyItemState> build(String roomId) async {
     final currentProfileId = ref.watch(currentProfileProvider).id!;
     final chatLobbyItemState = await ref
-        .watch(chatRepositoryProvider)
+        .watch(chatLobbyRepositoryProvider)
         .getChatLobbyItemState(roomId, currentProfileId);
 
     ref.listen<AsyncValue<Message>>(newMessagesStreamProvider(roomId),

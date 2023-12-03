@@ -1,4 +1,4 @@
-import 'package:chat_app/features/chat/data/chat_repository.dart';
+import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

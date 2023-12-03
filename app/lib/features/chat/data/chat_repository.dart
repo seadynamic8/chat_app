@@ -1,11 +1,8 @@
 import 'dart:async';
 
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
-import 'package:chat_app/features/chat/domain/chat_lobby_item_state.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
-import 'package:chat_app/features/chat/domain/room.dart';
 import 'package:chat_app/utils/pagination.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide Provider;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -19,38 +16,10 @@ class ChatRepository {
 
   final SupabaseClient supabase;
 
-  Future<Room?> findRoomByProfiles({
-    required String currentProfileId,
-    required String otherProfileId,
-  }) async {
-    final room = await supabase
-        .from('rooms')
-        .select<List<Map<String, dynamic>>>(
-            'id, c1:chat_users!inner(), c2:chat_users!inner()')
-        .eq('c1.profile_id', currentProfileId)
-        .eq('c2.profile_id', otherProfileId);
+  // * Get Profiles for the rooms
 
-    if (room.isEmpty) return null;
-
-    return Room.fromMap(room.first);
-  }
-
-  Future<Room> createRoom() async {
-    final roomResponse = await supabase
-        .from('rooms')
-        .insert({})
-        .select<Map<String, dynamic>>('id')
-        .single();
-
-    return Room.fromMap(roomResponse);
-  }
-
-  Future<void> addUserToRoom(String profileId, String roomId) async {
-    await supabase
-        .from('chat_users')
-        .insert({'profile_id': profileId, 'room_id': roomId});
-  }
-
+  // This one and the method below basically do the same thing, one for chat
+  // one for video, see if we can combine
   Future<Map<String, Profile>> getProfilesForRoom(String roomId) async {
     final profilesList = await supabase
         .from('profiles')
@@ -79,93 +48,9 @@ class ChatRepository {
     };
   }
 
-  Future<ChatLobbyItemState> getChatLobbyItemState(
-    String roomId,
-    String currentProfileId,
-  ) async {
-    final chatLobbyItemResponse = await supabase
-        .from('rooms')
-        .select<Map<String, dynamic>>('''
-          messages (id, profile_id, content, translation, type, created_at),
-          profiles!inner (id, username, avatar_url, language)
-        ''')
-        .eq('id', roomId)
-        .neq('profiles.id', currentProfileId)
-        .order('created_at', foreignTable: 'messages', ascending: false)
-        .limit(1, foreignTable: 'messages')
-        .single();
+  // * MESSAGES
 
-    return ChatLobbyItemState(
-      otherProfile: Profile.fromMap(chatLobbyItemResponse['profiles'].first),
-      newestMessage: chatLobbyItemResponse['messages'].isNotEmpty
-          ? Message.fromMap(chatLobbyItemResponse['messages'].first)
-          : null,
-    );
-  }
-
-  Future<List<Room>> getAllRooms(String currentUserId) async {
-    final roomsList = await supabase
-        .from('rooms')
-        .select<List<Map<String, dynamic>>>('id, chat_users!inner()')
-        .eq('chat_users.profile_id', currentUserId);
-
-    return roomsList.map((room) => Room.fromMap(room)).toList();
-  }
-
-  Stream<int> watchUnReadMessages({
-    required String profileId,
-    String? roomId,
-  }) {
-    final messagesStream = supabase
-        .from('messages_users')
-        .stream(primaryKey: ['message_id', 'profile_id'])
-        .eq('profile_id', profileId)
-        .order('created_at', ascending: false)
-        .limit(1000);
-
-    // Unfortunately supabase streams only can have one filter
-    // so we need to filter more here
-    return messagesStream.map((messages) {
-      return messages
-          .where((message) =>
-              !message['read'] &&
-              (roomId == null ? true : message['room_id'] == roomId))
-          .toList()
-          .length;
-    });
-  }
-
-  void watchNewRoomForUser(
-      String currentUserId, void Function(Room newRoom) callback) {
-    supabase.channel('public:chat_users:profile_id=eq.$currentUserId').on(
-      RealtimeListenTypes.postgresChanges,
-      ChannelFilter(
-        event: 'INSERT',
-        schema: 'public',
-        table: 'chat_users',
-        filter: 'profile_id=eq.$currentUserId',
-      ),
-      (payload, [ref]) async {
-        final chatUser = payload['new'];
-
-        final newRoom = await getLatestRoom(chatUser['room_id'], currentUserId);
-        callback(newRoom);
-      },
-    ).subscribe();
-  }
-
-  // This doesn't need to query messages, because the a new room won't have any
-  Future<Room> getLatestRoom(String roomId, String currentUserId) async {
-    final latestRoomMap =
-        await supabase.from('rooms').select<Map<String, dynamic>>('''
-        id,
-        profiles!inner (id, username, avatar_url, language)
-      ''').eq('id', roomId).neq('profiles.id', currentUserId).single();
-
-    return Room.fromMap(latestRoomMap);
-  }
-
-  // * Messages
+  // * New message being sent, saved to DB
 
   Future<void> saveMessage(
       String roomId, String otherProfileId, Message message) async {
@@ -179,6 +64,7 @@ class ChatRepository {
         .select<Map<String, dynamic>>()
         .single();
 
+    // Save message as "not read" for other user
     await supabase.from('messages_users').insert({
       'message_id': messageResponse['id'],
       'profile_id': otherProfileId,
@@ -186,6 +72,8 @@ class ChatRepository {
       'read': false, // Though this is default, setting it to be safe and clear
     });
   }
+
+  // * Get message listings
 
   Future<List<Message>> getAllMessagesForRoom(
       String roomId, int page, int range) async {
@@ -207,13 +95,22 @@ class ChatRepository {
     return messages.map((message) => Message.fromMap(message)).toList();
   }
 
-  Future<void> markAllMessagesAsReadForRoom(
-      String roomId, String profileId) async {
-    await supabase.from('messages_users').update({
-      'read': true,
-      'read_at': DateTime.now().toIso8601String(),
-    }).match({'room_id': roomId, 'profile_id': profileId});
+  // * Video Chat Status (Saved and displayed as a Chat Message)
+
+  Future<void> updateVideoStatus({
+    required VideoStatus status,
+    required String roomId,
+    required String currentProfileId,
+  }) async {
+    await supabase.from('messages').insert({
+      'type': 'video',
+      'content': status.name,
+      'room_id': roomId,
+      'profile_id': currentProfileId
+    });
   }
+
+  // * Watch for any new messages
 
   Stream<Message> watchNewMessageForRoom(String roomId) async* {
     final streamController = StreamController<Message>();
@@ -234,6 +131,18 @@ class ChatRepository {
     yield* streamController.stream;
   }
 
+  // * Mark all messages as read
+
+  Future<void> markAllMessagesAsReadForRoom(
+      String roomId, String profileId) async {
+    await supabase.from('messages_users').update({
+      'read': true,
+      'read_at': DateTime.now().toIso8601String(),
+    }).match({'room_id': roomId, 'profile_id': profileId});
+  }
+
+  // * Mark new messages as read
+
   Future<void> markMessageAsRead(String messageId) async {
     await supabase.from('messages_users').update({
       'read': true,
@@ -241,25 +150,12 @@ class ChatRepository {
     }).eq('message_id', messageId);
   }
 
+  // * Save translation for new message
+
   void saveTranslationForMessage(String messageId, String translation) async {
     await supabase
         .from('messages')
         .update({'translation': translation}).eq('id', messageId);
-  }
-
-  // * Video Status (Stored as a Chat Message)
-
-  Future<void> updateVideoStatus({
-    required VideoStatus status,
-    required String roomId,
-    required String currentProfileId,
-  }) async {
-    await supabase.from('messages').insert({
-      'type': 'video',
-      'content': status.name,
-      'room_id': roomId,
-      'profile_id': currentProfileId
-    });
   }
 }
 
@@ -277,23 +173,7 @@ FutureOr<Map<String, Profile>> getProfilesForRoom(
 }
 
 @riverpod
-FutureOr<List<Room>> getAllRooms(GetAllRoomsRef ref) {
-  final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
-  final chatRepository = ref.watch(chatRepositoryProvider);
-  return chatRepository.getAllRooms(currentUserId);
-}
-
-@riverpod
 Stream<Message> newMessagesStream(NewMessagesStreamRef ref, String roomId) {
   final chatRepository = ref.watch(chatRepositoryProvider);
   return chatRepository.watchNewMessageForRoom(roomId);
-}
-
-@riverpod
-Stream<int> unReadMessagesStream(UnReadMessagesStreamRef ref,
-    [String? roomId]) {
-  final currentProfileId = ref.watch(currentProfileProvider).id!;
-  final chatRepository = ref.watch(chatRepositoryProvider);
-  return chatRepository.watchUnReadMessages(
-      profileId: currentProfileId, roomId: roomId);
 }

@@ -10,7 +10,7 @@ import 'package:chat_app/utils/logger.dart';
 import 'package:chat_app/utils/user_online_status.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
-import 'package:chat_app/features/chat/view/chat_online_status_icon.dart';
+import 'package:chat_app/common/chat_online_status_icon.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:flutter/material.dart';
