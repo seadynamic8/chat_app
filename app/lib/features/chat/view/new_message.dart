@@ -30,8 +30,6 @@ class _NewMessageState extends ConsumerState<NewMessage> {
       context.showSnackBar('Please enter a message');
       return;
     }
-
-    FocusScope.of(context).unfocus();
     _messageController.clear();
 
     final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
@@ -61,6 +59,7 @@ class _NewMessageState extends ConsumerState<NewMessage> {
               enableSuggestions: true,
               autocorrect: true,
               decoration: const InputDecoration(hintText: 'Send a message...'),
+              onEditingComplete: () {}, // Keep keyboard open after a message
               onFieldSubmitted: (value) => _submitMessage(),
             ),
           ),

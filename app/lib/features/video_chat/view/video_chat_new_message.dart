@@ -21,7 +21,6 @@ class _VideoChatNewMessageState extends ConsumerState<VideoChatNewMessage> {
       context.showSnackBar('Please enter a message');
       return;
     }
-    FocusScope.of(context).unfocus();
     _messageController.clear();
 
     _sendVideoChatMessage(messageText);
@@ -62,6 +61,7 @@ class _VideoChatNewMessageState extends ConsumerState<VideoChatNewMessage> {
                   ),
                   border: InputBorder.none,
                 ),
+                onEditingComplete: () {}, // Keep keyboard open after a message
                 onFieldSubmitted: (value) => _submitMessage(),
               ),
             ),
