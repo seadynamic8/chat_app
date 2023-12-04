@@ -2,6 +2,7 @@ import 'package:chat_app/common/error_message_widget.dart';
 import 'package:chat_app/common/pagination_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 class PaginatedListView<T> extends StatelessWidget {
   const PaginatedListView({
@@ -38,7 +39,12 @@ class PaginatedListView<T> extends StatelessWidget {
       reverse: true,
       slivers: [
         value.when(
-          data: data,
+          data: (state) => MultiSliver(
+            children: [
+              data(state),
+              if (state.isLastPage) noMoreItems(context),
+            ],
+          ),
           loading: () => const SliverToBoxAdapter(
             child: Center(
               child: CircularProgressIndicator(),
@@ -51,6 +57,22 @@ class PaginatedListView<T> extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget noMoreItems(BuildContext context) {
+    final theme = Theme.of(context);
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Text(
+          '--- No more messages ---',
+          style: theme.textTheme.labelLarge!.copyWith(
+            color: theme.hintColor,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
   }
 }
