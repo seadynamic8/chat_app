@@ -44,16 +44,6 @@ class AuthRepository {
     return Profile.fromMap(profileUser);
   }
 
-  // Stream<Profile?> watchCurrentProfile() {
-  //   final profilesStream = supabase
-  //       .from('profiles')
-  //       .stream(primaryKey: ['id'])
-  //       .eq('id', currentUserId)
-  //       .limit(1);
-
-  //   return profilesStream.map((profiles) => Profile.fromMap(profiles.first));
-  // }
-
   Stream<Profile> watchProfile(String profileId) {
     final profilesStream = supabase
         .from('profiles')
