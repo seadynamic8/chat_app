@@ -1,9 +1,9 @@
+import 'package:chat_app/common/pagination_state.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/application/translation_service.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
-import 'package:chat_app/features/chat/domain/chat_messages_state.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -13,11 +13,12 @@ part 'chat_messages_controller.g.dart';
 class ChatMessagesController extends _$ChatMessagesController {
   // Make sure this fills the screen or it won't even scroll.
   // Also don't make too small since you don't want to query the API too much.
+  static const initialExtraMessages = 10;
   static const numberOfMessagesPerRequest = 20;
   static const initialPage = 0;
 
   @override
-  FutureOr<ChatMessagesState> build(
+  FutureOr<PaginationState<Message>> build(
       String roomId, Map<String, Profile> profiles) async {
     // Setup handlers for any new messages
     ref.listen<AsyncValue<Message>>(newMessagesStreamProvider(roomId),
@@ -26,19 +27,20 @@ class ChatMessagesController extends _$ChatMessagesController {
     });
 
     final chatRepository = ref.watch(chatRepositoryProvider);
-    // Add 10 to initial request to fill the page
-    // subsequent requests will be smaller
+
     final messages = await chatRepository.getAllMessagesForRoom(
-        roomId, initialPage, numberOfMessagesPerRequest + 10);
+        roomId, initialPage, numberOfMessagesPerRequest + initialExtraMessages);
 
     final currentProfileId = ref.read(currentProfileProvider).id!;
     await chatRepository.markAllMessagesAsReadForRoom(roomId, currentProfileId);
 
-    return ChatMessagesState(nextPage: initialPage + 1, messages: messages);
+    return PaginationState(nextPage: initialPage + 1, items: messages);
   }
 
   void getNextPageOfMessages() async {
     final oldState = await future;
+
+    if (oldState.isLastPage) return;
 
     final newMessages = await ref
         .watch(chatRepositoryProvider)
@@ -49,7 +51,7 @@ class ChatMessagesController extends _$ChatMessagesController {
     state = AsyncData(oldState.copyWith(
       isLastPage: isLastPage,
       nextPage: oldState.nextPage + 1,
-      messages: [...oldState.messages, ...newMessages],
+      items: [...oldState.items, ...newMessages],
     ));
   }
 
@@ -58,7 +60,7 @@ class ChatMessagesController extends _$ChatMessagesController {
     final oldState = await future;
     state = AsyncData(
       oldState.copyWith(
-        messages: [newMessage, ...oldState.messages],
+        items: [newMessage, ...oldState.items],
       ),
     );
 
@@ -80,13 +82,13 @@ class ChatMessagesController extends _$ChatMessagesController {
 
     // Update the message with translation
     final oldState = await future;
-    final newMessages = oldState.messages.map((oldMessage) {
+    final newMessages = oldState.items.map((oldMessage) {
       if (oldMessage.id == newMessage.id) {
         return oldMessage.copyWith(translation: translatedText);
       }
       return oldMessage;
     }).toList();
-    state = AsyncData(oldState.copyWith(messages: newMessages));
+    state = AsyncData(oldState.copyWith(items: newMessages));
 
     ref
         .read(chatRepositoryProvider)

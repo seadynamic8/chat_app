@@ -7,7 +7,7 @@ part of 'chat_messages_controller.dart';
 // **************************************************************************
 
 String _$chatMessagesControllerHash() =>
-    r'2f189b0350ad9172984e0004f4093e2c82139e24';
+    r'f9c229517626af6a5c5ad756e731f56d13d72e29';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,11 +31,11 @@ class _SystemHash {
 }
 
 abstract class _$ChatMessagesController
-    extends BuildlessAutoDisposeAsyncNotifier<ChatMessagesState> {
+    extends BuildlessAutoDisposeAsyncNotifier<PaginationState<Message>> {
   late final String roomId;
   late final Map<String, Profile> profiles;
 
-  FutureOr<ChatMessagesState> build(
+  FutureOr<PaginationState<Message>> build(
     String roomId,
     Map<String, Profile> profiles,
   );
@@ -47,7 +47,7 @@ const chatMessagesControllerProvider = ChatMessagesControllerFamily();
 
 /// See also [ChatMessagesController].
 class ChatMessagesControllerFamily
-    extends Family<AsyncValue<ChatMessagesState>> {
+    extends Family<AsyncValue<PaginationState<Message>>> {
   /// See also [ChatMessagesController].
   const ChatMessagesControllerFamily();
 
@@ -90,7 +90,7 @@ class ChatMessagesControllerFamily
 /// See also [ChatMessagesController].
 class ChatMessagesControllerProvider
     extends AutoDisposeAsyncNotifierProviderImpl<ChatMessagesController,
-        ChatMessagesState> {
+        PaginationState<Message>> {
   /// See also [ChatMessagesController].
   ChatMessagesControllerProvider(
     String roomId,
@@ -127,7 +127,7 @@ class ChatMessagesControllerProvider
   final Map<String, Profile> profiles;
 
   @override
-  FutureOr<ChatMessagesState> runNotifierBuild(
+  FutureOr<PaginationState<Message>> runNotifierBuild(
     covariant ChatMessagesController notifier,
   ) {
     return notifier.build(
@@ -157,7 +157,7 @@ class ChatMessagesControllerProvider
 
   @override
   AutoDisposeAsyncNotifierProviderElement<ChatMessagesController,
-      ChatMessagesState> createElement() {
+      PaginationState<Message>> createElement() {
     return _ChatMessagesControllerProviderElement(this);
   }
 
@@ -179,7 +179,7 @@ class ChatMessagesControllerProvider
 }
 
 mixin ChatMessagesControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<ChatMessagesState> {
+    on AutoDisposeAsyncNotifierProviderRef<PaginationState<Message>> {
   /// The parameter `roomId` of this provider.
   String get roomId;
 
@@ -189,7 +189,7 @@ mixin ChatMessagesControllerRef
 
 class _ChatMessagesControllerProviderElement
     extends AutoDisposeAsyncNotifierProviderElement<ChatMessagesController,
-        ChatMessagesState> with ChatMessagesControllerRef {
+        PaginationState<Message>> with ChatMessagesControllerRef {
   _ChatMessagesControllerProviderElement(super.provider);
 
   @override

@@ -1,78 +1,57 @@
-import 'package:chat_app/common/async_value_widget.dart';
+import 'package:chat_app/common/paginated_list_view.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
+import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/view/chat_messages_controller.dart';
 import 'package:chat_app/features/chat/view/message_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ChatMessages extends ConsumerStatefulWidget {
+class ChatMessages extends ConsumerWidget {
   const ChatMessages({super.key, required this.roomId, required this.profiles});
 
   final String roomId;
   final Map<String, Profile> profiles;
 
   @override
-  ConsumerState<ChatMessages> createState() => _ChatMessagesState();
-}
-
-class _ChatMessagesState extends ConsumerState<ChatMessages> {
-  final _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-
-    _scrollController.addListener(_fetchNewMessages);
-  }
-
-  void _fetchNewMessages() {
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.position.pixels;
-
-    // Set it to update when only 30% of the screen left.
-    final delta = MediaQuery.sizeOf(context).height * 0.30;
-
-    if (maxScroll - currentScroll <= delta) {
-      ref
-          .read(chatMessagesControllerProvider(widget.roomId, widget.profiles)
-              .notifier)
-          .getNextPageOfMessages();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final stateValue = ref
-        .watch(chatMessagesControllerProvider(widget.roomId, widget.profiles));
+    final stateValue =
+        ref.watch(chatMessagesControllerProvider(roomId, profiles));
 
-    return AsyncValueWidget(
+    final getNextPage = ref
+        .read(chatMessagesControllerProvider(roomId, profiles).notifier)
+        .getNextPageOfMessages;
+
+    return PaginatedListView<Message>(
+      getNextPage: getNextPage,
       value: stateValue,
       data: (state) {
-        final messages = state.messages;
+        final messages = state.items;
 
         return messages.isEmpty
-            ? Center(
-                child: Text(
-                  'Send your first message =)',
-                  style: theme.textTheme.labelLarge!.copyWith(
-                    color: theme.hintColor,
+            ? SliverToBoxAdapter(
+                child: Center(
+                  child: Text(
+                    'Send your first message =)',
+                    style: theme.textTheme.labelLarge!.copyWith(
+                      color: theme.hintColor,
+                    ),
                   ),
                 ),
               )
-            : ListView.builder(
-                controller: _scrollController,
-                reverse: true,
-                itemCount: messages.length,
-                itemBuilder: (context, index) {
-                  final message = messages[index];
+            : SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  childCount: messages.length,
+                  (context, index) {
+                    final message = messages[index];
 
-                  return MessageBubble(
-                    key: ValueKey(message.id),
-                    message: message,
-                    profile: widget.profiles[message.profileId]!,
-                  );
-                },
+                    return MessageBubble(
+                      key: ValueKey(message.id),
+                      message: message,
+                      profile: profiles[message.profileId]!,
+                    );
+                  },
+                ),
               );
       },
     );
