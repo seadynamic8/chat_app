@@ -33,7 +33,7 @@ class _AuthVerifyScreenState extends ConsumerState<AuthVerifyScreen> {
   void _submit(String pin) async {
     final router = context.router;
     try {
-      final response = await ref.watch(authRepositoryProvider).verifyOTP(
+      final responseSuccess = await ref.watch(authRepositoryProvider).verifyOTP(
             email: widget.email,
             pinCode: pin,
             authOtpType: widget.isResetPassword
@@ -42,14 +42,15 @@ class _AuthVerifyScreenState extends ConsumerState<AuthVerifyScreen> {
           );
 
       // Verified (logged in) and created user with generated username
-      if (response != null) {
-        // Use replace here, so that users can't come back here
+      if (responseSuccess) {
         if (widget.isResetPassword) {
           router.replace(const ResetPasswordRoute());
         } else {
           // Navigate to user creation process to fill out profile
           router.replace(const SignedupRouteOne());
         }
+      } else {
+        logger.e('AuthVerifyScreen: Failed to verifyOTP');
       }
     } on AuthException catch (error) {
       if (!context.mounted) return;

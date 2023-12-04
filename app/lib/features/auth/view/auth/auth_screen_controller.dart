@@ -1,4 +1,3 @@
-import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/auth/view/auth/auth_form_state.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -12,7 +11,7 @@ class AuthScreenController extends _$AuthScreenController {
     return AuthFormState(formType: formType);
   }
 
-  Future<AsyncValue<Profile?>> submit({
+  Future<AsyncValue<bool>> submit({
     required String email,
     required String password,
     String? username,
@@ -28,7 +27,7 @@ class AuthScreenController extends _$AuthScreenController {
     return result;
   }
 
-  Future<Profile?> _authenticate({
+  Future<bool> _authenticate({
     required String email,
     required String password,
   }) {

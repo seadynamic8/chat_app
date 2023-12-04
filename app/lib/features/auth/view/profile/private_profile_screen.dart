@@ -26,6 +26,7 @@ class PrivateProfileScreen extends ConsumerWidget {
             title: Text('Profile'.i18n),
             actions: [
               IconButton(
+                key: K.privateProfileEditBtn,
                 onPressed: () =>
                     context.router.push(ProfileEditRoute(profile: profile)),
                 icon: const Icon(Icons.edit),
@@ -40,6 +41,7 @@ class PrivateProfileScreen extends ConsumerWidget {
             children: [
               const SizedBox(height: 30),
               InkWell(
+                key: K.privateProfileInkWellToPublicProfile,
                 child: Stack(
                   children: [
                     SizedBox(

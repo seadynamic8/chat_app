@@ -179,9 +179,13 @@ abstract class $AppRouter extends _i22.RootStackRouter {
       );
     },
     SignedupRouteTwo.name: (routeData) {
+      final args = routeData.argsAs<SignedupRouteTwoArgs>();
       return _i22.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i18.SignedupScreenTwo(),
+        child: _i18.SignedupScreenTwo(
+          key: args.key,
+          updateProfile: args.updateProfile,
+        ),
       );
     },
     TabsNavigation.name: (routeData) {
@@ -590,16 +594,40 @@ class SignedupRouteOne extends _i22.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i18.SignedupScreenTwo]
-class SignedupRouteTwo extends _i22.PageRouteInfo<void> {
-  const SignedupRouteTwo({List<_i22.PageRouteInfo>? children})
-      : super(
+class SignedupRouteTwo extends _i22.PageRouteInfo<SignedupRouteTwoArgs> {
+  SignedupRouteTwo({
+    _i23.Key? key,
+    required _i25.Profile updateProfile,
+    List<_i22.PageRouteInfo>? children,
+  }) : super(
           SignedupRouteTwo.name,
+          args: SignedupRouteTwoArgs(
+            key: key,
+            updateProfile: updateProfile,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'SignedupRouteTwo';
 
-  static const _i22.PageInfo<void> page = _i22.PageInfo<void>(name);
+  static const _i22.PageInfo<SignedupRouteTwoArgs> page =
+      _i22.PageInfo<SignedupRouteTwoArgs>(name);
+}
+
+class SignedupRouteTwoArgs {
+  const SignedupRouteTwoArgs({
+    this.key,
+    required this.updateProfile,
+  });
+
+  final _i23.Key? key;
+
+  final _i25.Profile updateProfile;
+
+  @override
+  String toString() {
+    return 'SignedupRouteTwoArgs{key: $key, updateProfile: $updateProfile}';
+  }
 }
 
 /// generated route for

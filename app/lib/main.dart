@@ -1,8 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/env/environment.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/home/application/app_locale_provider.dart';
-import 'package:chat_app/features/home/application/channel_setup_service.dart';
+import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/i18n/supported_locales_and_delegates.dart';
 import 'package:chat_app/routing/routing_observer.dart';
 import 'package:chat_app/utils/logger.dart';
@@ -37,53 +36,15 @@ void main() async {
   );
 }
 
-class MyApp extends ConsumerStatefulWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  ConsumerState<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends ConsumerState<MyApp> {
-  late final AppLifecycleListener _listener;
-  @override
-  void initState() {
-    super.initState();
-    _listener = AppLifecycleListener(onStateChange: _onStateChanged);
-  }
-
-  void _onStateChanged(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.paused:
-        logger.i('appState: paused');
-        final css = ref.read(channelSetupServiceProvider);
-        css.closeLobbyChannel();
-        css.closeUserChannel();
-      case AppLifecycleState.resumed:
-        logger.i('appState: resumed');
-        final css = ref.read(channelSetupServiceProvider);
-        css.setupLobbyChannel();
-        css.setupUserChannel();
-      case AppLifecycleState.inactive:
-        logger.t('appState: inactive');
-      case AppLifecycleState.detached:
-        logger.t('appState: detached');
-      case AppLifecycleState.hidden:
-        logger.t('appState: hidden');
-      default:
-    }
-  }
-
-  @override
-  void dispose() {
-    _listener.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final appRouter = ref.watch(appRouterProvider);
-    final currentLocale = ref.watch(appLocaleProvider);
+
+    // Will be null at first (after login, the language will be set)
+    final currentLocale = ref.watch(currentProfileProvider).language;
 
     return MaterialApp.router(
       title: 'Chat With Friends',

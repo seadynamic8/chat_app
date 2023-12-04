@@ -7,7 +7,7 @@ part of 'chat_lobby_item_controller.dart';
 // **************************************************************************
 
 String _$chatLobbyItemControllerHash() =>
-    r'b9ace1dcdcd35f4c74cb59a6f90348b6289f4f58';
+    r'c8fb463ad96d19c73767b952a8b5447eede379ca';
 
 /// Copied from Dart SDK
 class _SystemHash {

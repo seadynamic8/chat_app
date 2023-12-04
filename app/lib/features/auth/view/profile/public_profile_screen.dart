@@ -10,7 +10,6 @@ import 'package:chat_app/utils/user_online_status.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:chat_app/features/search/data/search_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:i18n_extension/i18n_widget.dart';
 import 'package:locale_names/locale_names.dart';
@@ -43,7 +42,7 @@ class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final profileValue = ref.watch(getProfileProvider(profileId));
+    final profileValue = ref.watch(profileStreamProvider(profileId));
 
     return I18n(
       child: Scaffold(
@@ -61,6 +60,7 @@ class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
                     children: [
                       // Main User Image
                       Container(
+                        key: K.publicProfileAvatarCoverImg,
                         decoration: const BoxDecoration(
                           color: Colors.black26,
                         ),
@@ -82,6 +82,7 @@ class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
                         left: 5,
                         top: 10,
                         child: IconButton(
+                          key: K.publicProfileBackButton,
                           icon: const Icon(Icons.arrow_back),
                           onPressed: () {
                             context.router.pop();

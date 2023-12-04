@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/utils/username_generate_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n_extension/i18n_widget.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide Provider;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:username_gen/username_gen.dart';
@@ -42,25 +44,59 @@ class AuthRepository {
     return Profile.fromMap(profileUser);
   }
 
+  // Stream<Profile?> watchCurrentProfile() {
+  //   final profilesStream = supabase
+  //       .from('profiles')
+  //       .stream(primaryKey: ['id'])
+  //       .eq('id', currentUserId)
+  //       .limit(1);
+
+  //   return profilesStream.map((profiles) => Profile.fromMap(profiles.first));
+  // }
+
+  Stream<Profile> watchProfile(String profileId) {
+    final profilesStream = supabase
+        .from('profiles')
+        .stream(primaryKey: ['id'])
+        .eq('id', profileId)
+        .limit(1);
+
+    return profilesStream.map((profiles) => Profile.fromMap(profiles.first));
+  }
+
+  Stream<Profile> watchProfileChanges(String profileId) async* {
+    final streamController = StreamController<Profile>();
+
+    supabase.channel('public:profiles:id=eq.$profileId').on(
+      RealtimeListenTypes.postgresChanges,
+      ChannelFilter(
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'profiles',
+          filter: 'id=eq.$profileId'),
+      (payload, [ref]) {
+        final profile = payload['new'];
+
+        streamController.add(Profile.fromMap(profile));
+      },
+    ).subscribe();
+
+    yield* streamController.stream;
+  }
+
   Future<void> updateProfile(Profile profile) async {
-    await supabase.from('profiles').update({
-      'id': profile.id!,
-      'username': profile.username!,
-      'birthdate': profile.birthdate?.toIso8601String(),
-      'avatar_url': profile.avatarUrl,
-      'gender': profile.gender?.name,
-      'language': profile.language.toString(),
-      'country': profile.country,
-    }).eq('id', currentUserId);
+    await supabase
+        .from('profiles')
+        .update(profile.toMap())
+        .eq('id', currentUserId);
   }
 
   // The custom imagePath below is not the same as returned by API call
   // The custom imagePath is returned because it is used for getting public URL
   Future<String> storeAvatar(File image) async {
     final extension = p.extension(image.path);
-    final currentProfileId = ref.read(currentProfileProvider).id!;
     final imagePath =
-        '$currentProfileId/images/avatar/${DateTime.timestamp()}$extension';
+        '$currentUserId/images/avatar/${DateTime.timestamp()}$extension';
     // Returns image path on server from root, and not the same as the custom imagePath
     await supabase.storage.from('media').upload(imagePath, image);
     return imagePath;
@@ -71,7 +107,7 @@ class AuthRepository {
   }
 
   // Create New User
-  Future<Profile?> signUp({
+  Future<bool> signUp({
     required String email,
     required String password,
     // required String username,
@@ -79,10 +115,7 @@ class AuthRepository {
     final response =
         await supabase.auth.signUp(email: email, password: password);
 
-    if (response.user == null) return null;
-
-    // Empty profile since the user is not verified yet
-    return const Profile();
+    return response.user != null;
   }
 
   // Resend only for signup, email change, or phone change
@@ -95,7 +128,7 @@ class AuthRepository {
   }
 
   // Use either email or phone, not both
-  Future<Profile?> verifyOTP({
+  Future<bool> verifyOTP({
     String? email,
     String? phone,
     required String pinCode,
@@ -108,12 +141,13 @@ class AuthRepository {
       type: authOtpType.otpType,
     );
 
-    if (verifyResponse.user == null) return null;
+    if (verifyResponse.user == null) return false;
 
-    return _getAndSetProfile(
-      verifyResponse.user!.id,
-      isSignUp: authOtpType == AuthOtpType.signup,
-    );
+    if (authOtpType == AuthOtpType.signup) {
+      return await _createProfileWithLanguageAndUniqueUsername(
+          verifyResponse.user!.id);
+    }
+    return true;
   }
 
   // Sends a reset password email to user
@@ -136,16 +170,14 @@ class AuthRepository {
   }
 
   // Login
-  Future<Profile?> signInWithEmailAndPassword({
+  Future<bool> signInWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
     final response = await supabase.auth
         .signInWithPassword(email: email, password: password);
 
-    if (response.user == null) return null;
-
-    return _getAndSetProfile(response.user!.id);
+    return response.user != null;
   }
 
   Future<void> signOut() async {
@@ -163,25 +195,7 @@ class AuthRepository {
     return (jwtResponse.data as String).replaceAll('"', '');
   }
 
-  Future<Profile?> _getAndSetProfile(
-    String profileId, {
-    bool isSignUp = false,
-  }) async {
-    late Profile? profile;
-    if (isSignUp) {
-      // This ensures username exists
-      profile = await _generateProfileWithUniqueUsername(profileId);
-    } else {
-      profile = await getProfile(profileId);
-    }
-    if (profile == null) return null;
-
-    ref.read(currentProfileProvider.notifier).set(profile);
-
-    return profile;
-  }
-
-  Future<Profile?> _generateProfileWithUniqueUsername(
+  Future<bool> _createProfileWithLanguageAndUniqueUsername(
       String currentUserId) async {
     var success = false;
     const retryTimes = 3;
@@ -202,6 +216,7 @@ class AuthRepository {
           .insert({
             'id': currentUserId,
             'username': username,
+            'language': Locale(I18n.locale.languageCode).toString(),
           })
           .select<Map<String, dynamic>>()
           .single();
@@ -212,9 +227,10 @@ class AuthRepository {
         success = true;
       }
     }
-    if (userResponse == null) return null;
-
-    return Profile.fromMap(userResponse);
+    if (userResponse == null) {
+      throw Exception('Failed to generate profile with unique username');
+    }
+    return true;
   }
 }
 
@@ -238,4 +254,26 @@ Session? currentSession(CurrentSessionRef ref) {
 Stream<AuthState> authStateChanges(AuthStateChangesRef ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   return authRepository.onAuthStateChanges();
+}
+
+// Make sure to call this only after logged in, or currentUserId != null
+@riverpod
+Stream<Profile> currentProfileStream(CurrentProfileStreamRef ref) {
+  final authRepository = ref.watch(authRepositoryProvider);
+  if (authRepository.currentUserId == null) {
+    throw Exception('Cannot call currentProfileStream when the user is null');
+  }
+  return authRepository.watchProfile(authRepository.currentUserId!);
+}
+
+@riverpod
+Stream<Profile> profileStream(ProfileStreamRef ref, String profileId) {
+  final authRepository = ref.watch(authRepositoryProvider);
+  return authRepository.watchProfile(profileId);
+}
+
+@riverpod
+Stream<Profile> profileChanges(ProfileChangesRef ref, String profileId) {
+  final authRepository = ref.watch(authRepositoryProvider);
+  return authRepository.watchProfileChanges(profileId);
 }

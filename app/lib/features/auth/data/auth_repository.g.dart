@@ -65,5 +65,298 @@ final authStateChangesProvider = StreamProvider<AuthState>.internal(
 );
 
 typedef AuthStateChangesRef = StreamProviderRef<AuthState>;
+String _$currentProfileStreamHash() =>
+    r'ed8ed1b48b5346dd9731c8a1c576a3641efbe5ee';
+
+/// See also [currentProfileStream].
+@ProviderFor(currentProfileStream)
+final currentProfileStreamProvider =
+    AutoDisposeStreamProvider<Profile>.internal(
+  currentProfileStream,
+  name: r'currentProfileStreamProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$currentProfileStreamHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef CurrentProfileStreamRef = AutoDisposeStreamProviderRef<Profile>;
+String _$profileStreamHash() => r'ef2c4e91841ba671aa44d8d60dcd12bc52413427';
+
+/// Copied from Dart SDK
+class _SystemHash {
+  _SystemHash._();
+
+  static int combine(int hash, int value) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + value);
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
+    return hash ^ (hash >> 6);
+  }
+
+  static int finish(int hash) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
+    // ignore: parameter_assignments
+    hash = hash ^ (hash >> 11);
+    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
+  }
+}
+
+/// See also [profileStream].
+@ProviderFor(profileStream)
+const profileStreamProvider = ProfileStreamFamily();
+
+/// See also [profileStream].
+class ProfileStreamFamily extends Family<AsyncValue<Profile>> {
+  /// See also [profileStream].
+  const ProfileStreamFamily();
+
+  /// See also [profileStream].
+  ProfileStreamProvider call(
+    String profileId,
+  ) {
+    return ProfileStreamProvider(
+      profileId,
+    );
+  }
+
+  @override
+  ProfileStreamProvider getProviderOverride(
+    covariant ProfileStreamProvider provider,
+  ) {
+    return call(
+      provider.profileId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'profileStreamProvider';
+}
+
+/// See also [profileStream].
+class ProfileStreamProvider extends AutoDisposeStreamProvider<Profile> {
+  /// See also [profileStream].
+  ProfileStreamProvider(
+    String profileId,
+  ) : this._internal(
+          (ref) => profileStream(
+            ref as ProfileStreamRef,
+            profileId,
+          ),
+          from: profileStreamProvider,
+          name: r'profileStreamProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$profileStreamHash,
+          dependencies: ProfileStreamFamily._dependencies,
+          allTransitiveDependencies:
+              ProfileStreamFamily._allTransitiveDependencies,
+          profileId: profileId,
+        );
+
+  ProfileStreamProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.profileId,
+  }) : super.internal();
+
+  final String profileId;
+
+  @override
+  Override overrideWith(
+    Stream<Profile> Function(ProfileStreamRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ProfileStreamProvider._internal(
+        (ref) => create(ref as ProfileStreamRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        profileId: profileId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<Profile> createElement() {
+    return _ProfileStreamProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ProfileStreamProvider && other.profileId == profileId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, profileId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin ProfileStreamRef on AutoDisposeStreamProviderRef<Profile> {
+  /// The parameter `profileId` of this provider.
+  String get profileId;
+}
+
+class _ProfileStreamProviderElement
+    extends AutoDisposeStreamProviderElement<Profile> with ProfileStreamRef {
+  _ProfileStreamProviderElement(super.provider);
+
+  @override
+  String get profileId => (origin as ProfileStreamProvider).profileId;
+}
+
+String _$profileChangesHash() => r'90298a00b8b94da106e0a9b5ed058824672ca7f3';
+
+/// See also [profileChanges].
+@ProviderFor(profileChanges)
+const profileChangesProvider = ProfileChangesFamily();
+
+/// See also [profileChanges].
+class ProfileChangesFamily extends Family<AsyncValue<Profile>> {
+  /// See also [profileChanges].
+  const ProfileChangesFamily();
+
+  /// See also [profileChanges].
+  ProfileChangesProvider call(
+    String profileId,
+  ) {
+    return ProfileChangesProvider(
+      profileId,
+    );
+  }
+
+  @override
+  ProfileChangesProvider getProviderOverride(
+    covariant ProfileChangesProvider provider,
+  ) {
+    return call(
+      provider.profileId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'profileChangesProvider';
+}
+
+/// See also [profileChanges].
+class ProfileChangesProvider extends AutoDisposeStreamProvider<Profile> {
+  /// See also [profileChanges].
+  ProfileChangesProvider(
+    String profileId,
+  ) : this._internal(
+          (ref) => profileChanges(
+            ref as ProfileChangesRef,
+            profileId,
+          ),
+          from: profileChangesProvider,
+          name: r'profileChangesProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$profileChangesHash,
+          dependencies: ProfileChangesFamily._dependencies,
+          allTransitiveDependencies:
+              ProfileChangesFamily._allTransitiveDependencies,
+          profileId: profileId,
+        );
+
+  ProfileChangesProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.profileId,
+  }) : super.internal();
+
+  final String profileId;
+
+  @override
+  Override overrideWith(
+    Stream<Profile> Function(ProfileChangesRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ProfileChangesProvider._internal(
+        (ref) => create(ref as ProfileChangesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        profileId: profileId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<Profile> createElement() {
+    return _ProfileChangesProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ProfileChangesProvider && other.profileId == profileId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, profileId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin ProfileChangesRef on AutoDisposeStreamProviderRef<Profile> {
+  /// The parameter `profileId` of this provider.
+  String get profileId;
+}
+
+class _ProfileChangesProviderElement
+    extends AutoDisposeStreamProviderElement<Profile> with ProfileChangesRef {
+  _ProfileChangesProviderElement(super.provider);
+
+  @override
+  String get profileId => (origin as ProfileChangesProvider).profileId;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

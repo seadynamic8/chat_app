@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/error_snackbar.dart';
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/auth/view/common/birthdate_picker.dart';
 import 'package:chat_app/features/auth/view/auth/gender_selector.dart';
@@ -29,12 +28,14 @@ class _SignedupScreenOneState extends ConsumerState<SignedupScreenOne> {
       return;
     }
 
-    ref.read(currentProfileProvider.notifier).updateValues({
-      'birthdate': _selectedBirthDate,
-      'gender': _selectedGender,
-    });
-
-    context.router.push(const SignedupRouteTwo());
+    context.router.push(
+      SignedupRouteTwo(
+        updateProfile: Profile(
+          gender: _selectedGender,
+          birthdate: _selectedBirthDate,
+        ),
+      ),
+    );
   }
 
   void _updateBirthdate(int year, int month, int day) {

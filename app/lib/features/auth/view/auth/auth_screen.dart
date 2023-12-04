@@ -50,15 +50,15 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
         .submit(email: email, password: password);
 
     responseValue.when(
-      data: (profile) {
-        if (profile == null) {
-          logger.e('AuthScreen: Failed to submit auth, profile null');
-          return;
-        }
-        if (state.formType == AuthFormType.login) {
-          widget.resolver.resolveNext(true, reevaluateNext: false);
+      data: (responseSuccess) {
+        if (responseSuccess) {
+          if (state.formType == AuthFormType.login) {
+            widget.resolver.resolveNext(true, reevaluateNext: false);
+          } else {
+            router.push(AuthVerifyRoute(email: email));
+          }
         } else {
-          router.push(AuthVerifyRoute(email: email));
+          logger.e('AuthScreen: Failed to submit auth');
         }
       },
       error: (error, stackTrace) {

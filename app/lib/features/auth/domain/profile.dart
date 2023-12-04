@@ -1,5 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
 import 'dart:ui';
 
 import 'package:age_calculator/age_calculator.dart';
@@ -53,9 +51,9 @@ class Profile {
       'bio': bio,
       'birthdate': birthdate?.toIso8601String(),
       'gender': gender?.name,
-      'language': language,
+      'language': language?.toString(),
       'country': country,
-    };
+    }..removeWhere((key, value) => value == null);
   }
 
   factory Profile.fromMap(Map<String, dynamic> map) {
@@ -78,11 +76,6 @@ class Profile {
     );
   }
 
-  String toJson() => json.encode(toMap());
-
-  factory Profile.fromJson(String source) =>
-      Profile.fromMap(json.decode(source) as Map<String, dynamic>);
-
   Profile copyWith({
     String? id,
     String? email,
@@ -104,20 +97,6 @@ class Profile {
       gender: gender ?? this.gender,
       language: language ?? this.language,
       country: country ?? this.country,
-    );
-  }
-
-  Profile copyWithMap(Map<String, dynamic> map) {
-    return Profile(
-      id: map['id'] ?? id,
-      email: map['email'] ?? email,
-      username: map['username'] ?? username,
-      avatarUrl: map['avatarUrl'] ?? avatarUrl,
-      bio: map['bio'] ?? bio,
-      birthdate: map['birthdate'] ?? birthdate,
-      gender: map['gender'] ?? gender,
-      language: map['language'] ?? language,
-      country: map['country'] ?? country,
     );
   }
 

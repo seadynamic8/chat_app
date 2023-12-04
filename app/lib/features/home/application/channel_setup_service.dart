@@ -1,11 +1,11 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/data/current_profile_provider.dart';
-import 'package:chat_app/features/home/application/app_locale_provider.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/utils/logger.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide Provider;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -30,10 +30,15 @@ class ChannelSetupService {
             case AuthChangeEvent.signedIn:
             case AuthChangeEvent.tokenRefreshed:
               logger.i('sign in');
-              await _loadUserProfile();
-              _setLocale();
+              _loadCurrentProfile();
+              AppLifecycleListener(onStateChange: _onStateChanged);
               await setupLobbyChannel();
               await setupUserChannel();
+
+            // Necessary to reload after password reset
+            case AuthChangeEvent.userUpdated:
+              logger.i('user updated event');
+              _loadCurrentProfile();
             case AuthChangeEvent.signedOut:
               logger.i('sign out');
             default:
@@ -43,17 +48,12 @@ class ChannelSetupService {
     );
   }
 
-  Future<void> _loadUserProfile() async {
-    await ref.read(currentProfileProvider.notifier).load();
-  }
-
-  void _setLocale() {
-    final currentProfile = ref.read(currentProfileProvider);
-    final currentLocale = ref.read(appLocaleProvider);
-
-    if (currentLocale != currentProfile.language!) {
-      ref.read(appLocaleProvider.notifier).set(currentProfile.language!);
-    }
+  // This is here because the stream needs an id, which is avaliable after login.
+  // Also doing it here instead after user creation, because sometimes, we
+  // leave the app, the current profile may dissappear, and we want to ensure it's
+  // always loaded initially.
+  Future<void> _loadCurrentProfile() async {
+    ref.read(currentProfileProvider.notifier).load();
   }
 
   // Join lobby channel on startup, to notify others that we have signed on
@@ -96,11 +96,31 @@ class ChannelSetupService {
   }
 
   Future<void> closeUserChannel() async {
-    // Here we need to use currentProfileProvider since authRepository is gone after signOut
-    final currentProfileId = ref.read(currentProfileProvider).id!;
+    final currentProfileId = ref.read(currentProfileProvider).id;
+    if (currentProfileId == null) return;
 
     final myChannel = ref.read(channelRepositoryProvider(currentProfileId));
     await myChannel.close();
+  }
+
+  void _onStateChanged(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.paused:
+        logger.i('appState: paused');
+        closeLobbyChannel();
+        closeUserChannel();
+      case AppLifecycleState.resumed:
+        logger.i('appState: resumed');
+        setupLobbyChannel();
+        setupUserChannel();
+      case AppLifecycleState.inactive:
+        logger.t('appState: inactive');
+      case AppLifecycleState.detached:
+        logger.t('appState: detached');
+      case AppLifecycleState.hidden:
+        logger.t('appState: hidden');
+      default:
+    }
   }
 }
 

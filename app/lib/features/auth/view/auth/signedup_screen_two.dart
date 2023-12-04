@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
+import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/auth/view/common/profile_image_picker.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
@@ -15,7 +15,9 @@ import 'package:i18n_extension/i18n_widget.dart';
 
 @RoutePage()
 class SignedupScreenTwo extends ConsumerStatefulWidget {
-  const SignedupScreenTwo({super.key});
+  const SignedupScreenTwo({super.key, required this.updateProfile});
+
+  final Profile updateProfile;
 
   @override
   ConsumerState<SignedupScreenTwo> createState() => _SignedupScreenTwoState();
@@ -40,22 +42,20 @@ class _SignedupScreenTwoState extends ConsumerState<SignedupScreenTwo> {
     if (!_form.currentState!.validate()) return;
     _form.currentState!.save();
 
-    Map<String, dynamic> updateValues = {};
-    if (username.isNotEmpty) {
-      updateValues['username'] = username;
-    }
-    if (_selectedImage != null) {
-      updateValues['avatarUrl'] = await _saveSelectedImage();
-    }
+    final updateUsername = (username.isNotEmpty) ? username : null;
+    final updateAvatarUrl = await _saveSelectedImage();
 
-    await ref
-        .read(currentProfileProvider.notifier)
-        .saveProfileToDatabase(updateValues);
+    final updateProfile = widget.updateProfile.copyWith(
+      username: updateUsername,
+      avatarUrl: updateAvatarUrl,
+    );
+    await ref.read(authRepositoryProvider).updateProfile(updateProfile);
 
     router.replaceAll([const MainNavigation()]);
   }
 
-  Future<String> _saveSelectedImage() async {
+  Future<String?> _saveSelectedImage() async {
+    if (_selectedImage == null) return null;
     final imagePath =
         await ref.read(authRepositoryProvider).storeAvatar(_selectedImage!);
     return ref.read(authRepositoryProvider).getAvatarPublicURL(imagePath);

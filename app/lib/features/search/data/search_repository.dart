@@ -22,26 +22,10 @@ class SearchRepository {
 
     return profiles.map((profile) => Profile.fromMap(profile)).toList();
   }
-
-  Future<Profile> getProfile(String profileId) async {
-    final profileUser = await supabase
-        .from('profiles')
-        .select<Map<String, dynamic>>()
-        .eq('id', profileId)
-        .single();
-
-    return Profile.fromMap(profileUser);
-  }
 }
 
 @riverpod
 SearchRepository searchRepository(SearchRepositoryRef ref) {
   final supabase = ref.watch(supabaseProvider);
   return SearchRepository(supabase: supabase);
-}
-
-@riverpod
-FutureOr<Profile> getProfile(GetProfileRef ref, String profileId) {
-  final searchRepository = ref.watch(searchRepositoryProvider);
-  return searchRepository.getProfile(profileId);
 }

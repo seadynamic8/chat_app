@@ -30,7 +30,19 @@ class Keys {
   static const signUpScreenTwoBackButton = Key('signUpScreenTwoBackButton');
   static const signUpScreenTwoFinishButton = Key('signUpScreenTwoFinishButton');
 
+  static const privateProfileEditBtn = Key('privateProfileEditBtn');
   static const privateProfileSettingsBtn = Key('privateProfileSettingsBtn');
+  static const privateProfileInkWellToPublicProfile =
+      Key('privateProfileInkWellToPublicProfile');
+
+  static const editProfileAvatarField = Key('editProfileAvatarField');
+  static const editProfileUsernameField = Key('editProfileUsernameField');
+  static const editProfileBirthdateField = Key('editProfileBirthdateField');
+  static const editProfileBioField = Key('editProfileBioField');
+  static const editProfileCountryField = Key('editProfileCountryField');
+  static const editProfileCountryPicker = Key('editProfileCountryPicker');
+  static const editProfileLanguageField = Key('editProfileLanguageField');
+  static const editProfileSaveButton = Key('editProfileSaveButton');
 
   static const settingsLogoutTile = Key('settingsLogoutTile');
 
@@ -51,6 +63,8 @@ class Keys {
 
   static const publicProfile = Key('publicProfile');
   static const publicProfileSendMsgButton = Key('publicProfileSendMsgButton');
+  static const publicProfileAvatarCoverImg = Key('publicProfileAvatarCoverImg');
+  static const publicProfileBackButton = Key('publicProfileBackButton');
 
   static const chatLobbyItemTilePrefix = 'chatLobbyItemTile-';
   static const chatLobbyItemAvatar = Key('chatLobbyItemAvatar');

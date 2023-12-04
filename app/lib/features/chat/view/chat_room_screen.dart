@@ -1,6 +1,6 @@
 import 'package:chat_app/common/async_value_widget.dart';
-import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/view/chat_messages.dart';
+import 'package:chat_app/features/chat/view/chat_room_screen_controller.dart';
 import 'package:chat_app/features/chat/view/chat_room_top_bar.dart';
 import 'package:chat_app/features/chat/view/new_message.dart';
 import 'package:chat_app/utils/keys.dart';
@@ -23,7 +23,8 @@ class ChatRoomScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profilesValue = ref.watch(getProfilesForRoomProvider(otherProfileId));
+    final profilesValue =
+        ref.watch(chatRoomScreenControllerProvider(otherProfileId));
 
     return I18n(
       child: SafeArea(

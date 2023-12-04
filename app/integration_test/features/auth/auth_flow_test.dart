@@ -1,25 +1,33 @@
+import 'package:age_calculator/age_calculator.dart';
 import 'package:chat_app/utils/keys.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:patrol/patrol.dart';
 
 import '../../app_initializer.dart';
 import '../../robot.dart';
-import '../../common/auth_admin_repository.dart';
+import '../../test_helper.dart';
 
 void main() {
   const email = 'fake@test.com';
   const username = 'fake1234';
   const password = 'test1234';
-  late final AuthAdminRepository authAdminRepository;
+  const birthMonth = 'June';
+  const birthMonthNumber = 6;
+  const birthDay = '3';
+  const birthYear = '2000';
+
+  late final TestHelper t;
 
   setUp(() async {
     await AppInitializer().setup();
-    authAdminRepository = AuthAdminRepository();
-    authAdminRepository.deleteUserByEmail(email);
+    t = TestHelper();
+    await t.signOut();
+    await t.clearUser(email: email);
   });
 
   tearDown(() async {
-    authAdminRepository.deleteUserByEmail(email);
+    await t.clearUser(email: email);
   });
 
   patrolTest(
@@ -45,13 +53,17 @@ void main() {
       // Signup Screen One
       expect($('Welcome!'), findsOneWidget);
 
+      final birthdate =
+          DateTime(int.parse(birthYear), birthMonthNumber, int.parse(birthDay));
+      final age = AgeCalculator.age(birthdate).years.toString();
+
       final dropdown = $(K.signUpBirthdateDropdown);
       await dropdown.$('January').tap();
-      await $('June').scrollTo().tap();
+      await $(birthMonth).scrollTo().tap();
       await dropdown.$('1').tap();
-      await $('3').scrollTo().tap();
+      await $(birthDay).scrollTo().tap();
       await dropdown.$('2008').tap();
-      await $('1984').scrollTo().tap();
+      await $(birthYear).scrollTo().tap();
       await $(K.signUpGenderMaleButton).tap();
       await $(K.signUpScreenOneNextButton).tap();
 
@@ -78,7 +90,64 @@ void main() {
       expect($('Profile'), findsWidgets);
 
       expect($(username), findsOneWidget);
-      expect($('39'), findsOneWidget); // Birthdate => Age
+      expect($(age), findsOneWidget); // Birthdate => Age
+      expect($(Icons.male), findsOneWidget);
+      expect($('United States'), findsOneWidget);
+      expect($('English'), findsOneWidget);
+      await $(K.privateProfileEditBtn).tap();
+
+      // Edit Profile Page
+      expect($('Edit Profile'), findsWidgets);
+      expect($(K.editProfileAvatarField), findsOneWidget);
+      expect($(K.editProfileUsernameField).$(username), findsOneWidget);
+      expect($(K.editProfileBirthdateField).$(birthMonth), findsOneWidget);
+      expect($(K.editProfileBirthdateField).$(birthDay), findsOneWidget);
+      expect($(K.editProfileBirthdateField).$(birthYear), findsOneWidget);
+
+      const updatedUsername = 'otherFake';
+      const updatedBirthMonth = 'April';
+      const updatedBirthMonthNumber = 4;
+      const updatedBirthDay = '7';
+      const updatedBirthYear = '1998';
+      final updatedBirthdate = DateTime(int.parse(updatedBirthYear),
+          updatedBirthMonthNumber, int.parse(updatedBirthDay));
+      const updatedBio = 'I am aweseome, hahaha!';
+      const updatedCountry = 'Argentina';
+      const updatedLanguage = 'Deutsch';
+      final updatedAge = AgeCalculator.age(updatedBirthdate).years.toString();
+
+      await $(K.editProfileUsernameField).enterText(updatedUsername);
+      final birthDateDropdown = $(K.editProfileBirthdateField);
+      await birthDateDropdown.$(birthMonth).tap();
+      await $(updatedBirthMonth).scrollTo().tap();
+      await birthDateDropdown.$(birthDay).tap();
+      await $(updatedBirthDay).scrollTo().tap();
+      await birthDateDropdown.$(birthYear).tap();
+      await $(updatedBirthYear).scrollTo().tap();
+      await $(K.editProfileBioField).enterText(updatedBio);
+      await $(K.editProfileCountryField).scrollTo().tap();
+      await $(updatedCountry).tap();
+      await $(K.editProfileLanguageField).scrollTo().tap();
+      await $(updatedLanguage).scrollTo().tap();
+      await $(K.editProfileSaveButton).tap();
+
+      // Private Profile Page
+      expect($('Profile'), findsWidgets);
+      expect($(updatedUsername), findsOneWidget);
+      expect($(updatedAge), findsOneWidget);
+      expect($(updatedCountry), findsOneWidget);
+      expect($(updatedLanguage), findsOneWidget);
+      expect($(updatedBio), findsOneWidget);
+      await $(K.privateProfileInkWellToPublicProfile).tap();
+
+      // Public Profile Page
+      expect($(K.publicProfile), findsOneWidget);
+      expect($(K.publicProfileAvatarCoverImg), findsOneWidget);
+      expect($(updatedUsername), findsOneWidget);
+      expect($(updatedAge), findsOneWidget);
+      expect($(updatedCountry), findsOneWidget);
+      expect($(updatedBio), findsOneWidget);
+      await $(K.publicProfileBackButton).tap();
 
       // Logout
       await $(K.privateProfileSettingsBtn).tap();
@@ -96,6 +165,15 @@ void main() {
       await $(K.authFormSubmitButton).tap();
 
       expect($('Explore'), findsWidgets);
+
+      // Double check after login, profile info still correct
+      await $(K.profileTab).tap();
+      expect($('Profile'), findsWidgets);
+      expect($(updatedUsername), findsOneWidget);
+      expect($(updatedAge), findsOneWidget);
+      expect($(updatedCountry), findsOneWidget);
+      expect($(updatedLanguage), findsOneWidget);
+      expect($(updatedBio), findsOneWidget);
     },
   );
 }

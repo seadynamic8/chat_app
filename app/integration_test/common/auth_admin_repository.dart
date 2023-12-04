@@ -9,7 +9,7 @@ class AuthAdminRepository {
   Future<String> createUser({
     required String email,
     String? password,
-    bool autoConfirmEmail = true,
+    bool? autoConfirmEmail,
     String? username,
   }) async {
     late final FunctionResponse response;
@@ -17,7 +17,7 @@ class AuthAdminRepository {
       response = await supabase.functions.invoke('create_user', body: {
         'email': email.toLowerCase(),
         'password': password,
-        'autoConfirmEmail': autoConfirmEmail,
+        'autoConfirmEmail': autoConfirmEmail ?? true,
         'username': username ?? 'fakeUser123456',
       });
     } catch (error) {

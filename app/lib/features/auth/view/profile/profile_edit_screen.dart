@@ -2,12 +2,11 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/auth/view/common/birthdate_picker.dart';
 import 'package:chat_app/features/auth/view/common/profile_image_picker.dart';
-import 'package:chat_app/features/home/application/app_locale_provider.dart';
 import 'package:chat_app/i18n/localizations.dart';
+import 'package:chat_app/utils/keys.dart';
 import 'package:chat_app/utils/locale_from_string.dart';
 import 'package:chat_app/utils/string_validators.dart';
 import 'package:country_picker/country_picker.dart';
@@ -47,6 +46,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   @override
   void initState() {
     super.initState();
+
     _usernameController.text = widget.profile.username!;
     if (widget.profile.bio != null) {
       _bioController.text = widget.profile.bio!;
@@ -63,34 +63,27 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     if (!_form.currentState!.validate()) return;
     _form.currentState!.save();
 
-    Map<String, dynamic> updateValues = {};
-    if (_selectedImage != null) {
-      updateValues['avatarUrl'] = await _saveSelectedImage();
-    }
-    if (username.isNotEmpty) {
-      updateValues['username'] = username;
-    }
-    if (_selectedBirthdate != null) {
-      updateValues['birthdate'] = _selectedBirthdate!;
-    }
-    updateValues['bio'] = bio;
-
+    final updateUsername = username.isNotEmpty ? username : null;
+    final updateAvatarUrl = await _saveSelectedImage();
     final selectedCountryCode = _selectedCountry!.countryCode;
-    updateValues['country'] = selectedCountryCode;
-
     final selectedLocale = _selectedLanguage!.isoCode.getLocale();
-    updateValues['language'] = selectedLocale;
 
-    await ref
-        .read(currentProfileProvider.notifier)
-        .saveProfileToDatabase(updateValues);
-
-    ref.read(appLocaleProvider.notifier).set(selectedLocale);
+    await ref.read(authRepositoryProvider).updateProfile(
+          Profile(
+            avatarUrl: updateAvatarUrl,
+            username: updateUsername,
+            birthdate: _selectedBirthdate,
+            bio: bio,
+            language: selectedLocale,
+            country: selectedCountryCode,
+          ),
+        );
 
     router.pop();
   }
 
-  Future<String> _saveSelectedImage() async {
+  Future<String?> _saveSelectedImage() async {
+    if (_selectedImage == null) return null;
     final imagePath =
         await ref.read(authRepositoryProvider).storeAvatar(_selectedImage!);
     return ref.read(authRepositoryProvider).getAvatarPublicURL(imagePath);
@@ -153,6 +146,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
           title: Text('Edit Profile'.i18n),
           actions: [
             IconButton(
+              key: K.editProfileSaveButton,
               onPressed: _submit,
               icon: const Icon(Icons.check),
             ),
@@ -166,6 +160,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
               children: [
                 // AVATAR
                 ProfileImagePicker(
+                  key: K.editProfileAvatarField,
                   initialImageUrl: widget.profile.avatarUrl,
                   onPickImage: (pickedImage) => _selectedImage = pickedImage,
                 ),
@@ -173,6 +168,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
                 // USERNAME
                 TextFormField(
+                  key: K.editProfileUsernameField,
                   controller: _usernameController,
                   decoration: InputDecoration(
                     labelText: 'Username'.i18n,
@@ -194,6 +190,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                   height: 8,
                 ),
                 BirthdatePicker(
+                  key: K.editProfileBirthdateField,
                   initialBirthdate: widget.profile.birthdate,
                   updateBirthdate: _updateBirthdate,
                 ),
@@ -201,6 +198,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
                 // BIO
                 TextFormField(
+                  key: K.editProfileBioField,
                   controller: _bioController,
                   decoration: InputDecoration(
                     labelText: 'Bio'.i18n,
@@ -216,6 +214,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
                 // COUNTRY
                 InkWell(
+                  key: K.editProfileCountryField,
                   onTap: _showCountryPicker,
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 15),
@@ -260,6 +259,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                           itemBuilder: (language) => Text(
                             Locale.fromSubtags(languageCode: language.isoCode)
                                 .nativeDisplayLanguageScript,
+                            key: K.editProfileLanguageField,
                             style: theme.textTheme.bodyMedium,
                           ),
                           onValuePicked: (Language language) {

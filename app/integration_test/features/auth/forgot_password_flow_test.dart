@@ -4,24 +4,24 @@ import 'package:patrol/patrol.dart';
 
 import '../../app_initializer.dart';
 import '../../robot.dart';
-import '../../common/auth_admin_repository.dart';
+import '../../test_helper.dart';
 
 void main() {
   const email = 'fake@test.com';
   const oldPassword = 'oldFakePassword1234';
   const newPassword = 'newFakePassword1234';
-  late final AuthAdminRepository authAdminRepository;
+  late final TestHelper t;
 
   setUp(() async {
     await AppInitializer().setup();
-    authAdminRepository = AuthAdminRepository();
-    await authAdminRepository.deleteUserByEmail(email);
-    await authAdminRepository.createUser(
+    t = TestHelper();
+    await t.signOut();
+    await t.createUser(
         email: email, password: oldPassword, autoConfirmEmail: false);
   });
 
   tearDown(() async {
-    await authAdminRepository.deleteUserByEmail(email);
+    await t.clearUser(email: email);
   });
 
   patrolTest('forgot password', ($) async {

@@ -1,4 +1,6 @@
+import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/data/current_profile_provider.dart';
+import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/application/translation_service.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
@@ -20,6 +22,12 @@ class ChatLobbyItemController extends _$ChatLobbyItemController {
     ref.listen<AsyncValue<Message>>(newMessagesStreamProvider(roomId),
         (_, state) {
       if (state.hasValue) _setNewestMessage(state.value!);
+    });
+
+    ref.listen<AsyncValue<Profile>>(
+        profileChangesProvider(chatLobbyItemState.otherProfile.id!),
+        (_, state) {
+      if (state.hasValue) _updateOtherProfile(state.value!);
     });
 
     return chatLobbyItemState;
@@ -57,5 +65,10 @@ class ChatLobbyItemController extends _$ChatLobbyItemController {
     ref
         .read(chatRepositoryProvider)
         .saveTranslationForMessage(message.id!, translatedText);
+  }
+
+  void _updateOtherProfile(Profile updatedOtherProfile) async {
+    final oldState = await future;
+    state = AsyncData(oldState.copyWith(otherProfile: updatedOtherProfile));
   }
 }
