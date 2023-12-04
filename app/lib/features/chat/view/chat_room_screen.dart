@@ -1,4 +1,5 @@
 import 'package:chat_app/common/async_value_widget.dart';
+import 'package:chat_app/common/scroll_to_end_button.dart';
 import 'package:chat_app/features/chat/view/chat_messages.dart';
 import 'package:chat_app/features/chat/view/chat_room_screen_controller.dart';
 import 'package:chat_app/features/chat/view/chat_room_top_bar.dart';
@@ -23,6 +24,7 @@ class ChatRoomScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final scrollController = ScrollController();
     final profilesValue =
         ref.watch(chatRoomScreenControllerProvider(otherProfileId));
 
@@ -41,6 +43,7 @@ class ChatRoomScreen extends ConsumerWidget {
                       key: K.chatRoomMessages,
                       roomId: roomId,
                       profiles: profiles,
+                      scrollController: scrollController,
                     ),
                   ),
                   NewMessage(
@@ -49,6 +52,15 @@ class ChatRoomScreen extends ConsumerWidget {
                   ),
                 ],
               ),
+              floatingActionButton: Padding(
+                padding: const EdgeInsets.only(top: 90.0, left: 10),
+                child: ScrollToEndButton(
+                  scrollController: scrollController,
+                  direction: ScrollDirection.bottom,
+                ),
+              ),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.startTop,
             ),
           ),
         ),

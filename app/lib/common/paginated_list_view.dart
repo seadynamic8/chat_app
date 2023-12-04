@@ -7,19 +7,19 @@ import 'package:sliver_tools/sliver_tools.dart';
 class PaginatedListView<T> extends StatelessWidget {
   const PaginatedListView({
     super.key,
+    required this.scrollController,
     required this.getNextPage,
     required this.value,
     required this.data,
   });
 
+  final ScrollController scrollController;
   final Function getNextPage;
   final AsyncValue<PaginationState<T>> value;
   final Widget Function(PaginationState<T>) data; // * Has to return sliver
 
   @override
   Widget build(BuildContext context) {
-    final scrollController = ScrollController();
-
     void fetchNewItems() {
       final maxScroll = scrollController.position.maxScrollExtent;
       final currentScroll = scrollController.position.pixels;

@@ -7,10 +7,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ChatMessages extends ConsumerWidget {
-  const ChatMessages({super.key, required this.roomId, required this.profiles});
+  const ChatMessages({
+    super.key,
+    required this.roomId,
+    required this.profiles,
+    required this.scrollController,
+  });
 
   final String roomId;
   final Map<String, Profile> profiles;
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,6 +29,7 @@ class ChatMessages extends ConsumerWidget {
         .getNextPageOfMessages;
 
     return PaginatedListView<Message>(
+      scrollController: scrollController,
       getNextPage: getNextPage,
       value: stateValue,
       data: (state) {
