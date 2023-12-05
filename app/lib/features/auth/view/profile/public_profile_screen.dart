@@ -45,146 +45,145 @@ class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
     final profileValue = ref.watch(profileStreamProvider(profileId));
 
     return I18n(
-      child: Scaffold(
-        key: K.publicProfile,
-        body: AsyncValueWidget(
-            value: profileValue,
-            data: (profile) {
-              final onlinePresences = ref.watch(onlinePresencesProvider);
-              final userStatus =
-                  getUserOnlineStatus(onlinePresences, profile.id!);
+      child: AsyncValueWidget(
+        value: profileValue,
+        data: (profile) {
+          final onlinePresences = ref.watch(onlinePresencesProvider);
+          final userStatus = getUserOnlineStatus(onlinePresences, profile.id!);
 
-              return ListView(
-                children: [
-                  Stack(
-                    children: [
-                      // Main User Image
-                      Container(
-                        key: K.publicProfileAvatarCoverImg,
-                        decoration: const BoxDecoration(
-                          color: Colors.black26,
-                        ),
-                        width: double.infinity,
-                        height: 400,
-                        child: profile.avatarUrl != null
-                            ? Image.network(profile.avatarUrl!,
-                                fit: BoxFit.cover)
-                            : Padding(
-                                padding: const EdgeInsets.all(70.0),
-                                child: Image.asset(
-                                  defaultAvatarImage,
-                                  fit: BoxFit.cover,
-                                ),
+          return Scaffold(
+            key: K.publicProfile,
+            body: ListView(
+              children: [
+                Stack(
+                  children: [
+                    // Main User Image
+                    Container(
+                      key: K.publicProfileAvatarCoverImg,
+                      decoration: const BoxDecoration(
+                        color: Colors.black26,
+                      ),
+                      width: double.infinity,
+                      height: 400,
+                      child: profile.avatarUrl != null
+                          ? Image.network(profile.avatarUrl!, fit: BoxFit.cover)
+                          : Padding(
+                              padding: const EdgeInsets.all(70.0),
+                              child: Image.asset(
+                                defaultAvatarImage,
+                                fit: BoxFit.cover,
                               ),
+                            ),
+                    ),
+                    // Back Button
+                    Positioned(
+                      left: 5,
+                      top: 10,
+                      child: IconButton(
+                        key: K.publicProfileBackButton,
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () {
+                          context.router.pop();
+                        },
                       ),
-                      // Back Button
-                      Positioned(
-                        left: 5,
-                        top: 10,
-                        child: IconButton(
-                          key: K.publicProfileBackButton,
-                          icon: const Icon(Icons.arrow_back),
-                          onPressed: () {
-                            context.router.pop();
-                          },
+                    ),
+                    // Username (and online status)
+                  ],
+                ),
+
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // USERNAME
+                      Text(
+                        profile.username ?? '',
+                        style: theme.textTheme.bodyLarge!.copyWith(
+                          fontSize: 20,
                         ),
                       ),
-                      // Username (and online status)
+                      const SizedBox(width: 15),
+
+                      // ONLINE STATUS
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: userStatus.color,
+                        ),
+                        padding: const EdgeInsets.all(6),
+                        child: Text(userStatus.name,
+                            style: theme.textTheme.labelMedium),
+                      )
+                      // TODO: Follow button
                     ],
                   ),
+                ),
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 15),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // USERNAME
-                        Text(
-                          profile.username ?? '',
-                          style: theme.textTheme.bodyLarge!.copyWith(
-                            fontSize: 20,
-                          ),
-                        ),
-                        const SizedBox(width: 15),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      // GENDER AND AGE
+                      Chip(
+                        avatar: Icon(profile.gender == Gender.male
+                            ? Icons.male
+                            : Icons.female),
+                        label: Text(profile.age ?? ''),
+                      ),
+                      const SizedBox(width: 12),
 
-                        // ONLINE STATUS
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: userStatus.color,
-                          ),
-                          padding: const EdgeInsets.all(6),
-                          child: Text(userStatus.name,
-                              style: theme.textTheme.labelMedium),
-                        )
-                        // TODO: Follow button
-                      ],
-                    ),
+                      // COUNTRY
+                      CountryFlag.fromCountryCode(
+                        profile.country!,
+                        height: 15,
+                        width: 25,
+                      ),
+                      const SizedBox(width: 5),
+                      Text(Locale.fromSubtags(countryCode: profile.country!)
+                          .nativeDisplayCountry),
+                    ],
                   ),
+                ),
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      children: [
-                        // GENDER AND AGE
-                        Chip(
-                          avatar: Icon(profile.gender == Gender.male
-                              ? Icons.male
-                              : Icons.female),
-                          label: Text(profile.age ?? ''),
-                        ),
-                        const SizedBox(width: 12),
+                // BIO
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  child: Text(profile.bio ?? 'Nothing here yet 😀'),
+                ),
 
-                        // COUNTRY
-                        CountryFlag.fromCountryCode(
-                          profile.country!,
-                          height: 15,
-                          width: 25,
-                        ),
-                        const SizedBox(width: 5),
-                        Text(Locale.fromSubtags(countryCode: profile.country!)
-                            .nativeDisplayCountry),
-                      ],
-                    ),
+                // TODO: How many follows
+                // TODO: Posts (or Moments)
+              ],
+            ),
+            floatingActionButton: isCurrentUser(ref)
+                ? null
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      FloatingActionButton.extended(
+                        key: K.publicProfileSendMsgButton,
+                        icon: const Icon(Icons.message),
+                        label: const Text('Send Message'),
+                        heroTag: 'tag1',
+                        onPressed: () => _goToChatRoom(context, ref),
+                      ),
+                      // TODO: Add Follow Button
+                      // FloatingActionButton.extended(
+                      //   icon: const Icon(Icons.follow),
+                      //   label: const Text('Follow'),
+                      //   heroTag: 'tag2',
+                      //   onPressed: () {},
+                      // )
+                    ],
                   ),
-
-                  // BIO
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 12),
-                    child: Text(profile.bio ?? 'Nothing here yet 😀'),
-                  ),
-
-                  // TODO: How many follows
-                  // TODO: Posts (or Moments)
-                ],
-              );
-            }),
-        floatingActionButton: isCurrentUser(ref)
-            ? null
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  FloatingActionButton.extended(
-                    key: K.publicProfileSendMsgButton,
-                    icon: const Icon(Icons.message),
-                    label: const Text('Send Message'),
-                    heroTag: 'tag1',
-                    onPressed: () => _goToChatRoom(context, ref),
-                  ),
-                  // TODO: Add Follow Button
-                  // FloatingActionButton.extended(
-                  //   icon: const Icon(Icons.follow),
-                  //   label: const Text('Follow'),
-                  //   heroTag: 'tag2',
-                  //   onPressed: () {},
-                  // )
-                ],
-              ),
-        floatingActionButtonLocation: isCurrentUser(ref)
-            ? null
-            : FloatingActionButtonLocation.centerFloat,
+            floatingActionButtonLocation: isCurrentUser(ref)
+                ? null
+                : FloatingActionButtonLocation.centerFloat,
+          );
+        },
       ),
     );
   }
