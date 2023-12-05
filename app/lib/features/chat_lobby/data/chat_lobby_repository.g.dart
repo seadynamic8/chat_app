@@ -23,20 +23,6 @@ final chatLobbyRepositoryProvider =
 );
 
 typedef ChatLobbyRepositoryRef = AutoDisposeProviderRef<ChatLobbyRepository>;
-String _$getAllRoomsHash() => r'5e000a800a10ef84dc892db1d56d46fca73d131b';
-
-/// See also [getAllRooms].
-@ProviderFor(getAllRooms)
-final getAllRoomsProvider = AutoDisposeFutureProvider<List<Room>>.internal(
-  getAllRooms,
-  name: r'getAllRoomsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$getAllRoomsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef GetAllRoomsRef = AutoDisposeFutureProviderRef<List<Room>>;
 String _$unReadMessagesStreamHash() =>
     r'613388fec9e61aee2e561c8756cd9d6d9488aeda';
 

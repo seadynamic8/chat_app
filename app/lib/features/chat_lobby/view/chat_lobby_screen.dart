@@ -1,4 +1,5 @@
-import 'package:chat_app/common/async_value_widget.dart';
+import 'package:chat_app/common/paginated_list_view.dart';
+import 'package:chat_app/features/chat_lobby/domain/room.dart';
 import 'package:chat_app/features/chat_lobby/view/chat_lobby_controller.dart';
 import 'package:chat_app/features/chat_lobby/view/chat_lobby_item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,7 +13,11 @@ class ChatLobbyScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final roomsValue = ref.watch(chatLobbyControllerProvider);
+    final scrollController = ScrollController();
+    final stateValue = ref.watch(chatLobbyControllerProvider);
+
+    final getNextPage =
+        ref.read(chatLobbyControllerProvider.notifier).getNextPageOfRooms;
 
     return I18n(
       child: SafeArea(
@@ -20,16 +25,25 @@ class ChatLobbyScreen extends ConsumerWidget {
           appBar: AppBar(
             title: const Text('Chats'),
           ),
-          body: AsyncValueWidget(
-            value: roomsValue,
-            data: (rooms) => ListView.builder(
-              itemCount: rooms.length,
-              itemBuilder: (context, index) {
-                final room = rooms[index];
+          body: PaginatedListView<Room>(
+            scrollController: scrollController,
+            getNextPage: getNextPage,
+            value: stateValue,
+            data: (state) {
+              final rooms = state.items;
 
-                return ChatLobbyItem(key: ValueKey(room.id), roomId: room.id);
-              },
-            ),
+              return SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  childCount: rooms.length,
+                  (context, index) {
+                    final room = rooms[index];
+
+                    return ChatLobbyItem(
+                        key: ValueKey(room.id), roomId: room.id);
+                  },
+                ),
+              );
+            },
           ),
         ),
       ),

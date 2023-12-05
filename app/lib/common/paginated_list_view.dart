@@ -8,12 +8,14 @@ class PaginatedListView<T> extends StatelessWidget {
   const PaginatedListView({
     super.key,
     required this.scrollController,
+    this.reverse = false,
     required this.getNextPage,
     required this.value,
     required this.data,
   });
 
   final ScrollController scrollController;
+  final bool reverse;
   final Function getNextPage;
   final AsyncValue<PaginationState<T>> value;
   final Widget Function(PaginationState<T>) data; // * Has to return sliver
@@ -36,7 +38,7 @@ class PaginatedListView<T> extends StatelessWidget {
 
     return CustomScrollView(
       controller: scrollController,
-      reverse: true,
+      reverse: reverse,
       slivers: [
         value.when(
           data: (state) => MultiSliver(

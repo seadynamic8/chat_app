@@ -7,12 +7,12 @@ part of 'chat_lobby_controller.dart';
 // **************************************************************************
 
 String _$chatLobbyControllerHash() =>
-    r'df8c341fda6ec6e56c4813df6d6e220a090133bf';
+    r'9a1de4d0797400b298925b34e342862676414281';
 
 /// See also [ChatLobbyController].
 @ProviderFor(ChatLobbyController)
-final chatLobbyControllerProvider =
-    AutoDisposeAsyncNotifierProvider<ChatLobbyController, List<Room>>.internal(
+final chatLobbyControllerProvider = AutoDisposeAsyncNotifierProvider<
+    ChatLobbyController, PaginationState<Room>>.internal(
   ChatLobbyController.new,
   name: r'chatLobbyControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -22,6 +22,6 @@ final chatLobbyControllerProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$ChatLobbyController = AutoDisposeAsyncNotifier<List<Room>>;
+typedef _$ChatLobbyController = AutoDisposeAsyncNotifier<PaginationState<Room>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

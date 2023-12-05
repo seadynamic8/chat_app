@@ -4,6 +4,7 @@ import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat_lobby/domain/chat_lobby_item_state.dart';
 import 'package:chat_app/features/chat_lobby/domain/room.dart';
+import 'package:chat_app/utils/pagination.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -50,11 +51,16 @@ class ChatLobbyRepository {
 
   // * Rooms Listing for user
 
-  Future<List<Room>> getAllRooms(String currentUserId) async {
+  Future<List<Room>> getAllRooms(
+      String currentUserId, int page, int range) async {
+    final (from: from, to: to) = getPagination(page: page, defaultRange: range);
+
     final roomsList = await supabase
         .from('rooms')
         .select<List<Map<String, dynamic>>>('id, chat_users!inner()')
-        .eq('chat_users.profile_id', currentUserId);
+        .eq('chat_users.profile_id', currentUserId)
+        .order('created_at')
+        .range(from, to);
 
     return roomsList.map((room) => Room.fromMap(room)).toList();
   }
@@ -135,13 +141,6 @@ class ChatLobbyRepository {
 ChatLobbyRepository chatLobbyRepository(ChatLobbyRepositoryRef ref) {
   final supabase = ref.watch(supabaseProvider);
   return ChatLobbyRepository(supabase: supabase);
-}
-
-@riverpod
-FutureOr<List<Room>> getAllRooms(GetAllRoomsRef ref) {
-  final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
-  final chatLobbyRepository = ref.watch(chatLobbyRepositoryProvider);
-  return chatLobbyRepository.getAllRooms(currentUserId);
 }
 
 @riverpod

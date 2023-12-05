@@ -30,6 +30,7 @@ class ChatMessages extends ConsumerWidget {
 
     return PaginatedListView<Message>(
       scrollController: scrollController,
+      reverse: true,
       getNextPage: getNextPage,
       value: stateValue,
       data: (state) {

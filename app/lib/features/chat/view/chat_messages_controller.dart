@@ -34,7 +34,7 @@ class ChatMessagesController extends _$ChatMessagesController {
     final currentProfileId = ref.read(currentProfileProvider).id!;
     await chatRepository.markAllMessagesAsReadForRoom(roomId, currentProfileId);
 
-    return PaginationState(nextPage: initialPage + 1, items: messages);
+    return PaginationState<Message>(nextPage: initialPage + 1, items: messages);
   }
 
   void getNextPageOfMessages() async {
