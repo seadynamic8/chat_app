@@ -73,20 +73,25 @@ class ChatLobbyRepository {
   ) async {
     final chatLobbyItemResponse = await supabase
         .from('rooms')
-        .select<Map<String, dynamic>>('''
+        .select<List<Map<String, dynamic>>>('''
           messages (id, profile_id, content, translation, type, created_at),
           profiles!inner (id, username, avatar_url, language)
         ''')
         .eq('id', roomId)
         .neq('profiles.id', currentProfileId)
         .order('created_at', foreignTable: 'messages', ascending: false)
-        .limit(1, foreignTable: 'messages')
-        .single();
+        .limit(1, foreignTable: 'messages');
+
+    if (chatLobbyItemResponse.isEmpty) {
+      throw Exception(
+          'chatLobbyItemResponse is empty, roomId: $roomId, currentProfileId: $currentProfileId');
+    }
+    final chatLobbyItem = chatLobbyItemResponse.first;
 
     return ChatLobbyItemState(
-      otherProfile: Profile.fromMap(chatLobbyItemResponse['profiles'].first),
-      newestMessage: chatLobbyItemResponse['messages'].isNotEmpty
-          ? Message.fromMap(chatLobbyItemResponse['messages'].first)
+      otherProfile: Profile.fromMap(chatLobbyItem['profiles'].first),
+      newestMessage: chatLobbyItem['messages'].isNotEmpty
+          ? Message.fromMap(chatLobbyItem['messages'].first)
           : null,
     );
   }
