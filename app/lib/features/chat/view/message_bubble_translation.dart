@@ -35,7 +35,6 @@ class MessageBubbleTranslation extends StatelessWidget {
               ? Colors.black87
               : theme.colorScheme.onBackground.withAlpha(200),
         ),
-        softWrap: true,
       ),
     );
   }

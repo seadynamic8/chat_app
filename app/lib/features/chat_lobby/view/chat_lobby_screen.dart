@@ -2,6 +2,7 @@ import 'package:chat_app/common/paginated_list_view.dart';
 import 'package:chat_app/features/chat_lobby/domain/room.dart';
 import 'package:chat_app/features/chat_lobby/view/chat_lobby_controller.dart';
 import 'package:chat_app/features/chat_lobby/view/chat_lobby_item.dart';
+import 'package:chat_app/i18n/localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class ChatLobbyScreen extends ConsumerWidget {
           body: PaginatedListView<Room>(
             scrollController: scrollController,
             getNextPage: getNextPage,
+            itemsLabel: 'chats'.i18n,
             value: stateValue,
             data: (state) {
               final rooms = state.items;

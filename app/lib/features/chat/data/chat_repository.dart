@@ -73,7 +73,8 @@ class ChatRepository {
           type,
           content,
           profile_id,
-          translation
+          translation,
+          created_at
         ''')
         .eq('room_id', roomId)
         .order('created_at', ascending: false)

@@ -10,8 +10,8 @@ part 'chat_lobby_controller.g.dart';
 class ChatLobbyController extends _$ChatLobbyController {
   // Make sure this fills the screen or it won't even scroll.
   // Also don't make too small since you don't want to query the API too much.
-  static const initialExtraRooms = 10;
-  static const numberOfRoomsPerRequest = 5;
+  static const initialExtraRooms = 0;
+  static const numberOfRoomsPerRequest = 15;
   static const initialPage = 0;
 
   @override

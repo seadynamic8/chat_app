@@ -18,9 +18,58 @@ class MessageBubble extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeContext = Theme.of(context);
+    final theme = Theme.of(context);
     final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
     final isCurrentUser = message.profileId == currentUserId;
+
+    final messageBodyItems = [
+      ConstrainedBox(
+        constraints:
+            BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.60),
+        child: Container(
+          decoration: BoxDecoration(
+            color:
+                isCurrentUser ? Colors.grey[700] : theme.colorScheme.secondary,
+            borderRadius: BorderRadius.only(
+              topLeft: !isCurrentUser ? Radius.zero : const Radius.circular(12),
+              topRight: isCurrentUser ? Radius.zero : const Radius.circular(12),
+              bottomLeft: const Radius.circular(12),
+              bottomRight: const Radius.circular(12),
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 4),
+          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+          child: Column(
+            crossAxisAlignment: isCurrentUser
+                ? CrossAxisAlignment.end
+                : CrossAxisAlignment.start,
+            children: [
+              MessageBubbleContent(
+                message: message,
+                isCurrentUser: isCurrentUser,
+              ),
+              if (message.translation != null && !isCurrentUser)
+                MessageBubbleTranslation(
+                  translation: message.translation!,
+                  isCurrentUser: isCurrentUser,
+                )
+            ],
+          ),
+        ),
+      ),
+
+      // TIMESTAMP
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
+        child: Text(
+          message.localTime!,
+          style: theme.textTheme.bodySmall!.copyWith(
+            color: theme.hintColor.withAlpha(100),
+            fontSize: 10,
+          ),
+        ),
+      )
+    ];
 
     return Stack(
       children: [
@@ -34,7 +83,7 @@ class MessageBubble extends ConsumerWidget {
                 foregroundImage: profile.avatarUrl == null
                     ? null
                     : NetworkImage(profile.avatarUrl!),
-                radius: 15,
+                radius: 13,
               ),
             ),
             onTap: () =>
@@ -42,47 +91,14 @@ class MessageBubble extends ConsumerWidget {
           ),
         ),
         Container(
-          margin: const EdgeInsets.symmetric(horizontal: 46),
+          margin: const EdgeInsets.symmetric(horizontal: 42),
           child: Row(
             mainAxisAlignment:
                 isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: isCurrentUser
-                      ? Colors.grey[700]
-                      : themeContext.colorScheme.secondary,
-                  borderRadius: BorderRadius.only(
-                    topLeft: !isCurrentUser
-                        ? Radius.zero
-                        : const Radius.circular(12),
-                    topRight:
-                        isCurrentUser ? Radius.zero : const Radius.circular(12),
-                    bottomLeft: const Radius.circular(12),
-                    bottomRight: const Radius.circular(12),
-                  ),
-                ),
-                constraints: const BoxConstraints(maxWidth: 200),
-                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 4),
-                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                child: Column(
-                  crossAxisAlignment: isCurrentUser
-                      ? CrossAxisAlignment.end
-                      : CrossAxisAlignment.start,
-                  children: [
-                    MessageBubbleContent(
-                      message: message,
-                      isCurrentUser: isCurrentUser,
-                    ),
-                    if (message.translation != null && !isCurrentUser)
-                      MessageBubbleTranslation(
-                        translation: message.translation!,
-                        isCurrentUser: isCurrentUser,
-                      )
-                  ],
-                ),
-              ),
-            ],
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: isCurrentUser
+                ? messageBodyItems.reversed.toList()
+                : messageBodyItems,
           ),
         ),
       ],

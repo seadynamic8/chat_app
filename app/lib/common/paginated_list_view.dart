@@ -12,6 +12,7 @@ class PaginatedListView<T> extends StatelessWidget {
     required this.getNextPage,
     required this.value,
     required this.data,
+    required this.itemsLabel,
   });
 
   final ScrollController scrollController;
@@ -19,6 +20,7 @@ class PaginatedListView<T> extends StatelessWidget {
   final Function getNextPage;
   final AsyncValue<PaginationState<T>> value;
   final Widget Function(PaginationState<T>) data; // * Has to return sliver
+  final String itemsLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +70,7 @@ class PaginatedListView<T> extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Text(
-          '--- No more messages ---',
+          '--- No more $itemsLabel ---',
           style: theme.textTheme.labelLarge!.copyWith(
             color: theme.hintColor,
           ),

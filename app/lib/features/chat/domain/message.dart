@@ -1,5 +1,5 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:chat_app/i18n/localizations.dart';
+import 'package:intl/intl.dart';
 
 class Message {
   Message({
@@ -7,7 +7,7 @@ class Message {
     this.type,
     required this.content,
     this.translation,
-    required this.profileId,
+    this.profileId,
     this.createdAt,
   });
 
@@ -15,8 +15,12 @@ class Message {
   final String? type;
   final String content;
   final String? translation;
-  final String profileId;
+  final String? profileId;
   final DateTime? createdAt;
+
+  static Message newDay(Message message) {
+    return Message(content: message.newDayString, type: 'newday');
+  }
 
   bool missed(bool isCurrentUser) =>
       _getVideoContent(isCurrentUser) == 'missed';
@@ -28,6 +32,19 @@ class Message {
       return 'Missed video call'.i18n;
     }
     return 'Video call '.i18n + videoContent;
+  }
+
+  DateTime? get localCreatedAt {
+    return createdAt?.toLocal();
+  }
+
+  String? get localTime {
+    if (localCreatedAt == null) return null;
+    return DateFormat('jm').format(localCreatedAt!);
+  }
+
+  String get newDayString {
+    return '------ ${DateFormat.yMMMd().format(localCreatedAt!)} -----';
   }
 
   Map<String, dynamic> toMap() {
