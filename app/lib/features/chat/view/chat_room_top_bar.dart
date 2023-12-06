@@ -1,8 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/home/view/call_request_controller.dart';
-import 'package:chat_app/features/video/data/video_api.dart';
-import 'package:chat_app/features/video/data/video_settings_provider.dart';
+import 'package:chat_app/common/error_snackbar.dart';
+import 'package:chat_app/features/video/application/video_service.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/constants.dart';
@@ -30,48 +28,32 @@ class ChatRoomTopBar extends ConsumerStatefulWidget
 
 class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
     with UserOnlineStatus {
-  Future<String?> _getVideoRoomId(ScaffoldMessengerState sMessenger) async {
+  void _setupVideoCallAndWait() async {
+    final router = context.router;
     try {
-      final token = await ref.watch(authRepositoryProvider).generateJWTToken();
-      final videoRoomId = await ref.watch(videoApiProvider).getRoomId(token);
+      await ref.read(videoServiceProvider).makeVideoCall(widget.otherProfile);
 
-      ref
-          .read(videoSettingsProvider.notifier)
-          .updateSettings(token: token, roomId: videoRoomId);
-
-      return videoRoomId;
+      router.push(WaitingRoute(otherProfile: widget.otherProfile));
     } catch (error) {
-      logger.e(error.toString());
-      return null;
+      logger.e('ChatRoomTopBar Error: $error');
+
+      if (!context.mounted) return;
+      context.showSnackBar(
+          'Unable to create video call right now, please try again later.'
+              .i18n);
     }
   }
 
-  void _setupVideoCallAndWait(ScaffoldMessengerState sMessenger) async {
-    final router = context.router;
+  void _pressVideoCallButton(OnlineStatus userStatus) {
+    ScaffoldMessenger.of(context).clearSnackBars();
 
-    // Create a new video room id
-    final videoRoomId = await _getVideoRoomId(sMessenger);
-    if (videoRoomId == null) {
-      sMessenger.showSnackBar(SnackBar(
-        content: Text(
-            'Unable to create video call right now, please try again later.'
-                .i18n),
-      ));
-      return;
+    if (userStatus == OnlineStatus.online) {
+      _setupVideoCallAndWait();
+    } else {
+      context.showSnackBar(userStatus == OnlineStatus.busy
+          ? 'User is busy right now.'.i18n
+          : 'User is offline right now.'.i18n);
     }
-
-    // Set online status to busy
-    await ref
-        .read(onlinePresencesProvider.notifier)
-        .updateCurrentUserPresence(OnlineStatus.busy);
-
-    // Send new call
-    await ref
-        .read(callRequestControllerProvider.notifier)
-        .sendNewCall(videoRoomId, widget.otherProfile);
-
-    // Go to waiting route to wait for other user to respond.
-    router.push(WaitingRoute(otherProfile: widget.otherProfile));
   }
 
   @override
@@ -112,24 +94,7 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
       ),
       actions: [
         IconButton(
-          onPressed: () async {
-            final sMessenger = ScaffoldMessenger.of(context);
-            sMessenger.clearSnackBars();
-
-            if (userStatus == OnlineStatus.online) {
-              _setupVideoCallAndWait(sMessenger);
-            } else {
-              sMessenger.showSnackBar(
-                SnackBar(
-                  content: Text(
-                    userStatus == OnlineStatus.busy
-                        ? 'User is busy right now.'
-                        : 'User is offline right now.',
-                  ),
-                ),
-              );
-            }
-          },
+          onPressed: () => _pressVideoCallButton(userStatus),
           icon: Icon(
             userStatus == OnlineStatus.online
                 ? Icons.videocam_rounded
