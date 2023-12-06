@@ -57,10 +57,11 @@ class ChatLobbyRepository {
 
     final roomsList = await supabase
         .from('rooms')
-        .select<List<Map<String, dynamic>>>('id, chat_users!inner()')
+        .select<List<Map<String, dynamic>>>(
+            'id, chat_users!inner (), messages ()')
         .eq('chat_users.profile_id', currentUserId)
-        .order('created_at')
-        .range(from, to);
+        .range(from, to)
+        .order('created_at', foreignTable: 'messages');
 
     return roomsList.map((room) => Room.fromMap(room)).toList();
   }
