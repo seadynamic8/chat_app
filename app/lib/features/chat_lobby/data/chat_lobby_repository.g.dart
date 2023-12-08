@@ -23,8 +23,7 @@ final chatLobbyRepositoryProvider =
 );
 
 typedef ChatLobbyRepositoryRef = AutoDisposeProviderRef<ChatLobbyRepository>;
-String _$unReadMessagesStreamHash() =>
-    r'613388fec9e61aee2e561c8756cd9d6d9488aeda';
+String _$findRoomWithUserHash() => r'd08fb0338858f1f787357ca01a4f8a7d1956747b';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -46,6 +45,137 @@ class _SystemHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }
+
+/// See also [findRoomWithUser].
+@ProviderFor(findRoomWithUser)
+const findRoomWithUserProvider = FindRoomWithUserFamily();
+
+/// See also [findRoomWithUser].
+class FindRoomWithUserFamily extends Family<AsyncValue<Room?>> {
+  /// See also [findRoomWithUser].
+  const FindRoomWithUserFamily();
+
+  /// See also [findRoomWithUser].
+  FindRoomWithUserProvider call(
+    String otherProfileId,
+  ) {
+    return FindRoomWithUserProvider(
+      otherProfileId,
+    );
+  }
+
+  @override
+  FindRoomWithUserProvider getProviderOverride(
+    covariant FindRoomWithUserProvider provider,
+  ) {
+    return call(
+      provider.otherProfileId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'findRoomWithUserProvider';
+}
+
+/// See also [findRoomWithUser].
+class FindRoomWithUserProvider extends AutoDisposeFutureProvider<Room?> {
+  /// See also [findRoomWithUser].
+  FindRoomWithUserProvider(
+    String otherProfileId,
+  ) : this._internal(
+          (ref) => findRoomWithUser(
+            ref as FindRoomWithUserRef,
+            otherProfileId,
+          ),
+          from: findRoomWithUserProvider,
+          name: r'findRoomWithUserProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$findRoomWithUserHash,
+          dependencies: FindRoomWithUserFamily._dependencies,
+          allTransitiveDependencies:
+              FindRoomWithUserFamily._allTransitiveDependencies,
+          otherProfileId: otherProfileId,
+        );
+
+  FindRoomWithUserProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.otherProfileId,
+  }) : super.internal();
+
+  final String otherProfileId;
+
+  @override
+  Override overrideWith(
+    FutureOr<Room?> Function(FindRoomWithUserRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FindRoomWithUserProvider._internal(
+        (ref) => create(ref as FindRoomWithUserRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        otherProfileId: otherProfileId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<Room?> createElement() {
+    return _FindRoomWithUserProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FindRoomWithUserProvider &&
+        other.otherProfileId == otherProfileId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, otherProfileId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin FindRoomWithUserRef on AutoDisposeFutureProviderRef<Room?> {
+  /// The parameter `otherProfileId` of this provider.
+  String get otherProfileId;
+}
+
+class _FindRoomWithUserProviderElement
+    extends AutoDisposeFutureProviderElement<Room?> with FindRoomWithUserRef {
+  _FindRoomWithUserProviderElement(super.provider);
+
+  @override
+  String get otherProfileId =>
+      (origin as FindRoomWithUserProvider).otherProfileId;
+}
+
+String _$unReadMessagesStreamHash() =>
+    r'613388fec9e61aee2e561c8756cd9d6d9488aeda';
 
 /// See also [unReadMessagesStream].
 @ProviderFor(unReadMessagesStream)

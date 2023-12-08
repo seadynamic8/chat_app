@@ -150,6 +150,15 @@ ChatLobbyRepository chatLobbyRepository(ChatLobbyRepositoryRef ref) {
 }
 
 @riverpod
+FutureOr<Room?> findRoomWithUser(
+    FindRoomWithUserRef ref, String otherProfileId) {
+  final currentProfileId = ref.watch(currentProfileProvider).id!;
+  final chatLobbyRepository = ref.watch(chatLobbyRepositoryProvider);
+  return chatLobbyRepository.findRoomByProfiles(
+      currentProfileId: currentProfileId, otherProfileId: otherProfileId);
+}
+
+@riverpod
 Stream<int> unReadMessagesStream(UnReadMessagesStreamRef ref,
     [String? roomId]) {
   final currentProfileId = ref.watch(currentProfileProvider).id!;

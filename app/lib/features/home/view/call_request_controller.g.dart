@@ -7,7 +7,7 @@ part of 'call_request_controller.dart';
 // **************************************************************************
 
 String _$callRequestControllerHash() =>
-    r'70a498967db2c71f4161e3e1a158bc6deab41a3c';
+    r'0c0324289653a5b6b18aaba42eb579a5a6e8398a';
 
 /// See also [CallRequestController].
 @ProviderFor(CallRequestController)

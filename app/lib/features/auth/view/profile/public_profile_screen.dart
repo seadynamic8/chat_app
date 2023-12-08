@@ -1,7 +1,7 @@
 import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
-import 'package:chat_app/features/auth/view/profile/public_profile_controller.dart';
+import 'package:chat_app/features/chat_lobby/application/chat_lobby_service.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/constants.dart';
@@ -25,12 +25,11 @@ class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
     return profileId == ref.watch(authRepositoryProvider).currentUserId!;
   }
 
-  void _goToChatRoom(BuildContext context, WidgetRef ref) async {
+  void _joinChatRoom(BuildContext context, WidgetRef ref) async {
     final router = context.router;
 
-    final room = await ref
-        .read(publicProfileControllerProvider.notifier)
-        .findOrCreateRoom(profileId);
+    final room =
+        await ref.read(chatLobbyServiceProvider).findOrCreateRoom(profileId);
 
     router.replaceAll([
       const ChatNavigation(),
@@ -168,7 +167,7 @@ class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
                         icon: const Icon(Icons.message),
                         label: const Text('Send Message'),
                         heroTag: 'tag1',
-                        onPressed: () => _goToChatRoom(context, ref),
+                        onPressed: () => _joinChatRoom(context, ref),
                       ),
                       // TODO: Add Follow Button
                       // FloatingActionButton.extended(

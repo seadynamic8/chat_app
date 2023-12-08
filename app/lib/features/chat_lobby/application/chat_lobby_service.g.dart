@@ -1,27 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'public_profile_controller.dart';
+part of 'chat_lobby_service.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$publicProfileControllerHash() =>
-    r'7a8c7199076f8505213298dd2b85f83ca87ccbc4';
+String _$chatLobbyServiceHash() => r'170295e7ac1e6bcff83c0b767359fd719c839da9';
 
-/// See also [PublicProfileController].
-@ProviderFor(PublicProfileController)
-final publicProfileControllerProvider =
-    AutoDisposeNotifierProvider<PublicProfileController, void>.internal(
-  PublicProfileController.new,
-  name: r'publicProfileControllerProvider',
+/// See also [chatLobbyService].
+@ProviderFor(chatLobbyService)
+final chatLobbyServiceProvider = AutoDisposeProvider<ChatLobbyService>.internal(
+  chatLobbyService,
+  name: r'chatLobbyServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$publicProfileControllerHash,
+      : _$chatLobbyServiceHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$PublicProfileController = AutoDisposeNotifier<void>;
+typedef ChatLobbyServiceRef = AutoDisposeProviderRef<ChatLobbyService>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

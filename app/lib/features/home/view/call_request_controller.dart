@@ -204,10 +204,8 @@ class CallRequestController extends _$CallRequestController {
   ) async {
     final currentProfile = ref.read(currentProfileProvider);
     final chatRoom =
-        await ref.read(chatLobbyRepositoryProvider).findRoomByProfiles(
-              currentProfileId: currentProfile.id!,
-              otherProfileId: otherProfileId,
-            );
+        await ref.read(findRoomWithUserProvider(otherProfileId).future);
+
     ref.read(chatRepositoryProvider).updateVideoStatus(
           status: status,
           roomId: chatRoom!.id,
