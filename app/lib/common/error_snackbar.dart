@@ -1,3 +1,4 @@
+import 'package:chat_app/utils/keys.dart';
 import 'package:flutter/material.dart';
 
 // Error message to display the user when unexpected error occurs.
@@ -10,6 +11,7 @@ extension ShowSnackBar on BuildContext {
     final sMessenger = ScaffoldMessenger.of(this);
     sMessenger.clearSnackBars();
     sMessenger.showSnackBar(SnackBar(
+      key: K.snackBar,
       content: Text(errorMessage),
       backgroundColor: backgroundColor,
     ));

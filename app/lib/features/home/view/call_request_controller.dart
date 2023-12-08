@@ -1,4 +1,5 @@
 import 'package:chat_app/features/auth/data/current_profile_provider.dart';
+import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
@@ -202,14 +203,15 @@ class CallRequestController extends _$CallRequestController {
     VideoStatus status,
     String otherProfileId,
   ) async {
-    final currentProfile = ref.read(currentProfileProvider);
+    final currentProfileId = ref.read(currentProfileProvider).id!;
     final chatRoom =
         await ref.read(findRoomWithUserProvider(otherProfileId).future);
 
-    ref.read(chatRepositoryProvider).updateVideoStatus(
-          status: status,
+    ref.read(chatRepositoryProvider).updateStatus(
+          statusType: MessageType.video.name,
+          statusName: status.name,
           roomId: chatRoom!.id,
-          currentProfileId: currentProfile.id!,
+          profileId: currentProfileId,
         );
   }
 

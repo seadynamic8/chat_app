@@ -358,5 +358,136 @@ class _ProfileChangesProviderElement
   @override
   String get profileId => (origin as ProfileChangesProvider).profileId;
 }
+
+String _$isBlockedByEitherHash() => r'6eac90b018798502b9d297c0f1eeb3690f35e940';
+
+/// See also [isBlockedByEither].
+@ProviderFor(isBlockedByEither)
+const isBlockedByEitherProvider = IsBlockedByEitherFamily();
+
+/// See also [isBlockedByEither].
+class IsBlockedByEitherFamily extends Family<AsyncValue<BlockState>> {
+  /// See also [isBlockedByEither].
+  const IsBlockedByEitherFamily();
+
+  /// See also [isBlockedByEither].
+  IsBlockedByEitherProvider call(
+    String otherProfileId,
+  ) {
+    return IsBlockedByEitherProvider(
+      otherProfileId,
+    );
+  }
+
+  @override
+  IsBlockedByEitherProvider getProviderOverride(
+    covariant IsBlockedByEitherProvider provider,
+  ) {
+    return call(
+      provider.otherProfileId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'isBlockedByEitherProvider';
+}
+
+/// See also [isBlockedByEither].
+class IsBlockedByEitherProvider extends AutoDisposeFutureProvider<BlockState> {
+  /// See also [isBlockedByEither].
+  IsBlockedByEitherProvider(
+    String otherProfileId,
+  ) : this._internal(
+          (ref) => isBlockedByEither(
+            ref as IsBlockedByEitherRef,
+            otherProfileId,
+          ),
+          from: isBlockedByEitherProvider,
+          name: r'isBlockedByEitherProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$isBlockedByEitherHash,
+          dependencies: IsBlockedByEitherFamily._dependencies,
+          allTransitiveDependencies:
+              IsBlockedByEitherFamily._allTransitiveDependencies,
+          otherProfileId: otherProfileId,
+        );
+
+  IsBlockedByEitherProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.otherProfileId,
+  }) : super.internal();
+
+  final String otherProfileId;
+
+  @override
+  Override overrideWith(
+    FutureOr<BlockState> Function(IsBlockedByEitherRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: IsBlockedByEitherProvider._internal(
+        (ref) => create(ref as IsBlockedByEitherRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        otherProfileId: otherProfileId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<BlockState> createElement() {
+    return _IsBlockedByEitherProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is IsBlockedByEitherProvider &&
+        other.otherProfileId == otherProfileId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, otherProfileId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin IsBlockedByEitherRef on AutoDisposeFutureProviderRef<BlockState> {
+  /// The parameter `otherProfileId` of this provider.
+  String get otherProfileId;
+}
+
+class _IsBlockedByEitherProviderElement
+    extends AutoDisposeFutureProviderElement<BlockState>
+    with IsBlockedByEitherRef {
+  _IsBlockedByEitherProviderElement(super.provider);
+
+  @override
+  String get otherProfileId =>
+      (origin as IsBlockedByEitherProvider).otherProfileId;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

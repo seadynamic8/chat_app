@@ -11,13 +11,17 @@ class NewestMessageContent extends ConsumerWidget {
   String _filterNewestMessage(WidgetRef ref, Message newestMessage) {
     final isCurrentUser = _messageIsCurrentUser(ref, newestMessage);
 
-    if (newestMessage.type == 'video') {
-      return '[ ${newestMessage.videoLabel(isCurrentUser)} ]';
+    switch (newestMessage.type) {
+      case MessageType.video:
+        return '[ ${newestMessage.videoLabel(isCurrentUser)} ]';
+      case MessageType.block:
+        return '[ ${newestMessage.blockAction(isCurrentUser: isCurrentUser)} ]';
+      default:
+        if (newestMessage.translation != null && !isCurrentUser) {
+          return newestMessage.translation!;
+        }
+        return newestMessage.content;
     }
-    if (newestMessage.translation != null && !isCurrentUser) {
-      return newestMessage.translation!;
-    }
-    return newestMessage.content;
   }
 
   bool _messageIsCurrentUser(WidgetRef ref, Message message) {

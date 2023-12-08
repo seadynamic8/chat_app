@@ -83,18 +83,19 @@ class ChatRepository {
     return messages.map((message) => Message.fromMap(message)).toList();
   }
 
-  // * Video Chat Status (Saved and displayed as a Chat Message)
+  // * Status Message
 
-  Future<void> updateVideoStatus({
-    required VideoStatus status,
+  Future<void> updateStatus({
+    required String statusType,
+    required String statusName,
     required String roomId,
-    required String currentProfileId,
+    required String profileId,
   }) async {
     await supabase.from('messages').insert({
-      'type': 'video',
-      'content': status.name,
+      'type': statusType,
+      'content': statusName,
       'room_id': roomId,
-      'profile_id': currentProfileId
+      'profile_id': profileId
     });
   }
 
@@ -144,6 +145,28 @@ class ChatRepository {
     await supabase
         .from('messages')
         .update({'translation': translation}).eq('id', messageId);
+  }
+
+  // * Block user
+
+  Future<void> blockUser(
+    String blockerProfileId,
+    String blockedProfileId,
+  ) async {
+    await supabase.from('blocked_users').insert({
+      'blocker_id': blockerProfileId,
+      'blocked_id': blockedProfileId,
+    });
+  }
+
+  Future<void> unBlockUser(
+    String blockerProfileId,
+    String blockedProfileId,
+  ) async {
+    await supabase.from('blocked_users').delete().match({
+      'blocker_id': blockerProfileId,
+      'blocked_id': blockedProfileId,
+    });
   }
 }
 

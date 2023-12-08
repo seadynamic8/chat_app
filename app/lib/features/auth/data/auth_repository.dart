@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:chat_app/features/auth/domain/block_state.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/utils/username_generate_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -185,6 +186,18 @@ class AuthRepository {
     return (jwtResponse.data as String).replaceAll('"', '');
   }
 
+  Future<BlockState> isBlockedByEither(String otherProfileId) async {
+    final blocked = await supabase
+        .from('blocked_users')
+        .select<List<Map<String, dynamic>>>('blocker_id')
+        .or('and(blocker_id.eq.$currentUserId,blocked_id.eq.$otherProfileId),'
+            'and(blocker_id.eq.$otherProfileId,blocked_id.eq.$currentUserId)');
+
+    return BlockState.fromMap(blocked, currentProfileId: currentUserId!);
+  }
+
+  // * Private methods
+
   Future<bool> _createProfileWithLanguageAndUniqueUsername(
       String currentUserId) async {
     var success = false;
@@ -266,4 +279,11 @@ Stream<Profile> profileStream(ProfileStreamRef ref, String profileId) {
 Stream<Profile> profileChanges(ProfileChangesRef ref, String profileId) {
   final authRepository = ref.watch(authRepositoryProvider);
   return authRepository.watchProfileChanges(profileId);
+}
+
+@riverpod
+FutureOr<BlockState> isBlockedByEither(
+    IsBlockedByEitherRef ref, String otherProfileId) {
+  final authRepository = ref.watch(authRepositoryProvider);
+  return authRepository.isBlockedByEither(otherProfileId);
 }

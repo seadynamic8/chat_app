@@ -59,4 +59,18 @@ class AuthAdminRepository {
       await deleteUser(userId);
     }
   }
+
+  Future<void> blockUser(String blockerId, String blockedId) async {
+    await supabase.functions.invoke('fake_block_user', body: {
+      'blockerId': blockerId,
+      'blockedId': blockedId,
+    });
+  }
+
+  Future<void> unBlockUser(String blockerId, String blockedId) async {
+    await supabase.functions.invoke('fake_unblock_user', body: {
+      'blockerId': blockerId,
+      'blockedId': blockedId,
+    });
+  }
 }

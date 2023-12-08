@@ -18,19 +18,21 @@ class MessageBubbleContent extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-      child: message.type == 'video'
-          ? VideoLabelMessage(message: message, isCurrentUser: isCurrentUser)
+      child: switch (message.type) {
+        MessageType.video =>
+          VideoLabelMessage(message: message, isCurrentUser: isCurrentUser),
 
-          // MESSAGE CONTENT
-          : Text(
-              message.content,
-              style: TextStyle(
-                height: 1.3,
-                color: isCurrentUser
-                    ? theme.colorScheme.onBackground.withAlpha(200)
-                    : theme.colorScheme.onSecondary,
-              ),
+        // MESSAGE CONTENT
+        _ => Text(
+            message.content,
+            style: TextStyle(
+              height: 1.3,
+              color: isCurrentUser
+                  ? theme.colorScheme.onBackground.withAlpha(200)
+                  : theme.colorScheme.onSecondary,
             ),
+          ),
+      },
     );
   }
 }

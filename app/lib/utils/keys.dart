@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 typedef K = Keys;
 
 class Keys {
+  static const snackBar = Key('snackBar');
+
   // Main Bottom Navigation Tab Buttons
   static const exploreTab = Key('exploreTab');
   static const chatsTab = Key('chatsTab');
@@ -76,4 +78,8 @@ class Keys {
   static const chatRoomNewMessageField = Key('chatRoomNewMessageField');
   static const chatRoomSendNewMessageBtn = Key('chatRoomSendNewMessageBtn');
   static const chatRoomMessages = Key('chatRoomMessages');
+  static const chatRoomVideoCallButton = Key('chatRoomVideoCallButton');
+  static const chatRoomMoreOptionsButton = Key('chatRoomMoreOptionsButton');
+  static const chatRoomMoreOptionsMenu = Key('chatRoomMoreOptionsMenu');
+  static const chatRoomBlockToggleButton = Key('chatRoomBlockToggleButton');
 }

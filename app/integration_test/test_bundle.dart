@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:patrol/patrol.dart';
 
 // START: GENERATED TEST IMPORTS
-import 'features/chat/chat_lobby_flow_test.dart' as __features__chat__chat_lobby_flow_test;
+import 'features/chat/block_user_flow_test.dart' as __features__chat__block_user_flow_test;
 // END: GENERATED TEST IMPORTS
 
 Future<void> main() async {
@@ -16,6 +16,6 @@ Future<void> main() async {
         debugDefaultTargetPlatformOverride;
 
   // START: GENERATED TEST GROUPS
-  group('.features.chat.chat_lobby_flow_test', __features__chat__chat_lobby_flow_test.main);
+  group('.features.chat.block_user_flow_test', __features__chat__block_user_flow_test.main);
   // END: GENERATED TEST GROUPS
 }

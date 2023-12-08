@@ -35,7 +35,10 @@ class ChatRoomScreen extends ConsumerWidget {
             value: profilesValue,
             data: (profiles) => Scaffold(
               key: K.chatRoom,
-              appBar: ChatRoomTopBar(otherProfile: profiles[otherProfileId]!),
+              appBar: ChatRoomTopBar(
+                roomId: roomId,
+                otherProfile: profiles[otherProfileId]!,
+              ),
               body: Column(
                 children: [
                   Expanded(

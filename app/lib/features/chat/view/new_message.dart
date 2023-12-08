@@ -1,7 +1,6 @@
 import 'package:chat_app/common/error_snackbar.dart';
-import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/chat/data/chat_repository.dart';
-import 'package:chat_app/features/chat/domain/message.dart';
+import 'package:chat_app/features/auth/domain/block_state.dart';
+import 'package:chat_app/features/chat/application/chat_service.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,13 +31,18 @@ class _NewMessageState extends ConsumerState<NewMessage> {
     }
     _messageController.clear();
 
-    final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
-
-    await ref.read(chatRepositoryProvider).saveMessage(
-          widget.roomId,
-          widget.otherProfileId,
-          Message(content: messageText, profileId: currentUserId),
+    final blockState = await ref.read(chatServiceProvider).sendMessage(
+          roomId: widget.roomId,
+          otherProfileId: widget.otherProfileId,
+          messageText: messageText,
         );
+
+    _showBlockMessage(blockState);
+  }
+
+  void _showBlockMessage(BlockState blockState) {
+    if (blockState.status == BlockStatus.no) return;
+    context.showErrorSnackBar('${blockState.message}, cannot send message');
   }
 
   @override

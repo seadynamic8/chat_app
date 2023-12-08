@@ -1,5 +1,8 @@
+import 'package:chat_app/features/chat/view/chat_more_menu_controller.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:intl/intl.dart';
+
+enum MessageType { video, block, newday, user }
 
 class Message {
   Message({
@@ -12,14 +15,14 @@ class Message {
   });
 
   final String? id;
-  final String? type;
+  final MessageType? type;
   final String content;
   final String? translation;
   final String? profileId;
   final DateTime? createdAt;
 
   static Message newDay(Message message) {
-    return Message(content: message.newDayString, type: 'newday');
+    return Message(content: message.newDayString, type: MessageType.newday);
   }
 
   bool missed(bool isCurrentUser) =>
@@ -47,6 +50,13 @@ class Message {
     return '------ ${DateFormat.yMMMd().format(localCreatedAt!)} -----';
   }
 
+  String blockAction({required bool isCurrentUser}) {
+    final blockAction = ChatBlockAction.values.byName(content);
+    return isCurrentUser
+        ? 'You have ${blockAction.name}ed the other user'.i18n
+        : 'The other user has ${blockAction.name}ed you'.i18n;
+  }
+
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
@@ -61,7 +71,9 @@ class Message {
   factory Message.fromMap(Map<String, dynamic> map) {
     return Message(
       id: map['id'] != null ? map['id'] as String : null,
-      type: map['type'] != null ? map['type'] as String : null,
+      type: map['type'] != null
+          ? MessageType.values.byName(map['type'] as String)
+          : null,
       content: map['content'] as String,
       translation:
           map['translation'] != null ? map['translation'] as String : null,
@@ -74,7 +86,7 @@ class Message {
 
   Message copyWith({
     String? id,
-    String? type,
+    MessageType? type,
     String? content,
     String? translation,
     String? profileId,
@@ -97,7 +109,7 @@ class Message {
 
   // Friendly video status
   String _getVideoContent(bool isCurrentUser) {
-    if (type == 'video') {
+    if (type == MessageType.video) {
       if (content == 'rejected') return 'ended'.i18n;
 
       if (content == 'cancelled' && !isCurrentUser) return 'missed'.i18n;

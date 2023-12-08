@@ -1,4 +1,5 @@
 import 'package:chat_app/common/paginated_list_view.dart';
+import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/view/chat_messages_controller.dart';
@@ -19,6 +20,12 @@ class ChatMessages extends ConsumerWidget {
   final String roomId;
   final Map<String, Profile> profiles;
   final ScrollController scrollController;
+
+  String getblockAction(WidgetRef ref, Message message) {
+    final isCurrentUser =
+        message.profileId == ref.watch(currentProfileProvider).id!;
+    return message.blockAction(isCurrentUser: isCurrentUser);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -56,13 +63,17 @@ class ChatMessages extends ConsumerWidget {
                   (context, index) {
                     final message = messages[index];
 
-                    return message.type == 'newday'
-                        ? StatusMessage(content: message.content)
-                        : MessageBubble(
-                            key: ValueKey(message.id),
-                            message: message,
-                            profile: profiles[message.profileId]!,
-                          );
+                    return switch (message.type) {
+                      MessageType.newday =>
+                        StatusMessage(content: message.content),
+                      MessageType.block =>
+                        StatusMessage(content: getblockAction(ref, message)),
+                      _ => MessageBubble(
+                          key: ValueKey(message.id),
+                          message: message,
+                          profile: profiles[message.profileId]!,
+                        ),
+                    };
                   },
                 ),
               );

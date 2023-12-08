@@ -1,4 +1,4 @@
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
+import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:chat_app/features/chat_lobby/domain/room.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,10 +32,10 @@ class ChatLobbyService {
     required String otherProfileId,
     required String roomId,
   }) async {
-    final currentProfileId = ref.read(currentProfileProvider).id!;
+    final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
     await ref
         .read(chatLobbyRepositoryProvider)
-        .addUserToRoom(currentProfileId, roomId);
+        .addUserToRoom(currentUserId, roomId);
     await ref
         .read(chatLobbyRepositoryProvider)
         .addUserToRoom(otherProfileId, roomId);
