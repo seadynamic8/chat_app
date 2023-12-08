@@ -28,6 +28,18 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
+def envVariables = [
+    // APP_NAME: project.hasProperty('APP_NAME')
+    //         ? APP_NAME
+    //         : 'batcave',
+    // APP_SUFFIX: project.hasProperty('APP_SUFFIX')
+    //         ? APP_SUFFIX
+    //         : null,
+    ADAPTY_SDK_KEY: project.hasProperty('ADAPTY_SDK_KEY')
+            ? ADAPTY_SDK_KEY
+            : "someString",
+];
+
 android {
     namespace "com.stcache.dazzely"
     compileSdkVersion flutter.compileSdkVersion
@@ -55,9 +67,11 @@ android {
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-
+        
         testInstrumentationRunner "pl.leancode.patrol.PatrolJUnitRunner"
         testInstrumentationRunnerArguments clearPackageData: "true"
+
+        resValue "string", "adapty_sdk_key", envVariables.ADAPTY_SDK_KEY
     }
 
     signingConfigs {

@@ -66,6 +66,7 @@ dependencies:
   shimmer: ^3.0.0
   sliver_tools: ^0.2.12
   intl: ^0.18.1
+  adapty_flutter: ^2.7.1
   
 
 dev_dependencies:

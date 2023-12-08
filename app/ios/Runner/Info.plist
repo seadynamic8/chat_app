@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AdaptyPublicSdkKey</key>
+	<string>$(ADAPTY_SDK_KEY)</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>App Needs Photo Library Permission To Upload Pictures</string>
 	<key>NSCameraUsageDescription</key>
