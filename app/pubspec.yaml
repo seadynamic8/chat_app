@@ -67,6 +67,7 @@ dependencies:
   sliver_tools: ^0.2.12
   intl: ^0.18.1
   adapty_flutter: ^2.7.1
+  adapty_ui_flutter: ^2.0.5
   
 
 dev_dependencies:
