@@ -1,9 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/error_snackbar.dart';
-import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/block_state.dart';
 import 'package:chat_app/features/chat/view/chat_more_menu.dart';
 import 'package:chat_app/features/video/application/video_service.dart';
+import 'package:chat_app/features/video/data/call_availability_provider.dart';
+import 'package:chat_app/features/video/domain/call_availability.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/constants.dart';
@@ -13,7 +14,6 @@ import 'package:chat_app/utils/user_online_status.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/common/chat_online_status_icon.dart';
-import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:flutter/material.dart';
 
@@ -37,22 +37,21 @@ class ChatRoomTopBar extends ConsumerStatefulWidget
 
 class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
     with UserOnlineStatus {
-  void _pressVideoCallButton(OnlineStatus userStatus) async {
-    if (userStatus != OnlineStatus.online) {
-      _showStatusMessage(userStatus);
-      return;
+  void _pressVideoCallButton(CallAvailabilityState callAvailability) async {
+    switch (callAvailability.status) {
+      case CallAvailabilityStatus.unavailable:
+        _showStatusMessage(callAvailability.data);
+      case CallAvailabilityStatus.blocked:
+        _showBlockMessage(callAvailability.data);
+      case CallAvailabilityStatus.canCall:
+        _makeVideoCallAndWait();
     }
+  }
+
+  void _makeVideoCallAndWait() async {
     final router = context.router;
-
     try {
-      final blockState = await ref
-          .read(videoServiceProvider)
-          .makeVideoCall(widget.otherProfile);
-
-      if (blockState.status != BlockStatus.no) {
-        _showBlockMessage(blockState);
-        return;
-      }
+      await ref.read(videoServiceProvider).makeVideoCall(widget.otherProfile);
 
       router.push(WaitingRoute(otherProfile: widget.otherProfile));
     } catch (error) {
@@ -81,9 +80,8 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final onlinePresences = ref.watch(onlinePresencesProvider);
-    final userStatus =
-        getUserOnlineStatus(onlinePresences, widget.otherProfile.id!);
+    final callAvailability =
+        ref.watch(callAvailabilityProvider(widget.otherProfile.id!));
 
     return AppBar(
       title: InkWell(
@@ -115,16 +113,20 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
             .push(PublicProfileRoute(profileId: widget.otherProfile.id!)),
       ),
       actions: [
-        IconButton(
-          key: K.chatRoomVideoCallButton,
-          onPressed: () => _pressVideoCallButton(userStatus),
-          icon: Icon(
-            userStatus == OnlineStatus.online
-                ? Icons.videocam_rounded
-                : Icons.videocam_off_outlined,
-            color:
-                userStatus == OnlineStatus.online ? Colors.white : Colors.grey,
+        callAvailability.maybeWhen(
+          data: (callAvailability) => IconButton(
+            key: K.chatRoomVideoCallButton,
+            onPressed: () => _pressVideoCallButton(callAvailability),
+            icon: Icon(
+              callAvailability.status == CallAvailabilityStatus.canCall
+                  ? Icons.videocam_rounded
+                  : Icons.videocam_off_outlined,
+              color: callAvailability.status == CallAvailabilityStatus.canCall
+                  ? Colors.white
+                  : Colors.grey,
+            ),
           ),
+          orElse: SizedBox.shrink,
         ),
         ChatMoreMenu(
           roomId: widget.roomId,

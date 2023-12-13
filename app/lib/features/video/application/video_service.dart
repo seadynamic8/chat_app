@@ -1,5 +1,4 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/domain/block_state.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
@@ -17,19 +16,14 @@ class VideoService {
 
   final Ref ref;
 
-  Future<BlockState> makeVideoCall(Profile otherProfile) async {
-    final blockState =
-        await ref.read(isBlockedByEitherProvider(otherProfile.id!).future);
-    if (blockState.status == BlockStatus.no) {
-      final videoRoomId = await _getVideoRoomId();
-      if (videoRoomId == null) {
-        logger.e('VideoService: videoRoomId is null');
-        throw Exception('Something went wrong with video call.');
-      }
-      await _setOnlineStatusToBusy();
-      await _sendNewCall(videoRoomId, otherProfile);
+  Future<void> makeVideoCall(Profile otherProfile) async {
+    final videoRoomId = await _getVideoRoomId();
+    if (videoRoomId == null) {
+      logger.e('VideoService: videoRoomId is null');
+      throw Exception('Something went wrong with video call.');
     }
-    return blockState;
+    await _setOnlineStatusToBusy();
+    await _sendNewCall(videoRoomId, otherProfile);
   }
 
   Future<String?> _getVideoRoomId() async {
