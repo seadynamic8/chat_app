@@ -68,6 +68,7 @@ dependencies:
   intl: ^0.18.1
   adapty_flutter: ^2.7.1
   adapty_ui_flutter: ^2.0.5
+  stop_watch_timer: ^3.0.2
   
 
 dev_dependencies:
