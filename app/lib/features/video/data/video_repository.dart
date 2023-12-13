@@ -72,7 +72,7 @@ class VideoRepository {
   }
 
   void onLocalParticipantLeft([void Function()? callback]) {
-    videoRoom.on(Events.roomJoined, () {
+    videoRoom.on(Events.roomLeft, () {
       logger.i('Video Room left');
       if (callback != null) callback();
     });

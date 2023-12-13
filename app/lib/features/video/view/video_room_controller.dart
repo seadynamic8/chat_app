@@ -13,7 +13,8 @@ class VideoRoomController extends _$VideoRoomController {
   Future<VideoRoomState> build(String otherProfileId) async {
     final videoRepository = ref.watch(videoRepositoryProvider);
 
-    videoRepository.onLocalParticipantJoin();
+    videoRepository.onLocalParticipantJoin(_onLocalParticipantJoin);
+    videoRepository.onLocalParticipantLeft(_onLocalParticipantLeft);
 
     videoRepository.onRemoteParticipantJoin(_addRemoteParticipant);
     videoRepository.onRemoteParticipantLeft(_removeRemoteParticipant);
@@ -37,6 +38,15 @@ class VideoRoomController extends _$VideoRoomController {
   }
 
   // * Callback Handlers
+
+  void _onLocalParticipantJoin() async {
+    ref.read(stopwatchRepositoryProvider).start();
+  }
+
+  void _onLocalParticipantLeft() async {
+    final stopwatchRepository = ref.read(stopwatchRepositoryProvider);
+    stopwatchRepository.stop();
+  }
 
   void _addRemoteParticipant(VideoParticipant videoParticipant) async {
     final oldState = await future;
