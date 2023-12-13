@@ -5,6 +5,7 @@ import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/application/translation_service.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
+import 'package:chat_app/utils/new_day_extension.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chat_messages_controller.g.dart';
@@ -70,7 +71,8 @@ class ChatMessagesController extends _$ChatMessagesController {
     final updatedNewMessages = [newMessage];
 
     if (oldState.items.isNotEmpty &&
-        _isNewDay(newMessage.createdAt, oldState.items.first.createdAt)) {
+        newMessage.createdAt != null &&
+        newMessage.createdAt!.isNewDayAfter(oldState.items.first.createdAt)) {
       updatedNewMessages.add(Message.newDay(newMessage));
     }
 
@@ -120,7 +122,8 @@ class ChatMessagesController extends _$ChatMessagesController {
     var prev = prevMessage;
 
     for (final message in messages) {
-      if (_isNewDay(prev?.localCreatedAt!, message.localCreatedAt!)) {
+      if (prev != null &&
+          prev.localCreatedAt!.isNewDayAfter(message.localCreatedAt!)) {
         updatedMessages.add(Message.newDay(message));
       }
       // Always add the current message
@@ -132,15 +135,15 @@ class ChatMessagesController extends _$ChatMessagesController {
     return updatedMessages;
   }
 
-  bool _isNewDay(DateTime? newer, DateTime? older) {
-    if (newer == null || older == null) return false;
+  // bool _isNewDay(DateTime? newer, DateTime? older) {
+  //   if (newer == null || older == null) return false;
 
-    if (older.year < newer.year) return true;
-    // -> Year has to be equal
-    if (older.month < newer.month) return true;
-    // -> Month has to be equal
-    if (older.day < newer.day) return true;
-    // -> Same day then
-    return false;
-  }
+  //   if (older.year < newer.year) return true;
+  //   // -> Year has to be equal
+  //   if (older.month < newer.month) return true;
+  //   // -> Month has to be equal
+  //   if (older.day < newer.day) return true;
+  //   // -> Same day then
+  //   return false;
+  // }
 }
