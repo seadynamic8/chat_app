@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/video/domain/video_participant.dart';
-import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class VideoRoomState {
   VideoRoomState({
