@@ -39,7 +39,6 @@ class AppRouter extends $AppRouter {
                   page: ChatNavigation.page,
                   children: [
                     AutoRoute(page: ChatLobbyRoute.page, initial: true),
-                    AutoRoute(page: VideoRoomRoute.page)
                   ],
                 ),
                 AutoRoute(page: PaywallRoute.page),

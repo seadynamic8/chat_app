@@ -208,7 +208,7 @@ abstract class $AppRouter extends _i23.RootStackRouter {
         child: _i21.VideoRoomScreen(
           key: args.key,
           videoRoomId: args.videoRoomId,
-          otherProfile: args.otherProfile,
+          otherProfileId: args.otherProfileId,
           isCaller: args.isCaller,
         ),
       );
@@ -672,7 +672,7 @@ class VideoRoomRoute extends _i23.PageRouteInfo<VideoRoomRouteArgs> {
   VideoRoomRoute({
     _i24.Key? key,
     required String videoRoomId,
-    required _i26.Profile otherProfile,
+    required String otherProfileId,
     bool isCaller = false,
     List<_i23.PageRouteInfo>? children,
   }) : super(
@@ -680,7 +680,7 @@ class VideoRoomRoute extends _i23.PageRouteInfo<VideoRoomRouteArgs> {
           args: VideoRoomRouteArgs(
             key: key,
             videoRoomId: videoRoomId,
-            otherProfile: otherProfile,
+            otherProfileId: otherProfileId,
             isCaller: isCaller,
           ),
           initialChildren: children,
@@ -696,7 +696,7 @@ class VideoRoomRouteArgs {
   const VideoRoomRouteArgs({
     this.key,
     required this.videoRoomId,
-    required this.otherProfile,
+    required this.otherProfileId,
     this.isCaller = false,
   });
 
@@ -704,13 +704,13 @@ class VideoRoomRouteArgs {
 
   final String videoRoomId;
 
-  final _i26.Profile otherProfile;
+  final String otherProfileId;
 
   final bool isCaller;
 
   @override
   String toString() {
-    return 'VideoRoomRouteArgs{key: $key, videoRoomId: $videoRoomId, otherProfile: $otherProfile, isCaller: $isCaller}';
+    return 'VideoRoomRouteArgs{key: $key, videoRoomId: $videoRoomId, otherProfileId: $otherProfileId, isCaller: $isCaller}';
   }
 }
 
