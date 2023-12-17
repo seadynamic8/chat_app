@@ -5,7 +5,6 @@ import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/features/paywall/data/paywall_repository.dart';
-import 'package:chat_app/features/video/view/video_room_controller.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

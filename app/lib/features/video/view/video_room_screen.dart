@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/async_value_widget.dart';
-import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/home/domain/call_request_state.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/features/video/domain/video_room_state.dart';
