@@ -44,7 +44,7 @@ class UserAccess {
 
   factory UserAccess.fromMap(Map<String, dynamic> map) {
     return UserAccess(
-      level: AccessLevel.values.byName(map['level'] as String),
+      level: AccessLevel.values.byName((map['level'] as String).trim()),
       trialDuration: map['trial_duration'] != null
           ? Duration(milliseconds: map['trial_duration'])
           : null,
