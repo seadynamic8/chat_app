@@ -31,4 +31,7 @@ class BlockState {
       _ => null,
     };
   }
+
+  @override
+  String toString() => 'BlockState(status: ${status.name})';
 }
