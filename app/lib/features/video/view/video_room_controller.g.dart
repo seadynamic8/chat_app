@@ -7,7 +7,7 @@ part of 'video_room_controller.dart';
 // **************************************************************************
 
 String _$videoRoomControllerHash() =>
-    r'1bfd834f5630712d56ac9605dafc93f7377b033a';
+    r'feaf3e96a5c293320855718a7251cca28028b0a3';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -33,9 +33,11 @@ class _SystemHash {
 abstract class _$VideoRoomController
     extends BuildlessAutoDisposeAsyncNotifier<VideoRoomState> {
   late final String otherProfileId;
+  late final bool isCaller;
 
   FutureOr<VideoRoomState> build(
     String otherProfileId,
+    bool isCaller,
   );
 }
 
@@ -51,9 +53,11 @@ class VideoRoomControllerFamily extends Family<AsyncValue<VideoRoomState>> {
   /// See also [VideoRoomController].
   VideoRoomControllerProvider call(
     String otherProfileId,
+    bool isCaller,
   ) {
     return VideoRoomControllerProvider(
       otherProfileId,
+      isCaller,
     );
   }
 
@@ -63,6 +67,7 @@ class VideoRoomControllerFamily extends Family<AsyncValue<VideoRoomState>> {
   ) {
     return call(
       provider.otherProfileId,
+      provider.isCaller,
     );
   }
 
@@ -87,8 +92,11 @@ class VideoRoomControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
   /// See also [VideoRoomController].
   VideoRoomControllerProvider(
     String otherProfileId,
+    bool isCaller,
   ) : this._internal(
-          () => VideoRoomController()..otherProfileId = otherProfileId,
+          () => VideoRoomController()
+            ..otherProfileId = otherProfileId
+            ..isCaller = isCaller,
           from: videoRoomControllerProvider,
           name: r'videoRoomControllerProvider',
           debugGetCreateSourceHash:
@@ -99,6 +107,7 @@ class VideoRoomControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
           allTransitiveDependencies:
               VideoRoomControllerFamily._allTransitiveDependencies,
           otherProfileId: otherProfileId,
+          isCaller: isCaller,
         );
 
   VideoRoomControllerProvider._internal(
@@ -109,9 +118,11 @@ class VideoRoomControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.otherProfileId,
+    required this.isCaller,
   }) : super.internal();
 
   final String otherProfileId;
+  final bool isCaller;
 
   @override
   FutureOr<VideoRoomState> runNotifierBuild(
@@ -119,6 +130,7 @@ class VideoRoomControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
   ) {
     return notifier.build(
       otherProfileId,
+      isCaller,
     );
   }
 
@@ -127,13 +139,16 @@ class VideoRoomControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
     return ProviderOverride(
       origin: this,
       override: VideoRoomControllerProvider._internal(
-        () => create()..otherProfileId = otherProfileId,
+        () => create()
+          ..otherProfileId = otherProfileId
+          ..isCaller = isCaller,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         otherProfileId: otherProfileId,
+        isCaller: isCaller,
       ),
     );
   }
@@ -147,13 +162,15 @@ class VideoRoomControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
   @override
   bool operator ==(Object other) {
     return other is VideoRoomControllerProvider &&
-        other.otherProfileId == otherProfileId;
+        other.otherProfileId == otherProfileId &&
+        other.isCaller == isCaller;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, otherProfileId.hashCode);
+    hash = _SystemHash.combine(hash, isCaller.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -163,6 +180,9 @@ mixin VideoRoomControllerRef
     on AutoDisposeAsyncNotifierProviderRef<VideoRoomState> {
   /// The parameter `otherProfileId` of this provider.
   String get otherProfileId;
+
+  /// The parameter `isCaller` of this provider.
+  bool get isCaller;
 }
 
 class _VideoRoomControllerProviderElement
@@ -173,6 +193,8 @@ class _VideoRoomControllerProviderElement
   @override
   String get otherProfileId =>
       (origin as VideoRoomControllerProvider).otherProfileId;
+  @override
+  bool get isCaller => (origin as VideoRoomControllerProvider).isCaller;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

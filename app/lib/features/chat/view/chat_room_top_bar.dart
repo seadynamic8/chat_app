@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:chat_app/common/alert_dialogs.dart';
 import 'package:chat_app/common/error_snackbar.dart';
 import 'package:chat_app/features/auth/domain/block_state.dart';
+import 'package:chat_app/features/auth/domain/user_access.dart';
 import 'package:chat_app/features/chat/view/chat_more_menu.dart';
 import 'package:chat_app/features/video/application/video_service.dart';
 import 'package:chat_app/features/video/data/call_availability_provider.dart';
@@ -43,6 +45,8 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
         _showStatusMessage(callAvailability.data);
       case CallAvailabilityStatus.blocked:
         _showBlockMessage(callAvailability.data);
+      case CallAvailabilityStatus.noCoins:
+        _showAccessLevelMessage(callAvailability.data);
       case CallAvailabilityStatus.canCall:
         _makeVideoCallAndWait();
     }
@@ -56,6 +60,21 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
       router.push(WaitingRoute(otherProfile: widget.otherProfile));
     } catch (error) {
       _logAndShowError(error);
+    }
+  }
+
+  void _showAccessLevelMessage(UserAccess userAccess) async {
+    final router = context.router;
+    if (userAccess.level == AccessLevel.standard) {
+      final isRecharge = await showAlertDialog(
+          context: context,
+          title: 'No more coins left',
+          content: 'Would you like to get more coins?',
+          cancelActionText: 'No',
+          defaultActionText: 'Yes');
+      if (isRecharge ?? false) {
+        router.push(const PaywallRoute());
+      }
     }
   }
 
@@ -118,7 +137,8 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
             key: K.chatRoomVideoCallButton,
             onPressed: () => _pressVideoCallButton(callAvailability),
             icon: Icon(
-              callAvailability.status == CallAvailabilityStatus.canCall
+              callAvailability.status == CallAvailabilityStatus.canCall ||
+                      callAvailability.status == CallAvailabilityStatus.noCoins
                   ? Icons.videocam_rounded
                   : Icons.videocam_off_outlined,
               color: callAvailability.status == CallAvailabilityStatus.canCall

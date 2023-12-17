@@ -20,11 +20,14 @@ class TabsNavigation extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
     return I18n(
       child: AutoTabsScaffold(
         routes: const [
           ExploreNavigation(),
           ChatNavigation(),
+          PaywallRoute(),
           ProfileNavigation(),
         ],
         bottomNavigationBuilder: (_, tabsRouter) {
@@ -41,9 +44,8 @@ class TabsNavigation extends ConsumerWidget {
             onTap: tabsRouter.setActiveIndex,
             showSelectedLabels: false,
             showUnselectedLabels: false,
-            // TODO: Update color to something than just some random color
-            selectedItemColor:
-                Theme.of(context).textTheme.labelMedium!.decorationColor,
+            selectedItemColor: theme.textTheme.labelMedium!.decorationColor,
+            unselectedItemColor: theme.colorScheme.primary,
             items: [
               BottomNavigationBarItem(
                 icon: const Icon(
@@ -65,6 +67,10 @@ class TabsNavigation extends ConsumerWidget {
                   orElse: () => regularChatTab,
                 ),
                 label: 'Chats'.i18n,
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.stars),
+                label: 'Coins'.i18n,
               ),
               BottomNavigationBarItem(
                 icon: const Icon(

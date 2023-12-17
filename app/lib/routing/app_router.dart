@@ -42,6 +42,7 @@ class AppRouter extends $AppRouter {
                     AutoRoute(page: VideoRoomRoute.page)
                   ],
                 ),
+                AutoRoute(page: PaywallRoute.page),
                 AutoRoute(
                   page: ProfileNavigation.page,
                   children: [

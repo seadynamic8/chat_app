@@ -1,27 +1,28 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'call_request_controller.dart';
+part of 'access_level_service.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$callRequestControllerHash() =>
-    r'c52a591f6a8e28b8cbcc4bc1bd8419fdd56a4f2b';
+String _$accessLevelServiceHash() =>
+    r'ec64546ae7e0cf22cecd0eac6d89b7900dad318d';
 
-/// See also [CallRequestController].
-@ProviderFor(CallRequestController)
-final callRequestControllerProvider =
-    NotifierProvider<CallRequestController, CallRequestState>.internal(
-  CallRequestController.new,
-  name: r'callRequestControllerProvider',
+/// See also [accessLevelService].
+@ProviderFor(accessLevelService)
+final accessLevelServiceProvider =
+    AutoDisposeFutureProvider<AccessLevelService>.internal(
+  accessLevelService,
+  name: r'accessLevelServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$callRequestControllerHash,
+      : _$accessLevelServiceHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$CallRequestController = Notifier<CallRequestState>;
+typedef AccessLevelServiceRef
+    = AutoDisposeFutureProviderRef<AccessLevelService>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

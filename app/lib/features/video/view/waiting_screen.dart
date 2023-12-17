@@ -37,6 +37,7 @@ class _WaitingScreenState extends ConsumerState<WaitingScreen> {
           context.router.replace(VideoRoomRoute(
             videoRoomId: state.videoRoomId!,
             otherProfile: widget.otherProfile,
+            isCaller: true,
           ));
         case CallRequestType.rejectCall:
           ref.read(callRequestControllerProvider.notifier).resetToWaiting();

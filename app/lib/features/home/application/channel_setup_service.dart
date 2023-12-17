@@ -4,6 +4,8 @@ import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
+import 'package:chat_app/features/paywall/data/paywall_repository.dart';
+import 'package:chat_app/features/video/view/video_room_controller.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,9 +33,10 @@ class ChannelSetupService {
             case AuthChangeEvent.tokenRefreshed:
               logger.i('sign in');
               _loadCurrentProfile();
-              AppLifecycleListener(onStateChange: _onStateChanged);
               await setupLobbyChannel();
               await setupUserChannel();
+              _paywallInitialize();
+              _listenToAppLifecycleChanges();
 
             // Necessary to reload after password reset
             case AuthChangeEvent.userUpdated:
@@ -41,6 +44,7 @@ class ChannelSetupService {
               _loadCurrentProfile();
             case AuthChangeEvent.signedOut:
               logger.i('sign out');
+              await _paywallLogut();
             default:
           }
         }
@@ -101,6 +105,19 @@ class ChannelSetupService {
 
     final myChannel = ref.read(channelRepositoryProvider(currentProfileId));
     await myChannel.close();
+  }
+
+  void _paywallInitialize() async {
+    final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
+    ref.read(paywallRepositoryProvider).initialize(currentUserId);
+  }
+
+  Future<void> _paywallLogut() async {
+    await ref.read(paywallRepositoryProvider).paywallLogout();
+  }
+
+  void _listenToAppLifecycleChanges() {
+    AppLifecycleListener(onStateChange: _onStateChanged);
   }
 
   void _onStateChanged(AppLifecycleState state) {

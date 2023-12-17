@@ -3,11 +3,13 @@ import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/home/domain/call_request_state.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
+import 'package:chat_app/features/video/domain/video_room_state.dart';
 import 'package:chat_app/features/video/view/local_tile.dart';
 import 'package:chat_app/features/video/view/remote_badge.dart';
 import 'package:chat_app/features/video/view/remote_tile.dart';
 import 'package:chat_app/features/video/view/video_controls.dart';
 import 'package:chat_app/features/video/view/video_room_controller.dart';
+import 'package:chat_app/features/video/view/video_stopwatch.dart';
 import 'package:chat_app/features/video_chat/view/video_chat_overlay.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
@@ -22,10 +24,12 @@ class VideoRoomScreen extends ConsumerWidget {
     super.key,
     required this.videoRoomId,
     required this.otherProfile,
+    this.isCaller = false,
   });
 
   final String videoRoomId;
   final Profile otherProfile;
+  final bool isCaller;
 
   void _leaveVideoRoom(BuildContext context) {
     logger.i('leaving video room');
@@ -34,15 +38,14 @@ class VideoRoomScreen extends ConsumerWidget {
   }
 
   void _endCall(BuildContext context, WidgetRef ref) async {
-    logger.i('click end video call');
-
     ref
         .read(callRequestControllerProvider.notifier)
-        .sendEndCall(videoRoomId, otherProfile);
+        .sendEndCall(videoRoomId, otherProfile.id!);
 
     try {
       ref
-          .read(videoRoomControllerProvider(otherProfile.id!).notifier)
+          .read(
+              videoRoomControllerProvider(otherProfile.id!, isCaller).notifier)
           .endCall();
     } catch (error) {
       // Sometimes we try to end the call when the remote hasn't appeared yet,
@@ -51,6 +54,17 @@ class VideoRoomScreen extends ConsumerWidget {
     }
 
     _leaveVideoRoom(context);
+  }
+
+  void _listenForTimerEnd(BuildContext context, WidgetRef ref) {
+    ref.listen<AsyncValue<VideoRoomState>>(
+        videoRoomControllerProvider(otherProfile.id!, isCaller), (_, state) {
+      if (state.value != null && state.value!.timer != null) {
+        if (state.value!.timerEnded) {
+          _endCall(context, ref);
+        }
+      }
+    });
   }
 
   @override
@@ -62,8 +76,9 @@ class VideoRoomScreen extends ConsumerWidget {
         _leaveVideoRoom(context);
       }
     });
-
-    final stateValue = ref.watch(videoRoomControllerProvider(otherProfile.id!));
+    if (isCaller) _listenForTimerEnd(context, ref);
+    final stateValue =
+        ref.watch(videoRoomControllerProvider(otherProfile.id!, isCaller));
 
     return I18n(
       child: SafeArea(

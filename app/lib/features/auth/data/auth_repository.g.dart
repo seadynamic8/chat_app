@@ -489,5 +489,21 @@ class _IsBlockedByEitherProviderElement
   String get otherProfileId =>
       (origin as IsBlockedByEitherProvider).otherProfileId;
 }
+
+String _$userAccessStreamHash() => r'41a6938e48d40848084fed0124fa2e70fc135dfc';
+
+/// See also [userAccessStream].
+@ProviderFor(userAccessStream)
+final userAccessStreamProvider = AutoDisposeStreamProvider<UserAccess>.internal(
+  userAccessStream,
+  name: r'userAccessStreamProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$userAccessStreamHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef UserAccessStreamRef = AutoDisposeStreamProviderRef<UserAccess>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

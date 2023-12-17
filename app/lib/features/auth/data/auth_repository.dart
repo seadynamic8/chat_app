@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/block_state.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
+import 'package:chat_app/features/auth/domain/user_access.dart';
 import 'package:chat_app/utils/username_generate_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n_extension/i18n_widget.dart';
@@ -186,6 +188,8 @@ class AuthRepository {
     return (jwtResponse.data as String).replaceAll('"', '');
   }
 
+  // * Blocked Users
+
   Future<BlockState> isBlockedByEither(String otherProfileId) async {
     final blocked = await supabase
         .from('blocked_users')
@@ -194,6 +198,26 @@ class AuthRepository {
             'and(blocker_id.eq.$otherProfileId,blocked_id.eq.$currentUserId)');
 
     return BlockState.fromMap(blocked, currentProfileId: currentUserId!);
+  }
+
+  // * Access Levels
+
+  Stream<UserAccess> getAccessLevelChanges(String profileId) {
+    final userAccessStream = supabase
+        .from('access_levels')
+        .stream(primaryKey: ['id']).eq('id', profileId);
+
+    return userAccessStream.map((userAccesses) {
+      return UserAccess.fromMap(userAccesses.first);
+    });
+  }
+
+  Future<void> updateAccessLevel(
+      String profileId, UserAccess userAccess) async {
+    await supabase
+        .from('access_levels')
+        .update(userAccess.toMap())
+        .eq('id', profileId);
   }
 
   // * Private methods
@@ -286,4 +310,11 @@ FutureOr<BlockState> isBlockedByEither(
     IsBlockedByEitherRef ref, String otherProfileId) {
   final authRepository = ref.watch(authRepositoryProvider);
   return authRepository.isBlockedByEither(otherProfileId);
+}
+
+@riverpod
+Stream<UserAccess> userAccessStream(UserAccessStreamRef ref) {
+  final currentProfileId = ref.watch(currentProfileProvider).id!;
+  final authRepository = ref.watch(authRepositoryProvider);
+  return authRepository.getAccessLevelChanges(currentProfileId);
 }

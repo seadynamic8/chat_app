@@ -156,17 +156,17 @@ class CallRequestController extends _$CallRequestController {
 
   // Call Ender Send
 
-  void sendEndCall(String videoRoomId, Profile otherProfile) async {
+  void sendEndCall(String videoRoomId, String otherProfileId) async {
     await ref
         .read(onlinePresencesProvider.notifier)
         .updateCurrentUserPresence(OnlineStatus.online);
 
     await ref
         .read(callRequestControllerProvider.notifier)
-        .createChatMessageForVideoStatus(VideoStatus.ended, otherProfile.id!);
+        .createChatMessageForVideoStatus(VideoStatus.ended, otherProfileId);
 
     await _sendMessageToOtherUser(
-      channelName: otherProfile.id!,
+      channelName: otherProfileId,
       event: 'end_call',
       payload: {'videoRoomId': videoRoomId},
     );
