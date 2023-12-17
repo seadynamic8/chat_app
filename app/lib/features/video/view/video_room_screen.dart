@@ -23,12 +23,12 @@ class VideoRoomScreen extends ConsumerWidget {
   const VideoRoomScreen({
     super.key,
     required this.videoRoomId,
-    required this.otherProfile,
+    required this.otherProfileId,
     this.isCaller = false,
   });
 
   final String videoRoomId;
-  final Profile otherProfile;
+  final String otherProfileId;
   final bool isCaller;
 
   void _leaveVideoRoom(BuildContext context) {
@@ -40,12 +40,11 @@ class VideoRoomScreen extends ConsumerWidget {
   void _endCall(BuildContext context, WidgetRef ref) async {
     ref
         .read(callRequestControllerProvider.notifier)
-        .sendEndCall(videoRoomId, otherProfile.id!);
+        .sendEndCall(videoRoomId, otherProfileId);
 
     try {
       ref
-          .read(
-              videoRoomControllerProvider(otherProfile.id!, isCaller).notifier)
+          .read(videoRoomControllerProvider(otherProfileId, isCaller).notifier)
           .endCall();
     } catch (error) {
       // Sometimes we try to end the call when the remote hasn't appeared yet,
@@ -58,7 +57,7 @@ class VideoRoomScreen extends ConsumerWidget {
 
   void _listenForTimerEnd(BuildContext context, WidgetRef ref) {
     ref.listen<AsyncValue<VideoRoomState>>(
-        videoRoomControllerProvider(otherProfile.id!, isCaller), (_, state) {
+        videoRoomControllerProvider(otherProfileId, isCaller), (_, state) {
       if (state.value != null && state.value!.timer != null) {
         if (state.value!.timerEnded) {
           _endCall(context, ref);
@@ -78,7 +77,7 @@ class VideoRoomScreen extends ConsumerWidget {
     });
     if (isCaller) _listenForTimerEnd(context, ref);
     final stateValue =
-        ref.watch(videoRoomControllerProvider(otherProfile.id!, isCaller));
+        ref.watch(videoRoomControllerProvider(otherProfileId, isCaller));
 
     return I18n(
       child: SafeArea(
@@ -91,9 +90,9 @@ class VideoRoomScreen extends ConsumerWidget {
                   children: [
                     RemoteTile(
                       isLoading: !state.remoteJoined ||
-                          state.remoteParticipants[otherProfile.id] == null,
+                          state.remoteParticipants[otherProfileId] == null,
                       remoteParticipant:
-                          state.remoteParticipants[otherProfile.id],
+                          state.remoteParticipants[otherProfileId],
                     ),
                     Positioned(
                       bottom: 0,
@@ -101,8 +100,8 @@ class VideoRoomScreen extends ConsumerWidget {
                       right: 0,
                       child: VideoChatOverlay(
                         isRemoteReady: state.remoteJoined &&
-                            state.remoteParticipants[otherProfile.id] != null,
-                        otherProfileId: otherProfile.id!,
+                            state.remoteParticipants[otherProfileId] != null,
+                        otherProfileId: otherProfileId,
                       ),
                     ),
                     Positioned(
@@ -122,9 +121,9 @@ class VideoRoomScreen extends ConsumerWidget {
                             ),
                           ),
                           if (state.remoteJoined &&
-                              state.remoteParticipants[otherProfile.id] != null)
+                              state.remoteParticipants[otherProfileId] != null)
                             RemoteBadge(
-                                otherProfile: state.profiles[otherProfile.id]!),
+                                otherProfile: state.profiles[otherProfileId]!),
                         ],
                       ),
                     ),

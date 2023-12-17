@@ -36,7 +36,7 @@ class _WaitingScreenState extends ConsumerState<WaitingScreen> {
           // Use 'replace' here so that users wont' return here after the call.
           context.router.replace(VideoRoomRoute(
             videoRoomId: state.videoRoomId!,
-            otherProfile: widget.otherProfile,
+            otherProfileId: widget.otherProfile.id!,
             isCaller: true,
           ));
         case CallRequestType.rejectCall:

@@ -53,10 +53,7 @@ class CallRequestBanner {
     contextRouter.push(
       VideoRoomRoute(
           videoRoomId: callRequestState.videoRoomId!,
-          otherProfile: Profile(
-            id: callRequestState.otherUserId!,
-            username: callRequestState.otherUsername,
-          )),
+          otherProfileId: callRequestState.otherUserId!),
     );
   }
 
