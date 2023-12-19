@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/features/home/domain/call_request_state.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
-import 'package:chat_app/features/video/domain/video_room_state.dart';
+import 'package:chat_app/features/video/data/video_timer_provider.dart';
 import 'package:chat_app/features/video/view/local_tile.dart';
 import 'package:chat_app/features/video/view/remote_badge.dart';
 import 'package:chat_app/features/video/view/remote_tile.dart';
@@ -30,43 +30,30 @@ class VideoRoomScreen extends ConsumerWidget {
   final String otherProfileId;
   final bool isCaller;
 
+  void _pressEndCall(BuildContext context, WidgetRef ref) {
+    ref
+        .read(videoRoomControllerProvider(isCaller).notifier)
+        .updateAccessDurationOrCredits();
+    _endCall(context, ref);
+  }
+
+  void _endCall(BuildContext context, WidgetRef ref) {
+    try {
+      ref
+          .read(videoRoomControllerProvider(isCaller).notifier)
+          .endCall(videoRoomId, otherProfileId);
+    } catch (error) {
+      logger.w('Error ending call: $error', stackTrace: StackTrace.current);
+    }
+    _leaveVideoRoom(context);
+  }
+
   void _leaveVideoRoom(BuildContext context) {
-    logger.i('leaving video room');
     WakelockPlus.disable();
     context.router.pop();
   }
 
-  void _endCall(BuildContext context, WidgetRef ref) async {
-    ref
-        .read(callRequestControllerProvider.notifier)
-        .sendEndCall(videoRoomId, otherProfileId);
-
-    try {
-      ref
-          .read(videoRoomControllerProvider(otherProfileId, isCaller).notifier)
-          .endCall();
-    } catch (error) {
-      // Sometimes we try to end the call when the remote hasn't appeared yet,
-      // or they leave too fast, and it gives error because it can't end it.
-      logger.w('Error ending call: $error', stackTrace: StackTrace.current);
-    }
-
-    _leaveVideoRoom(context);
-  }
-
-  void _listenForTimerEnd(BuildContext context, WidgetRef ref) {
-    ref.listen<AsyncValue<VideoRoomState>>(
-        videoRoomControllerProvider(otherProfileId, isCaller), (_, state) {
-      if (state.value != null && state.value!.timer != null) {
-        if (state.value!.timerEnded) {
-          _endCall(context, ref);
-        }
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void _listenForCallRequestEnd(BuildContext context, WidgetRef ref) {
     ref.listen<CallRequestState>(callRequestControllerProvider, (_, state) {
       if (state.callType == CallRequestType.endCall) {
         ref.read(callRequestControllerProvider.notifier).resetToWaiting();
@@ -74,9 +61,24 @@ class VideoRoomScreen extends ConsumerWidget {
         _leaveVideoRoom(context);
       }
     });
+  }
+
+  void _listenForTimerEnd(BuildContext context, WidgetRef ref) {
+    final timerEnded = ref.watch(videoTimerProvider);
+    if (timerEnded) {
+      ref
+          .read(videoRoomControllerProvider(isCaller).notifier)
+          .changeAccessLevel();
+      _endCall(context, ref);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    _listenForCallRequestEnd(context, ref);
     if (isCaller) _listenForTimerEnd(context, ref);
-    final stateValue =
-        ref.watch(videoRoomControllerProvider(otherProfileId, isCaller));
+
+    final stateValue = ref.watch(videoRoomControllerProvider(isCaller));
 
     return I18n(
       child: SafeArea(
@@ -110,7 +112,7 @@ class VideoRoomScreen extends ConsumerWidget {
                         children: [
                           // BACK BUTTON
                           IconButton(
-                            onPressed: () => _endCall(context, ref),
+                            onPressed: () => _pressEndCall(context, ref),
                             color: Colors.white.withAlpha(200),
                             icon: const Icon(
                               Icons.arrow_back,
@@ -119,10 +121,7 @@ class VideoRoomScreen extends ConsumerWidget {
                               ],
                             ),
                           ),
-                          if (state.remoteJoined &&
-                              state.remoteParticipants[otherProfileId] != null)
-                            RemoteBadge(
-                                otherProfile: state.profiles[otherProfileId]!),
+                          RemoteBadge(otherProfileId: otherProfileId),
                         ],
                       ),
                     ),

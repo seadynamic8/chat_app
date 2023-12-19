@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:chat_app/features/auth/application/access_level_service.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/chat/data/chat_repository.dart';
+import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/features/video/data/stopwatch_repository.dart';
 import 'package:chat_app/features/video/data/video_repository.dart';
+import 'package:chat_app/features/video/data/video_timer_provider.dart';
 import 'package:chat_app/features/video/domain/video_participant.dart';
 import 'package:chat_app/features/video/domain/video_room_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -15,34 +16,54 @@ part 'video_room_controller.g.dart';
 @riverpod
 class VideoRoomController extends _$VideoRoomController {
   @override
-  Future<VideoRoomState> build(
-    String otherProfileId,
-    bool isCaller,
-  ) async {
+  Future<VideoRoomState> build(bool isCaller) async {
+    // * Don't add any watchers here that can be refreshed, or else when refresh
+    // * this will be rebuilt and video will re-join.  If you need to update
+    // * state, u can do so with callback or 'listen'.  Or seperate out into
+    // * seperate widget or another provider/controller.
     final videoRepository = ref.watch(videoRepositoryProvider);
 
     videoRepository.onLocalParticipantJoin(_onLocalParticipantJoin);
-    videoRepository.onLocalParticipantLeft(_onLocalParticipantLeft);
 
     videoRepository.onRemoteParticipantJoin(_addRemoteParticipant);
     videoRepository.onRemoteParticipantLeft(_removeRemoteParticipant);
 
     await videoRepository.join();
 
-    final profiles =
-        await ref.watch(getProfilesForRoomProvider(otherProfileId).future);
-
     WakelockPlus.enable();
 
     return VideoRoomState(
       localParticipant: videoRepository.localParticipant,
       remoteParticipants: videoRepository.remoteParticipants,
-      profiles: profiles,
     );
   }
 
-  void endCall() {
+  void endCall(String videoRoomId, String otherProfileId) {
+    ref
+        .read(callRequestControllerProvider.notifier)
+        .sendEndCall(videoRoomId, otherProfileId);
     ref.read(videoRepositoryProvider).end();
+  }
+
+  void changeAccessLevel() async {
+    final accessLevelService =
+        await ref.read(accessLevelServiceProvider.future);
+    await accessLevelService.changeAccessLevel();
+  }
+
+  void updateAccessDurationOrCredits() async {
+    final stopwatchRepository = ref.read(stopwatchRepositoryProvider);
+    stopwatchRepository.stop();
+
+    // timer is always set for a caller
+    if (isCaller) {
+      final elapsedDuration =
+          Duration(milliseconds: stopwatchRepository.elapsedMilliseconds);
+      final accessLevelService =
+          await ref.read(accessLevelServiceProvider.future);
+
+      await accessLevelService.updateAccessDurationOrCredits(elapsedDuration);
+    }
   }
 
   // * Callback Handlers
@@ -52,37 +73,8 @@ class VideoRoomController extends _$VideoRoomController {
 
     if (!isCaller) return;
 
-    final userAccess = await ref.watch(userAccessStreamProvider.future);
-
-    final initialTimerDuration = userAccess.levelDuration;
-    if (initialTimerDuration == null) return;
-
-    final timer = Timer(initialTimerDuration, _handleTimeout);
-
-    final oldState = await future;
-    state = AsyncData(oldState.copyWith(timer: timer));
-  }
-
-  void _onLocalParticipantLeft() async {
-    final stopwatchRepository = ref.read(stopwatchRepositoryProvider);
-    stopwatchRepository.stop();
-
-    // timer is always set for a caller
-    if (isCaller) {
-      final oldState = await future;
-
-      final elapsedDuration =
-          Duration(milliseconds: stopwatchRepository.elapsedMilliseconds);
-      final accessLevelService =
-          await ref.read(accessLevelServiceProvider.future);
-
-      if (!oldState.timer!.isActive) {
-        await accessLevelService.changeAccessLevel();
-      } else {
-        await accessLevelService.updateAccessDurationOrCredits(elapsedDuration);
-        oldState.timer!.cancel();
-      }
-    }
+    final userAccess = await ref.read(userAccessStreamProvider.future);
+    ref.read(videoTimerProvider.notifier).setTimer(userAccess.levelDuration);
   }
 
   void _addRemoteParticipant(VideoParticipant videoParticipant) async {
@@ -109,10 +101,5 @@ class VideoRoomController extends _$VideoRoomController {
       state =
           AsyncData(oldState.copyWith(remoteParticipants: remoteParticipants));
     }
-  }
-
-  void _handleTimeout() async {
-    final oldState = await future;
-    state = AsyncData(oldState.copyWith(timerEnded: true));
   }
 }

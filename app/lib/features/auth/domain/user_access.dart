@@ -23,11 +23,11 @@ class UserAccess {
   bool get hasTrialDuration => trialDuration! != Duration.zero;
   bool get hasCredits => credits > 0;
 
-  Duration? get levelDuration {
+  Duration get levelDuration {
     if (isNewTrial) return newTrialDuration;
     if (hasTrialDuration) return remainingTrialDuration;
     if (hasCredits) return durationFromCredits;
-    return null;
+    throw Exception('incorrect level duration');
   }
 
   Duration get newTrialDuration => const Duration(minutes: trialMaxMins);
