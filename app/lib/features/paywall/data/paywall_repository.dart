@@ -14,9 +14,9 @@ class PaywallRepository {
       adapty.activate();
       adapty.identify(currentUserId);
     } on AdaptyError catch (adaptyError) {
-      logger.e('AdaptyError: $adaptyError');
+      logger.e('AdaptyError initialize(): $adaptyError');
     } catch (error) {
-      logger.e('PaywallRepo activate error: $error');
+      logger.e('PaywallRepo initialize() error: $error');
     }
   }
 
@@ -25,9 +25,9 @@ class PaywallRepository {
       final profile = await adapty.getProfile();
       return profile;
     } on AdaptyError catch (adaptyError) {
-      logger.e('AdaptyError: $adaptyError');
+      logger.e('AdaptyError getProfile(): $adaptyError');
     } catch (error) {
-      logger.e('PaywallRepo getProfile error: $error');
+      logger.e('PaywallRepo getProfile() error: $error');
     }
     return null;
   }
@@ -37,9 +37,9 @@ class PaywallRepository {
       final paywall = await adapty.getPaywall(id: 'main', locale: 'en');
       return paywall;
     } on AdaptyError catch (adaptyError) {
-      logger.e('AdaptyError: $adaptyError');
+      logger.e('AdaptyError getPaywall(): $adaptyError');
     } catch (error) {
-      logger.e('PaywallRepo getPaywall error: $error');
+      logger.e('PaywallRepo getPaywall() error: $error');
     }
     return null;
   }
@@ -51,22 +51,26 @@ class PaywallRepository {
           .map((paywallProduct) => Product(adaptyProduct: paywallProduct))
           .toList();
     } on AdaptyError catch (adaptyError) {
-      logger.e('AdaptyError: $adaptyError');
+      logger.e('AdaptyError getPaywallProducts(): $adaptyError');
     } catch (error) {
-      logger.e('PaywallRepo getPaywallProducts error: $error');
+      logger.e('PaywallRepo getPaywallProducts() error: $error');
     }
     return null;
   }
 
+  // * Adapty API seems not to be able to consume the product, nor does it set
+  // * the access level when purchasing a consumable.  So unless it errors,
+  // * for now, assume that it was a successful purchase.
   Future<bool> makePurchase(Product product) async {
     try {
-      final paywallProfile =
-          await adapty.makePurchase(product: product.adaptyProduct);
-      return paywallProfile?.accessLevels['premium']?.isActive ?? false;
+      await adapty.makePurchase(product: product.adaptyProduct);
+
+      // Assume true (success) if no errors.
+      return true;
     } on AdaptyError catch (adaptyError) {
-      logger.e('AdaptyError: $adaptyError');
+      logger.w('AdaptyError makePurchase(): $adaptyError');
     } catch (error) {
-      logger.e('PaywallRepo makePurchase error: $error');
+      logger.e('PaywallRepo makePurchase() error: $error');
     }
     return false;
   }
@@ -75,9 +79,9 @@ class PaywallRepository {
     try {
       await adapty.logout();
     } on AdaptyError catch (adaptyError) {
-      logger.e('AdaptyError: $adaptyError');
+      logger.e('AdaptyError paywallLogout(): $adaptyError');
     } catch (error) {
-      logger.e('PaywallRepo paywallLogout error: $error');
+      logger.e('PaywallRepo paywallLogout() error: $error');
     }
   }
 }
