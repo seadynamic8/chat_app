@@ -6,6 +6,8 @@
 	<string>$(ADAPTY_SDK_KEY)</string>
 	<key>AdaptyStoreKit2Usage</key>
 	<string>intro_eligibility_check</string>
+	<key>AdaptyEnableUsageLogs</key>
+		<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>App Needs Photo Library Permission To Upload Pictures</string>
 	<key>NSCameraUsageDescription</key>
