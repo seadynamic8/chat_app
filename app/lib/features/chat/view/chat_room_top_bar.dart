@@ -1,22 +1,17 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:chat_app/common/alert_dialogs.dart';
-import 'package:chat_app/common/error_snackbar.dart';
-import 'package:chat_app/features/auth/domain/block_state.dart';
+import 'package:chat_app/common/video_call_messages_extension.dart';
 import 'package:chat_app/features/auth/domain/user_access.dart';
 import 'package:chat_app/features/chat/view/chat_more_menu.dart';
 import 'package:chat_app/features/video/application/video_service.dart';
 import 'package:chat_app/features/video/data/call_availability_provider.dart';
 import 'package:chat_app/features/video/domain/call_availability.dart';
-import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/constants.dart';
 import 'package:chat_app/utils/keys.dart';
-import 'package:chat_app/utils/logger.dart';
 import 'package:chat_app/utils/user_online_status.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/common/chat_online_status_icon.dart';
-import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomTopBar extends ConsumerStatefulWidget
@@ -42,14 +37,20 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
   void _pressVideoCallButton(CallAvailabilityState callAvailability) async {
     switch (callAvailability.status) {
       case CallAvailabilityStatus.unavailable:
-        _showStatusMessage(callAvailability.data);
+        context.showStatusMessage(callAvailability.data);
       case CallAvailabilityStatus.blocked:
-        _showBlockMessage(callAvailability.data);
+        context.showBlockMessage(callAvailability.data);
       case CallAvailabilityStatus.noCoins:
-        _showAccessLevelMessage(callAvailability.data);
+        _showRechargeMessageAndRedirectToPaywall(callAvailability.data);
       case CallAvailabilityStatus.canCall:
         _makeVideoCallAndWait();
     }
+  }
+
+  void _showRechargeMessageAndRedirectToPaywall(AccessLevel accessLevel) async {
+    final router = context.router;
+    final isRecharge = await context.showRechargeMessage(accessLevel);
+    if (isRecharge) router.push(const PaywallRoute());
   }
 
   void _makeVideoCallAndWait() async {
@@ -59,41 +60,9 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
 
       router.push(WaitingRoute(otherProfile: widget.otherProfile));
     } catch (error) {
-      _logAndShowError(error);
+      if (!context.mounted) return;
+      context.logAndShowError('ChatRoomTopBar', error);
     }
-  }
-
-  void _showAccessLevelMessage(UserAccess userAccess) async {
-    final router = context.router;
-    if (userAccess.level == AccessLevel.standard) {
-      final isRecharge = await showAlertDialog(
-          context: context,
-          title: 'No more coins left',
-          content: 'Would you like to get more coins?',
-          cancelActionText: 'No',
-          defaultActionText: 'Yes');
-      if (isRecharge ?? false) {
-        router.push(const PaywallRoute());
-      }
-    }
-  }
-
-  void _showStatusMessage(OnlineStatus userStatus) {
-    context.showSnackBar(userStatus == OnlineStatus.busy
-        ? 'User is busy right now.'.i18n
-        : 'User is offline right now.'.i18n);
-  }
-
-  void _showBlockMessage(BlockState blockState) {
-    context.showErrorSnackBar('${blockState.message}, cannot video call');
-  }
-
-  void _logAndShowError(error) {
-    logger.e('ChatRoomTopBar Error: $error');
-
-    if (!context.mounted) return;
-    context.showSnackBar(
-        'Unable to create video call right now, please try again later.'.i18n);
   }
 
   @override
