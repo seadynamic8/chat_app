@@ -88,7 +88,10 @@ class AccessLevelService {
     String currentProfileId,
     Duration elapsedDuration,
   ) async {
-    final usedDuration = userAccess.trialDuration! + elapsedDuration;
+    final beforeCallDuration = userAccess.trialDuration;
+    final usedDuration = beforeCallDuration == null
+        ? elapsedDuration
+        : beforeCallDuration + elapsedDuration;
 
     await ref.read(authRepositoryProvider).updateAccessLevel(
           currentProfileId,
