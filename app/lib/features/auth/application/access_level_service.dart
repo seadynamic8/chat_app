@@ -1,6 +1,7 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/user_access.dart';
+import 'package:chat_app/utils/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -29,6 +30,21 @@ class AccessLevelService {
       await _updateCreditsByDuration(currentProfileId, elapsedDuration);
     } else {
       await _updateTrialDuration(currentProfileId, elapsedDuration);
+    }
+  }
+
+  Future<void> updateAccessCredits(int quantity) async {
+    final currentProfileId = ref.read(currentProfileProvider).id!;
+    try {
+      await ref.read(authRepositoryProvider).updateAccessLevel(
+            currentProfileId,
+            userAccess.copyWith(
+                level: AccessLevel.premium, // -> only needed first time
+                credits: userAccess.credits + quantity),
+          );
+    } catch (error) {
+      logger.e('AccessLevelService updateAccessCredits() error: $error');
+      rethrow;
     }
   }
 

@@ -20,31 +20,31 @@ class PaywallRepository {
     }
   }
 
-  Future<AdaptyProfile?> getProfile() async {
+  Future<AdaptyProfile> getProfile() async {
     try {
-      final profile = await adapty.getProfile();
-      return profile;
+      return await adapty.getProfile();
     } on AdaptyError catch (adaptyError) {
       logger.e('AdaptyError getProfile(): $adaptyError');
+      rethrow;
     } catch (error) {
       logger.e('PaywallRepo getProfile() error: $error');
+      rethrow;
     }
-    return null;
   }
 
-  Future<AdaptyPaywall?> getPaywall() async {
+  Future<AdaptyPaywall> getPaywall() async {
     try {
-      final paywall = await adapty.getPaywall(id: 'main', locale: 'en');
-      return paywall;
+      return await adapty.getPaywall(id: 'main', locale: 'en');
     } on AdaptyError catch (adaptyError) {
       logger.e('AdaptyError getPaywall(): $adaptyError');
+      rethrow;
     } catch (error) {
       logger.e('PaywallRepo getPaywall() error: $error');
+      rethrow;
     }
-    return null;
   }
 
-  Future<List<Product>?> getPaywallProducts(AdaptyPaywall paywall) async {
+  Future<List<Product>> getPaywallProducts(AdaptyPaywall paywall) async {
     try {
       final paywallProducts = await adapty.getPaywallProducts(paywall: paywall);
       return paywallProducts
@@ -52,27 +52,26 @@ class PaywallRepository {
           .toList();
     } on AdaptyError catch (adaptyError) {
       logger.e('AdaptyError getPaywallProducts(): $adaptyError');
+      rethrow;
     } catch (error) {
       logger.e('PaywallRepo getPaywallProducts() error: $error');
+      rethrow;
     }
-    return null;
   }
 
-  // * Adapty API seems not to be able to consume the product, nor does it set
-  // * the access level when purchasing a consumable.  So unless it errors,
-  // * for now, assume that it was a successful purchase.
-  Future<bool> makePurchase(Product product) async {
+  // Adapty API docs say to check access level to confirm, but when using
+  // consumable, it doesn't change (empty value).  So unless it errors,
+  // for now, assume that it was a successful purchase.
+  Future<void> makePurchase(Product product) async {
     try {
       await adapty.makePurchase(product: product.adaptyProduct);
-
-      // Assume true (success) if no errors.
-      return true;
     } on AdaptyError catch (adaptyError) {
       logger.w('AdaptyError makePurchase(): $adaptyError');
+      rethrow;
     } catch (error) {
       logger.e('PaywallRepo makePurchase() error: $error');
+      rethrow;
     }
-    return false;
   }
 
   Future<void> paywallLogout() async {
@@ -89,4 +88,11 @@ class PaywallRepository {
 @riverpod
 PaywallRepository paywallRepository(PaywallRepositoryRef ref) {
   return PaywallRepository();
+}
+
+@riverpod
+FutureOr<List<Product>> paywallProducts(PaywallProductsRef ref) async {
+  final paywallRepository = ref.watch(paywallRepositoryProvider);
+  final paywall = await ref.read(paywallRepositoryProvider).getPaywall();
+  return paywallRepository.getPaywallProducts(paywall);
 }

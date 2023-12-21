@@ -68,7 +68,7 @@ class PaywallScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                ProductsList(userAccess: userAccess),
+                const ProductsList(),
               ],
             ),
           ),
