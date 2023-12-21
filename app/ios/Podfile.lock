@@ -1,4 +1,8 @@
 PODS:
+  - Adapty (2.7.0)
+  - adapty_flutter (2.7.0):
+    - Adapty (= 2.7.0)
+    - Flutter
   - app_links (0.0.1):
     - Flutter
   - CocoaAsyncSocket (7.6.5)
@@ -44,6 +48,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - adapty_flutter (from `.symlinks/plugins/adapty_flutter/ios`)
   - app_links (from `.symlinks/plugins/app_links/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - Flutter (from `Flutter`)
@@ -64,12 +69,15 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Adapty
     - CocoaAsyncSocket
     - HTTPParserC
     - Telegraph
     - WebRTC-SDK
 
 EXTERNAL SOURCES:
+  adapty_flutter:
+    :path: ".symlinks/plugins/adapty_flutter/ios"
   app_links:
     :path: ".symlinks/plugins/app_links/ios"
   device_info_plus:
@@ -106,6 +114,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
+  Adapty: 66d16579ed1966f1caf8d806e3f3f0d77d9968c7
+  adapty_flutter: dc8b0c2ac17aae5ecfd404eb5237010567a2b44d
   app_links: 5ef33d0d295a89d9d16bb81b0e3b0d5f70d6c875
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   device_info_plus: 7545d84d8d1b896cb16a4ff98c19f07ec4b298ea
