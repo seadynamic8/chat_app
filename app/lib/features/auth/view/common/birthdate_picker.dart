@@ -38,6 +38,7 @@ class _BirthdatePickerState extends State<BirthdatePicker> {
       _selectedMonth = 1;
       _selectedDay = 1;
     }
+    updateValues();
   }
 
   void updateValues() {
