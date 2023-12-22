@@ -1,4 +1,5 @@
 import 'package:chat_app/common/async_value_widget.dart';
+import 'package:chat_app/common/video_call_button.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat_lobby/application/chat_lobby_service.dart';
@@ -166,9 +167,13 @@ class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
                         key: K.publicProfileSendMsgButton,
                         icon: const Icon(Icons.message),
                         label: const Text('Send Message'),
-                        heroTag: 'tag1',
+                        heroTag: null,
                         onPressed: () => _joinChatRoom(context, ref),
                       ),
+                      VideoCallButton(
+                        buttonType: VideoCallButtonType.profile,
+                        otherProfile: profile,
+                      )
                       // TODO: Add Follow Button
                       // FloatingActionButton.extended(
                       //   icon: const Icon(Icons.follow),
