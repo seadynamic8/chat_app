@@ -42,6 +42,9 @@ class ChatLobbyItem extends ConsumerWidget {
         title: Text(
           chatLobbyItem.otherProfile.username!,
           style: Theme.of(context).textTheme.titleSmall,
+          overflow: TextOverflow.fade,
+          softWrap: false,
+          maxLines: 1,
         ),
         subtitle: chatLobbyItem.newestMessage != null
             ? NewestMessageContent(

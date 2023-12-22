@@ -84,7 +84,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       ChatOnlineStatusIcon(userId: profile.id!)
                     ],
                   ),
-                  title: Text(profile.username ?? ''),
+                  title: Text(
+                    profile.username ?? '',
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                    maxLines: 1,
+                  ),
                   onTap: () => context.router
                       .push(PublicProfileRoute(profileId: profile.id!)),
                 );

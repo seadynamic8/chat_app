@@ -56,6 +56,9 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
               style: theme.textTheme.labelLarge!.copyWith(
                 fontSize: 15,
               ),
+              overflow: TextOverflow.fade,
+              softWrap: false,
+              maxLines: 1,
             ),
           ],
         ),

@@ -38,6 +38,8 @@ class NewestMessageContent extends ConsumerWidget {
           .labelMedium!
           .copyWith(color: Theme.of(context).hintColor),
       overflow: TextOverflow.fade,
+      softWrap: false,
+      maxLines: 1,
     );
   }
 }
