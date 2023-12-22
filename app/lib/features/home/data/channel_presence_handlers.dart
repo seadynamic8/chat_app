@@ -70,7 +70,7 @@ extension ChannelPresenceHandlers on ChannelRepository {
 
   Future<void> subscribed() async {
     final completer = Completer<void>();
-    final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
+    final currentUserId = ref.read(currentUserIdProvider)!;
 
     channel.subscribe((status, [ref]) async {
       if (status == 'SUBSCRIBED') {

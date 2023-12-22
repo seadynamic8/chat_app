@@ -7,11 +7,12 @@ part of 'channel_setup_service.dart';
 // **************************************************************************
 
 String _$channelSetupServiceHash() =>
-    r'4a9bf47650108cf00c5a154d7d8cbb49883a2a90';
+    r'd27006ccdc366438311676b7e6fa47f963fa886c';
 
 /// See also [channelSetupService].
 @ProviderFor(channelSetupService)
-final channelSetupServiceProvider = Provider<ChannelSetupService>.internal(
+final channelSetupServiceProvider =
+    AutoDisposeProvider<ChannelSetupService>.internal(
   channelSetupService,
   name: r'channelSetupServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -21,6 +22,6 @@ final channelSetupServiceProvider = Provider<ChannelSetupService>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef ChannelSetupServiceRef = ProviderRef<ChannelSetupService>;
+typedef ChannelSetupServiceRef = AutoDisposeProviderRef<ChannelSetupService>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

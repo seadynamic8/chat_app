@@ -1,5 +1,4 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/block_state.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -44,7 +43,7 @@ class ChatMoreMenuController extends _$ChatMoreMenuController {
   }
 
   Future<void> _blockAndUpdateStatus() async {
-    final currentProfileId = ref.read(currentProfileProvider).id!;
+    final currentProfileId = ref.read(currentUserIdProvider)!;
     await ref
         .read(chatRepositoryProvider)
         .blockUser(currentProfileId, otherProfileId);
@@ -57,7 +56,7 @@ class ChatMoreMenuController extends _$ChatMoreMenuController {
   }
 
   Future<void> _unBlockAndUpdateStatus() async {
-    final currentProfileId = ref.read(currentProfileProvider).id!;
+    final currentProfileId = ref.read(currentUserIdProvider)!;
     await ref
         .read(chatRepositoryProvider)
         .unBlockUser(currentProfileId, otherProfileId);

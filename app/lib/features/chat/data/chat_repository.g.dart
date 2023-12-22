@@ -22,7 +22,7 @@ final chatRepositoryProvider = AutoDisposeProvider<ChatRepository>.internal(
 
 typedef ChatRepositoryRef = AutoDisposeProviderRef<ChatRepository>;
 String _$getProfilesForRoomHash() =>
-    r'c139f41c702774f246cd4d267503f4c7bd63d043';
+    r'8ac5b5c21c9349ac1a120c00ec9355c92f671147';
 
 /// Copied from Dart SDK
 class _SystemHash {

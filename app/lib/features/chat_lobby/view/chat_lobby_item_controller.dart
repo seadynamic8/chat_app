@@ -1,5 +1,4 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/application/translation_service.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
@@ -14,7 +13,7 @@ part 'chat_lobby_item_controller.g.dart';
 class ChatLobbyItemController extends _$ChatLobbyItemController {
   @override
   FutureOr<ChatLobbyItemState> build(String roomId) async {
-    final currentProfileId = ref.watch(currentProfileProvider).id!;
+    final currentProfileId = ref.watch(currentUserIdProvider)!;
     final chatLobbyItemState = await ref
         .watch(chatLobbyRepositoryProvider)
         .getChatLobbyItemState(roomId, currentProfileId);
@@ -39,7 +38,7 @@ class ChatLobbyItemController extends _$ChatLobbyItemController {
     state = AsyncData(oldState.copyWith(newestMessage: message));
 
     // Then fetch translation and save
-    final currentProfileId = ref.watch(currentProfileProvider).id!;
+    final currentProfileId = ref.watch(currentUserIdProvider)!;
     if (message.profileId != currentProfileId) {
       _updateNewestMessageTranslation(message);
     }

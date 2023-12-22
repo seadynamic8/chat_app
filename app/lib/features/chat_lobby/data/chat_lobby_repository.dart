@@ -1,5 +1,4 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat_lobby/domain/chat_lobby_item_state.dart';
@@ -152,7 +151,7 @@ ChatLobbyRepository chatLobbyRepository(ChatLobbyRepositoryRef ref) {
 @riverpod
 FutureOr<Room?> findRoomWithUser(
     FindRoomWithUserRef ref, String otherProfileId) {
-  final currentProfileId = ref.watch(currentProfileProvider).id!;
+  final currentProfileId = ref.watch(currentUserIdProvider)!;
   final chatLobbyRepository = ref.watch(chatLobbyRepositoryProvider);
   return chatLobbyRepository.findRoomByProfiles(
       currentProfileId: currentProfileId, otherProfileId: otherProfileId);
@@ -161,7 +160,7 @@ FutureOr<Room?> findRoomWithUser(
 @riverpod
 Stream<int> unReadMessagesStream(UnReadMessagesStreamRef ref,
     [String? roomId]) {
-  final currentProfileId = ref.watch(currentProfileProvider).id!;
+  final currentProfileId = ref.watch(currentUserIdProvider)!;
   final chatLobbyRepository = ref.watch(chatLobbyRepositoryProvider);
   return chatLobbyRepository.watchUnReadMessages(
       profileId: currentProfileId, roomId: roomId);

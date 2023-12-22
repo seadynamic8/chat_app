@@ -43,8 +43,9 @@ class VideoChatRepository {
 }
 
 @riverpod
-VideoChatRepository videoChatRepository(VideoChatRepositoryRef ref) {
-  final videoRepository = ref.watch(videoRepositoryProvider);
+FutureOr<VideoChatRepository> videoChatRepository(
+    VideoChatRepositoryRef ref) async {
+  final videoRepository = await ref.watch(videoRepositoryProvider.future);
   final videoRoomId = ref.watch(videoSettingsProvider).roomId!;
   return VideoChatRepository(
       videoRoom: videoRepository.videoRoom, videoRoomId: videoRoomId);

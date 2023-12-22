@@ -23,11 +23,13 @@ class _VideoChatNewMessageState extends ConsumerState<VideoChatNewMessage> {
     }
     _messageController.clear();
 
-    _sendVideoChatMessage(messageText);
+    await _sendVideoChatMessage(messageText);
   }
 
-  void _sendVideoChatMessage(String message) async {
-    await ref.watch(videoChatRepositoryProvider).send(message: message);
+  Future<void> _sendVideoChatMessage(String message) async {
+    final videoChatRepository =
+        await ref.watch(videoChatRepositoryProvider.future);
+    await videoChatRepository.send(message: message);
   }
 
   @override

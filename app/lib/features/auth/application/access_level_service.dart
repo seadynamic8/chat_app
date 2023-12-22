@@ -1,5 +1,4 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/user_access.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +14,7 @@ class AccessLevelService {
 
   // When timer ended, time to change access level
   Future<void> changeAccessLevel() async {
-    final currentProfileId = ref.read(currentProfileProvider).id!;
+    final currentProfileId = ref.read(currentUserIdProvider)!;
     if (userAccess.level == AccessLevel.trial && userAccess.hasCredits) {
       await _changeAccessToPremium(currentProfileId);
     } else {
@@ -25,7 +24,7 @@ class AccessLevelService {
 
   // free trial or credits not used up yet, update values
   Future<void> updateAccessDurationOrCredits(Duration elapsedDuration) async {
-    final currentProfileId = ref.read(currentProfileProvider).id!;
+    final currentProfileId = ref.read(currentUserIdProvider)!;
     if (userAccess.level == AccessLevel.premium && userAccess.hasCredits) {
       await _updateCreditsByDuration(currentProfileId, elapsedDuration);
     } else {
@@ -34,7 +33,7 @@ class AccessLevelService {
   }
 
   Future<void> updateAccessCredits(int quantity) async {
-    final currentProfileId = ref.read(currentProfileProvider).id!;
+    final currentProfileId = ref.read(currentUserIdProvider)!;
     try {
       await ref.read(authRepositoryProvider).updateAccessLevel(
             currentProfileId,

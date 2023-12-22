@@ -14,7 +14,7 @@ class AuthGuard extends AutoRouteGuard {
 
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) {
-    var loggedIn = ref.watch(authRepositoryProvider).currentSession != null;
+    final loggedIn = ref.watch(authRepositoryProvider).currentSession != null;
 
     if (loggedIn) {
       // Continue navigation

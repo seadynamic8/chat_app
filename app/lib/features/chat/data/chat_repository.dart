@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/utils/pagination.dart';
@@ -179,7 +178,7 @@ ChatRepository chatRepository(ChatRepositoryRef ref) {
 @riverpod
 FutureOr<Map<String, Profile>> getProfilesForRoom(
     GetProfilesForRoomRef ref, String otherProfileId) {
-  final currentProfileId = ref.watch(currentProfileProvider).id!;
+  final currentProfileId = ref.watch(currentUserIdProvider)!;
   final chatRepository = ref.watch(chatRepositoryProvider);
   return chatRepository.getBothProfiles(
       currentProfileId: currentProfileId, otherProfileId: otherProfileId);

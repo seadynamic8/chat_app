@@ -1,5 +1,4 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/block_state.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
@@ -22,8 +21,7 @@ class ChatService {
         await ref.read(blockedByChangesProvider(otherProfileId).future);
 
     if (blockState.status == BlockStatus.no) {
-      final currentProfileId = ref.read(currentProfileProvider).id!;
-
+      final currentProfileId = ref.read(currentUserIdProvider)!;
       await ref.read(chatRepositoryProvider).saveMessage(
             roomId,
             otherProfileId,

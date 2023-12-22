@@ -1,5 +1,5 @@
 import 'package:chat_app/common/paginated_list_view.dart';
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
+import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/view/chat_messages_controller.dart';
@@ -23,7 +23,7 @@ class ChatMessages extends ConsumerWidget {
 
   String getblockAction(WidgetRef ref, Message message) {
     final isCurrentUser =
-        message.profileId == ref.watch(currentProfileProvider).id!;
+        message.profileId == ref.watch(currentUserIdProvider)!;
     return message.blockAction(isCurrentUser: isCurrentUser);
   }
 

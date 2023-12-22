@@ -1,4 +1,4 @@
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
+import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
@@ -95,7 +95,7 @@ class CallRequestController extends _$CallRequestController {
   Future<void> sendNewCall(String videoRoomId, Profile otherProfile) async {
     createChatMessageForVideoStatus(VideoStatus.started, otherProfile.id!);
 
-    final currentProfile = ref.read(currentProfileProvider);
+    final currentProfile = await ref.read(currentProfileStreamProvider.future);
     await _sendMessageToOtherUser(
       channelName: otherProfile.id!,
       event: 'new_call',
@@ -120,7 +120,7 @@ class CallRequestController extends _$CallRequestController {
 
     createChatMessageForVideoStatus(VideoStatus.cancelled, state.otherUserId!);
 
-    final currentProfile = ref.read(currentProfileProvider);
+    final currentProfile = await ref.read(currentProfileStreamProvider.future);
     await _sendMessageToOtherUser(
       channelName: state.otherUserId!,
       event: 'cancel_call',
@@ -203,7 +203,7 @@ class CallRequestController extends _$CallRequestController {
     VideoStatus status,
     String otherProfileId,
   ) async {
-    final currentProfileId = ref.read(currentProfileProvider).id!;
+    final currentProfileId = ref.read(currentUserIdProvider)!;
     final chatRoom =
         await ref.read(findRoomWithUserProvider(otherProfileId).future);
 

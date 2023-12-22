@@ -1,5 +1,6 @@
 import 'package:chat_app/features/video/data/video_repository.dart';
 import 'package:chat_app/features/video/domain/video_controls_state.dart';
+import 'package:chat_app/utils/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'video_controls_controller.g.dart';
@@ -7,45 +8,53 @@ part 'video_controls_controller.g.dart';
 @riverpod
 class VideoControlsController extends _$VideoControlsController {
   @override
-  VideoControlsState build() {
-    return VideoControlsState(
-      allCameras: ref.watch(videoRepositoryProvider).cameras,
-    );
+  FutureOr<VideoControlsState> build() async {
+    final videoRepository = await ref.watch(videoRepositoryProvider.future);
+
+    return VideoControlsState(allCameras: videoRepository.cameras);
   }
 
   Future<void> toggleMic() async {
-    final videoRepository = ref.watch(videoRepositoryProvider);
+    final videoRepository = await ref.watch(videoRepositoryProvider.future);
 
-    state.micEnabled
+    final oldState = await future;
+    oldState.micEnabled
         ? await videoRepository.muteMic()
         : await videoRepository.unmuteMic();
 
-    state = state.copyWith(micEnabled: !state.micEnabled);
+    state = AsyncData(oldState.copyWith(micEnabled: !oldState.micEnabled));
   }
 
   Future<void> toggleCamera() async {
-    final videoRepository = ref.watch(videoRepositoryProvider);
+    final videoRepository = await ref.watch(videoRepositoryProvider.future);
 
-    state.camEnabled
+    final oldState = await future;
+    oldState.camEnabled
         ? await videoRepository.disableCam()
         : await videoRepository.enableCam();
 
-    state = state.copyWith(camEnabled: !state.camEnabled);
+    state = AsyncData(oldState.copyWith(camEnabled: !oldState.camEnabled));
   }
 
   Future<void> switchNextCamera() async {
-    if (state.allCameras.length < 2) return;
+    final oldState = await future;
+    if (oldState.allCameras.length < 2) return;
 
-    final videoRepository = ref.read(videoRepositoryProvider);
+    final videoRepository = await ref.watch(videoRepositoryProvider.future);
 
     final selectedId = videoRepository.selectedCamId;
-    final nextCamDeviceId = _findNextCameraDeviceId(selectedId!);
+    final nextCamDeviceId = await _findNextCameraDeviceId(selectedId!);
+    if (nextCamDeviceId == null) {
+      logger.e('VideoControlsController nextCamDeviceId is null');
+      return;
+    }
 
-    await videoRepository.changeCam(nextCamDeviceId!);
+    await videoRepository.changeCam(nextCamDeviceId);
   }
 
-  String? _findNextCameraDeviceId(String selectedId) {
-    final allCams = state.allCameras;
+  Future<String?> _findNextCameraDeviceId(String selectedId) async {
+    final oldState = await future;
+    final allCams = oldState.allCameras;
     final allCamsLength = allCams.length;
 
     var currentIndex = 0;

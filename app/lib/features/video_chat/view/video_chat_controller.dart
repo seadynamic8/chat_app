@@ -13,7 +13,8 @@ part 'video_chat_controller.g.dart';
 class VideoChatController extends _$VideoChatController {
   @override
   FutureOr<VideoChatState> build(String otherProfileId) async {
-    final videoChatRepository = ref.watch(videoChatRepositoryProvider);
+    final videoChatRepository =
+        await ref.watch(videoChatRepositoryProvider.future);
 
     await videoChatRepository.subscribe(_addVideoChatMessage);
 

@@ -23,7 +23,7 @@ final chatLobbyRepositoryProvider =
 );
 
 typedef ChatLobbyRepositoryRef = AutoDisposeProviderRef<ChatLobbyRepository>;
-String _$findRoomWithUserHash() => r'd08fb0338858f1f787357ca01a4f8a7d1956747b';
+String _$findRoomWithUserHash() => r'098a1cb842322a4c3e42705f75a0a227c46271b8';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -175,7 +175,7 @@ class _FindRoomWithUserProviderElement
 }
 
 String _$unReadMessagesStreamHash() =>
-    r'613388fec9e61aee2e561c8756cd9d6d9488aeda';
+    r'd4b939f1bb796a8af207c66fee08fa9ce5252c66';
 
 /// See also [unReadMessagesStream].
 @ProviderFor(unReadMessagesStream)

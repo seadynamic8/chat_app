@@ -65,8 +65,23 @@ final authStateChangesProvider = StreamProvider<AuthState>.internal(
 );
 
 typedef AuthStateChangesRef = StreamProviderRef<AuthState>;
+String _$currentUserIdHash() => r'ccce9c41e69122bd13655730ef94ffffb64c9ce8';
+
+/// See also [currentUserId].
+@ProviderFor(currentUserId)
+final currentUserIdProvider = AutoDisposeProvider<String?>.internal(
+  currentUserId,
+  name: r'currentUserIdProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$currentUserIdHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef CurrentUserIdRef = AutoDisposeProviderRef<String?>;
 String _$currentProfileStreamHash() =>
-    r'ed8ed1b48b5346dd9731c8a1c576a3641efbe5ee';
+    r'75719ee27eb29f124eace4b697915cd0e34156f8';
 
 /// See also [currentProfileStream].
 @ProviderFor(currentProfileStream)
@@ -754,7 +769,7 @@ class _BlockedByChangesProviderElement
       (origin as BlockedByChangesProvider).otherProfileId;
 }
 
-String _$userAccessStreamHash() => r'41a6938e48d40848084fed0124fa2e70fc135dfc';
+String _$userAccessStreamHash() => r'865285b2ac2d2c5e80b9c077a838cf3bc9cbb3c6';
 
 /// See also [userAccessStream].
 @ProviderFor(userAccessStream)

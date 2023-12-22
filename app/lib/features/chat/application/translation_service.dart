@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
+import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat/data/translate_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -18,8 +18,8 @@ class TranslationService {
 
   Future<String?> getTranslation(
       Locale otherProfileLocale, String messageText) async {
-    final currentProfileLang =
-        ref.read(currentProfileProvider).language!.languageCode;
+    final currentProfile = await ref.read(currentProfileStreamProvider.future);
+    final currentProfileLang = currentProfile.language!.languageCode;
     final otherProfileLang = otherProfileLocale.languageCode;
 
     return await translateRepository.translate(

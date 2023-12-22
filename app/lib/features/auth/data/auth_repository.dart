@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/block_state.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/auth/domain/user_access.dart';
@@ -305,14 +304,17 @@ Stream<AuthState> authStateChanges(AuthStateChangesRef ref) {
   return authRepository.onAuthStateChanges();
 }
 
-// Make sure to call this only after logged in, or currentUserId != null
+@riverpod
+String? currentUserId(CurrentUserIdRef ref) {
+  final authRepository = ref.watch(authRepositoryProvider);
+  return authRepository.currentUserId;
+}
+
 @riverpod
 Stream<Profile> currentProfileStream(CurrentProfileStreamRef ref) {
+  final currentUserId = ref.watch(currentUserIdProvider)!;
   final authRepository = ref.watch(authRepositoryProvider);
-  if (authRepository.currentUserId == null) {
-    throw Exception('Cannot call currentProfileStream when the user is null');
-  }
-  return authRepository.watchProfile(authRepository.currentUserId!);
+  return authRepository.watchProfile(currentUserId);
 }
 
 @riverpod
@@ -353,7 +355,7 @@ Future<BlockState> blockedByChanges(
 
 @riverpod
 Stream<UserAccess> userAccessStream(UserAccessStreamRef ref) {
-  final currentProfileId = ref.watch(currentProfileProvider).id!;
+  final currentProfileId = ref.watch(currentUserIdProvider)!;
   final authRepository = ref.watch(authRepositoryProvider);
   return authRepository.getAccessLevelChanges(currentProfileId);
 }

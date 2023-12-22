@@ -1,6 +1,5 @@
 import 'package:chat_app/common/pagination_state.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/application/translation_service.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
@@ -34,7 +33,8 @@ class ChatMessagesController extends _$ChatMessagesController {
 
     final updatedMessages = _addNewDayToMessages(null, messages);
 
-    final currentProfileId = ref.read(currentProfileProvider).id!;
+    final currentProfileId = ref.read(currentUserIdProvider)!;
+
     await chatRepository.markAllMessagesAsReadForRoom(roomId, currentProfileId);
 
     return PaginationState<Message>(

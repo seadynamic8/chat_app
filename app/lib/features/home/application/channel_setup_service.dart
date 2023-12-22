@@ -1,5 +1,4 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
@@ -21,6 +20,8 @@ class ChannelSetupService {
   final Ref ref;
 
   void _init() {
+    _listenToAppLifecycleChanges();
+
     ref.listen<AsyncValue<AuthState>>(
       authStateChangesProvider,
       (previous, next) async {
@@ -31,16 +32,15 @@ class ChannelSetupService {
             case AuthChangeEvent.signedIn:
             case AuthChangeEvent.tokenRefreshed:
               logger.i('sign in');
-              _loadCurrentProfile();
+              _refreshCurrentUserId();
               await setupLobbyChannel();
               await setupUserChannel();
               _paywallInitialize();
-              _listenToAppLifecycleChanges();
 
             // Necessary to reload after password reset
             case AuthChangeEvent.userUpdated:
               logger.i('user updated event');
-              _loadCurrentProfile();
+              _refreshCurrentUserId();
             case AuthChangeEvent.signedOut:
               logger.i('sign out');
               await _paywallLogut();
@@ -51,16 +51,17 @@ class ChannelSetupService {
     );
   }
 
-  // This is here because the stream needs an id, which is avaliable after login.
-  // Also doing it here instead after user creation, because sometimes, we
-  // leave the app, the current profile may dissappear, and we want to ensure it's
-  // always loaded initially.
-  Future<void> _loadCurrentProfile() async {
-    ref.read(currentProfileProvider.notifier).load();
+  // This is here because while supabase may signout/signin, our app (and riverpod)
+  // are still active, so it's still holding on to old currentUserId
+  Future<void> _refreshCurrentUserId() async {
+    ref.invalidate(currentUserIdProvider);
   }
 
   // Join lobby channel on startup, to notify others that we have signed on
   Future<void> setupLobbyChannel() async {
+    final isLoggedIn = ref.read(authRepositoryProvider).currentSession != null;
+    if (!isLoggedIn) return;
+
     final lobbyChannel = await ref
         .refresh(lobbySubscribedChannelProvider(lobbyChannelName).future);
     final updateHandler =
@@ -76,7 +77,10 @@ class ChannelSetupService {
   }
 
   Future<void> setupUserChannel() async {
-    final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
+    final isLoggedIn = ref.read(authRepositoryProvider).currentSession != null;
+    if (!isLoggedIn) return;
+
+    final currentUserId = ref.read(currentUserIdProvider)!;
 
     final myChannel = ref.refresh(channelRepositoryProvider(currentUserId));
     await myChannel.subscribed();
@@ -99,7 +103,8 @@ class ChannelSetupService {
   }
 
   Future<void> closeUserChannel() async {
-    final currentProfileId = ref.read(currentProfileProvider).id;
+    final currentProfileId = ref.read(currentUserIdProvider);
+
     if (currentProfileId == null) return;
 
     final myChannel = ref.read(channelRepositoryProvider(currentProfileId));
@@ -140,7 +145,7 @@ class ChannelSetupService {
   }
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 ChannelSetupService channelSetupService(ChannelSetupServiceRef ref) {
   return ChannelSetupService(ref: ref);
 }

@@ -1,6 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:chat_app/features/home/application/channel_setup_service.dart';
-import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,9 +15,8 @@ class RoutingObserver extends AutoRouteObserver {
   void didPush(Route route, Route? previousRoute) {
     logger.t(
         'New route pushed: ${route.settings.name}, previous: ${previousRoute?.settings.name ?? ''}');
-    if (route.settings.name == TabsNavigation.name) {
-      ref.watch(channelSetupServiceProvider);
-    }
+    // if (route.settings.name == TabsNavigation.name) {
+    // }
   }
 
   // @override

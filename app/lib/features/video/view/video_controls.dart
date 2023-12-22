@@ -7,36 +7,51 @@ class VideoControls extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(videoControlsControllerProvider);
+    final stateValue = ref.watch(videoControlsControllerProvider);
     final stateNotifier = ref.read(videoControlsControllerProvider.notifier);
 
     const iconShadow =
         Shadow(color: Colors.black54, blurRadius: 1, offset: Offset(0.3, 0.3));
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        IconButton(
-          onPressed: () => stateNotifier.toggleMic(),
-          icon: state.micEnabled
-              ? const Icon(Icons.mic, shadows: [iconShadow])
-              : const Icon(Icons.mic_off_outlined, shadows: [iconShadow]),
-          color: Colors.white.withAlpha(150),
-        ),
-        IconButton(
-          onPressed: () => stateNotifier.toggleCamera(),
-          icon: state.camEnabled
-              ? const Icon(Icons.camera_alt, shadows: [iconShadow])
-              : const Icon(Icons.videocam_off_outlined, shadows: [iconShadow]),
-          color: Colors.white.withAlpha(150),
-        ),
-        if (state.allCameras.length > 1)
-          IconButton(
-            onPressed: () => stateNotifier.switchNextCamera(),
-            icon: const Icon(Icons.change_circle, shadows: [iconShadow]),
-            color: Colors.white.withAlpha(150),
-          ),
-      ],
-    );
+    return stateValue.maybeWhen(
+        data: (state) => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  onPressed: () => stateNotifier.toggleMic(),
+                  icon: state.micEnabled
+                      ? const Icon(Icons.mic, shadows: [iconShadow])
+                      : const Icon(Icons.mic_off_outlined,
+                          shadows: [iconShadow]),
+                  color: Colors.white.withAlpha(150),
+                ),
+                IconButton(
+                  onPressed: () => stateNotifier.toggleCamera(),
+                  icon: state.camEnabled
+                      ? const Icon(Icons.camera_alt, shadows: [iconShadow])
+                      : const Icon(Icons.videocam_off_outlined,
+                          shadows: [iconShadow]),
+                  color: Colors.white.withAlpha(150),
+                ),
+                if (state.allCameras.length > 1)
+                  IconButton(
+                    onPressed: () => stateNotifier.switchNextCamera(),
+                    icon:
+                        const Icon(Icons.change_circle, shadows: [iconShadow]),
+                    color: Colors.white.withAlpha(150),
+                  ),
+              ],
+            ),
+        loading: () => const Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 8),
+                child: SizedBox(
+                  height: 10,
+                  width: 10,
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ),
+        orElse: SizedBox.shrink);
   }
 }

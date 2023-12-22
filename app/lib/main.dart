@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/env/environment.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
+import 'package:chat_app/features/home/application/channel_setup_service.dart';
 import 'package:chat_app/i18n/supported_locales_and_delegates.dart';
 import 'package:chat_app/routing/routing_observer.dart';
 import 'package:chat_app/utils/logger.dart';
@@ -43,8 +43,10 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appRouter = ref.watch(appRouterProvider);
 
-    // Will be null at first (after login, the language will be set)
-    final currentLocale = ref.watch(currentProfileProvider).language;
+    ref.watch(channelSetupServiceProvider);
+
+    final currentLocale = ref.watch(currentProfileStreamProvider
+        .select((value) => value.whenData((profile) => profile.language)));
 
     return MaterialApp.router(
       title: 'Chat With Friends',
@@ -59,7 +61,7 @@ class MyApp extends ConsumerWidget {
       ),
       localizationsDelegates: localizationDelegates,
       supportedLocales: supportedLocales,
-      locale: currentLocale,
+      locale: currentLocale.whenOrNull(data: (currentLocale) => currentLocale),
     );
   }
 }

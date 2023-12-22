@@ -21,7 +21,7 @@ class VideoRoomController extends _$VideoRoomController {
     // * this will be rebuilt and video will re-join.  If you need to update
     // * state, u can do so with callback or 'listen'.  Or seperate out into
     // * seperate widget or another provider/controller.
-    final videoRepository = ref.watch(videoRepositoryProvider);
+    final videoRepository = await ref.watch(videoRepositoryProvider.future);
 
     videoRepository.onLocalParticipantJoin(_onLocalParticipantJoin);
 
@@ -38,11 +38,13 @@ class VideoRoomController extends _$VideoRoomController {
     );
   }
 
-  void endCall(String videoRoomId, String otherProfileId) {
+  void endCall(String videoRoomId, String otherProfileId) async {
     ref
         .read(callRequestControllerProvider.notifier)
         .sendEndCall(videoRoomId, otherProfileId);
-    ref.read(videoRepositoryProvider).end();
+
+    final videoRepository = await ref.read(videoRepositoryProvider.future);
+    videoRepository.end();
   }
 
   void changeAccessLevel() async {
