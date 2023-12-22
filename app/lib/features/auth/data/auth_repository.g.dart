@@ -359,29 +359,30 @@ class _ProfileChangesProviderElement
   String get profileId => (origin as ProfileChangesProvider).profileId;
 }
 
-String _$isBlockedByEitherHash() => r'6eac90b018798502b9d297c0f1eeb3690f35e940';
+String _$currentBlockingChangesHash() =>
+    r'14f235ba92ade7ca1c8037396cf9d6b3ae7b6efa';
 
-/// See also [isBlockedByEither].
-@ProviderFor(isBlockedByEither)
-const isBlockedByEitherProvider = IsBlockedByEitherFamily();
+/// See also [currentBlockingChanges].
+@ProviderFor(currentBlockingChanges)
+const currentBlockingChangesProvider = CurrentBlockingChangesFamily();
 
-/// See also [isBlockedByEither].
-class IsBlockedByEitherFamily extends Family<AsyncValue<BlockState>> {
-  /// See also [isBlockedByEither].
-  const IsBlockedByEitherFamily();
+/// See also [currentBlockingChanges].
+class CurrentBlockingChangesFamily extends Family<AsyncValue<bool>> {
+  /// See also [currentBlockingChanges].
+  const CurrentBlockingChangesFamily();
 
-  /// See also [isBlockedByEither].
-  IsBlockedByEitherProvider call(
+  /// See also [currentBlockingChanges].
+  CurrentBlockingChangesProvider call(
     String otherProfileId,
   ) {
-    return IsBlockedByEitherProvider(
+    return CurrentBlockingChangesProvider(
       otherProfileId,
     );
   }
 
   @override
-  IsBlockedByEitherProvider getProviderOverride(
-    covariant IsBlockedByEitherProvider provider,
+  CurrentBlockingChangesProvider getProviderOverride(
+    covariant CurrentBlockingChangesProvider provider,
   ) {
     return call(
       provider.otherProfileId,
@@ -400,32 +401,32 @@ class IsBlockedByEitherFamily extends Family<AsyncValue<BlockState>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'isBlockedByEitherProvider';
+  String? get name => r'currentBlockingChangesProvider';
 }
 
-/// See also [isBlockedByEither].
-class IsBlockedByEitherProvider extends AutoDisposeFutureProvider<BlockState> {
-  /// See also [isBlockedByEither].
-  IsBlockedByEitherProvider(
+/// See also [currentBlockingChanges].
+class CurrentBlockingChangesProvider extends AutoDisposeStreamProvider<bool> {
+  /// See also [currentBlockingChanges].
+  CurrentBlockingChangesProvider(
     String otherProfileId,
   ) : this._internal(
-          (ref) => isBlockedByEither(
-            ref as IsBlockedByEitherRef,
+          (ref) => currentBlockingChanges(
+            ref as CurrentBlockingChangesRef,
             otherProfileId,
           ),
-          from: isBlockedByEitherProvider,
-          name: r'isBlockedByEitherProvider',
+          from: currentBlockingChangesProvider,
+          name: r'currentBlockingChangesProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$isBlockedByEitherHash,
-          dependencies: IsBlockedByEitherFamily._dependencies,
+                  : _$currentBlockingChangesHash,
+          dependencies: CurrentBlockingChangesFamily._dependencies,
           allTransitiveDependencies:
-              IsBlockedByEitherFamily._allTransitiveDependencies,
+              CurrentBlockingChangesFamily._allTransitiveDependencies,
           otherProfileId: otherProfileId,
         );
 
-  IsBlockedByEitherProvider._internal(
+  CurrentBlockingChangesProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -439,12 +440,12 @@ class IsBlockedByEitherProvider extends AutoDisposeFutureProvider<BlockState> {
 
   @override
   Override overrideWith(
-    FutureOr<BlockState> Function(IsBlockedByEitherRef provider) create,
+    Stream<bool> Function(CurrentBlockingChangesRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: IsBlockedByEitherProvider._internal(
-        (ref) => create(ref as IsBlockedByEitherRef),
+      override: CurrentBlockingChangesProvider._internal(
+        (ref) => create(ref as CurrentBlockingChangesRef),
         from: from,
         name: null,
         dependencies: null,
@@ -456,13 +457,13 @@ class IsBlockedByEitherProvider extends AutoDisposeFutureProvider<BlockState> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<BlockState> createElement() {
-    return _IsBlockedByEitherProviderElement(this);
+  AutoDisposeStreamProviderElement<bool> createElement() {
+    return _CurrentBlockingChangesProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is IsBlockedByEitherProvider &&
+    return other is CurrentBlockingChangesProvider &&
         other.otherProfileId == otherProfileId;
   }
 
@@ -475,19 +476,282 @@ class IsBlockedByEitherProvider extends AutoDisposeFutureProvider<BlockState> {
   }
 }
 
-mixin IsBlockedByEitherRef on AutoDisposeFutureProviderRef<BlockState> {
+mixin CurrentBlockingChangesRef on AutoDisposeStreamProviderRef<bool> {
   /// The parameter `otherProfileId` of this provider.
   String get otherProfileId;
 }
 
-class _IsBlockedByEitherProviderElement
-    extends AutoDisposeFutureProviderElement<BlockState>
-    with IsBlockedByEitherRef {
-  _IsBlockedByEitherProviderElement(super.provider);
+class _CurrentBlockingChangesProviderElement
+    extends AutoDisposeStreamProviderElement<bool>
+    with CurrentBlockingChangesRef {
+  _CurrentBlockingChangesProviderElement(super.provider);
 
   @override
   String get otherProfileId =>
-      (origin as IsBlockedByEitherProvider).otherProfileId;
+      (origin as CurrentBlockingChangesProvider).otherProfileId;
+}
+
+String _$otherBlockingChangesHash() =>
+    r'6e6a532c9f8f9b404e880c31b24d207dc9a5648e';
+
+/// See also [otherBlockingChanges].
+@ProviderFor(otherBlockingChanges)
+const otherBlockingChangesProvider = OtherBlockingChangesFamily();
+
+/// See also [otherBlockingChanges].
+class OtherBlockingChangesFamily extends Family<AsyncValue<bool>> {
+  /// See also [otherBlockingChanges].
+  const OtherBlockingChangesFamily();
+
+  /// See also [otherBlockingChanges].
+  OtherBlockingChangesProvider call(
+    String otherProfileId,
+  ) {
+    return OtherBlockingChangesProvider(
+      otherProfileId,
+    );
+  }
+
+  @override
+  OtherBlockingChangesProvider getProviderOverride(
+    covariant OtherBlockingChangesProvider provider,
+  ) {
+    return call(
+      provider.otherProfileId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'otherBlockingChangesProvider';
+}
+
+/// See also [otherBlockingChanges].
+class OtherBlockingChangesProvider extends AutoDisposeStreamProvider<bool> {
+  /// See also [otherBlockingChanges].
+  OtherBlockingChangesProvider(
+    String otherProfileId,
+  ) : this._internal(
+          (ref) => otherBlockingChanges(
+            ref as OtherBlockingChangesRef,
+            otherProfileId,
+          ),
+          from: otherBlockingChangesProvider,
+          name: r'otherBlockingChangesProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$otherBlockingChangesHash,
+          dependencies: OtherBlockingChangesFamily._dependencies,
+          allTransitiveDependencies:
+              OtherBlockingChangesFamily._allTransitiveDependencies,
+          otherProfileId: otherProfileId,
+        );
+
+  OtherBlockingChangesProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.otherProfileId,
+  }) : super.internal();
+
+  final String otherProfileId;
+
+  @override
+  Override overrideWith(
+    Stream<bool> Function(OtherBlockingChangesRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: OtherBlockingChangesProvider._internal(
+        (ref) => create(ref as OtherBlockingChangesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        otherProfileId: otherProfileId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<bool> createElement() {
+    return _OtherBlockingChangesProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is OtherBlockingChangesProvider &&
+        other.otherProfileId == otherProfileId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, otherProfileId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin OtherBlockingChangesRef on AutoDisposeStreamProviderRef<bool> {
+  /// The parameter `otherProfileId` of this provider.
+  String get otherProfileId;
+}
+
+class _OtherBlockingChangesProviderElement
+    extends AutoDisposeStreamProviderElement<bool>
+    with OtherBlockingChangesRef {
+  _OtherBlockingChangesProviderElement(super.provider);
+
+  @override
+  String get otherProfileId =>
+      (origin as OtherBlockingChangesProvider).otherProfileId;
+}
+
+String _$blockedByChangesHash() => r'878fb3e193bb8389a0dad48bb3f5c53760c69f4f';
+
+/// See also [blockedByChanges].
+@ProviderFor(blockedByChanges)
+const blockedByChangesProvider = BlockedByChangesFamily();
+
+/// See also [blockedByChanges].
+class BlockedByChangesFamily extends Family<AsyncValue<BlockState>> {
+  /// See also [blockedByChanges].
+  const BlockedByChangesFamily();
+
+  /// See also [blockedByChanges].
+  BlockedByChangesProvider call(
+    String otherProfileId,
+  ) {
+    return BlockedByChangesProvider(
+      otherProfileId,
+    );
+  }
+
+  @override
+  BlockedByChangesProvider getProviderOverride(
+    covariant BlockedByChangesProvider provider,
+  ) {
+    return call(
+      provider.otherProfileId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'blockedByChangesProvider';
+}
+
+/// See also [blockedByChanges].
+class BlockedByChangesProvider extends AutoDisposeFutureProvider<BlockState> {
+  /// See also [blockedByChanges].
+  BlockedByChangesProvider(
+    String otherProfileId,
+  ) : this._internal(
+          (ref) => blockedByChanges(
+            ref as BlockedByChangesRef,
+            otherProfileId,
+          ),
+          from: blockedByChangesProvider,
+          name: r'blockedByChangesProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$blockedByChangesHash,
+          dependencies: BlockedByChangesFamily._dependencies,
+          allTransitiveDependencies:
+              BlockedByChangesFamily._allTransitiveDependencies,
+          otherProfileId: otherProfileId,
+        );
+
+  BlockedByChangesProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.otherProfileId,
+  }) : super.internal();
+
+  final String otherProfileId;
+
+  @override
+  Override overrideWith(
+    FutureOr<BlockState> Function(BlockedByChangesRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: BlockedByChangesProvider._internal(
+        (ref) => create(ref as BlockedByChangesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        otherProfileId: otherProfileId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<BlockState> createElement() {
+    return _BlockedByChangesProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is BlockedByChangesProvider &&
+        other.otherProfileId == otherProfileId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, otherProfileId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin BlockedByChangesRef on AutoDisposeFutureProviderRef<BlockState> {
+  /// The parameter `otherProfileId` of this provider.
+  String get otherProfileId;
+}
+
+class _BlockedByChangesProviderElement
+    extends AutoDisposeFutureProviderElement<BlockState>
+    with BlockedByChangesRef {
+  _BlockedByChangesProviderElement(super.provider);
+
+  @override
+  String get otherProfileId =>
+      (origin as BlockedByChangesProvider).otherProfileId;
 }
 
 String _$userAccessStreamHash() => r'41a6938e48d40848084fed0124fa2e70fc135dfc';

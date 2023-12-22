@@ -7,6 +7,7 @@ import 'package:chat_app/features/auth/domain/block_state.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/auth/domain/user_access.dart';
 import 'package:chat_app/utils/username_generate_data.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n_extension/i18n_widget.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide Provider;
@@ -190,14 +191,35 @@ class AuthRepository {
 
   // * Blocked Users
 
-  Future<BlockState> isBlockedByEither(String otherProfileId) async {
-    final blocked = await supabase
-        .from('blocked_users')
-        .select<List<Map<String, dynamic>>>('blocker_id')
-        .or('and(blocker_id.eq.$currentUserId,blocked_id.eq.$otherProfileId),'
-            'and(blocker_id.eq.$otherProfileId,blocked_id.eq.$currentUserId)');
+  // Need two streams, because API only allows one filter
+  // And not filtering at all would potentially pull too many records later.
 
-    return BlockState.fromMap(blocked, currentProfileId: currentUserId!);
+  Stream<bool> watchCurrentBlocking(String otherProfileId) {
+    final currentBlockStream = supabase
+        .from('blocked_users')
+        .stream(primaryKey: ['blocker_id', 'blocked_id']).eq(
+            'blocker_id', currentUserId);
+
+    return currentBlockStream.map((blockedUsers) {
+      final blocked = blockedUsers.firstWhereOrNull((user) =>
+          user['blocker_id'] == currentUserId &&
+          user['blocked_id'] == otherProfileId);
+      return blocked?.isNotEmpty ?? false;
+    });
+  }
+
+  Stream<bool> watchOtherBlocking(String otherProfileId) {
+    final otherBlockStream = supabase
+        .from('blocked_users')
+        .stream(primaryKey: ['blocker_id', 'blocked_id']).eq(
+            'blocker_id', otherProfileId);
+
+    return otherBlockStream.map((blockedUsers) {
+      final blocked = blockedUsers.firstWhereOrNull((user) =>
+          user['blocker_id'] == otherProfileId &&
+          user['blocked_id'] == currentUserId);
+      return blocked?.isNotEmpty ?? false;
+    });
   }
 
   // * Access Levels
@@ -306,10 +328,27 @@ Stream<Profile> profileChanges(ProfileChangesRef ref, String profileId) {
 }
 
 @riverpod
-FutureOr<BlockState> isBlockedByEither(
-    IsBlockedByEitherRef ref, String otherProfileId) {
+Stream<bool> currentBlockingChanges(
+    CurrentBlockingChangesRef ref, String otherProfileId) {
   final authRepository = ref.watch(authRepositoryProvider);
-  return authRepository.isBlockedByEither(otherProfileId);
+  return authRepository.watchCurrentBlocking(otherProfileId);
+}
+
+@riverpod
+Stream<bool> otherBlockingChanges(
+    OtherBlockingChangesRef ref, String otherProfileId) {
+  final authRepository = ref.watch(authRepositoryProvider);
+  return authRepository.watchOtherBlocking(otherProfileId);
+}
+
+@riverpod
+Future<BlockState> blockedByChanges(
+    BlockedByChangesRef ref, String otherProfileId) async {
+  final currentBlocked =
+      await ref.watch(currentBlockingChangesProvider(otherProfileId).future);
+  final otherBlocked =
+      await ref.watch(otherBlockingChangesProvider(otherProfileId).future);
+  return BlockState.fromStatuses(currentBlocked, otherBlocked);
 }
 
 @riverpod

@@ -7,7 +7,7 @@ part of 'chat_more_menu_controller.dart';
 // **************************************************************************
 
 String _$chatMoreMenuControllerHash() =>
-    r'67084351dc901f70b67b26470b8ca11999e6c3d6';
+    r'682cd2b55486712cb85f9491d2362934b79003a8';
 
 /// Copied from Dart SDK
 class _SystemHash {

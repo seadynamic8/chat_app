@@ -3,23 +3,20 @@ import 'package:chat_app/i18n/localizations.dart';
 enum BlockStatus { no, current, other, both }
 
 class BlockState {
-  final BlockStatus status;
+  late final BlockStatus status;
 
   BlockState({required this.status});
 
-  static BlockState fromMap(
-    List<Map<String, dynamic>> blocked, {
-    required String currentProfileId,
-  }) {
-    final status = switch (blocked.length) {
-      0 => BlockStatus.no,
-      2 => BlockStatus.both,
-      1 => blocked.first['blocker_id'] == currentProfileId
-          ? BlockStatus.current
-          : BlockStatus.other,
-      _ => throw Exception('BlockState invalid: more than 2 blocked'),
-    };
-    return BlockState(status: status);
+  BlockState.fromStatuses(bool currentBlocked, bool otherBlocked) {
+    if (currentBlocked && otherBlocked) {
+      status = BlockStatus.both;
+    } else if (currentBlocked && !otherBlocked) {
+      status = BlockStatus.current;
+    } else if (!currentBlocked && otherBlocked) {
+      status = BlockStatus.other;
+    } else {
+      status = BlockStatus.no;
+    }
   }
 
   String? get message {

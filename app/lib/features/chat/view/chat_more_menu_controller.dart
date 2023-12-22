@@ -13,7 +13,7 @@ class ChatMoreMenuController extends _$ChatMoreMenuController {
   @override
   FutureOr<ChatBlockAction> build(String roomId, String otherProfileId) async {
     final blockState =
-        await ref.read(isBlockedByEitherProvider(otherProfileId).future);
+        await ref.watch(blockedByChangesProvider(otherProfileId).future);
 
     return switch (blockState.status) {
       BlockStatus.current || BlockStatus.both => ChatBlockAction.unblock,

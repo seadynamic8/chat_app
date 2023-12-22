@@ -38,7 +38,7 @@ class CallAvailability extends _$CallAvailability with UserOnlineStatus {
 
   Future<CallAvailabilityState?> _getBlockState(String otherProfileId) async {
     final blockState =
-        await ref.watch(isBlockedByEitherProvider(otherProfileId).future);
+        await ref.watch(blockedByChangesProvider(otherProfileId).future);
     if (blockState.status != BlockStatus.no) {
       return CallAvailabilityState(
           status: CallAvailabilityStatus.blocked, data: blockState);

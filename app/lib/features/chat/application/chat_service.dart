@@ -18,9 +18,8 @@ class ChatService {
     required String otherProfileId,
     required String messageText,
   }) async {
-    final blockState = await ref
-        .read(authRepositoryProvider)
-        .isBlockedByEither(otherProfileId);
+    final blockState =
+        await ref.read(blockedByChangesProvider(otherProfileId).future);
 
     if (blockState.status == BlockStatus.no) {
       final currentProfileId = ref.read(currentProfileProvider).id!;
