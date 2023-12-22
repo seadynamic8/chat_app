@@ -9,9 +9,11 @@ class LocalTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.sizeOf(context);
+
     return SizedBox(
-      height: 170,
-      width: 120,
+      height: mediaQuery.height * 0.19,
+      width: mediaQuery.width * 0.30,
       child: VideoTile(participant: localParticipant),
     );
   }
