@@ -17,7 +17,7 @@ class VideoChatMessageBubble extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        // mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -29,55 +29,60 @@ class VideoChatMessageBubble extends StatelessWidget {
               radius: 15,
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(9),
-              boxShadow: const [
-                BoxShadow(color: Colors.black45),
-              ],
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.sizeOf(context).width * 0.45,
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-            child: Column(
-              children: [
-                Text(
-                  message.content,
-                  style: theme.textTheme.bodySmall!.copyWith(
-                    fontSize: 13,
-                    color: Colors.white,
-                    shadows: [
-                      const Shadow(
-                          color: Colors.white,
-                          blurRadius: 1,
-                          offset: Offset(0.2, 0.2)),
-                    ],
-                  ),
-                ),
-                if (message.translation != null)
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4),
-                      boxShadow: const [
-                        BoxShadow(color: Colors.white30),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(9),
+                boxShadow: const [
+                  BoxShadow(color: Colors.black45),
+                ],
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+              child: Column(
+                children: [
+                  Text(
+                    message.content,
+                    style: theme.textTheme.bodySmall!.copyWith(
+                      fontSize: 13,
+                      color: Colors.white,
+                      shadows: [
+                        const Shadow(
+                            color: Colors.white,
+                            blurRadius: 1,
+                            offset: Offset(0.2, 0.2)),
                       ],
                     ),
-                    margin: const EdgeInsets.symmetric(vertical: 2),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-                    child: Text(
-                      message.translation!,
-                      style: theme.textTheme.bodySmall!.copyWith(
-                        fontSize: 13,
-                        color: Colors.white,
-                        shadows: [
-                          const Shadow(
-                              color: Colors.white,
-                              blurRadius: 1,
-                              offset: Offset(0.2, 0.2)),
+                  ),
+                  if (message.translation != null)
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        boxShadow: const [
+                          BoxShadow(color: Colors.white30),
                         ],
                       ),
+                      margin: const EdgeInsets.symmetric(vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 1),
+                      child: Text(
+                        message.translation!,
+                        style: theme.textTheme.bodySmall!.copyWith(
+                          fontSize: 13,
+                          color: Colors.white,
+                          shadows: [
+                            const Shadow(
+                                color: Colors.white,
+                                blurRadius: 1,
+                                offset: Offset(0.2, 0.2)),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           )
         ],
