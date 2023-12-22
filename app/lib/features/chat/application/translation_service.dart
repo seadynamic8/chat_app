@@ -22,9 +22,6 @@ class TranslationService {
         ref.read(currentProfileProvider).language!.languageCode;
     final otherProfileLang = otherProfileLocale.languageCode;
 
-    // Don't translate when both have the same language
-    if (currentProfileLang == otherProfileLang) return null;
-
     return await translateRepository.translate(
         text: messageText,
         toLangCode: currentProfileLang,

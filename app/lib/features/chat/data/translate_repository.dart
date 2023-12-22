@@ -86,7 +86,12 @@ class TranslateRepository {
     // Return null if translation Language is the same as the detectedLang
     if (translation['to'] == detectedLang) return null;
 
-    return translation['text'] as String;
+    final translatedText = translation['text'] as String;
+
+    // Return null if translation is the same as the orignal text
+    if (text == translatedText) return null;
+
+    return translatedText;
   }
 }
 
