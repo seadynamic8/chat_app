@@ -48,7 +48,7 @@ namespace :release do
     system command
   end
 
-  desc "Build appbundle for staging"
+  desc "Build apk for staging"
   task :build_android_stage do
     command = "flutter build apk --obfuscate --split-debug-info=./build_debug_info --dart-define=ENV=stage --dart-define-from-file=encryption_key.json --dart-define-from-file=.adapty.env"
     system command
