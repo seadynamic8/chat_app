@@ -42,17 +42,18 @@ class TabsNavigation extends ConsumerWidget {
           return BottomNavigationBar(
             currentIndex: tabsRouter.activeIndex,
             onTap: tabsRouter.setActiveIndex,
-            showSelectedLabels: false,
-            showUnselectedLabels: false,
+            showSelectedLabels: true,
+            showUnselectedLabels: true,
             selectedItemColor: theme.textTheme.labelMedium!.decorationColor,
             unselectedItemColor: theme.colorScheme.primary,
             items: [
               BottomNavigationBarItem(
                 icon: const Icon(
-                  Icons.people_alt_outlined,
+                  // Icons.people_alt_outlined,
+                  Icons.home_rounded,
                   key: K.exploreTab,
                 ),
-                label: 'Explore'.i18n,
+                label: 'Home'.i18n,
               ),
               BottomNavigationBarItem(
                 icon: unReadMessageCountStream.maybeWhen(

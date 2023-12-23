@@ -40,7 +40,7 @@ class ExploreScreen extends ConsumerWidget {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            title: Text('Explore'.i18n),
+            title: Text('Home'.i18n),
             actions: [
               IconButton(
                 key: K.exploreScreenSearchButton,
