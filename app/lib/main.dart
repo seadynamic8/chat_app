@@ -24,7 +24,7 @@ void main() async {
     anonKey: supabaseKey,
     authFlowType: AuthFlowType.pkce,
     realtimeClientOptions:
-        const RealtimeClientOptions(eventsPerSecond: 2), // Default is 10
+        const RealtimeClientOptions(eventsPerSecond: 10), // Default is 10
   );
 
   await SystemChrome.setPreferredOrientations(
