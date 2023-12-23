@@ -36,7 +36,7 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
     return AppBar(
       title: InkWell(
         child: Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Stack(
               children: [
@@ -51,20 +51,22 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
               ],
             ),
             const SizedBox(width: 15),
-            Text(
-              widget.otherProfile.username!,
-              style: theme.textTheme.labelLarge!.copyWith(
-                fontSize: 15,
+            Expanded(
+              child: Text(
+                widget.otherProfile.username!,
+                style: theme.textTheme.labelLarge!.copyWith(
+                  fontSize: 15,
+                ),
+                overflow: TextOverflow.fade,
+                softWrap: false,
               ),
-              overflow: TextOverflow.fade,
-              softWrap: false,
-              maxLines: 1,
             ),
           ],
         ),
         onTap: () => context.router
             .push(PublicProfileRoute(profileId: widget.otherProfile.id!)),
       ),
+      titleSpacing: 5,
       actions: [
         VideoCallButton(
           buttonType: VideoCallButtonType.chat,
