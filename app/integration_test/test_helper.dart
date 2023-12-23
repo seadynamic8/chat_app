@@ -1,5 +1,4 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/data/current_profile_provider.dart';
 import 'package:chat_app/features/chat/application/chat_service.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/view/chat_more_menu_controller.dart';
@@ -61,7 +60,7 @@ class TestHelper {
     await authRepository.signInWithEmailAndPassword(
         email: email, password: password);
 
-    ProviderContainer().read(currentProfileProvider.notifier).load();
+    ProviderContainer().invalidate(currentUserIdProvider);
     return userId;
   }
 
