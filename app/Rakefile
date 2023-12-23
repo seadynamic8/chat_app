@@ -26,6 +26,12 @@ namespace :dev do
     puts "Command: #{command}\n"
     system command
   end
+
+  desc "Run on S20"
+  task :run_s20 do
+    command = "flutter run -d \"SM G981U\" --dart-define-from-file=encryption_key.json --dart-define-from-file=.adapty.env --dart-define=ENV=stage"
+    system command
+  end
 end
 
 namespace :release do
