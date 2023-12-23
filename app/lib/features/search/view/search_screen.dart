@@ -54,7 +54,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               key: K.searchScreenSearchField,
               controller: _searchController,
               decoration: const InputDecoration(
-                hintText: 'Search....',
+                hintText: 'Search by Username....',
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,
                 suffixIcon: Icon(Icons.search),
