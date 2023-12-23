@@ -18,6 +18,7 @@ class PrivateProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final profileValue = ref.watch(currentProfileStreamProvider);
 
     return I18n(
@@ -45,43 +46,36 @@ class PrivateProfileScreen extends ConsumerWidget {
                 const SizedBox(height: 30),
                 InkWell(
                   key: K.privateProfileInkWellToPublicProfile,
-                  child: Stack(
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: CircleAvatar(
-                          radius: 70,
-                          child: CircleAvatar(
-                            backgroundImage:
-                                const AssetImage(defaultAvatarImage),
-                            foregroundImage: profile.avatarUrl == null
-                                ? null
-                                : NetworkImage(profile.avatarUrl!),
-                            radius: 70,
-                          ),
-                        ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: CircleAvatar(
+                      radius: 70,
+                      child: CircleAvatar(
+                        backgroundImage: const AssetImage(defaultAvatarImage),
+                        foregroundImage: profile.avatarUrl == null
+                            ? null
+                            : NetworkImage(profile.avatarUrl!),
+                        radius: 70,
                       ),
-                      const Positioned(
-                        top: 0,
-                        bottom: 0,
-                        right: 40,
-                        child: Icon(Icons.keyboard_arrow_right),
-                      ),
-                    ],
+                    ),
                   ),
                   onTap: () => context.router
                       .push(PublicProfileRoute(profileId: profile.id!)),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 25),
+
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
+                      // USERNAME
                       Text(
                         profile.username!,
                         textAlign: TextAlign.center,
                       ),
+
+                      // GENDER AND AGE
                       Chip(
                         avatar: Icon(profile.gender == Gender.male
                             ? Icons.male
@@ -92,20 +86,26 @@ class PrivateProfileScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    // COUNTRY FLAG
                     CountryFlag.fromCountryCode(
                       profile.country!,
                       height: 15, // Official aspect ratio is 3:5
                       width: 25,
                     ),
                     const SizedBox(width: 15),
+
+                    // COUNTRY
                     Text(
                       Locale.fromSubtags(countryCode: profile.country)
                           .nativeDisplayCountry,
                     ),
                     const SizedBox(width: 15),
+
+                    // LANGUAGE
                     Text(
                       Locale.fromSubtags(
                               languageCode: profile.language!.languageCode,
@@ -115,6 +115,23 @@ class PrivateProfileScreen extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: 30),
+
+                // SHOW PROFILE BUTTON
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.colorScheme.primary,
+                      foregroundColor: theme.colorScheme.onPrimary,
+                    ),
+                    onPressed: () => context.router
+                        .push(PublicProfileRoute(profileId: profile.id!)),
+                    child: const Text('Show Profile'),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // BIO
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
