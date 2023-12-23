@@ -23,7 +23,7 @@ class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
   final String profileId;
 
   bool isCurrentUser(WidgetRef ref) {
-    return profileId == ref.watch(authRepositoryProvider).currentUserId!;
+    return profileId == ref.watch(currentUserIdProvider)!;
   }
 
   void _joinChatRoom(BuildContext context, WidgetRef ref) async {
