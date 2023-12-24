@@ -26,7 +26,7 @@ class OnlinePresences extends _$OnlinePresences {
   Future<void> updateCurrentUserPresence(OnlineStatus onlineStatus) async {
     final lobbyChannel =
         await ref.read(lobbySubscribedChannelProvider(lobbyChannelName).future);
-    final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
+    final currentUserId = ref.read(currentUserIdProvider)!;
     await lobbyChannel.udpatePresence(currentUserId, onlineStatus);
   }
 }

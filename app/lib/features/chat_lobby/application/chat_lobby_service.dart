@@ -32,7 +32,7 @@ class ChatLobbyService {
     required String otherProfileId,
     required String roomId,
   }) async {
-    final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
+    final currentUserId = ref.read(currentUserIdProvider)!;
     await ref
         .read(chatLobbyRepositoryProvider)
         .addUserToRoom(currentUserId, roomId);

@@ -112,7 +112,7 @@ class ChannelSetupService {
   }
 
   void _paywallInitialize() async {
-    final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
+    final currentUserId = ref.read(currentUserIdProvider)!;
     ref.read(paywallRepositoryProvider).initialize(currentUserId);
   }
 

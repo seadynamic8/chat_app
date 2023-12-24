@@ -80,7 +80,8 @@ class ChatMessagesController extends _$ChatMessagesController {
       items: [...updatedNewMessages, ...oldState.items],
     ));
 
-    final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
+    // final currentUserId = ref.read(authRepositoryProvider).currentUserId!;
+    final currentUserId = ref.read(currentUserIdProvider)!;
     if (newMessage.profileId != currentUserId) {
       ref.read(chatRepositoryProvider).markMessageAsRead(newMessage.id!);
 

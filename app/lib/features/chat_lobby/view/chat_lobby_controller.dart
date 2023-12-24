@@ -16,7 +16,7 @@ class ChatLobbyController extends _$ChatLobbyController {
 
   @override
   FutureOr<PaginationState<Room>> build() async {
-    final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
+    final currentUserId = ref.watch(currentUserIdProvider)!;
     final chatLobbyRepository = ref.watch(chatLobbyRepositoryProvider);
 
     final allRooms = await chatLobbyRepository.getAllRooms(
@@ -33,8 +33,8 @@ class ChatLobbyController extends _$ChatLobbyController {
   void getNextPageOfRooms() async {
     final oldState = await future;
 
-    final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
-    final newRooms = await ref.watch(chatLobbyRepositoryProvider).getAllRooms(
+    final currentUserId = ref.read(currentUserIdProvider)!;
+    final newRooms = await ref.read(chatLobbyRepositoryProvider).getAllRooms(
           currentUserId,
           oldState.nextPage,
           numberOfRoomsPerRequest,

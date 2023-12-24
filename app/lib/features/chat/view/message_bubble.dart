@@ -19,7 +19,7 @@ class MessageBubble extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
+    final currentUserId = ref.watch(currentUserIdProvider)!;
     final isCurrentUser = message.profileId == currentUserId;
 
     final messageBodyItems = [

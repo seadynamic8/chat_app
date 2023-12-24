@@ -25,7 +25,7 @@ class NewestMessageContent extends ConsumerWidget {
   }
 
   bool _messageIsCurrentUser(WidgetRef ref, Message message) {
-    final currentUserId = ref.watch(authRepositoryProvider).currentUserId!;
+    final currentUserId = ref.watch(currentUserIdProvider)!;
     return message.profileId == currentUserId;
   }
 

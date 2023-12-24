@@ -24,7 +24,7 @@ class VideoChatController extends _$VideoChatController {
       });
     });
 
-    final currentProfileId = ref.watch(authRepositoryProvider).currentUserId!;
+    final currentProfileId = ref.watch(currentUserIdProvider)!;
     final profiles = await ref.watch(chatRepositoryProvider).getBothProfiles(
         currentProfileId: currentProfileId, otherProfileId: otherProfileId);
 
