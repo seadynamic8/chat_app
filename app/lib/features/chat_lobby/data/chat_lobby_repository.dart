@@ -3,6 +3,7 @@ import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat_lobby/domain/chat_lobby_item_state.dart';
 import 'package:chat_app/features/chat_lobby/domain/room.dart';
+import 'package:chat_app/utils/logger.dart';
 import 'package:chat_app/utils/pagination.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -19,50 +20,71 @@ class ChatLobbyRepository {
     required String currentProfileId,
     required String otherProfileId,
   }) async {
-    final room = await supabase
-        .from('rooms')
-        .select<List<Map<String, dynamic>>>(
-            'id, c1:chat_users!inner(), c2:chat_users!inner()')
-        .eq('c1.profile_id', currentProfileId)
-        .eq('c2.profile_id', otherProfileId);
+    try {
+      final room = await supabase
+          .from('rooms')
+          .select<List<Map<String, dynamic>>>(
+              'id, c1:chat_users!inner(), c2:chat_users!inner()')
+          .eq('c1.profile_id', currentProfileId)
+          .eq('c2.profile_id', otherProfileId);
 
-    if (room.isEmpty) return null;
+      if (room.isEmpty) return null;
 
-    return Room.fromMap(room.first);
+      return Room.fromMap(room.first);
+    } catch (error, st) {
+      await logError('findRoomByProfiles()', error, st);
+      rethrow;
+    }
   }
 
   // * Create Room
   Future<Room> createRoom() async {
-    final roomResponse = await supabase
-        .from('rooms')
-        .insert({})
-        .select<Map<String, dynamic>>('id')
-        .single();
+    try {
+      final roomResponse = await supabase
+          .from('rooms')
+          .insert({})
+          .select<Map<String, dynamic>>('id')
+          .single();
 
-    return Room.fromMap(roomResponse);
+      return Room.fromMap(roomResponse);
+    } catch (error, st) {
+      await logError('createRoom()', error, st);
+      rethrow;
+    }
   }
 
   Future<void> addUserToRoom(String profileId, String roomId) async {
-    await supabase
-        .from('chat_users')
-        .insert({'profile_id': profileId, 'room_id': roomId});
+    try {
+      await supabase
+          .from('chat_users')
+          .insert({'profile_id': profileId, 'room_id': roomId});
+    } catch (error, st) {
+      await logError('addUserToRoom()', error, st);
+      rethrow;
+    }
   }
 
   // * Rooms Listing for user
 
   Future<List<Room>> getAllRooms(
       String currentUserId, int page, int range) async {
-    final (from: from, to: to) = getPagination(page: page, defaultRange: range);
+    try {
+      final (from: from, to: to) =
+          getPagination(page: page, defaultRange: range);
 
-    final roomsList = await supabase
-        .from('rooms')
-        .select<List<Map<String, dynamic>>>(
-            'id, chat_users!inner (), messages ()')
-        .eq('chat_users.profile_id', currentUserId)
-        .range(from, to)
-        .order('created_at', foreignTable: 'messages');
+      final roomsList = await supabase
+          .from('rooms')
+          .select<List<Map<String, dynamic>>>(
+              'id, chat_users!inner (), messages ()')
+          .eq('chat_users.profile_id', currentUserId)
+          .range(from, to)
+          .order('created_at', foreignTable: 'messages');
 
-    return roomsList.map((room) => Room.fromMap(room)).toList();
+      return roomsList.map((room) => Room.fromMap(room)).toList();
+    } catch (error, st) {
+      await logError('getAllRooms()', error, st);
+      rethrow;
+    }
   }
 
   // * Room Detail for each room
@@ -71,29 +93,34 @@ class ChatLobbyRepository {
     String roomId,
     String currentProfileId,
   ) async {
-    final chatLobbyItemResponse = await supabase
-        .from('rooms')
-        .select<List<Map<String, dynamic>>>('''
+    try {
+      final chatLobbyItemResponse = await supabase
+          .from('rooms')
+          .select<List<Map<String, dynamic>>>('''
           messages (id, profile_id, content, translation, type, created_at),
           profiles!inner (id, username, avatar_url, language)
         ''')
-        .eq('id', roomId)
-        .neq('profiles.id', currentProfileId)
-        .order('created_at', foreignTable: 'messages', ascending: false)
-        .limit(1, foreignTable: 'messages');
+          .eq('id', roomId)
+          .neq('profiles.id', currentProfileId)
+          .order('created_at', foreignTable: 'messages', ascending: false)
+          .limit(1, foreignTable: 'messages');
 
-    if (chatLobbyItemResponse.isEmpty) {
-      throw Exception(
-          'chatLobbyItemResponse is empty, roomId: $roomId, currentProfileId: $currentProfileId');
+      if (chatLobbyItemResponse.isEmpty) {
+        throw Exception(
+            'chatLobbyItemResponse is empty, roomId: $roomId, currentProfileId: $currentProfileId');
+      }
+      final chatLobbyItem = chatLobbyItemResponse.first;
+
+      return ChatLobbyItemState(
+        otherProfile: Profile.fromMap(chatLobbyItem['profiles'].first),
+        newestMessage: chatLobbyItem['messages'].isNotEmpty
+            ? Message.fromMap(chatLobbyItem['messages'].first)
+            : null,
+      );
+    } catch (error, st) {
+      await logError('getChatLobbyItemState()', error, st);
+      rethrow;
     }
-    final chatLobbyItem = chatLobbyItemResponse.first;
-
-    return ChatLobbyItemState(
-      otherProfile: Profile.fromMap(chatLobbyItem['profiles'].first),
-      newestMessage: chatLobbyItem['messages'].isNotEmpty
-          ? Message.fromMap(chatLobbyItem['messages'].first)
-          : null,
-    );
   }
 
   // * Watch for new room

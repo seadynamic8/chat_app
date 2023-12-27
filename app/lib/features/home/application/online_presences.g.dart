@@ -161,7 +161,7 @@ class _LobbySubscribedChannelProviderElement
       (origin as LobbySubscribedChannelProvider).channelName;
 }
 
-String _$onlinePresencesHash() => r'ac88018600331e807607e66d2b937ed812e870bb';
+String _$onlinePresencesHash() => r'f497dcb9a6ad379dea695e6970b170fbe23641b7';
 
 /// See also [OnlinePresences].
 @ProviderFor(OnlinePresences)

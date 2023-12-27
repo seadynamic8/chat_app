@@ -6,7 +6,7 @@ part of 'call_availability_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$callAvailabilityHash() => r'9c7134feb5072c775215ffae0cb0683b6f24a48e';
+String _$callAvailabilityHash() => r'5ab0e60506ea0f0542354bd8440662d0622ecf01';
 
 /// Copied from Dart SDK
 class _SystemHash {

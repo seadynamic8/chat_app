@@ -4,6 +4,7 @@ import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/video/data/video_settings_provider.dart';
 import 'package:chat_app/features/video/domain/device_info.dart';
 import 'package:chat_app/features/video/domain/video_participant.dart';
+import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:videosdk/videosdk.dart' hide Stream;
@@ -58,7 +59,12 @@ class VideoRepository {
   // * Join Call
 
   Future<void> join() async {
-    await videoRoom.join();
+    try {
+      await videoRoom.join();
+    } catch (error, st) {
+      await logError('join()', error, st);
+      throw Exception('Unable to join video call'.i18n);
+    }
   }
 
   // * Events
@@ -96,36 +102,67 @@ class VideoRepository {
   // * End call
 
   // This just removes the current participant from the video room.
-  void leave() {
-    videoRoom.leave();
+  void leave() async {
+    try {
+      videoRoom.leave();
+    } catch (error, st) {
+      await logError('leave()', error, st);
+    }
   }
 
   // * This ends the whole call, all participants are forced to leave.
   // * Usally what we want since, otherwise the room and stream stays open.
-  void end() {
-    videoRoom.end();
+  void end() async {
+    try {
+      videoRoom.end();
+    } catch (error, st) {
+      await logError('end()', error, st);
+    }
   }
 
   // * Actions
 
   Future<void> muteMic() async {
     await videoRoom.muteMic();
+    try {} catch (error, st) {
+      await logError('muteMic()', error, st);
+      throw Exception('Unable to mute microphone'.i18n);
+    }
   }
 
   Future<void> unmuteMic() async {
-    await videoRoom.unmuteMic();
+    try {
+      await videoRoom.unmuteMic();
+    } catch (error, st) {
+      await logError('unmuteMic()', error, st);
+      throw Exception('Unable to unmute microphone'.i18n);
+    }
   }
 
   Future<void> disableCam() async {
     await videoRoom.disableCam();
+    try {} catch (error, st) {
+      await logError('disableCam()', error, st);
+      throw Exception('Something went wrong when disabling the camera'.i18n);
+    }
   }
 
   Future<void> enableCam() async {
-    await videoRoom.enableCam();
+    try {
+      await videoRoom.enableCam();
+    } catch (error, st) {
+      await logError('enableCam()', error, st);
+      throw Exception('Something went wrong when enabling the camera'.i18n);
+    }
   }
 
   Future<void> changeCam(String deviceId) async {
-    await videoRoom.changeCam(deviceId);
+    try {
+      await videoRoom.changeCam(deviceId);
+    } catch (error, st) {
+      await logError('changeCam()', error, st);
+      throw Exception('Something went wrong when changing the camera'.i18n);
+    }
   }
 }
 

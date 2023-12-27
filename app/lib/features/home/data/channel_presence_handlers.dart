@@ -74,7 +74,7 @@ extension ChannelPresenceHandlers on ChannelRepository {
 
     channel.subscribe((status, [ref]) async {
       if (status == 'SUBSCRIBED') {
-        udpatePresence(currentUserId, OnlineStatus.online);
+        await updatePresence(currentUserId, OnlineStatus.online);
         logger.i('${channel.subTopic} | $currentUserId | Subscribed');
 
         completer.complete();
@@ -85,11 +85,16 @@ extension ChannelPresenceHandlers on ChannelRepository {
     return completer.future;
   }
 
-  Future<void> udpatePresence(String currentUserId, OnlineStatus status) async {
-    await channel.track({
-      'profileId': currentUserId,
-      'status': status.name,
-      'enteredAt': DateTime.now().toIso8601String(),
-    });
+  Future<void> updatePresence(String currentUserId, OnlineStatus status) async {
+    try {
+      await channel.track({
+        'profileId': currentUserId,
+        'status': status.name,
+        'enteredAt': DateTime.now().toIso8601String(),
+      });
+    } catch (error, st) {
+      await logError('updatePresence()', error, st);
+      rethrow;
+    }
   }
 }

@@ -5,6 +5,8 @@ import 'dart:ui';
 import 'package:chat_app/features/auth/domain/block_state.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/auth/domain/user_access.dart';
+import 'package:chat_app/i18n/localizations.dart';
+import 'package:chat_app/utils/logger.dart';
 import 'package:chat_app/utils/username_generate_data.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,13 +40,18 @@ class AuthRepository {
   String? get currentUserId => supabase.auth.currentUser?.id;
 
   Future<Profile> getProfile(String profileId) async {
-    final profileUser = await supabase
-        .from('profiles')
-        .select<Map<String, dynamic>>('*')
-        .eq('id', profileId)
-        .single();
+    try {
+      final profileUser = await supabase
+          .from('profiles')
+          .select<Map<String, dynamic>>('*')
+          .eq('id', profileId)
+          .single();
 
-    return Profile.fromMap(profileUser);
+      return Profile.fromMap(profileUser);
+    } catch (error, st) {
+      await logError('getProfile()', error, st);
+      throw Exception('Unable to get profile'.i18n);
+    }
   }
 
   Stream<Profile> watchProfile(String profileId) {
@@ -78,10 +85,15 @@ class AuthRepository {
   }
 
   Future<void> updateProfile(Profile profile) async {
-    await supabase
-        .from('profiles')
-        .update(profile.toMap())
-        .eq('id', currentUserId);
+    try {
+      await supabase
+          .from('profiles')
+          .update(profile.toMap())
+          .eq('id', currentUserId);
+    } catch (error, st) {
+      await logError('updateProfile()', error, st);
+      throw Exception('Unable to update profile'.i18n);
+    }
   }
 
   // The custom imagePath below is not the same as returned by API call
@@ -90,9 +102,14 @@ class AuthRepository {
     final extension = p.extension(image.path);
     final imagePath =
         '$currentUserId/images/avatar/${DateTime.timestamp()}$extension';
-    // Returns image path on server from root, and not the same as the custom imagePath
-    await supabase.storage.from('media').upload(imagePath, image);
-    return imagePath;
+    try {
+      // Returns image path on server from root, and not the same as the custom imagePath
+      await supabase.storage.from('media').upload(imagePath, image);
+      return imagePath;
+    } catch (error, st) {
+      await logError('storeAvatar()', error, st);
+      throw Exception('Unable to save avatar'.i18n);
+    }
   }
 
   String getAvatarPublicURL(String imagePath) {
@@ -105,10 +122,15 @@ class AuthRepository {
     required String password,
     // required String username,
   }) async {
-    final response =
-        await supabase.auth.signUp(email: email, password: password);
+    try {
+      final response =
+          await supabase.auth.signUp(email: email, password: password);
 
-    return response.user != null;
+      return response.user != null;
+    } catch (error, st) {
+      await logError('signUp()', error, st);
+      rethrow;
+    }
   }
 
   // Resend only for signup, email change, or phone change
@@ -117,7 +139,12 @@ class AuthRepository {
     required AuthOtpType authOtpType,
     required String email,
   }) async {
-    await supabase.auth.resend(type: authOtpType.otpType, email: email);
+    try {
+      await supabase.auth.resend(type: authOtpType.otpType, email: email);
+    } catch (error, st) {
+      await logError('resendOTP()', error, st);
+      rethrow;
+    }
   }
 
   // Use either email or phone, not both
@@ -127,27 +154,37 @@ class AuthRepository {
     required String pinCode,
     required AuthOtpType authOtpType,
   }) async {
-    final verifyResponse = await supabase.auth.verifyOTP(
-      email: email,
-      phone: phone,
-      token: pinCode,
-      type: authOtpType.otpType,
-    );
+    try {
+      final verifyResponse = await supabase.auth.verifyOTP(
+        email: email,
+        phone: phone,
+        token: pinCode,
+        type: authOtpType.otpType,
+      );
 
-    if (verifyResponse.user == null) return false;
+      if (verifyResponse.user == null) return false;
 
-    if (authOtpType == AuthOtpType.signup) {
-      return await _createProfileWithLanguageAndUniqueUsername(
-          verifyResponse.user!.id);
+      if (authOtpType == AuthOtpType.signup) {
+        return await _createProfileWithLanguageAndUniqueUsername(
+            verifyResponse.user!.id);
+      }
+      return true;
+    } catch (error, st) {
+      await logError('verifyOTP()', error, st);
+      rethrow;
     }
-    return true;
   }
 
   // Sends a reset password email to user
   // To be used with verifyOTP (type recovery)
   // and updateUser after they verify the code, they can update the password
   Future<void> resetPassword(String email) async {
-    await supabase.auth.resetPasswordForEmail(email);
+    try {
+      await supabase.auth.resetPasswordForEmail(email);
+    } catch (error, st) {
+      await logError('resetPassword()', error, st);
+      rethrow;
+    }
   }
 
   Future<void> updateUser({
@@ -155,11 +192,16 @@ class AuthRepository {
     String? password,
     String? pinCode,
   }) async {
-    await supabase.auth.updateUser(UserAttributes(
-      email: email,
-      password: password,
-      nonce: pinCode,
-    ));
+    try {
+      await supabase.auth.updateUser(UserAttributes(
+        email: email,
+        password: password,
+        nonce: pinCode,
+      ));
+    } catch (error, st) {
+      await logError('updateUser()', error, st);
+      rethrow;
+    }
   }
 
   // Login
@@ -167,25 +209,40 @@ class AuthRepository {
     required String email,
     required String password,
   }) async {
-    final response = await supabase.auth
-        .signInWithPassword(email: email, password: password);
+    try {
+      final response = await supabase.auth
+          .signInWithPassword(email: email, password: password);
 
-    return response.user != null;
+      return response.user != null;
+    } catch (error, st) {
+      await logError('signInWithEmailAndPassword()', error, st);
+      rethrow;
+    }
   }
 
   Future<void> signOut() async {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch (error, st) {
+      await logError('signOut()', error, st);
+      rethrow;
+    }
   }
 
   Future<String> generateJWTToken() async {
-    final jwtResponse = await supabase.functions
-        .invoke('jwt_token', responseType: ResponseType.text);
+    try {
+      final jwtResponse = await supabase.functions
+          .invoke('jwt_token', responseType: ResponseType.text);
 
-    if (jwtResponse.status != null && jwtResponse.status! > 400) {
-      throw Exception(
-          'JWT Token failed to be retrieved, Response Code: ${jwtResponse.status}');
+      if (jwtResponse.status != null && jwtResponse.status! > 400) {
+        throw Exception(
+            'JWT Token failed to be retrieved, Response Code: ${jwtResponse.status}');
+      }
+      return (jwtResponse.data as String).replaceAll('"', '');
+    } catch (error, st) {
+      await logError('generateJWTToken()', error, st);
+      rethrow;
     }
-    return (jwtResponse.data as String).replaceAll('"', '');
   }
 
   // * Blocked Users
@@ -235,50 +292,61 @@ class AuthRepository {
 
   Future<void> updateAccessLevel(
       String profileId, UserAccess userAccess) async {
-    await supabase
-        .from('access_levels')
-        .update(userAccess.toMap())
-        .eq('id', profileId);
+    try {
+      await supabase
+          .from('access_levels')
+          .update(userAccess.toMap())
+          .eq('id', profileId);
+    } catch (error, st) {
+      await logError('updateAccessLevel()', error, st);
+      throw Exception('Something went wrong with updating your subscription');
+    }
   }
 
   // * Private methods
 
   Future<bool> _createProfileWithLanguageAndUniqueUsername(
       String currentUserId) async {
-    var success = false;
-    const retryTimes = 3;
-    var currentTry = 1;
+    try {
+      var success = false;
+      const retryTimes = 3;
+      var currentTry = 1;
 
-    Map<String, dynamic>? userResponse;
+      Map<String, dynamic>? userResponse;
 
-    // Loop until we get a successful generated profile with unique username
-    while (success == false && currentTry <= retryTimes) {
-      final usernameGen = UsernameGen()
-        ..setNames(usernameNouns)
-        ..setSeperator('_')
-        ..setAdjectives(usernameAdjectives);
-      final username = usernameGen.generate();
+      // Loop until we get a successful generated profile with unique username
+      while (success == false && currentTry <= retryTimes) {
+        final usernameGen = UsernameGen()
+          ..setNames(usernameNouns)
+          ..setSeperator('_')
+          ..setAdjectives(usernameAdjectives);
+        final username = usernameGen.generate();
 
-      userResponse = await supabase
-          .from('profiles')
-          .insert({
-            'id': currentUserId,
-            'username': username,
-            'language': Locale(I18n.locale.languageCode).toString(),
-          })
-          .select<Map<String, dynamic>>()
-          .single();
+        userResponse = await supabase
+            .from('profiles')
+            .insert({
+              'id': currentUserId,
+              'username': username,
+              'language': Locale(I18n.locale.languageCode).toString(),
+            })
+            .select<Map<String, dynamic>>()
+            .single();
 
-      if (userResponse.isEmpty) {
-        currentTry += 1;
-      } else {
-        success = true;
+        if (userResponse.isEmpty) {
+          currentTry += 1;
+        } else {
+          success = true;
+        }
       }
+      if (userResponse == null) {
+        throw Exception('Failed to generate profile with unique username');
+      }
+      return true;
+    } catch (error, st) {
+      await logError(
+          '_createProfileWithLanguageAndUniqueUsername()', error, st);
+      rethrow;
     }
-    if (userResponse == null) {
-      throw Exception('Failed to generate profile with unique username');
-    }
-    return true;
   }
 }
 

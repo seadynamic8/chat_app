@@ -18,6 +18,7 @@ class ChannelSetupService {
   }
 
   final Ref ref;
+  final logger = getLogger('ChannelSetupService');
 
   void _init() {
     _listenToAppLifecycleChanges();
@@ -35,7 +36,7 @@ class ChannelSetupService {
               _refreshCurrentUserId();
               await setupLobbyChannel();
               await setupUserChannel();
-              _paywallInitialize();
+              await _paywallInitialize();
 
             // Necessary to reload after password reset
             case AuthChangeEvent.userUpdated:
@@ -53,94 +54,124 @@ class ChannelSetupService {
 
   // This is here because while supabase may signout/signin, our app (and riverpod)
   // are still active, so it's still holding on to old currentUserId
-  Future<void> _refreshCurrentUserId() async {
+  void _refreshCurrentUserId() {
     ref.invalidate(currentUserIdProvider);
   }
 
   // Join lobby channel on startup, to notify others that we have signed on
   Future<void> setupLobbyChannel() async {
-    final isLoggedIn = ref.read(authRepositoryProvider).currentSession != null;
-    if (!isLoggedIn) return;
+    try {
+      final isLoggedIn =
+          ref.read(authRepositoryProvider).currentSession != null;
+      if (!isLoggedIn) return;
 
-    final lobbyChannel = await ref
-        .refresh(lobbySubscribedChannelProvider(lobbyChannelName).future);
-    final updateHandler =
-        ref.read(onlinePresencesProvider.notifier).updateAllPresences;
-    lobbyChannel.onUpdate(updateHandler);
+      final lobbyChannel = await ref
+          .refresh(lobbySubscribedChannelProvider(lobbyChannelName).future);
+      final updateHandler =
+          ref.read(onlinePresencesProvider.notifier).updateAllPresences;
+      lobbyChannel.onUpdate(updateHandler);
+    } catch (error, st) {
+      await logError('setupLobbyChannel()', error, st);
+    }
   }
 
   Future<void> closeLobbyChannel() async {
-    // Unsubscribe from the channel
-    final lobbyChannel =
-        await ref.read(lobbySubscribedChannelProvider(lobbyChannelName).future);
-    await lobbyChannel.close();
+    try {
+      // Unsubscribe from the channel
+      final lobbyChannel = await ref
+          .read(lobbySubscribedChannelProvider(lobbyChannelName).future);
+      await lobbyChannel.close();
+    } catch (error, st) {
+      await logError('closeLobbyChannel()', error, st);
+    }
   }
 
   Future<void> setupUserChannel() async {
-    final isLoggedIn = ref.read(authRepositoryProvider).currentSession != null;
-    if (!isLoggedIn) return;
+    try {
+      final isLoggedIn =
+          ref.read(authRepositoryProvider).currentSession != null;
+      if (!isLoggedIn) return;
 
-    final currentUserId = ref.read(currentUserIdProvider)!;
+      final currentUserId = ref.read(currentUserIdProvider)!;
 
-    final myChannel = ref.refresh(channelRepositoryProvider(currentUserId));
-    await myChannel.subscribed();
+      final myChannel = ref.refresh(channelRepositoryProvider(currentUserId));
+      await myChannel.subscribed();
 
-    // Interesting, here, don't need to delay after subscribe to add callback handlers
+      // Interesting, here, don't need to delay after subscribe to add callback handlers
 
-    final callRequestController =
-        ref.read(callRequestControllerProvider.notifier);
+      final callRequestController =
+          ref.read(callRequestControllerProvider.notifier);
 
-    // Callee receives
-    myChannel.on('new_call', callRequestController.onNewCall);
-    myChannel.on('cancel_call', callRequestController.onCancelCall);
+      // Callee receives
+      myChannel.on('new_call', callRequestController.onNewCall);
+      myChannel.on('cancel_call', callRequestController.onCancelCall);
 
-    // Caller receives
-    myChannel.on('accept_call', callRequestController.onAcceptCall);
-    myChannel.on('reject_call', callRequestController.onRejectCall);
+      // Caller receives
+      myChannel.on('accept_call', callRequestController.onAcceptCall);
+      myChannel.on('reject_call', callRequestController.onRejectCall);
 
-    // Call ended
-    myChannel.on('end_call', callRequestController.onEndCall);
+      // Call ended
+      myChannel.on('end_call', callRequestController.onEndCall);
+    } catch (error, st) {
+      await logError('setupUserChannel()', error, st);
+    }
   }
 
   Future<void> closeUserChannel() async {
-    final currentProfileId = ref.read(currentUserIdProvider);
+    try {
+      final currentProfileId = ref.read(currentUserIdProvider);
 
-    if (currentProfileId == null) return;
+      if (currentProfileId == null) return;
 
-    final myChannel = ref.read(channelRepositoryProvider(currentProfileId));
-    await myChannel.close();
+      final myChannel = ref.read(channelRepositoryProvider(currentProfileId));
+      await myChannel.close();
+    } catch (error, st) {
+      await logError('closeUserChannel()', error, st);
+    }
   }
 
-  void _paywallInitialize() async {
-    final currentUserId = ref.read(currentUserIdProvider)!;
-    ref.read(paywallRepositoryProvider).initialize(currentUserId);
+  Future<void> _paywallInitialize() async {
+    try {
+      final currentUserId = ref.read(currentUserIdProvider)!;
+      await ref.read(paywallRepositoryProvider).initialize(currentUserId);
+    } catch (error, st) {
+      await logError('_paywallInitialize()', error, st);
+    }
   }
 
   Future<void> _paywallLogut() async {
-    await ref.read(paywallRepositoryProvider).paywallLogout();
+    try {
+      await ref.read(paywallRepositoryProvider).paywallLogout();
+    } catch (error, st) {
+      await logError('_paywallLogout()', error, st);
+    }
   }
 
   void _listenToAppLifecycleChanges() {
     AppLifecycleListener(onStateChange: _onStateChanged);
   }
 
-  void _onStateChanged(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.paused:
-        logger.i('appState: paused');
-        closeLobbyChannel();
-        closeUserChannel();
-      case AppLifecycleState.resumed:
-        logger.i('appState: resumed');
-        setupLobbyChannel();
-        setupUserChannel();
-      case AppLifecycleState.inactive:
-        logger.t('appState: inactive');
-      case AppLifecycleState.detached:
-        logger.t('appState: detached');
-      case AppLifecycleState.hidden:
-        logger.t('appState: hidden');
-      default:
+  void _onStateChanged(AppLifecycleState state) async {
+    try {
+      switch (state) {
+        case AppLifecycleState.paused:
+          logger.i('appState: paused');
+          await closeLobbyChannel();
+          await closeUserChannel();
+        case AppLifecycleState.resumed:
+          logger.i('appState: resumed');
+          await setupLobbyChannel();
+          await setupUserChannel();
+        case AppLifecycleState.inactive:
+          logger.t('appState: inactive');
+        case AppLifecycleState.detached:
+          logger.t('appState: detached');
+        case AppLifecycleState.hidden:
+          logger.t('appState: hidden');
+        default:
+      }
+    } catch (error, st) {
+      await logError('_onStateChanged()', error, st);
     }
   }
 }

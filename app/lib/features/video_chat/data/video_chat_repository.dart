@@ -1,6 +1,8 @@
 import 'package:chat_app/features/video/data/video_repository.dart';
 import 'package:chat_app/features/video/data/video_settings_provider.dart';
 import 'package:chat_app/features/video_chat/domain/video_chat_message.dart';
+import 'package:chat_app/i18n/localizations.dart';
+import 'package:chat_app/utils/logger.dart';
 import 'package:videosdk/videosdk.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -16,29 +18,42 @@ class VideoChatRepository {
     required String message,
     Map<String, dynamic> payload = const {},
   }) async {
-    videoRoom.pubSub.publish(
-      videoRoomId,
-      message,
-      // Option to persist messages for later participants
-      const PubSubPublishOptions(persist: true),
-      payload,
-    );
+    try {
+      videoRoom.pubSub.publish(
+        videoRoomId,
+        message,
+        // Option to persist messages for later participants
+        const PubSubPublishOptions(persist: true),
+        payload,
+      );
+    } catch (error, st) {
+      await logError('send()', error, st);
+      throw Exception('Something went wrong with sending message'.i18n);
+    }
   }
 
   Future<void> subscribe(
     dynamic Function(VideoChatMessage videoChatMessage) callback,
   ) async {
-    videoRoom.pubSub.subscribe(videoRoomId, (PubSubMessage psMessage) {
-      callback(VideoChatMessage(psMessage: psMessage));
-    });
+    try {
+      videoRoom.pubSub.subscribe(videoRoomId, (PubSubMessage psMessage) {
+        callback(VideoChatMessage(psMessage: psMessage));
+      });
+    } catch (error, st) {
+      await logError('subscribe()', error, st);
+    }
   }
 
   Future<void> unsubscribe(
     dynamic Function(VideoChatMessage videoChatMessage) callback,
   ) async {
-    videoRoom.pubSub.unsubscribe(videoRoomId, (PubSubMessage psMessage) {
-      callback(VideoChatMessage(psMessage: psMessage));
-    });
+    try {
+      videoRoom.pubSub.unsubscribe(videoRoomId, (PubSubMessage psMessage) {
+        callback(VideoChatMessage(psMessage: psMessage));
+      });
+    } catch (error, st) {
+      await logError('unsubscribe()', error, st);
+    }
   }
 }
 

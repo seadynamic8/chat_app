@@ -8,26 +8,26 @@ part 'paywall_repository.g.dart';
 class PaywallRepository {
   final adapty = Adapty();
 
-  void initialize(String currentUserId) {
+  Future<void> initialize(String currentUserId) async {
     try {
-      adapty.setLogLevel(AdaptyLogLevel.info);
+      await adapty.setLogLevel(AdaptyLogLevel.info);
       adapty.activate();
-      adapty.identify(currentUserId);
-    } on AdaptyError catch (adaptyError) {
-      logger.e('AdaptyError initialize(): $adaptyError');
-    } catch (error) {
-      logger.e('PaywallRepo initialize() error: $error');
+      await adapty.identify(currentUserId);
+    } on AdaptyError catch (adaptyError, st) {
+      await logError('AdaptyError initialize(): $adaptyError', adaptyError, st);
+    } catch (error, st) {
+      await logError('initialize()', error, st);
     }
   }
 
   Future<AdaptyProfile> getProfile() async {
     try {
       return await adapty.getProfile();
-    } on AdaptyError catch (adaptyError) {
-      logger.e('AdaptyError getProfile(): $adaptyError');
+    } on AdaptyError catch (adaptyError, st) {
+      await logError('AdaptyError getProfile(): $adaptyError', adaptyError, st);
       rethrow;
-    } catch (error) {
-      logger.e('PaywallRepo getProfile() error: $error');
+    } catch (error, st) {
+      await logError('getProfile()', error, st);
       rethrow;
     }
   }
@@ -35,11 +35,11 @@ class PaywallRepository {
   Future<AdaptyPaywall> getPaywall() async {
     try {
       return await adapty.getPaywall(id: 'main', locale: 'en');
-    } on AdaptyError catch (adaptyError) {
-      logger.e('AdaptyError getPaywall(): $adaptyError');
+    } on AdaptyError catch (adaptyError, st) {
+      await logError('AdaptyError getPaywall(): $adaptyError', adaptyError, st);
       rethrow;
-    } catch (error) {
-      logger.e('PaywallRepo getPaywall() error: $error');
+    } catch (error, st) {
+      await logError('getPaywall()', error, st);
       rethrow;
     }
   }
@@ -50,11 +50,12 @@ class PaywallRepository {
       return paywallProducts
           .map((paywallProduct) => Product(adaptyProduct: paywallProduct))
           .toList();
-    } on AdaptyError catch (adaptyError) {
-      logger.e('AdaptyError getPaywallProducts(): $adaptyError');
+    } on AdaptyError catch (adaptyError, st) {
+      await logError(
+          'AdaptyError getPaywallProducts(): $adaptyError', adaptyError, st);
       rethrow;
-    } catch (error) {
-      logger.e('PaywallRepo getPaywallProducts() error: $error');
+    } catch (error, st) {
+      await logError('getPaywallProducts()', error, st);
       rethrow;
     }
   }
@@ -65,11 +66,12 @@ class PaywallRepository {
   Future<void> makePurchase(Product product) async {
     try {
       await adapty.makePurchase(product: product.adaptyProduct);
-    } on AdaptyError catch (adaptyError) {
-      logger.w('AdaptyError makePurchase(): $adaptyError');
+    } on AdaptyError catch (adaptyError, st) {
+      logger.w('AdaptyError makePurchase(): $adaptyError',
+          error: adaptyError, stackTrace: st);
       rethrow;
-    } catch (error) {
-      logger.e('PaywallRepo makePurchase() error: $error');
+    } catch (error, st) {
+      await logError('makePurchase()', error, st);
       rethrow;
     }
   }
@@ -77,10 +79,11 @@ class PaywallRepository {
   Future<void> paywallLogout() async {
     try {
       await adapty.logout();
-    } on AdaptyError catch (adaptyError) {
-      logger.e('AdaptyError paywallLogout(): $adaptyError');
-    } catch (error) {
-      logger.e('PaywallRepo paywallLogout() error: $error');
+    } on AdaptyError catch (adaptyError, st) {
+      await logError(
+          'AdaptyError paywallLogout(): $adaptyError', adaptyError, st);
+    } catch (error, st) {
+      await logError('paywallLogout()', error, st);
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:chat_app/env/env.dart';
 import 'package:chat_app/env/environment.dart';
+import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/utils/dio_provider.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:dio/dio.dart';
@@ -43,55 +44,59 @@ class TranslateRepository {
       {'Text': text}
     ];
 
-    late Response<List<dynamic>> response;
-
     try {
-      response = await dio.post<List<dynamic>>(
+      final response = await dio.post<List<dynamic>>(
         '$baseUrl/translate',
         options: options,
         queryParameters: queryParams,
         data: bodyData,
       );
+
+      // Sample response
+      // response: [{translations: [{text: Hola, to: es}]}]
+
+      if (response.data == null) return null;
+
+      final responseData = response.data![0] as Map<String, dynamic>;
+
+      final detectedLang = responseData.containsKey('detectedLanguage')
+          ? responseData['detectedLanguage']['language']
+          : null;
+
+      final translations = responseData['translations'] as List<dynamic>;
+      // We would try to match the 'to' to the langCode, but sometimes they are different.
+      // Ex: Ours (no), Theirs (nb)
+      // So since we ask for one translation, the first is fine
+      final translation = translations[0];
+
+      // Return null if translation Language is the same as the detectedLang
+      if (translation['to'] == detectedLang) return null;
+
+      final translatedText = translation['text'] as String;
+
+      // Return null if translation is the same as the orignal text
+      if (text == translatedText) return null;
+
+      return translatedText;
     } on DioException catch (e) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
       if (e.response != null) {
-        logger.e('Translate Error Data: ${e.response!.data}');
-        logger.e(
-            'Translate Error request options: ${e.response!.requestOptions.headers}');
+        await logError(
+            'translate(): Data: ${e.response!.data}', e, e.stackTrace);
+        await logError(
+            'translate(): Request options: ${e.response!.requestOptions.headers}',
+            e,
+            e.stackTrace);
       } else {
-        logger.e('Translate Error message: ${e.message}',
-            stackTrace: e.stackTrace);
+        await logError(
+            'translate(): Error message: ${e.message}', e, e.stackTrace);
       }
-      throw Exception('Translate: Failed to retrieve translate: ${e.message}');
+      rethrow;
+    } catch (error, st) {
+      await logError('translate()', error, st);
+      throw Exception('Unable to translate message'.i18n);
     }
-
-    // Sample response
-    // response: [{translations: [{text: Hola, to: es}]}]
-
-    if (response.data == null) return null;
-
-    final responseData = response.data![0] as Map<String, dynamic>;
-
-    final detectedLang = responseData.containsKey('detectedLanguage')
-        ? responseData['detectedLanguage']['language']
-        : null;
-
-    final translations = responseData['translations'] as List<dynamic>;
-    // We would try to match the 'to' to the langCode, but sometimes they are different.
-    // Ex: Ours (no), Theirs (nb)
-    // So since we ask for one translation, the first is fine
-    final translation = translations[0];
-
-    // Return null if translation Language is the same as the detectedLang
-    if (translation['to'] == detectedLang) return null;
-
-    final translatedText = translation['text'] as String;
-
-    // Return null if translation is the same as the orignal text
-    if (text == translatedText) return null;
-
-    return translatedText;
   }
 }
 

@@ -33,13 +33,18 @@ class ChannelRepository {
     required ref,
     void Function(List<OnlineState> onlineStates)? updateCallback,
   }) async {
-    final channelRepository = ChannelRepository(
-        supabase: supabase,
-        channelName: channelName,
-        ref: ref,
-        updateCallback: updateCallback);
-    await channelRepository.subscribed();
-    return channelRepository;
+    try {
+      final channelRepository = ChannelRepository(
+          supabase: supabase,
+          channelName: channelName,
+          ref: ref,
+          updateCallback: updateCallback);
+      await channelRepository.subscribed();
+      return channelRepository;
+    } catch (error, st) {
+      await logError('makeSubscribedChannel()', error, st);
+      rethrow;
+    }
   }
 
   void on(String event, void Function(Map<String, dynamic> payload) callback) {
@@ -72,7 +77,12 @@ class ChannelRepository {
   }
 
   Future<void> close() async {
-    await channel.unsubscribe(const Duration(minutes: 1));
+    try {
+      await channel.unsubscribe(const Duration(minutes: 1));
+    } catch (error, st) {
+      await logError('close()', error, st);
+      rethrow;
+    }
   }
 }
 

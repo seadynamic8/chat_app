@@ -29,18 +29,23 @@ class ImageRepository {
     int? imageQuality = 90,
     bool? requestFullMetadata,
   }) async {
-    final image = await imagePicker.pickImage(
-      source: ImgSource.convert(source ?? ImgSource.gallery),
-      maxWidth: maxWidth,
-      imageQuality: imageQuality,
-      requestFullMetadata: requestFullMetadata ?? true,
-    );
+    try {
+      final image = await imagePicker.pickImage(
+        source: ImgSource.convert(source ?? ImgSource.gallery),
+        maxWidth: maxWidth,
+        imageQuality: imageQuality,
+        requestFullMetadata: requestFullMetadata ?? true,
+      );
 
-    if (image == null) {
-      logger.e('Failed to pick image');
-      return null;
+      if (image == null) {
+        logger.e('Failed to pick image');
+        return null;
+      }
+      return File(image.path);
+    } catch (error, st) {
+      await logError('pickImage()', error, st);
+      rethrow;
     }
-    return File(image.path);
   }
 }
 

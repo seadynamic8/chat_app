@@ -1,3 +1,4 @@
+import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/utils/dio_provider.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:dio/dio.dart';
@@ -32,14 +33,18 @@ class VideoApi {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
       if (e.response != null) {
-        logger.e('VideoApi Error Data: ${e.response!.data}');
-        logger.e(
-            'VideoApi Error request options: ${e.response!.requestOptions.headers}');
+        await logError(
+            'getRoomId(): Data: ${e.response!.data}', e, e.stackTrace);
+        await logError(
+            'getRoomId(): Request options: ${e.response!.requestOptions.headers}',
+            e,
+            e.stackTrace);
       } else {
-        logger.e('VideoApi Error message: ${e.message}',
-            stackTrace: e.stackTrace);
+        await logError('getRoomId(): ${e.message}', e, e.stackTrace);
       }
-      throw Exception('VideoApi: Failed to retrieve room id: ${e.message}');
+    } catch (error, st) {
+      await logError('getRoomId()', error, st);
+      throw Exception('Unable to create new video room'.i18n);
     }
 
     return response.data!['roomId'] as String;
