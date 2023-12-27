@@ -27,13 +27,14 @@ class _BirthdatePickerState extends State<BirthdatePicker> {
   void initState() {
     super.initState();
 
+    // Set 18 years ago as the initial year
+    _endYear = _today.year - 18; // At least 17/18 years old to use this app
+
     if (widget.initialBirthdate != null) {
       _selectedYear = widget.initialBirthdate!.year;
       _selectedMonth = widget.initialBirthdate!.month;
       _selectedDay = widget.initialBirthdate!.day;
     } else {
-      // Set 18 years ago as the initial year
-      _endYear = _today.year - 18; // At least 17/18 years old to use this app
       _selectedYear = _endYear;
       _selectedMonth = 1;
       _selectedDay = 1;
