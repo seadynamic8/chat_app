@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:chat_app/common/error_snackbar.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/auth/view/common/profile_image_picker.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
+import 'package:chat_app/utils/exceptions.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:chat_app/utils/string_validators.dart';
 import 'package:flutter/material.dart';
@@ -49,9 +51,17 @@ class _SignedupScreenTwoState extends ConsumerState<SignedupScreenTwo> {
       username: updateUsername,
       avatarUrl: updateAvatarUrl,
     );
-    await ref.read(authRepositoryProvider).updateProfile(updateProfile);
+    try {
+      await ref.read(authRepositoryProvider).updateProfile(updateProfile);
 
-    router.replaceAll([const MainNavigation()]);
+      router.replaceAll([const MainNavigation()]);
+    } on DuplicateUsernameException catch (error) {
+      if (!context.mounted) return;
+      context.showErrorSnackBar(error.message);
+    } catch (error) {
+      if (!context.mounted) return;
+      context.showErrorSnackBar(error.toString());
+    }
   }
 
   Future<String?> _saveSelectedImage() async {

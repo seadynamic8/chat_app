@@ -6,6 +6,7 @@ import 'package:chat_app/features/auth/domain/block_state.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/auth/domain/user_access.dart';
 import 'package:chat_app/i18n/localizations.dart';
+import 'package:chat_app/utils/exceptions.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:chat_app/utils/username_generate_data.dart';
 import 'package:collection/collection.dart';
@@ -90,9 +91,16 @@ class AuthRepository {
           .from('profiles')
           .update(profile.toMap())
           .eq('id', currentUserId);
-    } catch (error, st) {
+    } on PostgrestException catch (error, st) {
+      if (error.message ==
+          'duplicate key value violates unique constraint "profiles_username_key"') {
+        throw DuplicateUsernameException();
+      }
       await logError('updateProfile()', error, st);
       throw Exception('Unable to update profile'.i18n);
+    } catch (error, st) {
+      await logError('updateProfile()', error, st);
+      throw Exception('Something went wrong with creating user'.i18n);
     }
   }
 
@@ -127,6 +135,13 @@ class AuthRepository {
           await supabase.auth.signUp(email: email, password: password);
 
       return response.user != null;
+    } on AuthException catch (error, st) {
+      if (error.message == "User already registered") {
+        logger.w('AuthRepository signUp(): Email already registered');
+        throw DuplicateEmailException();
+      }
+      logError('signUp()', error, st);
+      rethrow;
     } catch (error, st) {
       await logError('signUp()', error, st);
       rethrow;

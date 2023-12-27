@@ -3,6 +3,7 @@ import 'package:chat_app/common/error_snackbar.dart';
 import 'package:chat_app/features/auth/view/auth/auth_form_state.dart';
 import 'package:chat_app/features/auth/view/auth/auth_screen_controller.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
+import 'package:chat_app/utils/exceptions.dart';
 import 'package:chat_app/utils/string_validators.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/utils/keys.dart';
@@ -61,14 +62,17 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
           logger.e('AuthScreen: Failed to submit auth');
         }
       },
-      error: (error, stackTrace) {
-        if (error is AuthException) {
-          if (!context.mounted) return;
-          logger.e(error.toString(), stackTrace: stackTrace);
-          context.showErrorSnackBar(error.message);
-        } else {
-          logger.e(error.toString(), stackTrace: stackTrace);
-          context.showErrorSnackBar(unexpectedErrorMessage);
+      error: (error, st) {
+        if (!context.mounted) return;
+
+        switch (error) {
+          case DuplicateEmailException _:
+            context.showErrorSnackBar(error.message);
+          case AuthException _:
+            context.showErrorSnackBar(error.message);
+          default:
+            logError('_submit()', error, st);
+            context.showErrorSnackBar(unexpectedErrorMessage);
         }
       },
       loading: () => null,
