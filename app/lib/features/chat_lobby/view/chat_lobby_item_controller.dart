@@ -12,11 +12,12 @@ part 'chat_lobby_item_controller.g.dart';
 @riverpod
 class ChatLobbyItemController extends _$ChatLobbyItemController {
   @override
-  FutureOr<ChatLobbyItemState> build(String roomId) async {
+  FutureOr<ChatLobbyItemState?> build(String roomId) async {
     final currentProfileId = ref.watch(currentUserIdProvider)!;
     final chatLobbyItemState = await ref
         .watch(chatLobbyRepositoryProvider)
         .getChatLobbyItemState(roomId, currentProfileId);
+    if (chatLobbyItemState == null) return null;
 
     ref.listen<AsyncValue<Message>>(newMessagesStreamProvider(roomId),
         (_, state) {
@@ -35,7 +36,7 @@ class ChatLobbyItemController extends _$ChatLobbyItemController {
   void _setNewestMessage(Message message) async {
     // Set newest message first
     final oldState = await future;
-    state = AsyncData(oldState.copyWith(newestMessage: message));
+    state = AsyncData(oldState!.copyWith(newestMessage: message));
 
     // Then fetch translation and save
     final currentProfileId = ref.watch(currentUserIdProvider)!;
@@ -49,7 +50,7 @@ class ChatLobbyItemController extends _$ChatLobbyItemController {
 
     final translatedText = await ref
         .read(translationServiceProvider)
-        .getTranslation(oldState.otherProfile.language!, message.content);
+        .getTranslation(oldState!.otherProfile.language!, message.content);
 
     if (translatedText == null) return;
 
@@ -68,6 +69,6 @@ class ChatLobbyItemController extends _$ChatLobbyItemController {
 
   void _updateOtherProfile(Profile updatedOtherProfile) async {
     final oldState = await future;
-    state = AsyncData(oldState.copyWith(otherProfile: updatedOtherProfile));
+    state = AsyncData(oldState!.copyWith(otherProfile: updatedOtherProfile));
   }
 }

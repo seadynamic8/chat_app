@@ -7,7 +7,7 @@ part of 'chat_lobby_item_controller.dart';
 // **************************************************************************
 
 String _$chatLobbyItemControllerHash() =>
-    r'e149b80d0357abc07f42670a56d1fd58ba8088ab';
+    r'11e16a5cd6b53128d0906cd6aefd483f5743fe19';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,10 +31,10 @@ class _SystemHash {
 }
 
 abstract class _$ChatLobbyItemController
-    extends BuildlessAutoDisposeAsyncNotifier<ChatLobbyItemState> {
+    extends BuildlessAutoDisposeAsyncNotifier<ChatLobbyItemState?> {
   late final String roomId;
 
-  FutureOr<ChatLobbyItemState> build(
+  FutureOr<ChatLobbyItemState?> build(
     String roomId,
   );
 }
@@ -45,7 +45,7 @@ const chatLobbyItemControllerProvider = ChatLobbyItemControllerFamily();
 
 /// See also [ChatLobbyItemController].
 class ChatLobbyItemControllerFamily
-    extends Family<AsyncValue<ChatLobbyItemState>> {
+    extends Family<AsyncValue<ChatLobbyItemState?>> {
   /// See also [ChatLobbyItemController].
   const ChatLobbyItemControllerFamily();
 
@@ -85,7 +85,7 @@ class ChatLobbyItemControllerFamily
 /// See also [ChatLobbyItemController].
 class ChatLobbyItemControllerProvider
     extends AutoDisposeAsyncNotifierProviderImpl<ChatLobbyItemController,
-        ChatLobbyItemState> {
+        ChatLobbyItemState?> {
   /// See also [ChatLobbyItemController].
   ChatLobbyItemControllerProvider(
     String roomId,
@@ -116,7 +116,7 @@ class ChatLobbyItemControllerProvider
   final String roomId;
 
   @override
-  FutureOr<ChatLobbyItemState> runNotifierBuild(
+  FutureOr<ChatLobbyItemState?> runNotifierBuild(
     covariant ChatLobbyItemController notifier,
   ) {
     return notifier.build(
@@ -142,7 +142,7 @@ class ChatLobbyItemControllerProvider
 
   @override
   AutoDisposeAsyncNotifierProviderElement<ChatLobbyItemController,
-      ChatLobbyItemState> createElement() {
+      ChatLobbyItemState?> createElement() {
     return _ChatLobbyItemControllerProviderElement(this);
   }
 
@@ -161,14 +161,14 @@ class ChatLobbyItemControllerProvider
 }
 
 mixin ChatLobbyItemControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<ChatLobbyItemState> {
+    on AutoDisposeAsyncNotifierProviderRef<ChatLobbyItemState?> {
   /// The parameter `roomId` of this provider.
   String get roomId;
 }
 
 class _ChatLobbyItemControllerProviderElement
     extends AutoDisposeAsyncNotifierProviderElement<ChatLobbyItemController,
-        ChatLobbyItemState> with ChatLobbyItemControllerRef {
+        ChatLobbyItemState?> with ChatLobbyItemControllerRef {
   _ChatLobbyItemControllerProviderElement(super.provider);
 
   @override
