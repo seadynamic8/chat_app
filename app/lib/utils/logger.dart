@@ -6,5 +6,8 @@ final logger = Logger(
     errorMethodCount: 8,
     lineLength: 60,
     noBoxingByDefault: true,
+    excludeBox: {
+      Level.error: false,
+    },
   ),
 );
