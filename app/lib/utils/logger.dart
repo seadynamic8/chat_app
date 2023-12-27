@@ -1,4 +1,5 @@
 import 'package:logger/logger.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 final logger = Logger(
   printer: PrettyPrinter(
@@ -42,3 +43,8 @@ class MyPrinter extends PrettyPrinter {
   }
 }
 
+Future<void> logError(String message, Object error, StackTrace st) async {
+  logger.e(message, error: error, stackTrace: st);
+  // await Sentry.captureMessage(message);
+  await Sentry.captureException(error, stackTrace: st);
+}
