@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chat_app/routing/app_router.dart';
 import 'package:flutter/material.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -31,8 +32,16 @@ void main() async {
     [DeviceOrientation.portraitUp],
   ); // To turn off landscape mode for now
 
-  runApp(
-    const ProviderScope(child: MyApp()),
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = environment.sentryDsn;
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+      // We recommend adjusting this value in production.
+      options.tracesSampleRate = 0.2;
+    },
+    appRunner: () => runApp(
+      const ProviderScope(child: MyApp()),
+    ),
   );
 }
 

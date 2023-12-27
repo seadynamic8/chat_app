@@ -19,4 +19,6 @@ abstract class Env {
 
   String get azureKey;
   String get azureRegion;
+
+  String get sentryDsn;
 }

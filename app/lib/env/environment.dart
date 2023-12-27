@@ -1,37 +1,47 @@
 import 'package:chat_app/env/env.dart';
 import 'package:chat_app/utils/logger.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'environment.g.dart';
 
-class Environment {
-  Environment({required this.ref});
+enum EnvType { development, staging, production }
 
-  final Ref ref;
+class Environment {
+  Environment({required this.env});
+
+  final Env env;
+
+  EnvType get envType {
+    const currentEnv = String.fromEnvironment('ENV');
+
+    logger.i('Current Env: $currentEnv');
+
+    return switch (currentEnv) {
+      'PROD' || 'prod' || 'production' => EnvType.production,
+      'STAG' || 'STAGE' || 'stag' || 'stage' || 'staging' => EnvType.staging,
+      'DEV' || 'dev' || 'development' => EnvType.development,
+      _ => EnvType.development,
+    };
+  }
+
+  String get sentryDsn => env.sentryDsn;
 
   // This is ugly code, but for now, there's no easy work-around.
   // For some reason, the Env generator can't generate more than 2 versions of
   // the Env class, so you could do EnvDev and EnvStage, but not EnvProd.
   // When you try the 3rd class, the key will fail.
   (String, String) getSupabaseUrlAndKey() {
-    final env = ref.read(envProvider);
-
     late String supabaseUrl;
     late String supabaseKey;
 
-    const currentEnv = String.fromEnvironment('ENV');
-
-    logger.i('Current Env: $currentEnv');
-
-    switch (currentEnv) {
-      case 'PROD' || 'prod' || 'production':
+    switch (envType) {
+      case EnvType.production:
         supabaseUrl = env.prodSupabaseUrl;
         supabaseKey = env.prodSupabaseKey;
-      case 'STAG' || 'STAGE' || 'stag' || 'stage' || 'staging':
+      case EnvType.staging:
         supabaseUrl = env.stageSupabaseUrl;
         supabaseKey = env.stageSupabaseKey;
-      case 'DEV' || 'dev' || 'development':
+      case EnvType.development:
       default:
         supabaseUrl = env.devSupabaseUrl;
         supabaseKey = env.devSupabaseKey;
@@ -42,7 +52,8 @@ class Environment {
 
 @riverpod
 Environment environment(EnvironmentRef ref) {
-  return Environment(ref: ref);
+  final env = ref.read(envProvider);
+  return Environment(env: env);
 }
 
 @riverpod
