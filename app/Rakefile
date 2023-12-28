@@ -4,35 +4,44 @@ encryption_filename = "encryption_key.json"
 encryption_file = File.read("./#{encryption_filename}")
 key_hash = JSON.parse(encryption_file)
 
+desc "Run dart build_runner secure_dotenv : type - build or watch (default: watch)"
+task :gen_envs, [:type] do |task, args|
+  args.with_defaults(type: "watch")
+  
+  is_watch = args[:type] == "watch"
+  use_polling_watcher = is_watch ? "--use-polling-watcher " : ""
+  define_secure_dotenv_variable = "--define secure_dotenv_generator:secure_dotenv="
+  command =
+    "dart run build_runner " \
+    "#{args[:type]} " \
+    "--delete-conflicting-outputs " \
+    "#{use_polling_watcher}" \
+    "#{define_secure_dotenv_variable}ENCRYPTION_KEY=#{key_hash['ENCRYPTION_KEY']} " \
+    "#{define_secure_dotenv_variable}IV=#{key_hash['IV']} " \
+    "#{define_secure_dotenv_variable}OUTPUT_FILE=#{encryption_filename}"
+  
+  puts "Running ':gen_envs' task..."
+  puts "Command: #{command}\n"
+  system command
+end
+
+desc "Run on S20"
+task :run_s20 do
+  command = "flutter run -d \"SM G981U\" --dart-define-from-file=encryption_key.json --dart-define-from-file=.adapty.env --dart-define=ENV=stage"
+  system command
+end
+
+desc "Serve supabase functions with environment file"
+task :sup_functions do
+  command = "supabase functions serve --env-file ./supabase/.env"
+  system command
+end
+
+
 namespace :dev do
 
-  desc "Run dart build_runner secure_dotenv : type - build or watch (default: watch)"
-  task :gen_envs, [:type] do |task, args|
-    args.with_defaults(type: "watch")
-    
-    is_watch = args[:type] == "watch"
-    use_polling_watcher = is_watch ? "--use-polling-watcher " : ""
-    define_secure_dotenv_variable = "--define secure_dotenv_generator:secure_dotenv="
-    command =
-      "dart run build_runner " \
-      "#{args[:type]} " \
-      "--delete-conflicting-outputs " \
-      "#{use_polling_watcher}" \
-      "#{define_secure_dotenv_variable}ENCRYPTION_KEY=#{key_hash['ENCRYPTION_KEY']} " \
-      "#{define_secure_dotenv_variable}IV=#{key_hash['IV']} " \
-      "#{define_secure_dotenv_variable}OUTPUT_FILE=#{encryption_filename}"
-    
-    puts "Running ':gen_envs' task..."
-    puts "Command: #{command}\n"
-    system command
-  end
-
-  desc "Run on S20"
-  task :run_s20 do
-    command = "flutter run -d \"SM G981U\" --dart-define-from-file=encryption_key.json --dart-define-from-file=.adapty.env --dart-define=ENV=stage"
-    system command
-  end
 end
+
 
 namespace :release do
 
