@@ -46,5 +46,6 @@ class MyPrinter extends PrettyPrinter {
 Future<void> logError(String message, Object error, StackTrace st) async {
   logger.e(message, error: error, stackTrace: st);
   // await Sentry.captureMessage(message);
-  await Sentry.captureException(error, stackTrace: st);
+  // * Sentry can await, but is too slow for request, so just fire and forget
+  Sentry.captureException(error, stackTrace: st);
 }
