@@ -65,8 +65,8 @@ class ChannelSetupService {
           ref.read(authRepositoryProvider).currentSession != null;
       if (!isLoggedIn) return;
 
-      final lobbyChannel = await ref
-          .refresh(lobbySubscribedChannelProvider(lobbyChannelName).future);
+      final lobbyChannel =
+          await ref.refresh(lobbySubscribedChannelProvider.future);
       final updateHandler =
           ref.read(onlinePresencesProvider.notifier).updateAllPresences;
       lobbyChannel.onUpdate(updateHandler);
@@ -78,8 +78,8 @@ class ChannelSetupService {
   Future<void> closeLobbyChannel() async {
     try {
       // Unsubscribe from the channel
-      final lobbyChannel = await ref
-          .read(lobbySubscribedChannelProvider(lobbyChannelName).future);
+      final lobbyChannel =
+          await ref.read(lobbySubscribedChannelProvider.future);
       await lobbyChannel.close();
     } catch (error, st) {
       await logError('closeLobbyChannel()', error, st);

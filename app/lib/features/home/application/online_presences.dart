@@ -26,8 +26,8 @@ class OnlinePresences extends _$OnlinePresences {
 
   Future<void> updateCurrentUserPresence(OnlineStatus onlineStatus) async {
     try {
-      final lobbyChannel = await ref
-          .read(lobbySubscribedChannelProvider(lobbyChannelName).future);
+      final lobbyChannel =
+          await ref.read(lobbySubscribedChannelProvider.future);
       final currentUserId = ref.read(currentUserIdProvider)!;
       await lobbyChannel.updatePresence(currentUserId, onlineStatus);
     } catch (error, st) {
@@ -39,12 +39,12 @@ class OnlinePresences extends _$OnlinePresences {
 
 @Riverpod(keepAlive: true)
 FutureOr<ChannelRepository> lobbySubscribedChannel(
-    LobbySubscribedChannelRef ref, String channelName) async {
+    LobbySubscribedChannelRef ref) async {
   final supabase = ref.watch(supabaseProvider);
 
   return await ChannelRepository.makeSubscribedChannel(
     supabase: supabase,
-    channelName: channelName,
+    channelName: lobbyChannelName,
     ref: ref,
   );
 }
