@@ -70,6 +70,7 @@ dependencies:
   stop_watch_timer: ^3.0.2
   collection: ^1.18.0
   sentry_flutter: ^7.14.0
+  i18n_extension_importer: ^0.0.6
   
 
 dev_dependencies:

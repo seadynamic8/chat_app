@@ -57,3 +57,7 @@ build.yaml
 
 # Env files
 *.env*
+
+# Generated localization strings
+strings.json
+strings.po
