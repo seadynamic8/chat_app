@@ -5,6 +5,7 @@ import 'package:chat_app/features/home/application/channel_setup_service.dart';
 import 'package:chat_app/i18n/supported_locales_and_delegates.dart';
 import 'package:chat_app/routing/routing_observer.dart';
 import 'package:chat_app/utils/logger.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chat_app/routing/app_router.dart';
@@ -34,7 +35,7 @@ void main() async {
 
   await SentryFlutter.init(
     (options) {
-      options.dsn = environment.sentryDsn;
+      options.dsn = kReleaseMode ? environment.sentryDsn : '';
       // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
       // We recommend adjusting this value in production.
       options.tracesSampleRate = 0.2;
