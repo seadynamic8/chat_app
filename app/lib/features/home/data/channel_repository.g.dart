@@ -157,6 +157,140 @@ class _ChannelRepositoryProviderElement
   String get channelName => (origin as ChannelRepositoryProvider).channelName;
 }
 
+String _$userSubscribedChannelHash() =>
+    r'8721e59c9416a3c9311f0c69d4176a3c9d201691';
+
+/// See also [userSubscribedChannel].
+@ProviderFor(userSubscribedChannel)
+const userSubscribedChannelProvider = UserSubscribedChannelFamily();
+
+/// See also [userSubscribedChannel].
+class UserSubscribedChannelFamily
+    extends Family<AsyncValue<ChannelRepository>> {
+  /// See also [userSubscribedChannel].
+  const UserSubscribedChannelFamily();
+
+  /// See also [userSubscribedChannel].
+  UserSubscribedChannelProvider call(
+    String userId,
+  ) {
+    return UserSubscribedChannelProvider(
+      userId,
+    );
+  }
+
+  @override
+  UserSubscribedChannelProvider getProviderOverride(
+    covariant UserSubscribedChannelProvider provider,
+  ) {
+    return call(
+      provider.userId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'userSubscribedChannelProvider';
+}
+
+/// See also [userSubscribedChannel].
+class UserSubscribedChannelProvider
+    extends AutoDisposeFutureProvider<ChannelRepository> {
+  /// See also [userSubscribedChannel].
+  UserSubscribedChannelProvider(
+    String userId,
+  ) : this._internal(
+          (ref) => userSubscribedChannel(
+            ref as UserSubscribedChannelRef,
+            userId,
+          ),
+          from: userSubscribedChannelProvider,
+          name: r'userSubscribedChannelProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$userSubscribedChannelHash,
+          dependencies: UserSubscribedChannelFamily._dependencies,
+          allTransitiveDependencies:
+              UserSubscribedChannelFamily._allTransitiveDependencies,
+          userId: userId,
+        );
+
+  UserSubscribedChannelProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.userId,
+  }) : super.internal();
+
+  final String userId;
+
+  @override
+  Override overrideWith(
+    FutureOr<ChannelRepository> Function(UserSubscribedChannelRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: UserSubscribedChannelProvider._internal(
+        (ref) => create(ref as UserSubscribedChannelRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        userId: userId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<ChannelRepository> createElement() {
+    return _UserSubscribedChannelProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is UserSubscribedChannelProvider && other.userId == userId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, userId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin UserSubscribedChannelRef
+    on AutoDisposeFutureProviderRef<ChannelRepository> {
+  /// The parameter `userId` of this provider.
+  String get userId;
+}
+
+class _UserSubscribedChannelProviderElement
+    extends AutoDisposeFutureProviderElement<ChannelRepository>
+    with UserSubscribedChannelRef {
+  _UserSubscribedChannelProviderElement(super.provider);
+
+  @override
+  String get userId => (origin as UserSubscribedChannelProvider).userId;
+}
+
 String _$lobbySubscribedChannelHash() =>
     r'4999efb0c04ee750ff39dcb54b2c4cb5927363c4';
 

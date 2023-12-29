@@ -1,5 +1,4 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/features/paywall/data/paywall_repository.dart';
@@ -27,8 +26,8 @@ class MainNavigationController extends _$MainNavigationController {
   Future<void> setupUserChannel() async {
     final currentUserId = ref.watch(currentUserIdProvider)!;
 
-    final myChannel = ref.watch(channelRepositoryProvider(currentUserId));
-    await myChannel.subscribed();
+    final myChannel =
+        await ref.watch(userSubscribedChannelProvider(currentUserId).future);
 
     // Interesting, here, don't need to delay after subscribe to add callback handlers
 

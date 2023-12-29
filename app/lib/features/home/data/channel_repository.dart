@@ -19,7 +19,6 @@ class ChannelRepository {
   }) : channel = supabase.channel(channelName) {
     onJoin();
     onLeave();
-    onUpdate();
   }
 
   final SupabaseClient supabase;
@@ -76,6 +75,15 @@ ChannelRepository channelRepository(
   ref.onDispose(() => channel.close());
 
   return channel;
+}
+
+@riverpod
+FutureOr<ChannelRepository> userSubscribedChannel(
+    UserSubscribedChannelRef ref, String userId) async {
+  final userChannel = ref.watch(channelRepositoryProvider(userId));
+  userChannel.onUpdate();
+  await userChannel.subscribed();
+  return userChannel;
 }
 
 @riverpod

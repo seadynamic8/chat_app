@@ -1,5 +1,8 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
+import 'package:chat_app/features/chat/data/chat_repository.dart';
+import 'package:chat_app/features/chat/domain/message.dart';
+import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
@@ -26,6 +29,24 @@ class VideoService {
     await _setOnlineStatusToBusy();
     await _sendNewCall(videoRoomId, otherProfile);
   }
+
+  Future<void> createChatMessageForVideoStatus(
+    VideoStatus status,
+    String otherProfileId,
+  ) async {
+    final currentProfileId = ref.read(currentUserIdProvider)!;
+    final chatRoom =
+        await ref.read(findRoomWithUserProvider(otherProfileId).future);
+
+    ref.read(chatRepositoryProvider).updateStatus(
+          statusType: MessageType.video.name,
+          statusName: status.name,
+          roomId: chatRoom!.id,
+          profileId: currentProfileId,
+        );
+  }
+
+  // * Private Methods
 
   Future<String?> _getVideoRoomId() async {
     try {

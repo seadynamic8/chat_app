@@ -1,13 +1,11 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/chat/domain/message.dart';
-import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
-import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:chat_app/features/home/domain/call_request_state.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
+import 'package:chat_app/features/video/application/video_service.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -93,7 +91,9 @@ class CallRequestController extends _$CallRequestController {
   // Caller Send
 
   Future<void> sendNewCall(String videoRoomId, Profile otherProfile) async {
-    createChatMessageForVideoStatus(VideoStatus.started, otherProfile.id!);
+    await ref
+        .read(videoServiceProvider)
+        .createChatMessageForVideoStatus(VideoStatus.started, otherProfile.id!);
 
     final currentProfile = await ref.read(currentProfileStreamProvider.future);
     await _sendMessageToOtherUser(
@@ -118,7 +118,8 @@ class CallRequestController extends _$CallRequestController {
         .read(onlinePresencesProvider.notifier)
         .updateCurrentUserPresence(OnlineStatus.online);
 
-    createChatMessageForVideoStatus(VideoStatus.cancelled, state.otherUserId!);
+    await ref.read(videoServiceProvider).createChatMessageForVideoStatus(
+        VideoStatus.cancelled, state.otherUserId!);
 
     final currentProfile = await ref.read(currentProfileStreamProvider.future);
     await _sendMessageToOtherUser(
@@ -146,7 +147,8 @@ class CallRequestController extends _$CallRequestController {
 
     // This chat message needs to be done before the send message or else the
     // state gets cleared for some reason?
-    createChatMessageForVideoStatus(VideoStatus.rejected, state.otherUserId!);
+    await ref.read(videoServiceProvider).createChatMessageForVideoStatus(
+        VideoStatus.rejected, state.otherUserId!);
 
     await _sendMessageToOtherUser(
         channelName: state.otherUserId!, event: 'reject_call');
@@ -162,7 +164,7 @@ class CallRequestController extends _$CallRequestController {
         .updateCurrentUserPresence(OnlineStatus.online);
 
     await ref
-        .read(callRequestControllerProvider.notifier)
+        .read(videoServiceProvider)
         .createChatMessageForVideoStatus(VideoStatus.ended, otherProfileId);
 
     await _sendMessageToOtherUser(
@@ -184,36 +186,18 @@ class CallRequestController extends _$CallRequestController {
 
     otherUserChannel.send(event, payload: payload);
 
-    otherUserChannel.close();
-    // For some reason, even if we do this, channel repository comes back
-    // Maybe because of keep alive, but what's invalidate for then?
+    // This still comes back we since we are 'watch'ing it.
     ref.invalidate(channelRepositoryProvider(channelName));
   }
 
   Future<ChannelRepository> _getOtherUserChannel(String channelName) async {
-    final otherUserChannel = ref.watch(channelRepositoryProvider(channelName));
-    await otherUserChannel.subscribed();
+    final otherUserChannel =
+        await ref.watch(userSubscribedChannelProvider(channelName).future);
 
     // Need delay here to ensure its actually ready (dont know why)
     await Future.delayed(const Duration(milliseconds: 1000));
 
     return otherUserChannel;
-  }
-
-  Future<void> createChatMessageForVideoStatus(
-    VideoStatus status,
-    String otherProfileId,
-  ) async {
-    final currentProfileId = ref.read(currentUserIdProvider)!;
-    final chatRoom =
-        await ref.read(findRoomWithUserProvider(otherProfileId).future);
-
-    ref.read(chatRepositoryProvider).updateStatus(
-          statusType: MessageType.video.name,
-          statusName: status.name,
-          roomId: chatRoom!.id,
-          profileId: currentProfileId,
-        );
   }
 
   bool isCorrectUserOrRoom(Map<String, dynamic> payload) {
