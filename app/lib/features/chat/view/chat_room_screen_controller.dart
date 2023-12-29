@@ -12,7 +12,7 @@ class ChatRoomScreenController extends _$ChatRoomScreenController {
     final otherProfile =
         await ref.watch(authRepositoryProvider).getProfile(otherProfileId);
     final profiles = {
-      currentProfile.id!: currentProfile,
+      currentProfile!.id!: currentProfile,
       otherProfile.id!: otherProfile,
     };
 

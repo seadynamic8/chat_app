@@ -394,8 +394,10 @@ String? currentUserId(CurrentUserIdRef ref) {
 }
 
 @riverpod
-Stream<Profile> currentProfileStream(CurrentProfileStreamRef ref) {
-  final currentUserId = ref.watch(currentUserIdProvider)!;
+Stream<Profile?> currentProfileStream(CurrentProfileStreamRef ref) {
+  final currentUserId = ref.watch(currentUserIdProvider);
+  if (currentUserId == null) return Stream.value(null);
+
   final authRepository = ref.watch(authRepositoryProvider);
   return authRepository.watchProfile(currentUserId);
 }

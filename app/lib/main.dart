@@ -56,7 +56,7 @@ class MyApp extends ConsumerWidget {
     ref.watch(channelSetupServiceProvider);
 
     final currentLocale = ref.watch(currentProfileStreamProvider
-        .select((value) => value.whenData((profile) => profile.language)));
+        .select((value) => value.whenData((profile) => profile?.language)));
 
     return MaterialApp.router(
       title: 'Chat With Friends',

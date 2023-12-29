@@ -100,7 +100,7 @@ class CallRequestController extends _$CallRequestController {
       channelName: otherProfile.id!,
       event: 'new_call',
       payload: {
-        'fromUserId': currentProfile.id,
+        'fromUserId': currentProfile!.id,
         'fromUsername': currentProfile.username,
         'videoRoomId': videoRoomId,
       },
@@ -125,7 +125,7 @@ class CallRequestController extends _$CallRequestController {
       channelName: state.otherUserId!,
       event: 'cancel_call',
       payload: {
-        'fromUsername': currentProfile.username,
+        'fromUsername': currentProfile!.username,
       },
     );
     resetToWaiting();

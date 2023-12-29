@@ -81,12 +81,12 @@ final currentUserIdProvider = AutoDisposeProvider<String?>.internal(
 
 typedef CurrentUserIdRef = AutoDisposeProviderRef<String?>;
 String _$currentProfileStreamHash() =>
-    r'75719ee27eb29f124eace4b697915cd0e34156f8';
+    r'9c7ae64660a9841f1df654e23e2226110fd89f8f';
 
 /// See also [currentProfileStream].
 @ProviderFor(currentProfileStream)
 final currentProfileStreamProvider =
-    AutoDisposeStreamProvider<Profile>.internal(
+    AutoDisposeStreamProvider<Profile?>.internal(
   currentProfileStream,
   name: r'currentProfileStreamProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -96,7 +96,7 @@ final currentProfileStreamProvider =
   allTransitiveDependencies: null,
 );
 
-typedef CurrentProfileStreamRef = AutoDisposeStreamProviderRef<Profile>;
+typedef CurrentProfileStreamRef = AutoDisposeStreamProviderRef<Profile?>;
 String _$profileStreamHash() => r'ef2c4e91841ba671aa44d8d60dcd12bc52413427';
 
 /// Copied from Dart SDK

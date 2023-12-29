@@ -174,7 +174,7 @@ FutureOr<VideoRepository> videoRepository(VideoRepositoryRef ref) async {
   return VideoRepository.createVideoRoom(
     videoRoomId: videoSettings.roomId!,
     videoToken: videoSettings.token!,
-    displayName: currentProfile.username!,
+    displayName: currentProfile!.username!,
     currentUserId: currentProfile.id!,
   );
 }
