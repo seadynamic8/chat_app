@@ -365,23 +365,23 @@ class AuthRepository {
   }
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 SupabaseClient supabase(SupabaseRef ref) {
   return Supabase.instance.client;
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 AuthRepository authRepository(AuthRepositoryRef ref) {
   final supabase = ref.watch(supabaseProvider);
   return AuthRepository(ref: ref, supabase: supabase);
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Session? currentSession(CurrentSessionRef ref) {
   return ref.watch(authRepositoryProvider).currentSession;
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Stream<AuthState> authStateChanges(AuthStateChangesRef ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   return authRepository.onAuthStateChanges();

@@ -1,5 +1,6 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
+import 'package:chat_app/features/home/domain/online_presences_state.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:chat_app/utils/logger.dart';
@@ -7,21 +8,21 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'online_presences.g.dart';
 
-const lobbyChannelName = 'lobby';
-
-@Riverpod(keepAlive: true)
+// @Riverpod(keepAlive: true)
+@riverpod
 class OnlinePresences extends _$OnlinePresences {
   @override
-  Map<String, OnlineState> build() {
-    return {};
+  FutureOr<OnlinePresencesState> build() async {
+    final lobbyChannel = await ref.watch(lobbySubscribedChannelProvider.future);
+    final initialOnlinePresences = lobbyChannel.getPresences();
+
+    lobbyChannel.onUpdate(updateAllPresences);
+
+    return OnlinePresencesState(presences: initialOnlinePresences);
   }
 
-  void updateAllPresences(List<OnlineState> onlineStates) {
-    final Map<String, OnlineState> newState = {};
-    for (final onlineState in onlineStates) {
-      newState[onlineState.profileId] = onlineState;
-    }
-    state = newState;
+  void updateAllPresences(Map<String, OnlineState> onlinePresences) async {
+    state = AsyncData(OnlinePresencesState(presences: onlinePresences));
   }
 
   Future<void> updateCurrentUserPresence(OnlineStatus onlineStatus) async {
@@ -35,16 +36,4 @@ class OnlinePresences extends _$OnlinePresences {
       rethrow;
     }
   }
-}
-
-@Riverpod(keepAlive: true)
-FutureOr<ChannelRepository> lobbySubscribedChannel(
-    LobbySubscribedChannelRef ref) async {
-  final supabase = ref.watch(supabaseProvider);
-
-  return await ChannelRepository.makeSubscribedChannel(
-    supabase: supabase,
-    channelName: lobbyChannelName,
-    ref: ref,
-  );
 }

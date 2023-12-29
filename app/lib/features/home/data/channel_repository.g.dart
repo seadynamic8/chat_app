@@ -6,7 +6,7 @@ part of 'channel_repository.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$channelRepositoryHash() => r'eaf912d3cb0550b0d678ae03ff39ac82bd396e68';
+String _$channelRepositoryHash() => r'fee96aeb22083b4d5f915f48c300b9e3121ebf64';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -72,7 +72,7 @@ class ChannelRepositoryFamily extends Family<ChannelRepository> {
 }
 
 /// See also [channelRepository].
-class ChannelRepositoryProvider extends Provider<ChannelRepository> {
+class ChannelRepositoryProvider extends AutoDisposeProvider<ChannelRepository> {
   /// See also [channelRepository].
   ChannelRepositoryProvider(
     String channelName,
@@ -124,7 +124,7 @@ class ChannelRepositoryProvider extends Provider<ChannelRepository> {
   }
 
   @override
-  ProviderElement<ChannelRepository> createElement() {
+  AutoDisposeProviderElement<ChannelRepository> createElement() {
     return _ChannelRepositoryProviderElement(this);
   }
 
@@ -143,17 +143,37 @@ class ChannelRepositoryProvider extends Provider<ChannelRepository> {
   }
 }
 
-mixin ChannelRepositoryRef on ProviderRef<ChannelRepository> {
+mixin ChannelRepositoryRef on AutoDisposeProviderRef<ChannelRepository> {
   /// The parameter `channelName` of this provider.
   String get channelName;
 }
 
 class _ChannelRepositoryProviderElement
-    extends ProviderElement<ChannelRepository> with ChannelRepositoryRef {
+    extends AutoDisposeProviderElement<ChannelRepository>
+    with ChannelRepositoryRef {
   _ChannelRepositoryProviderElement(super.provider);
 
   @override
   String get channelName => (origin as ChannelRepositoryProvider).channelName;
 }
+
+String _$lobbySubscribedChannelHash() =>
+    r'4999efb0c04ee750ff39dcb54b2c4cb5927363c4';
+
+/// See also [lobbySubscribedChannel].
+@ProviderFor(lobbySubscribedChannel)
+final lobbySubscribedChannelProvider =
+    AutoDisposeFutureProvider<ChannelRepository>.internal(
+  lobbySubscribedChannel,
+  name: r'lobbySubscribedChannelProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$lobbySubscribedChannelHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef LobbySubscribedChannelRef
+    = AutoDisposeFutureProviderRef<ChannelRepository>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -5,17 +5,16 @@ import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/features/video/domain/call_availability.dart';
 import 'package:chat_app/utils/logger.dart';
-import 'package:chat_app/utils/user_online_status.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'call_availability_provider.g.dart';
 
 @riverpod
-class CallAvailability extends _$CallAvailability with UserOnlineStatus {
+class CallAvailability extends _$CallAvailability {
   @override
   FutureOr<CallAvailabilityState> build(String otherProfileId) async {
     try {
-      final isUnavaliable = _getOnlineStatus(otherProfileId);
+      final isUnavaliable = await _getOnlineStatus(otherProfileId);
       if (isUnavaliable != null) return isUnavaliable;
 
       final isBlocked = await _getBlockState(otherProfileId);
@@ -32,9 +31,9 @@ class CallAvailability extends _$CallAvailability with UserOnlineStatus {
     }
   }
 
-  CallAvailabilityState? _getOnlineStatus(String otherProfileId) {
-    final onlinePresences = ref.watch(onlinePresencesProvider);
-    final userStatus = getUserOnlineStatus(onlinePresences, otherProfileId);
+  Future<CallAvailabilityState?> _getOnlineStatus(String otherProfileId) async {
+    final onlinePresences = await ref.watch(onlinePresencesProvider.future);
+    final userStatus = onlinePresences.onlineStatusFor(otherProfileId);
     if (userStatus != OnlineStatus.online) {
       return CallAvailabilityState(
           status: CallAvailabilityStatus.unavailable, data: userStatus);

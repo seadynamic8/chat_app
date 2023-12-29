@@ -13,7 +13,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'call_request_controller.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class CallRequestController extends _$CallRequestController {
   @override
   CallRequestState build() {
@@ -194,6 +194,7 @@ class CallRequestController extends _$CallRequestController {
     final otherUserChannel = ref.watch(channelRepositoryProvider(channelName));
     await otherUserChannel.subscribed();
 
+    // Need delay here to ensure its actually ready (dont know why)
     await Future.delayed(const Duration(milliseconds: 1000));
 
     return otherUserChannel;

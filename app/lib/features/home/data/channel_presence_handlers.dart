@@ -37,12 +37,15 @@ extension ChannelPresenceHandlers on ChannelRepository {
     });
   }
 
-  void onUpdate([void Function(List<OnlineState> onlineStates)? callback]) {
+  void onUpdate(
+      [void Function(Map<String, OnlineState> onlinePresences)? callback]) {
     channel.on(RealtimeListenTypes.presence, ChannelFilter(event: 'sync'),
         (payload, [ref]) {
-      final onlineStates = getPresences();
+      // payload is only: {event: sync} (so not useful,
+      // need to call presenceState() to get updated presences)
+      final onlinePresences = getPresences();
 
-      if (callback != null) callback(onlineStates);
+      if (callback != null) callback(onlinePresences);
     });
   }
 
@@ -53,19 +56,17 @@ extension ChannelPresenceHandlers on ChannelRepository {
     });
   }
 
-  List<OnlineState> getPresences() {
-    final userIds = [];
-    final List<OnlineState> onlineStates = [];
+  Map<String, OnlineState> getPresences() {
+    final Map<String, OnlineState> onlinePresences = {};
     channel.presenceState().forEach((presenceStateKey, onlineUserPresences) {
       onlineUserPresences.forEach((Presence presence) {
-        userIds.add(presence.payload['profileId'] as String);
-
-        onlineStates.add(OnlineState.fromMap(presence.payload));
+        final userId = presence.payload['profileId'] as String;
+        onlinePresences[userId] = OnlineState.fromMap(presence.payload);
       });
     });
 
-    logger.t('${channel.subTopic} | $userIds | Current Users');
-    return onlineStates;
+    logger.t('${channel.subTopic} | ${onlinePresences.keys} | Current Users');
+    return onlinePresences;
   }
 
   Future<void> subscribed() async {
@@ -82,7 +83,7 @@ extension ChannelPresenceHandlers on ChannelRepository {
         logger.t('${channel.subTopic} | $currentUserId | Status: $status');
       }
     });
-    return completer.future;
+    return await completer.future;
   }
 
   Future<void> updatePresence(String currentUserId, OnlineStatus status) async {

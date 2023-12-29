@@ -8,3 +8,5 @@ class DuplicateUsernameException implements Exception {
   String get message =>
       'Username is already taken, please try another one.'.i18n;
 }
+
+class BillingServiceUnavailable implements Exception {}

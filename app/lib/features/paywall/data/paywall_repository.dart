@@ -1,5 +1,6 @@
 import 'package:adapty_flutter/adapty_flutter.dart';
 import 'package:chat_app/features/paywall/domain/product.dart';
+import 'package:chat_app/utils/exceptions.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -51,6 +52,10 @@ class PaywallRepository {
           .map((paywallProduct) => Product(adaptyProduct: paywallProduct))
           .toList();
     } on AdaptyError catch (adaptyError, st) {
+      if (adaptyError.code == 103) {
+        logger.w('Billing service unavailable');
+        throw BillingServiceUnavailable();
+      }
       await logError(
           'AdaptyError getPaywallProducts(): $adaptyError', adaptyError, st);
       rethrow;
@@ -90,7 +95,9 @@ class PaywallRepository {
 
 @riverpod
 PaywallRepository paywallRepository(PaywallRepositoryRef ref) {
-  return PaywallRepository();
+  final paywallRepository = PaywallRepository();
+  ref.onDispose(() => paywallRepository.paywallLogout());
+  return paywallRepository;
 }
 
 @riverpod

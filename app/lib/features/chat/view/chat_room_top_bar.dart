@@ -3,7 +3,6 @@ import 'package:chat_app/common/video_call_button.dart';
 import 'package:chat_app/features/chat/view/chat_more_menu.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/constants.dart';
-import 'package:chat_app/utils/user_online_status.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/common/chat_online_status_icon.dart';
@@ -27,8 +26,7 @@ class ChatRoomTopBar extends ConsumerStatefulWidget
   ConsumerState<ChatRoomTopBar> createState() => _ChatRoomTopBarState();
 }
 
-class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar>
-    with UserOnlineStatus {
+class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

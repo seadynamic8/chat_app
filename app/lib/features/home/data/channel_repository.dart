@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide Provider;
@@ -10,42 +9,23 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'channel_repository.g.dart';
 
+const lobbyChannelName = 'lobby';
+
 class ChannelRepository {
   ChannelRepository({
     required this.supabase,
     required this.channelName,
     required this.ref,
-    void Function(List<OnlineState> onlineStates)? updateCallback,
   }) : channel = supabase.channel(channelName) {
     onJoin();
     onLeave();
-    onUpdate(updateCallback);
+    onUpdate();
   }
 
   final SupabaseClient supabase;
   final RealtimeChannel channel;
   final String channelName;
   final Ref ref;
-
-  static Future<ChannelRepository> makeSubscribedChannel({
-    required supabase,
-    required channelName,
-    required ref,
-    void Function(List<OnlineState> onlineStates)? updateCallback,
-  }) async {
-    try {
-      final channelRepository = ChannelRepository(
-          supabase: supabase,
-          channelName: channelName,
-          ref: ref,
-          updateCallback: updateCallback);
-      await channelRepository.subscribed();
-      return channelRepository;
-    } catch (error, st) {
-      await logError('makeSubscribedChannel()', error, st);
-      rethrow;
-    }
-  }
 
   void on(String event, void Function(Map<String, dynamic> payload) callback) {
     channel.on(
@@ -86,11 +66,22 @@ class ChannelRepository {
   }
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 ChannelRepository channelRepository(
     ChannelRepositoryRef ref, String channelName) {
   final supabase = ref.watch(supabaseProvider);
+  final channel =
+      ChannelRepository(supabase: supabase, channelName: channelName, ref: ref);
 
-  return ChannelRepository(
-      supabase: supabase, channelName: channelName, ref: ref);
+  ref.onDispose(() => channel.close());
+
+  return channel;
+}
+
+@riverpod
+FutureOr<ChannelRepository> lobbySubscribedChannel(
+    LobbySubscribedChannelRef ref) async {
+  final lobbyChannel = ref.watch(channelRepositoryProvider(lobbyChannelName));
+  await lobbyChannel.subscribed();
+  return lobbyChannel;
 }

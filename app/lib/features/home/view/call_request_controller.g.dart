@@ -7,12 +7,12 @@ part of 'call_request_controller.dart';
 // **************************************************************************
 
 String _$callRequestControllerHash() =>
-    r'095850778c984c40a1830d8ab8a734a1b1a84ed8';
+    r'1e5895e88e9ddf59fd983a4a027f7ebb8e5a1d16';
 
 /// See also [CallRequestController].
 @ProviderFor(CallRequestController)
-final callRequestControllerProvider =
-    NotifierProvider<CallRequestController, CallRequestState>.internal(
+final callRequestControllerProvider = AutoDisposeNotifierProvider<
+    CallRequestController, CallRequestState>.internal(
   CallRequestController.new,
   name: r'callRequestControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -22,6 +22,6 @@ final callRequestControllerProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$CallRequestController = Notifier<CallRequestState>;
+typedef _$CallRequestController = AutoDisposeNotifier<CallRequestState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

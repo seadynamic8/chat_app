@@ -6,11 +6,11 @@ part of 'auth_repository.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$supabaseHash() => r'd2c76c8455442fcc1da2405d92d2e55b47bcaeb6';
+String _$supabaseHash() => r'fb098cc6e867811a983d533c1ec70af181985fcf';
 
 /// See also [supabase].
 @ProviderFor(supabase)
-final supabaseProvider = Provider<SupabaseClient>.internal(
+final supabaseProvider = AutoDisposeProvider<SupabaseClient>.internal(
   supabase,
   name: r'supabaseProvider',
   debugGetCreateSourceHash:
@@ -19,12 +19,12 @@ final supabaseProvider = Provider<SupabaseClient>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef SupabaseRef = ProviderRef<SupabaseClient>;
-String _$authRepositoryHash() => r'a40a84abda126a0001e5e6c00e78bb0bb9d6a877';
+typedef SupabaseRef = AutoDisposeProviderRef<SupabaseClient>;
+String _$authRepositoryHash() => r'17e6bfc9ebcd50e552e68f58078e6d50b0d6fc93';
 
 /// See also [authRepository].
 @ProviderFor(authRepository)
-final authRepositoryProvider = Provider<AuthRepository>.internal(
+final authRepositoryProvider = AutoDisposeProvider<AuthRepository>.internal(
   authRepository,
   name: r'authRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -34,12 +34,12 @@ final authRepositoryProvider = Provider<AuthRepository>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef AuthRepositoryRef = ProviderRef<AuthRepository>;
-String _$currentSessionHash() => r'7ba54c6064a6ce7b0eb5262b489021c1017c5aa9';
+typedef AuthRepositoryRef = AutoDisposeProviderRef<AuthRepository>;
+String _$currentSessionHash() => r'da42ff3a8cd9282d61efed5215885049aedc8c0a';
 
 /// See also [currentSession].
 @ProviderFor(currentSession)
-final currentSessionProvider = Provider<Session?>.internal(
+final currentSessionProvider = AutoDisposeProvider<Session?>.internal(
   currentSession,
   name: r'currentSessionProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -49,12 +49,12 @@ final currentSessionProvider = Provider<Session?>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef CurrentSessionRef = ProviderRef<Session?>;
-String _$authStateChangesHash() => r'8ecee23e1696539e0ec184eaf34c7a3bb35414f8';
+typedef CurrentSessionRef = AutoDisposeProviderRef<Session?>;
+String _$authStateChangesHash() => r'4bc98242acd27135c8cc068a322382c6749a67f0';
 
 /// See also [authStateChanges].
 @ProviderFor(authStateChanges)
-final authStateChangesProvider = StreamProvider<AuthState>.internal(
+final authStateChangesProvider = AutoDisposeStreamProvider<AuthState>.internal(
   authStateChanges,
   name: r'authStateChangesProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -64,7 +64,7 @@ final authStateChangesProvider = StreamProvider<AuthState>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef AuthStateChangesRef = StreamProviderRef<AuthState>;
+typedef AuthStateChangesRef = AutoDisposeStreamProviderRef<AuthState>;
 String _$currentUserIdHash() => r'ccce9c41e69122bd13655730ef94ffffb64c9ce8';
 
 /// See also [currentUserId].

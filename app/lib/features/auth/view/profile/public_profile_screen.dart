@@ -7,7 +7,6 @@ import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/constants.dart';
 import 'package:chat_app/utils/keys.dart';
-import 'package:chat_app/utils/user_online_status.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
@@ -16,7 +15,7 @@ import 'package:i18n_extension/i18n_widget.dart';
 import 'package:locale_names/locale_names.dart';
 
 @RoutePage()
-class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
+class PublicProfileScreen extends ConsumerWidget {
   const PublicProfileScreen(
       {super.key, @PathParam('id') required this.profileId});
 
@@ -48,8 +47,7 @@ class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
       child: AsyncValueWidget(
         value: profileValue,
         data: (profile) {
-          final onlinePresences = ref.watch(onlinePresencesProvider);
-          final userStatus = getUserOnlineStatus(onlinePresences, profile.id!);
+          final onlinePresencesValue = ref.watch(onlinePresencesProvider);
 
           return Scaffold(
             key: K.publicProfile,
@@ -107,15 +105,23 @@ class PublicProfileScreen extends ConsumerWidget with UserOnlineStatus {
                       const SizedBox(width: 15),
 
                       // ONLINE STATUS
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: userStatus.color,
-                        ),
-                        padding: const EdgeInsets.all(6),
-                        child: Text(userStatus.name,
-                            style: theme.textTheme.labelMedium),
-                      )
+                      onlinePresencesValue.maybeWhen(
+                        data: (onlinePresences) {
+                          final userStatus =
+                              onlinePresences.onlineStatusFor(profile.id!);
+
+                          return Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: userStatus.color,
+                            ),
+                            padding: const EdgeInsets.all(6),
+                            child: Text(userStatus.name,
+                                style: theme.textTheme.labelMedium),
+                          );
+                        },
+                        orElse: SizedBox.shrink,
+                      ),
                       // TODO: Follow button
                     ],
                   ),
