@@ -72,6 +72,8 @@ class ExploreScreen extends ConsumerWidget {
                         height: 15,
                         width: 25,
                       ),
+                      onTap: () => context.router
+                          .push(PublicProfileRoute(profileId: profile.id!)),
                     );
                   },
                 ),
