@@ -7,12 +7,12 @@ part of 'explore_screen_controller.dart';
 // **************************************************************************
 
 String _$exploreScreenControllerHash() =>
-    r'5d983fc9ed329bc558772ee10066d424569bd06f';
+    r'ae49d6ff093d0dfd7baf33d1c22ac14e1e4ed21e';
 
 /// See also [ExploreScreenController].
 @ProviderFor(ExploreScreenController)
 final exploreScreenControllerProvider = AutoDisposeAsyncNotifierProvider<
-    ExploreScreenController, List<Profile>>.internal(
+    ExploreScreenController, PaginationState<Profile>>.internal(
   ExploreScreenController.new,
   name: r'exploreScreenControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -22,6 +22,7 @@ final exploreScreenControllerProvider = AutoDisposeAsyncNotifierProvider<
   allTransitiveDependencies: null,
 );
 
-typedef _$ExploreScreenController = AutoDisposeAsyncNotifier<List<Profile>>;
+typedef _$ExploreScreenController
+    = AutoDisposeAsyncNotifier<PaginationState<Profile>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

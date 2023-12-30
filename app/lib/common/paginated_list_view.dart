@@ -1,5 +1,7 @@
 import 'package:chat_app/common/error_message_widget.dart';
 import 'package:chat_app/common/pagination_state.dart';
+import 'package:chat_app/i18n/localizations.dart';
+import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -12,6 +14,7 @@ class PaginatedListView<T> extends StatelessWidget {
     required this.getNextPage,
     required this.value,
     required this.data,
+    this.beforeSlivers,
     required this.itemsLabel,
   });
 
@@ -20,6 +23,7 @@ class PaginatedListView<T> extends StatelessWidget {
   final Function getNextPage;
   final AsyncValue<PaginationState<T>> value;
   final Widget Function(PaginationState<T>) data; // * Has to return sliver
+  final Widget? beforeSlivers; // Use MultiSliver to add multiple
   final String itemsLabel;
 
   @override
@@ -42,6 +46,7 @@ class PaginatedListView<T> extends StatelessWidget {
       controller: scrollController,
       reverse: reverse,
       slivers: [
+        if (beforeSlivers != null) beforeSlivers!,
         value.when(
           data: (state) => MultiSliver(
             children: [
@@ -54,11 +59,14 @@ class PaginatedListView<T> extends StatelessWidget {
               child: CircularProgressIndicator(),
             ),
           ),
-          error: (e, st) => const SliverToBoxAdapter(
-            child: Center(
-              child: ErrorMessageWidget('Error: Something went wrong'),
-            ),
-          ),
+          error: (e, st) {
+            logError('paginate slivers', e, st);
+            return SliverToBoxAdapter(
+              child: Center(
+                child: ErrorMessageWidget('Error: Something went wrong'.i18n),
+              ),
+            );
+          },
         ),
       ],
     );
@@ -70,7 +78,7 @@ class PaginatedListView<T> extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Text(
-          '--- No more $itemsLabel ---',
+          '--- No more $itemsLabel ---'.i18n,
           style: theme.textTheme.labelLarge!.copyWith(
             color: theme.hintColor,
           ),

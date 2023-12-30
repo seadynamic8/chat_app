@@ -24,7 +24,7 @@ class ChatLobbyScreen extends ConsumerWidget {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('Chats'),
+            title: Text('Chats'.i18n),
           ),
           body: PaginatedListView<Room>(
             scrollController: scrollController,

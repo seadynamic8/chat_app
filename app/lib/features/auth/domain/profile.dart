@@ -25,6 +25,7 @@ class Profile {
     this.gender,
     this.language,
     this.country,
+    this.onlineAt,
   });
 
   final String? id;
@@ -36,6 +37,7 @@ class Profile {
   final Gender? gender;
   final Locale? language;
   final String? country;
+  final DateTime? onlineAt;
 
   String? get age {
     if (birthdate == null) return null;
@@ -53,6 +55,7 @@ class Profile {
       'gender': gender?.name,
       'language': language?.toString(),
       'country': country,
+      'online_at': onlineAt?.toIso8601String(),
     }..removeWhere((key, value) => value == null);
   }
 
@@ -73,6 +76,9 @@ class Profile {
           ? (map['language'] as String).getLocale()
           : null,
       country: map['country'] != null ? map['country'] as String : null,
+      onlineAt: map['online_at'] != null
+          ? DateTime.parse(map['online_at'] as String)
+          : null,
     );
   }
 
@@ -86,6 +92,7 @@ class Profile {
     Gender? gender,
     Locale? language,
     String? country,
+    DateTime? onlineAt,
   }) {
     return Profile(
       id: id ?? this.id,
@@ -97,11 +104,12 @@ class Profile {
       gender: gender ?? this.gender,
       language: language ?? this.language,
       country: country ?? this.country,
+      onlineAt: onlineAt ?? this.onlineAt,
     );
   }
 
   @override
   String toString() {
-    return 'Profile(id: $id, email: $email, username: $username, avatarUrl: $avatarUrl, bio: $bio, birthdate: $birthdate, gender: $gender, language: $language, country: $country)';
+    return 'Profile(id: $id, email: $email, username: $username, avatarUrl: $avatarUrl, bio: $bio, birthdate: $birthdate, gender: $gender, language: $language, country: $country, onlineAt: $onlineAt)';
   }
 }

@@ -36,14 +36,14 @@ class ChatLobbyController extends _$ChatLobbyController {
     final currentUserId = ref.read(currentUserIdProvider)!;
     final newRooms = await ref.read(chatLobbyRepositoryProvider).getAllRooms(
           currentUserId,
-          oldState.nextPage,
+          oldState.nextPage!,
           numberOfRoomsPerRequest,
         );
 
     final isLastPage = newRooms.length < numberOfRoomsPerRequest;
     state = AsyncData(oldState.copyWith(
       isLastPage: isLastPage,
-      nextPage: oldState.nextPage + 1,
+      nextPage: oldState.nextPage! + 1,
       items: [...oldState.items, ...newRooms],
     ));
   }

@@ -51,7 +51,7 @@ class ChatMessagesController extends _$ChatMessagesController {
     final newMessages = await ref
         .watch(chatRepositoryProvider)
         .getAllMessagesForRoom(
-            roomId, oldState.nextPage, numberOfMessagesPerRequest);
+            roomId, oldState.nextPage!, numberOfMessagesPerRequest);
 
     final isLastPage = newMessages.length < numberOfMessagesPerRequest;
 
@@ -60,7 +60,7 @@ class ChatMessagesController extends _$ChatMessagesController {
 
     state = AsyncData(oldState.copyWith(
       isLastPage: isLastPage,
-      nextPage: oldState.nextPage + 1,
+      nextPage: oldState.nextPage! + 1,
       items: [...oldState.items, ...updatedMessages],
     ));
   }
@@ -135,16 +135,4 @@ class ChatMessagesController extends _$ChatMessagesController {
     }
     return updatedMessages;
   }
-
-  // bool _isNewDay(DateTime? newer, DateTime? older) {
-  //   if (newer == null || older == null) return false;
-
-  //   if (older.year < newer.year) return true;
-  //   // -> Year has to be equal
-  //   if (older.month < newer.month) return true;
-  //   // -> Month has to be equal
-  //   if (older.day < newer.day) return true;
-  //   // -> Same day then
-  //   return false;
-  // }
 }

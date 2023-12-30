@@ -62,6 +62,7 @@ extension ChannelPresenceHandlers on ChannelRepository {
     return onlinePresences;
   }
 
+  // No longer being used, but possible future uses, so won't remove for now
   List<String> getOtherOnlineUserIds() {
     final onlineUserPresences = channel.presenceState().values;
     final onlineStates = onlineUserPresences.fold<List<OnlineState>>([],
@@ -71,7 +72,8 @@ extension ChannelPresenceHandlers on ChannelRepository {
       return onlineStates;
     });
 
-    final onlineUserIds = _getOnlineUserIds(onlineStates);
+    final sortedOnlineStates = _sortByEnteredAtDesc(onlineStates);
+    final onlineUserIds = _getOnlineUserIds(sortedOnlineStates);
     final otherOnlineIds = _getOtherOnlineIds(onlineUserIds);
     return otherOnlineIds;
   }
@@ -116,6 +118,11 @@ extension ChannelPresenceHandlers on ChannelRepository {
       userIdentifiers.add(presence.payload['profileId'] as String);
       return userIdentifiers;
     });
+  }
+
+  List<OnlineState> _sortByEnteredAtDesc(List<OnlineState> onlineStates) {
+    onlineStates.sort((a, b) => b.enteredAt.compareTo(a.enteredAt));
+    return onlineStates;
   }
 
   List<String> _getOnlineUserIds(List<OnlineState> onlineStates) {

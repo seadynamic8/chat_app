@@ -3,17 +3,20 @@ import 'package:flutter/foundation.dart';
 class PaginationState<T> {
   PaginationState({
     this.isLastPage = false,
-    required this.nextPage,
+    this.nextPage,
+    this.lastOnlineAt,
     required this.items,
   });
 
   final bool isLastPage;
-  final int nextPage;
+  final int? nextPage;
+  final DateTime?
+      lastOnlineAt; // Used for cursor-based pagination (unique sequential value)
   final List<T> items;
 
   @override
   String toString() =>
-      'PaginationState(isLastPage: $isLastPage, nextPage: $nextPage, items: $items)';
+      'PaginationState(isLastPage: $isLastPage, nextPage: $nextPage, lastOnlineAt: $lastOnlineAt, items: $items)';
 
   @override
   bool operator ==(covariant PaginationState<T> other) {
@@ -21,20 +24,27 @@ class PaginationState<T> {
 
     return other.isLastPage == isLastPage &&
         other.nextPage == nextPage &&
+        other.lastOnlineAt == lastOnlineAt &&
         listEquals(other.items, items);
   }
 
   @override
-  int get hashCode => isLastPage.hashCode ^ nextPage.hashCode ^ items.hashCode;
+  int get hashCode =>
+      isLastPage.hashCode ^
+      nextPage.hashCode ^
+      lastOnlineAt.hashCode ^
+      items.hashCode;
 
   PaginationState<T> copyWith({
     bool? isLastPage,
     int? nextPage,
+    DateTime? lastOnlineAt,
     List<T>? items,
   }) {
     return PaginationState<T>(
       isLastPage: isLastPage ?? this.isLastPage,
       nextPage: nextPage ?? this.nextPage,
+      lastOnlineAt: lastOnlineAt ?? this.lastOnlineAt,
       items: items ?? this.items,
     );
   }

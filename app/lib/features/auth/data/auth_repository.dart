@@ -55,18 +55,28 @@ class AuthRepository {
     }
   }
 
-  Future<List<Profile>> getOtherProfiles(List<String> otherUserIds) async {
+  // Using cursor-based pagination, with lastOnlineAt as cursor
+  Future<List<Profile>> getOtherOnlineProfiles(
+    int range, [
+    DateTime? lastOnlineAt,
+  ]) async {
     try {
       final profiles = await supabase
           .from('profiles')
-          .select<List<Map<String, dynamic>>>('*')
-          .in_('id', otherUserIds)
-          .order('online_at', ascending: false);
+          .select<List<Map<String, dynamic>>>(
+              'id, username, birthdate, avatar_url, country, online_at')
+          .neq('id', currentUserId)
+          .lt(
+              'online_at',
+              lastOnlineAt?.toIso8601String() ??
+                  DateTime.now().toIso8601String())
+          .order('online_at', ascending: false)
+          .limit(range);
 
       return profiles.map((profile) => Profile.fromMap(profile)).toList();
     } catch (error, st) {
-      await logError('getProfiles()', error, st);
-      throw Exception('Unable to get profiles'.i18n);
+      await logError('getOtherOnlineProfiles()', error, st);
+      throw Exception('Unable to get other online profiles'.i18n);
     }
   }
 
@@ -340,12 +350,22 @@ class AuthRepository {
     await supabase.from('profiles').upsert({
       'online_at': DateTime.now().toIso8601String(),
     }).eq('id', currentUserId);
+
+    // clear offline timestamp
+    await supabase
+        .from('profiles')
+        .update({'offline_at': null}).eq('id', currentUserId);
   }
 
   Future<void> setOfflineAt() async {
     await supabase.from('profiles').upsert({
       'offline_at': DateTime.now().toIso8601String(),
     }).eq('id', currentUserId);
+
+    // clear online timestamp
+    await supabase
+        .from('profiles')
+        .update({'online_at': null}).eq('id', currentUserId);
   }
 
   // * Private methods
