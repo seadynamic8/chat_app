@@ -13,17 +13,20 @@ enum OnlineStatus {
 class OnlineState {
   OnlineState({
     required this.profileId,
+    this.username,
     required this.status,
     required this.enteredAt,
   });
 
   final String profileId;
+  final String? username;
   final OnlineStatus status;
   final DateTime enteredAt;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'profileId': profileId,
+      'username': username,
       'status': status.name,
       'enteredAt': enteredAt.millisecondsSinceEpoch,
     };
@@ -32,6 +35,7 @@ class OnlineState {
   factory OnlineState.fromMap(Map<String, dynamic> map) {
     return OnlineState(
       profileId: map['profileId'] as String,
+      username: map['username'] != null ? map['username'] as String : null,
       status: OnlineStatus.values.byName(map['status']),
       enteredAt: DateTime.parse(map['enteredAt'] as String),
     );
@@ -42,14 +46,19 @@ class OnlineState {
     if (identical(this, other)) return true;
 
     return other.profileId == profileId &&
+        other.username == username &&
         other.status == status &&
         other.enteredAt == enteredAt;
   }
 
   @override
-  int get hashCode => profileId.hashCode ^ status.hashCode ^ enteredAt.hashCode;
+  int get hashCode =>
+      profileId.hashCode ^
+      username.hashCode ^
+      status.hashCode ^
+      enteredAt.hashCode;
 
   @override
   String toString() =>
-      'OnlineState(profileId: $profileId, status: ${status.name}, enteredAt: $enteredAt)';
+      'OnlineState(profileId: $profileId, username: $username, status: ${status.name}, enteredAt: $enteredAt)';
 }

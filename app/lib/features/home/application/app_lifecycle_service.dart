@@ -19,18 +19,6 @@ class AppLifecycleService {
     _listenToAppLifecycleChanges();
   }
 
-  Future<void> closeLobbyChannel() async {
-    // Make sure to invalidate the actual channel and not subscribed channel as
-    // that doesn't do anything then.
-    ref.invalidate(channelRepositoryProvider(lobbyChannelName));
-  }
-
-  Future<void> closeUserChannel() async {
-    final currentProfileId = ref.read(currentUserIdProvider);
-    if (currentProfileId == null) return;
-    ref.invalidate(channelRepositoryProvider(currentProfileId));
-  }
-
   void _listenToAppLifecycleChanges() {
     AppLifecycleListener(onStateChange: _onStateChanged);
   }
@@ -40,6 +28,7 @@ class AppLifecycleService {
       switch (state) {
         case AppLifecycleState.paused:
           logger.i('appState: paused');
+          await setOfflineTimestamp();
           await closeLobbyChannel();
           await closeUserChannel();
         case AppLifecycleState.resumed:
@@ -55,6 +44,22 @@ class AppLifecycleService {
     } catch (error, st) {
       await logError('_onStateChanged()', error, st);
     }
+  }
+
+  Future<void> setOfflineTimestamp() async {
+    await ref.read(authRepositoryProvider).setOfflineAt();
+  }
+
+  Future<void> closeLobbyChannel() async {
+    // Make sure to invalidate the actual channel and not subscribed channel as
+    // that doesn't do anything then.
+    ref.invalidate(channelRepositoryProvider(lobbyChannelName));
+  }
+
+  Future<void> closeUserChannel() async {
+    final currentProfileId = ref.read(currentUserIdProvider);
+    if (currentProfileId == null) return;
+    ref.invalidate(channelRepositoryProvider(currentProfileId));
   }
 }
 

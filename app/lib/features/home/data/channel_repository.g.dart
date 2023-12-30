@@ -158,7 +158,7 @@ class _ChannelRepositoryProviderElement
 }
 
 String _$userSubscribedChannelHash() =>
-    r'8721e59c9416a3c9311f0c69d4176a3c9d201691';
+    r'e746a39be998531f26f7d5e192846cff38112753';
 
 /// See also [userSubscribedChannel].
 @ProviderFor(userSubscribedChannel)
@@ -292,7 +292,7 @@ class _UserSubscribedChannelProviderElement
 }
 
 String _$lobbySubscribedChannelHash() =>
-    r'4999efb0c04ee750ff39dcb54b2c4cb5927363c4';
+    r'291a5d890677ee72ac3403affc1dbedeebbc7aa6';
 
 /// See also [lobbySubscribedChannel].
 @ProviderFor(lobbySubscribedChannel)

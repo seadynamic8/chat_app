@@ -16,10 +16,7 @@ class ChannelRepository {
     required this.supabase,
     required this.channelName,
     required this.ref,
-  }) : channel = supabase.channel(channelName) {
-    onJoin();
-    onLeave();
-  }
+  }) : channel = supabase.channel(channelName);
 
   final SupabaseClient supabase;
   final RealtimeChannel channel;
@@ -81,6 +78,8 @@ ChannelRepository channelRepository(
 FutureOr<ChannelRepository> userSubscribedChannel(
     UserSubscribedChannelRef ref, String userId) async {
   final userChannel = ref.watch(channelRepositoryProvider(userId));
+  userChannel.onJoin();
+  userChannel.onLeave();
   userChannel.onUpdate();
   await userChannel.subscribed();
   return userChannel;
@@ -91,5 +90,6 @@ FutureOr<ChannelRepository> lobbySubscribedChannel(
     LobbySubscribedChannelRef ref) async {
   final lobbyChannel = ref.watch(channelRepositoryProvider(lobbyChannelName));
   await lobbyChannel.subscribed();
+  ref.read(authRepositoryProvider).setOnlineAt();
   return lobbyChannel;
 }

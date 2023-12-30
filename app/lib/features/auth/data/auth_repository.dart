@@ -55,6 +55,21 @@ class AuthRepository {
     }
   }
 
+  Future<List<Profile>> getOtherProfiles(List<String> otherUserIds) async {
+    try {
+      final profiles = await supabase
+          .from('profiles')
+          .select<List<Map<String, dynamic>>>('*')
+          .in_('id', otherUserIds)
+          .order('online_at', ascending: false);
+
+      return profiles.map((profile) => Profile.fromMap(profile)).toList();
+    } catch (error, st) {
+      await logError('getProfiles()', error, st);
+      throw Exception('Unable to get profiles'.i18n);
+    }
+  }
+
   Stream<Profile> watchProfile(String profileId) {
     final profilesStream = supabase
         .from('profiles')
@@ -237,6 +252,7 @@ class AuthRepository {
 
   Future<void> signOut() async {
     try {
+      await setOfflineAt();
       await supabase.auth.signOut();
     } catch (error, st) {
       await logError('signOut()', error, st);
@@ -316,6 +332,20 @@ class AuthRepository {
       await logError('updateAccessLevel()', error, st);
       throw Exception('Something went wrong with updating your subscription');
     }
+  }
+
+  // * Online Status
+
+  Future<void> setOnlineAt() async {
+    await supabase.from('profiles').upsert({
+      'online_at': DateTime.now().toIso8601String(),
+    }).eq('id', currentUserId);
+  }
+
+  Future<void> setOfflineAt() async {
+    await supabase.from('profiles').upsert({
+      'offline_at': DateTime.now().toIso8601String(),
+    }).eq('id', currentUserId);
   }
 
   // * Private methods
