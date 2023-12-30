@@ -46,6 +46,8 @@ class ExploreScreenController extends _$ExploreScreenController {
   }
 
   void _onJoin(OnlineState onlineState) async {
+    if (_isCurrentUser(onlineState)) return;
+
     final oldState = await future;
 
     final profileIndex = oldState.items
@@ -62,6 +64,8 @@ class ExploreScreenController extends _$ExploreScreenController {
   }
 
   void _onLeave(OnlineState onlineState) async {
+    if (_isCurrentUser(onlineState)) return;
+
     final oldState = await future;
 
     final profileIndex = oldState.items
@@ -75,5 +79,9 @@ class ExploreScreenController extends _$ExploreScreenController {
 
   bool _profileFound(int existingProfileIndex) {
     return existingProfileIndex > -1;
+  }
+
+  bool _isCurrentUser(OnlineState onlineState) {
+    return onlineState.profileId == ref.read(currentUserIdProvider)!;
   }
 }
