@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:chat_app/common/chat_online_status_icon.dart';
 import 'package:chat_app/common/paginated_list_view.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/explore/view/explore_screen_controller.dart';
@@ -40,6 +41,7 @@ class ExploreScreen extends ConsumerWidget {
           body: PaginatedListView<Profile>(
             scrollController: scrollController,
             getNextPage: getNextPage,
+            emptyItemsMessage: 'No online users',
             itemsLabel: 'profiles'.i18n,
             value: stateValue,
             beforeSlivers: SliverToBoxAdapter(
@@ -59,11 +61,19 @@ class ExploreScreen extends ConsumerWidget {
                     final profile = onlineProfiles[index];
 
                     return ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: const AssetImage(defaultAvatarImage),
-                        foregroundImage: profile.avatarUrl == null
-                            ? null
-                            : NetworkImage(profile.avatarUrl!),
+                      leading: Stack(
+                        children: [
+                          CircleAvatar(
+                            key: K.chatLobbyItemAvatar,
+                            backgroundImage:
+                                const AssetImage(defaultAvatarImage),
+                            foregroundImage: profile.avatarUrl == null
+                                ? null
+                                : NetworkImage(profile.avatarUrl!),
+                            radius: 15,
+                          ),
+                          ChatOnlineStatusIcon(userId: profile.id!)
+                        ],
                       ),
                       title: Text(profile.username!),
                       subtitle: Text('${profile.age!} yrs old.'.i18n),

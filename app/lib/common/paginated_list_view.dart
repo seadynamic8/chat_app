@@ -15,6 +15,7 @@ class PaginatedListView<T> extends StatelessWidget {
     required this.value,
     required this.data,
     this.beforeSlivers,
+    this.emptyItemsMessage,
     required this.itemsLabel,
   });
 
@@ -24,6 +25,7 @@ class PaginatedListView<T> extends StatelessWidget {
   final AsyncValue<PaginationState<T>> value;
   final Widget Function(PaginationState<T>) data; // * Has to return sliver
   final Widget? beforeSlivers; // Use MultiSliver to add multiple
+  final String? emptyItemsMessage;
   final String itemsLabel;
 
   @override
@@ -48,12 +50,18 @@ class PaginatedListView<T> extends StatelessWidget {
       slivers: [
         if (beforeSlivers != null) beforeSlivers!,
         value.when(
-          data: (state) => MultiSliver(
-            children: [
-              data(state),
-              if (state.isLastPage) noMoreItems(context),
-            ],
-          ),
+          data: (state) => state.items.isEmpty && emptyItemsMessage != null
+              ? SliverToBoxAdapter(
+                  child: Center(
+                    child: Text(emptyItemsMessage!),
+                  ),
+                )
+              : MultiSliver(
+                  children: [
+                    data(state),
+                    if (state.isLastPage) noMoreItems(context),
+                  ],
+                ),
           loading: () => const SliverToBoxAdapter(
             child: Center(
               child: CircularProgressIndicator(),

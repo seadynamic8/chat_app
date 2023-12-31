@@ -1,7 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/home/application/online_presences.dart';
-import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/features/video/data/video_settings_provider.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
@@ -39,10 +37,6 @@ class CallRequestBanner {
     await ref.read(callRequestControllerProvider.notifier).sendAcceptCall();
 
     closeCallRequestBanner();
-
-    await ref
-        .read(onlinePresencesProvider.notifier)
-        .updateCurrentUserPresence(OnlineStatus.busy);
 
     final token = await ref.read(authRepositoryProvider).generateJWTToken();
     ref

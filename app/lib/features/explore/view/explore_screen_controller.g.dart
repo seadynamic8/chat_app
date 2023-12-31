@@ -7,7 +7,7 @@ part of 'explore_screen_controller.dart';
 // **************************************************************************
 
 String _$exploreScreenControllerHash() =>
-    r'0670152a27f95fbd896b748a19285ed0b159da77';
+    r'f5ed73a400811eaf87e5ebb5f5cbebde731ed072';
 
 /// See also [ExploreScreenController].
 @ProviderFor(ExploreScreenController)

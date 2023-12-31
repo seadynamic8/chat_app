@@ -17,6 +17,7 @@ class ExploreScreenController extends _$ExploreScreenController {
   @override
   FutureOr<PaginationState<Profile>> build() async {
     final lobbyChannel = await ref.watch(lobbySubscribedChannelProvider.future);
+
     lobbyChannel.onJoin(_onJoin);
     lobbyChannel.onLeave(_onLeave);
 
@@ -25,7 +26,9 @@ class ExploreScreenController extends _$ExploreScreenController {
         .getOtherOnlineProfiles(numberOfUsersPerRequest + initialExtraUsers);
 
     return PaginationState(
-      lastOnlineAt: otherOnlineProfiles.last.onlineAt,
+      lastOnlineAt: otherOnlineProfiles.isEmpty
+          ? null
+          : otherOnlineProfiles.last.onlineAt,
       items: otherOnlineProfiles,
     );
   }
@@ -49,32 +52,37 @@ class ExploreScreenController extends _$ExploreScreenController {
     if (_isCurrentUser(onlineState)) return;
 
     final oldState = await future;
+    final profileIndex =
+        _profileIndexOrNull(oldState.items, onlineState.profileId);
+    if (profileIndex != null) return;
 
-    final profileIndex = oldState.items
-        .indexWhere((profile) => profile.id == onlineState.profileId);
-
-    if (!_profileFound(profileIndex)) {
-      final newProfile = await ref
-          .read(authRepositoryProvider)
-          .getProfile(onlineState.profileId);
-
-      state =
-          AsyncData(oldState.copyWith(items: [newProfile, ...oldState.items]));
-    }
+    final newProfile = await ref
+        .read(authRepositoryProvider)
+        .getProfile(onlineState.profileId);
+    state = AsyncData(
+      oldState.copyWith(
+        items: [newProfile, ...oldState.items],
+      ),
+    );
   }
 
   void _onLeave(OnlineState onlineState) async {
     if (_isCurrentUser(onlineState)) return;
+    if (await _isUserBusy(onlineState)) return;
 
     final oldState = await future;
+    final profileIndex =
+        _profileIndexOrNull(oldState.items, onlineState.profileId);
+    if (profileIndex == null) return;
 
-    final profileIndex = oldState.items
-        .indexWhere((profile) => profile.id == onlineState.profileId);
+    oldState.items.removeAt(profileIndex);
+    state = AsyncData(oldState.copyWith(items: [...oldState.items]));
+  }
 
-    if (_profileFound(profileIndex)) {
-      oldState.items.removeAt(profileIndex);
-      state = AsyncData(oldState.copyWith(items: [...oldState.items]));
-    }
+  int? _profileIndexOrNull(List<Profile> profiles, String profileId) {
+    final profileIndex =
+        profiles.indexWhere((profile) => profile.id == profileId);
+    return _profileFound(profileIndex) ? profileIndex : null;
   }
 
   bool _profileFound(int existingProfileIndex) {
@@ -83,5 +91,21 @@ class ExploreScreenController extends _$ExploreScreenController {
 
   bool _isCurrentUser(OnlineState onlineState) {
     return onlineState.profileId == ref.read(currentUserIdProvider)!;
+  }
+
+  // 2 cases:
+  // - user goes from online -> busy (online:leave, busy:join)
+  // - or from busy -> online        (busy: leave, online: join)
+  // - There's a leave message generated, we don't want to remove user then.
+  Future<bool> _isUserBusy(OnlineState onlineState) async {
+    // leaving user is busy, means he's actually changing back to online (not leaving)
+    if (onlineState.status == OnlineStatus.busy) return true;
+
+    // if existing user was busy, means that someone already updated him to busy
+    // and the leave message came late (=> he's changing to busy ultimately)
+    final lobbyChannel = await ref.watch(lobbySubscribedChannelProvider.future);
+    final onlinePresences = lobbyChannel.getPresences();
+    // The '?' protects against user not being in the list at all.
+    return onlinePresences[onlineState.profileId]?.status == OnlineStatus.busy;
   }
 }

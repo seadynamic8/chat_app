@@ -135,6 +135,11 @@ class CallRequestController extends _$CallRequestController {
   // Callee Send
 
   Future<void> sendAcceptCall() async {
+    await ref
+        .read(onlinePresencesProvider.notifier)
+        .updateCurrentUserPresence(OnlineStatus.busy);
+    logger.i('finish setting user to busy');
+
     await _sendMessageToOtherUser(
       channelName: state.otherUserId!,
       event: 'accept_call',
