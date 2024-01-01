@@ -1,6 +1,7 @@
 import 'package:chat_app/common/pagination_state.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
+import 'package:chat_app/features/explore/view/application/explore_service.dart';
 import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
@@ -22,8 +23,9 @@ class ExploreScreenController extends _$ExploreScreenController {
     lobbyChannel.onLeave(_onLeave);
 
     final otherOnlineProfiles = await ref
-        .read(authRepositoryProvider)
-        .getOtherOnlineProfiles(numberOfUsersPerRequest + initialExtraUsers);
+        .read(exploreServiceProvider)
+        .getOtherOnlineProfiles(
+            limit: numberOfUsersPerRequest + initialExtraUsers);
 
     return PaginationState(
       lastOnlineAt: otherOnlineProfiles.isEmpty
@@ -37,8 +39,10 @@ class ExploreScreenController extends _$ExploreScreenController {
     final oldState = await future;
 
     final otherOnlineProfiles = await ref
-        .read(authRepositoryProvider)
-        .getOtherOnlineProfiles(numberOfUsersPerRequest, oldState.lastOnlineAt);
+        .read(exploreServiceProvider)
+        .getOtherOnlineProfiles(
+            limit: numberOfUsersPerRequest,
+            lastOnlineAt: oldState.lastOnlineAt);
 
     final isLastPage = otherOnlineProfiles.length < numberOfUsersPerRequest;
     state = AsyncData(oldState.copyWith(
@@ -103,8 +107,10 @@ class ExploreScreenController extends _$ExploreScreenController {
 
     // if existing user was busy, means that someone already updated him to busy
     // and the leave message came late (=> he's changing to busy ultimately)
-    final lobbyChannel = await ref.watch(lobbySubscribedChannelProvider.future);
-    final onlinePresences = lobbyChannel.getPresences();
+    // Also, we don't use onlinePresenceProvider for the data as the data
+    // may not have updated yet (when both leave and update fire at same time)
+    final lobbyChannel = await ref.read(lobbySubscribedChannelProvider.future);
+    final onlinePresences = lobbyChannel.getOnlinePresences();
     // The '?' protects against user not being in the list at all.
     return onlinePresences[onlineState.profileId]?.status == OnlineStatus.busy;
   }

@@ -55,23 +55,17 @@ class AuthRepository {
     }
   }
 
-  // Using cursor-based pagination, with lastOnlineAt as cursor
-  Future<List<Profile>> getOtherOnlineProfiles(
-    int range, [
-    DateTime? lastOnlineAt,
-  ]) async {
+  // This will be used for now to get initial list of online profiles,
+  // so that we can get a more accurate list on load.
+  Future<List<Profile>> getOtherOnlineProfiles(List<String> userIds) async {
     try {
       final profiles = await supabase
           .from('profiles')
           .select<List<Map<String, dynamic>>>(
               'id, username, birthdate, avatar_url, country, online_at')
+          .in_('id', userIds)
           .neq('id', currentUserId)
-          .lt(
-              'online_at',
-              lastOnlineAt?.toIso8601String() ??
-                  DateTime.now().toIso8601String())
-          .order('online_at', ascending: false)
-          .limit(range);
+          .order('online_at', ascending: false);
 
       return profiles.map((profile) => Profile.fromMap(profile)).toList();
     } catch (error, st) {

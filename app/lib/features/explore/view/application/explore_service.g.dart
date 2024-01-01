@@ -1,26 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'online_presences.dart';
+part of 'explore_service.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$onlinePresencesHash() => r'a2e82c06c446b6a16b7da6e88e9f600ac0d60542';
+String _$exploreServiceHash() => r'88ca1d87f4df4ea13fc7098cdb6ba5d2c1fdc48e';
 
-/// See also [OnlinePresences].
-@ProviderFor(OnlinePresences)
-final onlinePresencesProvider = AutoDisposeAsyncNotifierProvider<
-    OnlinePresences, OnlinePresencesState>.internal(
-  OnlinePresences.new,
-  name: r'onlinePresencesProvider',
+/// See also [exploreService].
+@ProviderFor(exploreService)
+final exploreServiceProvider = AutoDisposeProvider<ExploreService>.internal(
+  exploreService,
+  name: r'exploreServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$onlinePresencesHash,
+      : _$exploreServiceHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$OnlinePresences = AutoDisposeAsyncNotifier<OnlinePresencesState>;
+typedef ExploreServiceRef = AutoDisposeProviderRef<ExploreService>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

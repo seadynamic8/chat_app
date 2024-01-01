@@ -39,7 +39,7 @@ extension ChannelPresenceHandlers on ChannelRepository {
         (payload, [ref]) {
       // payload is only: {event: sync} (so not useful,
       // need to call presenceState() to get updated presences)
-      final onlinePresences = getPresences();
+      final onlinePresences = getOnlinePresences();
       logger.t('${channel.subTopic} | ${onlinePresences.keys} | Current Users');
 
       if (callback != null) callback(onlinePresences);
@@ -50,32 +50,36 @@ extension ChannelPresenceHandlers on ChannelRepository {
   // { key : [ [ Presence ], [ Presence ], [ Presence ] ] }
   // key (not that useful for us),  and the outer list is an iterable
   // also, the presence.payload gives you actual details => Map<String, dynamic>
+  Iterable<List<Presence>> get presenceStates =>
+      channel.presenceState().values as Iterable<List<Presence>>;
 
-  Map<String, OnlineState> getPresences() {
-    final Map<String, OnlineState> onlinePresences = {};
-    channel.presenceState().forEach((presenceStateKey, onlineUserPresences) {
-      onlineUserPresences.forEach((Presence presence) {
-        final userId = presence.payload['profileId'] as String;
-        onlinePresences[userId] = OnlineState.fromMap(presence.payload);
-      });
+  Map<String, OnlineState> getOnlinePresences() {
+    return presenceStates.fold<Map<String, OnlineState>>({},
+        (onlinePresences, presenceList) {
+      final presence = presenceList.first; // Only one presence in list
+      final userId = presence.payload['profileId'] as String;
+      onlinePresences[userId] = OnlineState.fromMap(presence.payload);
+      return onlinePresences;
     });
-    return onlinePresences;
   }
 
-  // No longer being used, but possible future uses, so won't remove for now
-  List<String> getOtherOnlineUserIds() {
-    final onlineUserPresences = channel.presenceState().values;
-    final onlineStates = onlineUserPresences.fold<List<OnlineState>>([],
-        (onlineStates, presenceList) {
-      final presence = presenceList.first as Presence;
-      onlineStates.add(OnlineState.fromMap(presence.payload));
-      return onlineStates;
-    });
+  List<String> getOnlineUserIds({required int limit, DateTime? lastOnlineAt}) {
+    List<String> onlineUserIds = [];
+    for (final presenceList in presenceStates) {
+      final presence = presenceList.first; // Only one presence in list
 
-    final sortedOnlineStates = _sortByEnteredAtDesc(onlineStates);
-    final onlineUserIds = _getOnlineUserIds(sortedOnlineStates);
-    final otherOnlineIds = _getOtherOnlineIds(onlineUserIds);
-    return otherOnlineIds;
+      // reached limit (or range of page)
+      if (onlineUserIds.length == limit) return onlineUserIds;
+
+      final enteredAt = presence.payload['enteredAt'];
+
+      // don't add newer online users (i.e. we want the older online
+      // users based on the lastOnlineAt cursor)
+      if (lastOnlineAt != null && enteredAt >= lastOnlineAt) continue;
+
+      onlineUserIds.add(presence.payload['profileId'] as String);
+    }
+    return onlineUserIds;
   }
 
   Future<void> subscribed() async {
@@ -118,20 +122,5 @@ extension ChannelPresenceHandlers on ChannelRepository {
       userIdentifiers.add(presence.payload['profileId'] as String);
       return userIdentifiers;
     });
-  }
-
-  List<OnlineState> _sortByEnteredAtDesc(List<OnlineState> onlineStates) {
-    onlineStates.sort((a, b) => b.enteredAt.compareTo(a.enteredAt));
-    return onlineStates;
-  }
-
-  List<String> _getOnlineUserIds(List<OnlineState> onlineStates) {
-    return onlineStates.map((onlineState) => onlineState.profileId).toList();
-  }
-
-  List<String> _getOtherOnlineIds(List<String> onlineUserIds) {
-    final currentUserId = ref.read(currentUserIdProvider)!;
-    onlineUserIds.remove(currentUserId);
-    return onlineUserIds;
   }
 }

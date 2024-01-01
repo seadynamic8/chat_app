@@ -13,7 +13,7 @@ class OnlinePresences extends _$OnlinePresences {
   @override
   FutureOr<OnlinePresencesState> build() async {
     final lobbyChannel = await ref.watch(lobbySubscribedChannelProvider.future);
-    final initialOnlinePresences = lobbyChannel.getPresences();
+    final initialOnlinePresences = lobbyChannel.getOnlinePresences();
 
     lobbyChannel.onUpdate(updateAllPresences);
 
