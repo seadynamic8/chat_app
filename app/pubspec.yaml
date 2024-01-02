@@ -71,6 +71,7 @@ dependencies:
   collection: ^1.18.0
   sentry_flutter: ^7.14.0
   i18n_extension_importer: ^0.0.6
+  onesignal_flutter: ^5.0.4
   
 
 dev_dependencies:
