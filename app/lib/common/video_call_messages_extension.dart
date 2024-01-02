@@ -31,8 +31,8 @@ extension VideoCallMessagesExtension on BuildContext {
     showErrorSnackBar('${blockState.message}, cannot video call');
   }
 
-  void logAndShowError(String className, error) {
-    logger.e('$className Error: $error');
+  void logAndShowError(String className, error, StackTrace st) {
+    logger.e('$className Error: $error', error: error, stackTrace: st);
 
     showSnackBar(
         'Unable to create video call right now, please try again later.'.i18n);

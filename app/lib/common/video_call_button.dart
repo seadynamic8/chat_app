@@ -61,9 +61,9 @@ class _VideoCallButtonState extends ConsumerState<VideoCallButton> {
       await ref.read(videoServiceProvider).makeVideoCall(widget.otherProfile);
 
       router.push(WaitingRoute(otherProfile: widget.otherProfile));
-    } catch (error) {
+    } catch (error, st) {
       if (!context.mounted) return;
-      context.logAndShowError(widget.buttonType.className, error);
+      context.logAndShowError(widget.buttonType.className, error, st);
     }
   }
 
