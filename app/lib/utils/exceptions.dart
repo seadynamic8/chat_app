@@ -9,4 +9,8 @@ class DuplicateUsernameException implements Exception {
       'Username is already taken, please try another one.'.i18n;
 }
 
+class UnknownEmailSignin implements Exception {
+  String get message => 'Something went wrong when finding email'.i18n;
+}
+
 class BillingServiceUnavailable implements Exception {}

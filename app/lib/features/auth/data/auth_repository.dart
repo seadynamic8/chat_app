@@ -248,6 +248,14 @@ class AuthRepository {
           .signInWithPassword(email: email, password: password);
 
       return response.user != null;
+    } on AuthException catch (error, st) {
+      if (error.message == "name resolution failed") {
+        logger.f(
+            'AuthRepository signInWithEmailAndPassword(): Something went wrong with email');
+        throw UnknownEmailSignin();
+      }
+      logError('signInWithEmailAndPassword()', error, st);
+      rethrow;
     } catch (error, st) {
       await logError('signInWithEmailAndPassword()', error, st);
       rethrow;

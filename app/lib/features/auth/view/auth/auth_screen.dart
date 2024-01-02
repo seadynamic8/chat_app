@@ -68,6 +68,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
         switch (error) {
           case DuplicateEmailException _:
             context.showErrorSnackBar(error.message);
+          case UnknownEmailSignin _:
+            context.showErrorSnackBar(error.message);
           case AuthException _:
             context.showErrorSnackBar(error.message);
           default:
