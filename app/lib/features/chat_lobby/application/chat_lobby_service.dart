@@ -12,8 +12,7 @@ class ChatLobbyService {
   final Ref ref;
 
   Future<Room> findOrCreateRoom(String otherProfileId) async {
-    final existingRoom =
-        await ref.read(findRoomWithUserProvider(otherProfileId).future);
+    final existingRoom = await _getExistingRoomOrNull(otherProfileId);
     if (existingRoom != null) return existingRoom;
 
     return await createAndJoinRoom(otherProfileId);
@@ -26,6 +25,10 @@ class ChatLobbyService {
         otherProfileId: otherProfileId, roomId: newRoom.id);
 
     return newRoom;
+  }
+
+  Future<Room?> _getExistingRoomOrNull(String otherProfileId) async {
+    return await ref.read(findRoomWithUserProvider(otherProfileId).future);
   }
 
   Future<void> _addBothUsersToRoom({

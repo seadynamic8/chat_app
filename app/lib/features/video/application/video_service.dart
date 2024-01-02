@@ -2,6 +2,7 @@ import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
+import 'package:chat_app/features/chat_lobby/application/chat_lobby_service.dart';
 import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
@@ -27,6 +28,7 @@ class VideoService {
       throw Exception('Something went wrong with video call.'.i18n);
     }
     await _setOnlineStatusToBusy();
+    await _ensureChatRoomExists(otherProfile.id!);
     await _sendNewCall(videoRoomId, otherProfile);
   }
 
@@ -74,6 +76,11 @@ class VideoService {
     await ref
         .read(callRequestControllerProvider.notifier)
         .sendNewCall(videoRoomId, otherProfile);
+  }
+
+  Future<void> _ensureChatRoomExists(String otherProfileId) async {
+    // Just don't use the return value
+    await ref.read(chatLobbyServiceProvider).findOrCreateRoom(otherProfileId);
   }
 }
 
