@@ -76,7 +76,9 @@ class ExploreScreen extends ConsumerWidget {
                         ],
                       ),
                       title: Text(profile.username!),
-                      subtitle: Text('${profile.age!} yrs old.'.i18n),
+                      subtitle: profile.age == null
+                          ? const SizedBox.shrink()
+                          : Text('${profile.age} yrs old.'.i18n),
                       trailing: CountryFlag.fromCountryCode(
                         profile.country!,
                         height: 15,
