@@ -2,9 +2,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/env/environment.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/home/application/app_lifecycle_service.dart';
+import 'package:chat_app/firebase_options.dart';
 import 'package:chat_app/i18n/supported_locales_and_delegates.dart';
 import 'package:chat_app/routing/routing_observer.dart';
 import 'package:chat_app/utils/logger.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,6 +30,8 @@ void main() async {
     realtimeClientOptions:
         const RealtimeClientOptions(eventsPerSecond: 10), // Default is 10
   );
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitUp],

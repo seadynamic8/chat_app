@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1069232687356",
+    "project_id": "dazzely",
+    "storage_bucket": "dazzely.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1069232687356:android:c7c7f4cf2711a5be64af79",
+        "android_client_info": {
+          "package_name": "com.stcache.dazzely"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWrmrs_as5JaDIEDW0NPmhvK8rS4mod48"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
