@@ -20,15 +20,40 @@ class ChatService {
     final blockState =
         await ref.read(blockedByChangesProvider(otherProfileId).future);
 
-    if (blockState.status == BlockStatus.no) {
-      final currentProfileId = ref.read(currentUserIdProvider)!;
-      await ref.read(chatRepositoryProvider).saveMessage(
-            roomId,
-            otherProfileId,
-            Message(content: messageText, profileId: currentProfileId),
-          );
-    }
+    if (blockState.status != BlockStatus.no) return blockState;
+
+    final currentProfileId = ref.read(currentUserIdProvider)!;
+    await ref.read(chatRepositoryProvider).saveMessage(
+          roomId,
+          otherProfileId,
+          Message(content: messageText, profileId: currentProfileId),
+        );
+    await _createMessageNotification(
+        roomId, currentProfileId, otherProfileId, messageText);
+
     return blockState;
+  }
+
+  Future<void> _createMessageNotification(
+    String roomId,
+    String currentProfileId,
+    String otherProfileId,
+    String messageText,
+  ) async {
+    final otherProfile =
+        await ref.read(profileStreamProvider(otherProfileId).future);
+
+    await ref.read(authRepositoryProvider).createNofitication(
+      otherProfile.id!,
+      notification: {
+        'title': 'New Message: ${otherProfile.username}',
+        'body': messageText,
+      },
+      data: {
+        'chatRoomId': roomId,
+        'profileId': currentProfileId,
+      },
+    );
   }
 }
 

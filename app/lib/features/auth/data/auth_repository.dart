@@ -370,6 +370,60 @@ class AuthRepository {
         .update({'online_at': null}).eq('id', currentUserId);
   }
 
+  // * Notifications
+
+  Future<List<String>> getFCMTokens() async {
+    try {
+      final tokensResponse = await supabase
+          .from('profiles')
+          .select<Map<String, dynamic>>('fcm_tokens')
+          .eq('id', currentUserId)
+          .single();
+
+      final fcmTokens = tokensResponse['fcm_tokens'] as List<dynamic>?;
+      if (fcmTokens == null) return [];
+
+      return fcmTokens.map((token) => token as String).toList();
+    } catch (error, st) {
+      await logError('getFCMTokens()', error, st);
+      rethrow;
+    }
+  }
+
+  Future<void> addFCMToken(String token) async {
+    try {
+      await supabase
+          .rpc('append_fcm_token_to_profiles', params: {'token': token});
+    } catch (error, st) {
+      await logError('addFCMToken()', error, st);
+    }
+  }
+
+  Future<void> removeFCMToken(String token) async {
+    try {
+      await supabase
+          .rpc('delete_fcm_token_from_profiles', params: {'token': token});
+    } catch (error, st) {
+      await logError('removeFCMToken()', error, st);
+    }
+  }
+
+  Future<void> createNofitication(
+    String otherProfileId, {
+    Map<String, String>? notification,
+    Map<String, String>? data,
+  }) async {
+    try {
+      final Map<String, dynamic> body = {'otherProfileId': otherProfileId};
+      if (notification != null) body['notification'] = notification;
+      if (data != null) body['data'] = data;
+
+      await supabase.functions.invoke('create_notification', body: body);
+    } catch (error, st) {
+      await logError('createNotification()', error, st);
+    }
+  }
+
   // * Private methods
 
   Future<bool> _createProfileWithLanguageAndUniqueUsername(

@@ -1,4 +1,8 @@
 import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
+import 'package:chat_app/features/home/application/notification_service.dart';
+import 'package:chat_app/features/home/data/notification_repository.dart';
+import 'package:chat_app/features/home/view/notification_snackbar_extension.dart';
+import 'package:chat_app/utils/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/i18n/localizations.dart';
@@ -18,9 +22,44 @@ class TabsNavigation extends ConsumerWidget {
     return unReadCount.toString();
   }
 
+  void _listenToInitialMessage(BuildContext context, WidgetRef ref) {
+    ref.listen(initialMessageProvider, (_, state) {
+      state.whenData(
+        (message) => context.onBackgroundNotificationClicked(
+            NotificationType.terminated, message),
+      );
+    });
+  }
+
+  void _listenToClickedBackgroundMessages(BuildContext context, WidgetRef ref) {
+    ref.listen(clickedBackgroundMessagesProvider, (_, state) {
+      state.whenData(
+        (message) => context.onBackgroundNotificationClicked(
+            NotificationType.background, message),
+      );
+    });
+  }
+
+  void _listenToForegroundMessages(BuildContext context, WidgetRef ref) {
+    ref.listen(foregroundMessagesProvider, (_, state) {
+      state.whenData((message) => context.showAppNotification(message));
+    });
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+
+    ref.watch(initializedNotificationsProvider).when(
+          data: (notificationRepository) {
+            _listenToInitialMessage(context, ref);
+            _listenToClickedBackgroundMessages(context, ref);
+            _listenToForegroundMessages(context, ref);
+          },
+          error: (error, st) =>
+              logError('notificationProfvider build()', error, st),
+          loading: () => null,
+        );
 
     return I18n(
       child: AutoTabsScaffold(
