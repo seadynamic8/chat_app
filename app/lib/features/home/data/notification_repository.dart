@@ -44,7 +44,9 @@ class NotificationRepository {
   Future<String?> getToken() async {
     String? fcmToken;
     fcmToken = await messaging.getAPNSToken(); // Apple devices
+    logger.i('apple token: $fcmToken');
     fcmToken ??= await messaging.getToken(); // Other than Apple devices
+    logger.i('token: $fcmToken');
     return fcmToken;
   }
 

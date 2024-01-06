@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
@@ -392,8 +393,8 @@ class AuthRepository {
 
   Future<void> addFCMToken(String token) async {
     try {
-      await supabase
-          .rpc('append_fcm_token_to_profiles', params: {'token': token});
+      await supabase.rpc('append_fcm_token_to_profiles',
+          params: {'token': jsonEncode(token)}); // token needs to be json
     } catch (error, st) {
       await logError('addFCMToken()', error, st);
     }
