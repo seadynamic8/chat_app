@@ -27,9 +27,10 @@ end
 
 desc "Run on S20"
 task :run_s20 do
-  command = "flutter run -d \"SM G981U\" --dart-define-from-file=encryption_key.json --dart-define-from-file=.adapty.env --dart-define=ENV=stage"
+  command = "flutter run -d \"SM G981U\" --dart-define-from-file=encryption_key.json --dart-define-from-file=.stage.env --dart-define=ENV=stage"
   system command
 end
+
 
 desc "Serve supabase functions with environment file"
 task :sup_functions do
@@ -39,7 +40,12 @@ end
 
 
 namespace :dev do
-
+  
+  desc "Run on S20"
+  task :run_iphone do
+    command = "flutter run -d 00008101-0014108A3AE0001E --dart-define-from-file=encryption_key.json --dart-define-from-file=.dev.env --dart-define=ENV=dev"
+    system command
+  end
 end
 
 
