@@ -73,6 +73,7 @@ dependencies:
   i18n_extension_importer: ^0.0.6
   firebase_core: ^2.24.2
   firebase_messaging: ^14.7.9
+  another_flushbar: ^1.12.30
   
 
 dev_dependencies:
