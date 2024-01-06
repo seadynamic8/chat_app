@@ -10,16 +10,16 @@ part 'main_navigation_controller.g.dart';
 class MainNavigationController extends _$MainNavigationController {
   @override
   FutureOr<void> build() async {
-    final currentUserId = _refreshCurrentUserId();
+    _refreshCurrentUserId();
     await _setupLobbyChannel();
     await _setupUserChannel();
-    _paywallInitialize(currentUserId);
+    _paywallInitialize();
   }
 
   // This is here because while supabase may signout/signin, our app (and riverpod)
   // are still active, so it's still holding on to old currentUserId
-  String _refreshCurrentUserId() {
-    return ref.refresh(currentUserIdProvider)!;
+  void _refreshCurrentUserId() {
+    ref.invalidate(currentUserIdProvider);
   }
 
   // Join lobby channel on startup, to notify others that we have signed in
@@ -51,7 +51,7 @@ class MainNavigationController extends _$MainNavigationController {
     myChannel.on('end_call', callRequestController.onEndCall);
   }
 
-  void _paywallInitialize(String currentUserId) {
-    ref.read(paywallRepositoryProvider).initialize(currentUserId);
+  void _paywallInitialize() {
+    ref.watch(paywallRepositoryProvider);
   }
 }

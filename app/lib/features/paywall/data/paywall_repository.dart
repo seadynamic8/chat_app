@@ -1,18 +1,25 @@
 import 'package:adapty_flutter/adapty_flutter.dart';
+import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/paywall/domain/product.dart';
 import 'package:chat_app/utils/exceptions.dart';
 import 'package:chat_app/utils/logger.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'paywall_repository.g.dart';
 
 class PaywallRepository {
+  PaywallRepository({required this.ref});
+
+  final Ref ref;
   final adapty = Adapty();
 
-  Future<void> initialize(String currentUserId) async {
+  Future<void> initialize() async {
     try {
       await adapty.setLogLevel(AdaptyLogLevel.info);
       adapty.activate();
+
+      final currentUserId = ref.read(currentUserIdProvider)!;
       await adapty.identify(currentUserId);
     } on AdaptyError catch (adaptyError, st) {
       await logError('AdaptyError initialize(): $adaptyError', adaptyError, st);
@@ -95,8 +102,9 @@ class PaywallRepository {
 
 @riverpod
 PaywallRepository paywallRepository(PaywallRepositoryRef ref) {
-  final paywallRepository = PaywallRepository();
+  final paywallRepository = PaywallRepository(ref: ref);
   ref.onDispose(() => paywallRepository.paywallLogout());
+  paywallRepository.initialize();
   return paywallRepository;
 }
 
