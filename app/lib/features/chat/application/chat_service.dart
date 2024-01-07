@@ -1,5 +1,6 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/block_state.dart';
+import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,36 +23,33 @@ class ChatService {
 
     if (blockState.status != BlockStatus.no) return blockState;
 
-    final currentProfileId = ref.read(currentUserIdProvider)!;
+    final currentProfile = await ref.read(currentProfileStreamProvider.future);
     await ref.read(chatRepositoryProvider).saveMessage(
           roomId,
           otherProfileId,
-          Message(content: messageText, profileId: currentProfileId),
+          Message(content: messageText, profileId: currentProfile!.id),
         );
     await _createMessageNotification(
-        roomId, currentProfileId, otherProfileId, messageText);
+        roomId, currentProfile, otherProfileId, messageText);
 
     return blockState;
   }
 
   Future<void> _createMessageNotification(
     String roomId,
-    String currentProfileId,
+    Profile currentProfile,
     String otherProfileId,
     String messageText,
   ) async {
-    final otherProfile =
-        await ref.read(profileStreamProvider(otherProfileId).future);
-
     await ref.read(authRepositoryProvider).createNofitication(
-      otherProfile.id!,
+      otherProfileId,
       notification: {
-        'title': 'New Message: ${otherProfile.username}',
+        'title': 'New Message: ${currentProfile.username}',
         'body': messageText,
       },
       data: {
         'chatRoomId': roomId,
-        'profileId': currentProfileId,
+        'profileId': currentProfile.id!,
       },
     );
   }
