@@ -38,14 +38,22 @@ class NotificationService {
   // Note: we are fetching token each time, not ideal, but it's free
   // And can't be certain old tokens are for this device and still active.
   Future<bool> _initTokens(NotificationRepository notifications) async {
-    final token = await notifications.getToken();
-    if (token == null) return false;
+    final fcmToken = await notifications.getToken();
+    if (fcmToken == null) return false;
 
-    if (await _tokenNotSet(token)) _setToken(token);
+    // Add Apple token if exists
+    final apnsToken = await notifications.getAPNSToken();
 
-    notifications.onFCMTokenRefresh().listen(
-          (fcmToken) => _setToken(Token(type: TokenType.fcm, value: fcmToken)),
-        );
+    final token = Token(fcmValue: fcmToken, apnsValue: apnsToken);
+
+    if (await _tokenNotSet(token)) _addToken(token);
+
+    notifications
+        .onFCMTokenRefresh()
+        .listen(
+          (fcmToken) => _addToken(Token(fcmValue: fcmToken)),
+        )
+        .onError((err, st) async => await logError('_initTokens()', err, st));
 
     return true;
   }
@@ -55,7 +63,7 @@ class NotificationService {
     return !hasToken;
   }
 
-  Future<void> _setToken(Token token) async {
+  Future<void> _addToken(Token token) async {
     await ref.read(authRepositoryProvider).addFCMToken(token);
   }
 }

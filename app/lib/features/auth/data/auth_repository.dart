@@ -376,8 +376,9 @@ class AuthRepository {
   Future<bool> hasToken(Token token) async {
     final tokens = await supabase
         .from('fcm_tokens')
-        .select<List<Map<String, dynamic>>>(token.type.name)
-        .eq(token.type.name, token.value);
+        .select<List<Map<String, dynamic>>>()
+        .match(token.toMap())
+        .eq('profile_id', currentUserId);
 
     return tokens.isNotEmpty;
   }

@@ -42,16 +42,15 @@ class NotificationRepository {
     }
   }
 
-  Future<Token?> getToken() async {
-    // Apple devices
-    final apnsToken = await messaging.getAPNSToken();
-    if (apnsToken != null) return Token(type: TokenType.apns, value: apnsToken);
-
-    // Other than Apple devices
+  Future<String?> getToken() async {
     final fcmToken = await messaging.getToken();
-    if (fcmToken != null) return Token(type: TokenType.fcm, value: fcmToken);
+    return fcmToken;
+  }
 
-    return null;
+  // Apple devices
+  Future<String?> getAPNSToken() async {
+    final apnsToken = await messaging.getAPNSToken();
+    return apnsToken;
   }
 
   Stream<String> onFCMTokenRefresh() {
@@ -60,8 +59,11 @@ class NotificationRepository {
 
   Future<void> setupIOSNotifications() async {
     // IOS foreground notification options
+    // alert - will make the foreground notification show
+    // sound - would be nice, but we don't show foreground notification on all
+    //         routes, and therefore, it would be weird if it makes sound then.
     await messaging.setForegroundNotificationPresentationOptions(
-        alert: true, badge: true, sound: true);
+        alert: false, badge: false, sound: false);
   }
 
   // App opened from terminated state (after message clicked)
