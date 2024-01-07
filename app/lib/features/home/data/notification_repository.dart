@@ -1,3 +1,4 @@
+import 'package:chat_app/features/auth/domain/token.dart';
 import 'package:chat_app/features/home/domain/notification_message.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -41,16 +42,19 @@ class NotificationRepository {
     }
   }
 
-  Future<String?> getToken() async {
-    String? fcmToken;
-    fcmToken = await messaging.getAPNSToken(); // Apple devices
-    logger.i('apple token: $fcmToken');
-    fcmToken ??= await messaging.getToken(); // Other than Apple devices
-    logger.i('token: $fcmToken');
-    return fcmToken;
+  Future<Token?> getToken() async {
+    // Apple devices
+    final apnsToken = await messaging.getAPNSToken();
+    if (apnsToken != null) return Token(type: TokenType.apns, value: apnsToken);
+
+    // Other than Apple devices
+    final fcmToken = await messaging.getToken();
+    if (fcmToken != null) return Token(type: TokenType.fcm, value: fcmToken);
+
+    return null;
   }
 
-  Stream<String> onTokenRefresh() {
+  Stream<String> onFCMTokenRefresh() {
     return messaging.onTokenRefresh;
   }
 

@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
 import 'package:chat_app/features/auth/domain/block_state.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
+import 'package:chat_app/features/auth/domain/token.dart';
 import 'package:chat_app/features/auth/domain/user_access.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/utils/exceptions.dart';
@@ -373,37 +373,32 @@ class AuthRepository {
 
   // * Notifications
 
-  Future<List<String>> getFCMTokens() async {
-    try {
-      final tokensResponse = await supabase
-          .from('profiles')
-          .select<Map<String, dynamic>>('fcm_tokens')
-          .eq('id', currentUserId)
-          .single();
+  Future<bool> hasToken(Token token) async {
+    final tokens = await supabase
+        .from('fcm_tokens')
+        .select<List<Map<String, dynamic>>>(token.type.name)
+        .eq(token.type.name, token.value);
 
-      final fcmTokens = tokensResponse['fcm_tokens'] as List<dynamic>?;
-      if (fcmTokens == null) return [];
-
-      return fcmTokens.map((token) => token as String).toList();
-    } catch (error, st) {
-      await logError('getFCMTokens()', error, st);
-      rethrow;
-    }
+    return tokens.isNotEmpty;
   }
 
-  Future<void> addFCMToken(String token) async {
+  Future<void> addFCMToken(Token token) async {
     try {
-      await supabase.rpc('append_fcm_token_to_profiles',
-          params: {'token': jsonEncode(token)}); // token needs to be json
+      await supabase
+          .from('fcm_tokens')
+          .insert({...token.toMap(), 'profile_id': currentUserId});
     } catch (error, st) {
       await logError('addFCMToken()', error, st);
     }
   }
 
-  Future<void> removeFCMToken(String token) async {
+  Future<void> removeFCMToken(Token token) async {
     try {
       await supabase
-          .rpc('delete_fcm_token_from_profiles', params: {'token': token});
+          .from('fcm_tokens')
+          .delete()
+          .match(token.toMap())
+          .eq('profile_id', currentUserId);
     } catch (error, st) {
       await logError('removeFCMToken()', error, st);
     }

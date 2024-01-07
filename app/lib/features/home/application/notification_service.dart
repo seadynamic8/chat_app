@@ -1,4 +1,5 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/auth/domain/token.dart';
 import 'package:chat_app/features/home/data/notification_repository.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,28 +38,25 @@ class NotificationService {
   // Note: we are fetching token each time, not ideal, but it's free
   // And can't be certain old tokens are for this device and still active.
   Future<bool> _initTokens(NotificationRepository notifications) async {
-    final fcmToken = await notifications.getToken();
-    if (fcmToken == null) return false;
+    final token = await notifications.getToken();
+    if (token == null) return false;
 
-    if (await _tokenNotSet(fcmToken)) _setFCMToken(fcmToken);
+    if (await _tokenNotSet(token)) _setToken(token);
 
-    notifications.onTokenRefresh().listen(_setFCMToken);
+    notifications.onFCMTokenRefresh().listen(
+          (fcmToken) => _setToken(Token(type: TokenType.fcm, value: fcmToken)),
+        );
 
     return true;
   }
 
-  Future<bool> _tokenNotSet(String fcmToken) async {
-    final existingFCMTokens =
-        await ref.read(authRepositoryProvider).getFCMTokens();
-    return !existingFCMTokens.contains(fcmToken);
+  Future<bool> _tokenNotSet(Token token) async {
+    final hasToken = await ref.read(authRepositoryProvider).hasToken(token);
+    return !hasToken;
   }
 
-  Future<void> _setFCMToken(String? fcmToken) async {
-    if (fcmToken == null) {
-      await logErrorMessage('Error getting FCM Token');
-      return;
-    }
-    await ref.read(authRepositoryProvider).addFCMToken(fcmToken);
+  Future<void> _setToken(Token token) async {
+    await ref.read(authRepositoryProvider).addFCMToken(token);
   }
 }
 
