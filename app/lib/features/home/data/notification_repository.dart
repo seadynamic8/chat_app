@@ -1,4 +1,3 @@
-import 'package:chat_app/features/auth/domain/token.dart';
 import 'package:chat_app/features/home/domain/notification_message.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
