@@ -1,79 +1,51 @@
 import { corsHeaders } from '../_shared/cors.ts'
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.24.0"
+import { supabaseAdmin } from '../_shared/supabaseAdmin.ts'
 import serviceAccount from '../service-account.json' with { type: 'json' }
-// import { JWT } from 'https://esm.sh/google-auth-library@9.4.1'
+import { apnsPrivateKey } from '../AuthKey.ts'
 import { JWT } from 'npm:google-auth-library@9'
-
+import { create, getNumericDate } from 'https://deno.land/x/djwt@v3.0.1/mod.ts'
 
 console.log("Running create notification function")
-    
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
-  
-  const supabaseAdmin = createClient(
-    Deno.env.get('SUPABASE_URL') ?? '',
-    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-    { 
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      }
-    }
-  )
-
   const { otherProfileId, notification, data: params } = await req.json()
 
-  console.log('Getting other profile data...')
+  const fcmTokens = await getFCMTokens(otherProfileId);
 
-  const { data: fcmData, error: fcmError } = await supabaseAdmin
-          .from('fcm_tokens')
-          .select('fcm')
-          .eq('profile_id', otherProfileId)
-          .neq('fcm', null)
-
-  if (fcmError != null) {
-    console.log('fcmError');
-    throw fcmError
-  }
-  
-  const fcmTokens = fcmData.map((token) => token.fcm)
-  console.log(fcmTokens)
-          
-  const { data: apnsData, error: apnsError } = await supabaseAdmin
-          .from('fcm_tokens')
-          .select('apns')
-          .eq('profile_id', otherProfileId)
-          .neq('apns', null)
-
-  if (apnsError != null) {
-    console.log('apnsError');
-    throw apnsError
-  }
-
-  const apnsTokens = apnsData.map((token) => token.apns)
-  console.log(apnsTokens)
-
-  console.log('Able to retrieve other profile fcmTokens')
-
-  const accessToken = await getAccessToken({
+  const googleAccessToken = await getAccessToken({
     clientEmail: serviceAccount.client_email,
     privateKey: serviceAccount.private_key
   })
+  const apnsJWT = await getAPNSJWT();
 
-  console.log('Got google access token')
-
-  // * FCM MESSAGE SEND
+  console.log('Sending fcm message to other user....')
   
-  const data = {
-    'otherProfileId': otherProfileId,
-    ...params
-  };
-  
-  fcmTokens.forEach(async (fcmToken, _idx, _tokens) => {
+  fcmTokens.forEach(async (token, _idx, _tokens) => {
     
-    console.log('Sending fcm message to other user....')
+    let apnsSettings;
+    if (token.apns != null) {
+      console.log('has apns token');
+
+      apnsSettings = {
+        'headers': {
+          ':method': 'POST',
+          ':path': `/3/device/${token.apns}`,
+          'authorization': `bearer ${apnsJWT}`,
+          'apns-push-type': 'alert',
+          'apns-id': token.apns, // a unique id to reference notification for errors
+        },
+        // If payload present, overrides fcm notification.title and notification.body
+        'payload': { 
+          'aps': {
+            'alert': notification, // can also add a subtitle later
+            'sound': 'default'
+          }
+        }, 
+      }
+    }
     
     const res = await fetch(
       `https://fcm.googleapis.com/v1/projects/${serviceAccount.project_id}/messages:send`,
@@ -81,55 +53,26 @@ Deno.serve(async (req) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
+          'Authorization': `Bearer ${googleAccessToken}`,
         },
         body: JSON.stringify({
           message: {
-            token: fcmToken,
+            token: token.fcm,
+            android: {
+              priority: "high"
+            },
+            apns: apnsSettings,
             notification: notification,
-            data: data
+            data: {
+              'otherProfileId': otherProfileId,
+              ...params
+            }
           }
         })
       }
       )
       
       const resData = await res.json()
-    if (res.status < 200 || 299 < res.status ) {
-      throw resData
-    }
-  })
-
-  // * APNS MESSAGE SEND
-  
-  apnsTokens.forEach(async (apnsToken, _idx, _tokens) => {
-
-    console.log('Sending apns message to other user....')
-
-    const res = await fetch(
-      `https://fcm.googleapis.com/v1/projects/${serviceAccount.project_id}/messages:send`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          message: {
-            token: apnsToken,
-            apns: {
-              'payload': {
-                'alert': notification, // can also add a subtitle later
-                'sound': 'default'
-              },
-              
-            },
-            data: data
-          }
-        })
-      }
-    )
-
-    const resData = await res.json()
     if (res.status < 200 || 299 < res.status ) {
       throw resData
     }
@@ -142,6 +85,19 @@ Deno.serve(async (req) => {
     { headers: { "Content-Type": "application/json" } },
   )
 })
+
+const getFCMTokens = async (otherProfileId: string) => {
+  const { data: fcmTokens, error: fcmError } = await supabaseAdmin
+          .from('fcm_tokens')
+          .select('fcm, apns')
+          .eq('profile_id', otherProfileId)
+
+  if (fcmError != null) {
+    console.log('fcmError');
+    throw fcmError
+  }
+  return fcmTokens;
+}
 
 const getAccessToken = ({
   clientEmail,
@@ -165,4 +121,49 @@ const getAccessToken = ({
       resolve(tokens!.access_token!)
     })
   })
+}
+
+function parsePem(pem: string) {
+  const pemHeader = "-----BEGIN PRIVATE KEY-----";
+  const pemFooter = "-----END PRIVATE KEY-----";
+  const pemContents = pem.substring(
+    pemHeader.length,
+    pem.length - pemFooter.length,
+  );
+  return pemContents;
+}
+
+function str2ab(str: string) {
+  const buf = new ArrayBuffer(str.length);
+  const bufView = new Uint8Array(buf);
+  for (let i = 0, strLen = str.length; i < strLen; i++) {
+    bufView[i] = str.charCodeAt(i);
+  }
+  return buf;
+}
+
+async function getAPNSJWT() {
+  const apnsJWTPayload = {
+    iss: "Y9BPBCB945", // Team ID
+    iat: getNumericDate(0)
+  }
+  const privateKeyString = parsePem(apnsPrivateKey)
+  const binaryKey = atob(privateKeyString)
+  const key = await crypto.subtle.importKey(
+    "pkcs8",
+    str2ab(binaryKey),
+    {
+      name: "ECDSA",
+      namedCurve: "P-256"
+    },
+    true,
+    ["sign"],
+  )
+
+  const apnsJWT = await create({
+    alg: "ES256",
+    kid: "8YHDZRGWN5" // Key ID
+  }, apnsJWTPayload, key)
+
+  return apnsJWT;
 }

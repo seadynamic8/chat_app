@@ -2,3 +2,4 @@
 .DS_Store
 
 /supabase/functions/service-account.json
+/supabase/functions/AuthKey*
