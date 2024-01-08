@@ -34,7 +34,8 @@ end
 
 desc "Serve supabase functions with environment file"
 task :sup_functions do
-  command = "supabase functions serve --env-file ./supabase/.env"
+  # command = "supabase functions serve --env-file ./supabase/.env"
+  command = "supabase functions serve"
   system command
 end
 
