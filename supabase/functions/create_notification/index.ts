@@ -86,11 +86,18 @@ Deno.serve(async (req) => {
   )
 })
 
-const getFCMTokens = async (otherProfileId: string) => {
-  const { data: fcmTokens, error: fcmError } = await supabaseAdmin
-          .from('fcm_tokens')
-          .select('fcm, apns')
-          .eq('profile_id', otherProfileId)
+interface Token {
+  fcm: string
+  apns: null | string
+}
+
+const getFCMTokens = async (otherProfileId: string): 
+    Promise<Token[]> => {
+  const { data: fcmTokens, error: fcmError } = 
+    await supabaseAdmin
+      .rpc('fcm_tokens_for_user', {
+        'profile_id': otherProfileId
+      })
 
   if (fcmError != null) {
     console.log('fcmError');

@@ -374,20 +374,34 @@ class AuthRepository {
   // * Notifications
 
   Future<bool> hasToken(Token token) async {
-    final tokens = await supabase
-        .from('fcm_tokens')
-        .select<List<Map<String, dynamic>>>()
-        .match(token.toMap())
-        .eq('profile_id', currentUserId);
+    try {
+      final tokens = await supabase.rpc('fcm_token_count', params: {
+        'profile_id': currentUserId,
+        'fcm': token.fcmValue,
+        'apns': token.apnsValue
+      });
 
-    return tokens.isNotEmpty;
+      return tokens > 0;
+    } catch (error, st) {
+      await logError('hasToken()', error, st);
+      rethrow;
+    }
   }
 
   Future<void> addFCMToken(Token token) async {
     try {
-      await supabase
-          .from('fcm_tokens')
-          .insert({...token.toMap(), 'profile_id': currentUserId});
+      final fcmSecretId = await createSecret(token.fcmValue);
+      final tokenMap = {
+        'fcm_id': fcmSecretId,
+        'profile_id': currentUserId,
+      };
+
+      if (token.apnsValue != null) {
+        final apnsSecretId = await createSecret(token.apnsValue!);
+        tokenMap['apns_id'] = apnsSecretId;
+      }
+
+      await supabase.from('fcm_tokens').insert(tokenMap);
     } catch (error, st) {
       await logError('addFCMToken()', error, st);
     }
@@ -395,6 +409,8 @@ class AuthRepository {
 
   Future<void> removeFCMToken(Token token) async {
     try {
+      // TODO: Remove token from secret vault
+
       await supabase
           .from('fcm_tokens')
           .delete()
@@ -418,6 +434,19 @@ class AuthRepository {
       await supabase.functions.invoke('create_notification', body: body);
     } catch (error, st) {
       await logError('createNotification()', error, st);
+    }
+  }
+
+  // * Vault methods
+
+  Future<String> createSecret(String secret) async {
+    try {
+      final secretId = await supabase
+          .rpc('create_vault_secret', params: {'secret_text': secret});
+      return secretId;
+    } catch (error, st) {
+      await logError('createSecret()', error, st);
+      rethrow;
     }
   }
 
