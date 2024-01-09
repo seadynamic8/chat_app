@@ -68,7 +68,7 @@ class Message {
       'content': content,
       'translation': translation,
       'profileId': profileId,
-      'createdAt': createdAt?.millisecondsSinceEpoch,
+      'createdAt': createdAt?.toIso8601String(),
     };
   }
 

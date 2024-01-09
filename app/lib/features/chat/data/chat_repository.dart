@@ -54,6 +54,7 @@ class ChatRepository {
             'content': message.content,
             'profile_id': message.profileId,
             'room_id': roomId,
+            'created_at': DateTime.now().toIso8601String(),
           })
           .select<Map<String, dynamic>>()
           .single();

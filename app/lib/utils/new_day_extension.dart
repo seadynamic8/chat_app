@@ -3,11 +3,15 @@ extension NewDayExtension on DateTime {
   bool isNewDayAfter(DateTime? older) {
     if (older == null) return false;
 
-    if (older.year < year) return true;
+    // Localize times before checking
+    final local = toLocal();
+    final localOlder = older.toLocal();
+
+    if (localOlder.year < local.year) return true;
     // -> Year has to be equal
-    if (older.month < month) return true;
+    if (localOlder.month < local.month) return true;
     // -> Month has to be equal
-    if (older.day < day) return true;
+    if (localOlder.day < local.day) return true;
     // -> Same day then
     return false;
   }

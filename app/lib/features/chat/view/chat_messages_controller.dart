@@ -122,9 +122,8 @@ class ChatMessagesController extends _$ChatMessagesController {
     var prev = prevMessage;
 
     for (final message in messages) {
-      if (prev != null &&
-          prev.localCreatedAt!.isNewDayAfter(message.localCreatedAt!)) {
-        updatedMessages.add(Message.newDay(message));
+      if (prev != null && prev.createdAt!.isNewDayAfter(message.createdAt!)) {
+        updatedMessages.add(Message.newDay(prev));
       }
       // Always add the current message
       updatedMessages.add(message);

@@ -28,7 +28,7 @@ class OnlineState {
       'profileId': profileId,
       'username': username,
       'status': status.name,
-      'enteredAt': enteredAt.millisecondsSinceEpoch,
+      'enteredAt': enteredAt.toIso8601String(),
     };
   }
 
