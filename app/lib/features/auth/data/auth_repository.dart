@@ -407,20 +407,6 @@ class AuthRepository {
     }
   }
 
-  Future<void> removeFCMToken(Token token) async {
-    try {
-      // TODO: Remove token from secret vault
-
-      await supabase
-          .from('fcm_tokens')
-          .delete()
-          .match(token.toMap())
-          .eq('profile_id', currentUserId);
-    } catch (error, st) {
-      await logError('removeFCMToken()', error, st);
-    }
-  }
-
   Future<void> createNofitication(
     String otherProfileId, {
     Map<String, String>? notification,
