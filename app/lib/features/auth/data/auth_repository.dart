@@ -441,8 +441,8 @@ class AuthRepository {
 
   Future<String> createSecret(String secret) async {
     try {
-      final secretId = await supabase
-          .rpc('create_vault_secret', params: {'secret_text': secret});
+      final secretId =
+          await supabase.rpc('create_vault_secret', params: {'secret': secret});
       return secretId;
     } catch (error, st) {
       await logError('createSecret()', error, st);
