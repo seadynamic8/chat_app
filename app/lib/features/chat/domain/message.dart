@@ -21,6 +21,10 @@ class Message {
   final String? profileId;
   final DateTime? createdAt;
 
+  bool isCurrentUser(String currentUserId) {
+    return profileId == currentUserId;
+  }
+
   static Message newDay(Message message) {
     return Message(content: message.newDayString, type: MessageType.newday);
   }
