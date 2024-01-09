@@ -153,6 +153,9 @@ class ChatRepository {
         'read': true,
         'read_at': DateTime.now().toIso8601String(),
       }).match({'room_id': roomId, 'profile_id': profileId});
+
+      await supabase.rpc('delete_read_messages_except_last',
+          params: {'profile_id': profileId, 'room_id': roomId});
     } catch (error, st) {
       await logError('markAllMessagesAsReadForRoom()', error, st);
       rethrow;
