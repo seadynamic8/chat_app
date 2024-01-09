@@ -1,0 +1,2 @@
+alter table fcm_tokens add constraint fcm_tokens_fcm_id_fkey foreign key (fcm_id) references vault.secrets (id) on delete cascade;
+alter table fcm_tokens add constraint fcm_tokens_apns_id_fkey foreign key (apns_id) references vault.secrets (id) on delete cascade;
