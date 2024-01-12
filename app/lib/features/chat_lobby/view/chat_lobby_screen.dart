@@ -1,7 +1,5 @@
-import 'package:chat_app/common/paginated_list_view.dart';
 import 'package:chat_app/features/chat_lobby/domain/room.dart';
-import 'package:chat_app/features/chat_lobby/view/chat_lobby_controller.dart';
-import 'package:chat_app/features/chat_lobby/view/chat_lobby_item.dart';
+import 'package:chat_app/features/chat_lobby/view/chat_lobby_list.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
@@ -14,38 +12,27 @@ class ChatLobbyScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scrollController = ScrollController();
-    final stateValue = ref.watch(chatLobbyControllerProvider);
-
-    final getNextPage =
-        ref.read(chatLobbyControllerProvider.notifier).getNextPageOfRooms;
-
     return I18n(
       child: SafeArea(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text('Chats'.i18n),
-          ),
-          body: PaginatedListView<Room>(
-            scrollController: scrollController,
-            getNextPage: getNextPage,
-            itemsLabel: 'chats'.i18n,
-            value: stateValue,
-            data: (state) {
-              final rooms = state.items;
-
-              return SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  childCount: rooms.length,
-                  (context, index) {
-                    final room = rooms[index];
-
-                    return ChatLobbyItem(
-                        key: ValueKey(room.id), roomId: room.id);
-                  },
-                ),
-              );
-            },
+        child: DefaultTabController(
+          length: 2,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text('Chats'.i18n),
+              bottom: const TabBar(
+                indicatorSize: TabBarIndicatorSize.tab,
+                tabs: [
+                  Tab(text: 'All'),
+                  Tab(text: 'Unread Only'),
+                ],
+              ),
+            ),
+            body: const TabBarView(
+              children: [
+                ChatLobbyList(roomType: RoomType.all),
+                ChatLobbyList(roomType: RoomType.unRead)
+              ],
+            ),
           ),
         ),
       ),

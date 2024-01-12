@@ -71,7 +71,7 @@ class TabsNavigation extends ConsumerWidget {
         ],
         bottomNavigationBuilder: (_, tabsRouter) {
           final unReadMessageCountStream =
-              ref.watch(unReadMessagesStreamProvider());
+              ref.watch(unReadMessageCountStreamProvider());
 
           const regularChatTab = Icon(
             Icons.message,

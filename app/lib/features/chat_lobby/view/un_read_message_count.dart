@@ -18,7 +18,7 @@ class UnReadMessageCount extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final unReadMessageCountStream =
-        ref.watch(unReadMessagesStreamProvider(roomId));
+        ref.watch(unReadMessageCountStreamProvider(roomId));
 
     const emptyWidget = Text('');
 

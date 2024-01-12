@@ -1,3 +1,5 @@
+enum RoomType { all, unRead, requests }
+
 class Room {
   Room({required this.id});
 
