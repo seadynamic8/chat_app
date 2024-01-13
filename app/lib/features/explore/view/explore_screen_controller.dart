@@ -5,6 +5,7 @@ import 'package:chat_app/features/explore/view/application/explore_service.dart'
 import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
+import 'package:chat_app/utils/list_extension.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'explore_screen_controller.g.dart';
@@ -84,13 +85,7 @@ class ExploreScreenController extends _$ExploreScreenController {
   }
 
   int? _profileIndexOrNull(List<Profile> profiles, String profileId) {
-    final profileIndex =
-        profiles.indexWhere((profile) => profile.id == profileId);
-    return _profileFound(profileIndex) ? profileIndex : null;
-  }
-
-  bool _profileFound(int existingProfileIndex) {
-    return existingProfileIndex > -1;
+    return profiles.indexWhereOrNull((profile) => profile.id == profileId);
   }
 
   bool _isCurrentUser(OnlineState onlineState) {

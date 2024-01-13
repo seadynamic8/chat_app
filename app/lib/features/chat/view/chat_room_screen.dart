@@ -25,33 +25,33 @@ class ChatRoomScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scrollController = ScrollController();
-    final profilesValue =
-        ref.watch(chatRoomScreenControllerProvider(otherProfileId));
+    final chatRoomValue =
+        ref.watch(chatRoomScreenControllerProvider(roomId, otherProfileId));
 
     return I18n(
       child: SafeArea(
         child: KeyboardDismissOnTap(
           child: AsyncValueWidget(
-            value: profilesValue,
-            data: (profiles) => Scaffold(
+            value: chatRoomValue,
+            data: (chatRoom) => Scaffold(
               key: K.chatRoom,
               appBar: ChatRoomTopBar(
                 roomId: roomId,
-                otherProfile: profiles[otherProfileId]!,
+                otherProfile: chatRoom.profiles[otherProfileId]!,
               ),
               body: Column(
                 children: [
                   Expanded(
                     child: ChatMessages(
                       key: K.chatRoomMessages,
-                      roomId: roomId,
-                      profiles: profiles,
+                      chatRoom: chatRoom,
                       scrollController: scrollController,
                     ),
                   ),
                   NewMessage(
                     roomId: roomId,
                     otherProfileId: otherProfileId,
+                    joined: chatRoom.joined,
                   ),
                 ],
               ),

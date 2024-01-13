@@ -7,7 +7,7 @@ part of 'chat_room_screen_controller.dart';
 // **************************************************************************
 
 String _$chatRoomScreenControllerHash() =>
-    r'5c551e2bf4c230186275e9b971e225a14b5991a1';
+    r'990fd41a5fe319f7c08ed2ab35b74a8774938636';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,10 +31,12 @@ class _SystemHash {
 }
 
 abstract class _$ChatRoomScreenController
-    extends BuildlessAutoDisposeAsyncNotifier<Map<String, Profile>> {
+    extends BuildlessAutoDisposeAsyncNotifier<ChatRoom> {
+  late final String roomId;
   late final String otherProfileId;
 
-  FutureOr<Map<String, Profile>> build(
+  FutureOr<ChatRoom> build(
+    String roomId,
     String otherProfileId,
   );
 }
@@ -44,16 +46,17 @@ abstract class _$ChatRoomScreenController
 const chatRoomScreenControllerProvider = ChatRoomScreenControllerFamily();
 
 /// See also [ChatRoomScreenController].
-class ChatRoomScreenControllerFamily
-    extends Family<AsyncValue<Map<String, Profile>>> {
+class ChatRoomScreenControllerFamily extends Family<AsyncValue<ChatRoom>> {
   /// See also [ChatRoomScreenController].
   const ChatRoomScreenControllerFamily();
 
   /// See also [ChatRoomScreenController].
   ChatRoomScreenControllerProvider call(
+    String roomId,
     String otherProfileId,
   ) {
     return ChatRoomScreenControllerProvider(
+      roomId,
       otherProfileId,
     );
   }
@@ -63,6 +66,7 @@ class ChatRoomScreenControllerFamily
     covariant ChatRoomScreenControllerProvider provider,
   ) {
     return call(
+      provider.roomId,
       provider.otherProfileId,
     );
   }
@@ -85,12 +89,15 @@ class ChatRoomScreenControllerFamily
 /// See also [ChatRoomScreenController].
 class ChatRoomScreenControllerProvider
     extends AutoDisposeAsyncNotifierProviderImpl<ChatRoomScreenController,
-        Map<String, Profile>> {
+        ChatRoom> {
   /// See also [ChatRoomScreenController].
   ChatRoomScreenControllerProvider(
+    String roomId,
     String otherProfileId,
   ) : this._internal(
-          () => ChatRoomScreenController()..otherProfileId = otherProfileId,
+          () => ChatRoomScreenController()
+            ..roomId = roomId
+            ..otherProfileId = otherProfileId,
           from: chatRoomScreenControllerProvider,
           name: r'chatRoomScreenControllerProvider',
           debugGetCreateSourceHash:
@@ -100,6 +107,7 @@ class ChatRoomScreenControllerProvider
           dependencies: ChatRoomScreenControllerFamily._dependencies,
           allTransitiveDependencies:
               ChatRoomScreenControllerFamily._allTransitiveDependencies,
+          roomId: roomId,
           otherProfileId: otherProfileId,
         );
 
@@ -110,16 +118,19 @@ class ChatRoomScreenControllerProvider
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
+    required this.roomId,
     required this.otherProfileId,
   }) : super.internal();
 
+  final String roomId;
   final String otherProfileId;
 
   @override
-  FutureOr<Map<String, Profile>> runNotifierBuild(
+  FutureOr<ChatRoom> runNotifierBuild(
     covariant ChatRoomScreenController notifier,
   ) {
     return notifier.build(
+      roomId,
       otherProfileId,
     );
   }
@@ -129,32 +140,37 @@ class ChatRoomScreenControllerProvider
     return ProviderOverride(
       origin: this,
       override: ChatRoomScreenControllerProvider._internal(
-        () => create()..otherProfileId = otherProfileId,
+        () => create()
+          ..roomId = roomId
+          ..otherProfileId = otherProfileId,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
+        roomId: roomId,
         otherProfileId: otherProfileId,
       ),
     );
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<ChatRoomScreenController,
-      Map<String, Profile>> createElement() {
+  AutoDisposeAsyncNotifierProviderElement<ChatRoomScreenController, ChatRoom>
+      createElement() {
     return _ChatRoomScreenControllerProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
     return other is ChatRoomScreenControllerProvider &&
+        other.roomId == roomId &&
         other.otherProfileId == otherProfileId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, roomId.hashCode);
     hash = _SystemHash.combine(hash, otherProfileId.hashCode);
 
     return _SystemHash.finish(hash);
@@ -162,16 +178,21 @@ class ChatRoomScreenControllerProvider
 }
 
 mixin ChatRoomScreenControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<Map<String, Profile>> {
+    on AutoDisposeAsyncNotifierProviderRef<ChatRoom> {
+  /// The parameter `roomId` of this provider.
+  String get roomId;
+
   /// The parameter `otherProfileId` of this provider.
   String get otherProfileId;
 }
 
 class _ChatRoomScreenControllerProviderElement
     extends AutoDisposeAsyncNotifierProviderElement<ChatRoomScreenController,
-        Map<String, Profile>> with ChatRoomScreenControllerRef {
+        ChatRoom> with ChatRoomScreenControllerRef {
   _ChatRoomScreenControllerProviderElement(super.provider);
 
+  @override
+  String get roomId => (origin as ChatRoomScreenControllerProvider).roomId;
   @override
   String get otherProfileId =>
       (origin as ChatRoomScreenControllerProvider).otherProfileId;

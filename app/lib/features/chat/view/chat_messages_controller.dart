@@ -1,8 +1,8 @@
 import 'package:chat_app/common/pagination_state.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/application/translation_service.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
+import 'package:chat_app/features/chat/domain/chat_room.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/utils/new_day_extension.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -18,24 +18,24 @@ class ChatMessagesController extends _$ChatMessagesController {
   static const initialPage = 0;
 
   @override
-  FutureOr<PaginationState<Message>> build(
-      String roomId, Map<String, Profile> profiles) async {
+  FutureOr<PaginationState<Message>> build(ChatRoom chatRoom) async {
     // Setup handlers for any new messages
-    ref.listen<AsyncValue<Message>>(newMessagesStreamProvider(roomId),
+    ref.listen<AsyncValue<Message>>(newMessagesStreamProvider(chatRoom.id),
         (_, state) {
       if (state.hasValue) _handleNewMessage(state.value!);
     });
 
     final chatRepository = ref.watch(chatRepositoryProvider);
 
-    final messages = await chatRepository.getAllMessagesForRoom(
-        roomId, initialPage, numberOfMessagesPerRequest + initialExtraMessages);
+    final messages = await chatRepository.getAllMessagesForRoom(chatRoom.id,
+        initialPage, numberOfMessagesPerRequest + initialExtraMessages);
 
     final updatedMessages = _addNewDayToMessages(null, messages);
 
     final currentProfileId = ref.read(currentUserIdProvider)!;
 
-    await chatRepository.markAllMessagesAsReadForRoom(roomId, currentProfileId);
+    await chatRepository.markAllMessagesAsReadForRoom(
+        chatRoom.id, currentProfileId);
 
     return PaginationState<Message>(
       nextPage: initialPage + 1,
@@ -51,7 +51,7 @@ class ChatMessagesController extends _$ChatMessagesController {
     final newMessages = await ref
         .watch(chatRepositoryProvider)
         .getAllMessagesForRoom(
-            roomId, oldState.nextPage!, numberOfMessagesPerRequest);
+            chatRoom.id, oldState.nextPage!, numberOfMessagesPerRequest);
 
     final isLastPage = newMessages.length < numberOfMessagesPerRequest;
 
@@ -91,8 +91,8 @@ class ChatMessagesController extends _$ChatMessagesController {
   void _updateNewMessageTranslation(Message newMessage) async {
     final translatedText = await ref
         .read(translationServiceProvider)
-        .getTranslation(
-            profiles[newMessage.profileId]!.language!, newMessage.content);
+        .getTranslation(chatRoom.profiles[newMessage.profileId]!.language!,
+            newMessage.content);
 
     if (translatedText == null) return;
 

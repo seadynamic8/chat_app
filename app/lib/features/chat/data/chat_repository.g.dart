@@ -306,5 +306,195 @@ class _NewMessagesStreamProviderElement
   @override
   String get roomId => (origin as NewMessagesStreamProvider).roomId;
 }
+
+String _$chatUserInsertHash() => r'63922107ac7ce2b488a91569ad6d94bb0372e5ca';
+
+/// See also [chatUserInsert].
+@ProviderFor(chatUserInsert)
+final chatUserInsertProvider =
+    AutoDisposeStreamProvider<Map<String, dynamic>>.internal(
+  chatUserInsert,
+  name: r'chatUserInsertProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$chatUserInsertHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef ChatUserInsertRef = AutoDisposeStreamProviderRef<Map<String, dynamic>>;
+String _$chatUserUpdateHash() => r'363ec6424f12ddc9f79df7bf9326362fc9025c21';
+
+/// See also [chatUserUpdate].
+@ProviderFor(chatUserUpdate)
+final chatUserUpdateProvider =
+    AutoDisposeStreamProvider<Map<String, dynamic>>.internal(
+  chatUserUpdate,
+  name: r'chatUserUpdateProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$chatUserUpdateHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef ChatUserUpdateRef = AutoDisposeStreamProviderRef<Map<String, dynamic>>;
+String _$onJoinForRoomHash() => r'83c4c5f315e71e8c49f0b9d9c6bd751c18e0cbdc';
+
+/// See also [onJoinForRoom].
+@ProviderFor(onJoinForRoom)
+const onJoinForRoomProvider = OnJoinForRoomFamily();
+
+/// See also [onJoinForRoom].
+class OnJoinForRoomFamily extends Family<AsyncValue<bool>> {
+  /// See also [onJoinForRoom].
+  const OnJoinForRoomFamily();
+
+  /// See also [onJoinForRoom].
+  OnJoinForRoomProvider call(
+    String roomId,
+  ) {
+    return OnJoinForRoomProvider(
+      roomId,
+    );
+  }
+
+  @override
+  OnJoinForRoomProvider getProviderOverride(
+    covariant OnJoinForRoomProvider provider,
+  ) {
+    return call(
+      provider.roomId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'onJoinForRoomProvider';
+}
+
+/// See also [onJoinForRoom].
+class OnJoinForRoomProvider extends AutoDisposeStreamProvider<bool> {
+  /// See also [onJoinForRoom].
+  OnJoinForRoomProvider(
+    String roomId,
+  ) : this._internal(
+          (ref) => onJoinForRoom(
+            ref as OnJoinForRoomRef,
+            roomId,
+          ),
+          from: onJoinForRoomProvider,
+          name: r'onJoinForRoomProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$onJoinForRoomHash,
+          dependencies: OnJoinForRoomFamily._dependencies,
+          allTransitiveDependencies:
+              OnJoinForRoomFamily._allTransitiveDependencies,
+          roomId: roomId,
+        );
+
+  OnJoinForRoomProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.roomId,
+  }) : super.internal();
+
+  final String roomId;
+
+  @override
+  Override overrideWith(
+    Stream<bool> Function(OnJoinForRoomRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: OnJoinForRoomProvider._internal(
+        (ref) => create(ref as OnJoinForRoomRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        roomId: roomId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<bool> createElement() {
+    return _OnJoinForRoomProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is OnJoinForRoomProvider && other.roomId == roomId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, roomId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin OnJoinForRoomRef on AutoDisposeStreamProviderRef<bool> {
+  /// The parameter `roomId` of this provider.
+  String get roomId;
+}
+
+class _OnJoinForRoomProviderElement
+    extends AutoDisposeStreamProviderElement<bool> with OnJoinForRoomRef {
+  _OnJoinForRoomProviderElement(super.provider);
+
+  @override
+  String get roomId => (origin as OnJoinForRoomProvider).roomId;
+}
+
+String _$newRequestedRoomHash() => r'9b967f2aaceaea90b51a07c3108387c248e65a64';
+
+/// See also [newRequestedRoom].
+@ProviderFor(newRequestedRoom)
+final newRequestedRoomProvider = AutoDisposeStreamProvider<Room>.internal(
+  newRequestedRoom,
+  name: r'newRequestedRoomProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$newRequestedRoomHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef NewRequestedRoomRef = AutoDisposeStreamProviderRef<Room>;
+String _$joinedRoomHash() => r'7ab55724c0128d9d804490fc857e1a96cf0d8b89';
+
+/// See also [joinedRoom].
+@ProviderFor(joinedRoom)
+final joinedRoomProvider = AutoDisposeStreamProvider<Room>.internal(
+  joinedRoom,
+  name: r'joinedRoomProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$joinedRoomHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef JoinedRoomRef = AutoDisposeStreamProviderRef<Room>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

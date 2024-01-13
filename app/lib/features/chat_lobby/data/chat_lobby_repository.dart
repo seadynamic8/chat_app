@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
+import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat_lobby/domain/chat_lobby_item_state.dart';
 import 'package:chat_app/features/chat_lobby/domain/room.dart';
@@ -53,11 +56,17 @@ class ChatLobbyRepository {
     }
   }
 
-  Future<void> addUserToRoom(String profileId, String roomId) async {
+  Future<void> addUserToRoom({
+    required String profileId,
+    required String roomId,
+    bool joined = false,
+  }) async {
     try {
-      await supabase
-          .from('chat_users')
-          .insert({'profile_id': profileId, 'room_id': roomId});
+      await supabase.from('chat_users').insert({
+        'profile_id': profileId,
+        'room_id': roomId,
+        'joined': joined,
+      });
     } catch (error, st) {
       await logError('addUserToRoom()', error, st);
       rethrow;
@@ -77,10 +86,12 @@ class ChatLobbyRepository {
 
       // messages table is just to sort the rooms by message creation date
       final roomsList = await supabase
-          .from('rooms')
-          .select<List<Map<String, dynamic>>>(
-              'id, chat_users!inner (), messages ()')
-          .eq('chat_users.profile_id', currentUserId)
+          .from('chat_users')
+          .select<List<Map<String, dynamic>>>('''
+            id:room_id, messages:room_id ()
+          ''')
+          .eq('profile_id', currentUserId)
+          .eq('joined', true)
           .range(from, to)
           .order('created_at', foreignTable: 'messages');
 
@@ -100,17 +111,37 @@ class ChatLobbyRepository {
 
     try {
       final roomsList = await supabase
-          .from('un_read_rooms')
-          .select<List<Map<String, dynamic>>>('''
-            id:room_id,
-            last_unread_at
-          ''')
+          .from('un_read_joined_rooms')
+          .select<List<Map<String, dynamic>>>('id:room_id, last_unread_at')
           .order('last_unread_at', ascending: false)
           .range(from, to);
 
       return roomsList.map((room) => Room.fromMap(room)).toList();
     } catch (error, st) {
       await logError('getUnReadRooms()', error, st);
+      rethrow;
+    }
+  }
+
+  Future<List<Room>> getRequestedRooms({
+    required String currentUserId,
+    required int page,
+    required int range,
+  }) async {
+    final (from: from, to: to) = getPagination(page: page, defaultRange: range);
+
+    try {
+      final roomsList = await supabase
+          .from('chat_users')
+          .select<List<Map<String, dynamic>>>('id:room_id')
+          .eq('profile_id', currentUserId)
+          .eq('joined', false)
+          .order('created_at', ascending: false)
+          .range(from, to);
+
+      return roomsList.map((room) => Room.fromMap(room)).toList();
+    } catch (error, st) {
+      await logError('getRequestedRooms()', error, st);
       rethrow;
     }
   }
@@ -152,26 +183,6 @@ class ChatLobbyRepository {
     }
   }
 
-  // * Watch for new room
-
-  void watchNewRoomForUser(
-      String currentUserId, void Function(Room newRoom) callback) {
-    supabase.channel('public:chat_users:profile_id=eq.$currentUserId').on(
-      RealtimeListenTypes.postgresChanges,
-      ChannelFilter(
-        event: 'INSERT',
-        schema: 'public',
-        table: 'chat_users',
-        filter: 'profile_id=eq.$currentUserId',
-      ),
-      (payload, [ref]) async {
-        final chatUser = payload['new'];
-
-        callback(Room(id: chatUser['room_id']));
-      },
-    ).subscribe();
-  }
-
   // * Watch for new unread messages
 
   Stream<int> watchUnReadMessages({
@@ -197,8 +208,9 @@ class ChatLobbyRepository {
     });
   }
 
-  void watchNewUnReadMessage(
-      String currentUserId, void Function(Room newRoom) callback) {
+  Stream<Room> watchNewUnReadRoom(String currentUserId) {
+    final streamController = StreamController<Room>();
+
     supabase
         .channel('public:messages_users:insert:profile_id=eq.$currentUserId')
         .on(
@@ -213,14 +225,17 @@ class ChatLobbyRepository {
         final message = payload['new'];
 
         if (!message['read']) {
-          callback(Room(id: message['room_id']));
+          streamController.add(Room(id: message['room_id']));
         }
       },
     ).subscribe();
+
+    return streamController.stream;
   }
 
-  void watchNewReadMessage(
-      String currentUserId, void Function(Room newRoom) callback) {
+  Stream<Room> watchNewReadRoom(String currentUserId) {
+    final streamController = StreamController<Room>();
+
     supabase
         .channel('public:messages_users:update:profile_id=eq.$currentUserId')
         .on(
@@ -235,10 +250,12 @@ class ChatLobbyRepository {
         final message = payload['new'];
 
         if (message['read']) {
-          callback(Room(id: message['room_id']));
+          streamController.add(Room(id: message['room_id']));
         }
       },
     ).subscribe();
+
+    return streamController.stream;
   }
 }
 
@@ -278,6 +295,47 @@ FutureOr<List<Room>> unReadOnlyRooms(
     page: page,
     range: range,
   );
+}
+
+@riverpod
+FutureOr<List<Room>> requestedRooms(
+    RequestedRoomsRef ref, int page, int range) async {
+  final currentUserId = ref.watch(currentUserIdProvider)!;
+  final chatLobbyRepository = ref.watch(chatLobbyRepositoryProvider);
+  return await chatLobbyRepository.getRequestedRooms(
+    currentUserId: currentUserId,
+    page: page,
+    range: range,
+  );
+}
+
+@riverpod
+Stream<Room> newUnReadRoom(NewUnReadRoomRef ref) {
+  final currentUserId = ref.watch(currentUserIdProvider)!;
+  final chatLobbyRepository = ref.watch(chatLobbyRepositoryProvider);
+  return chatLobbyRepository.watchNewUnReadRoom(currentUserId);
+}
+
+@riverpod
+Stream<Room> newUnReadJoinedRoom(NewUnReadJoinedRoomRef ref) {
+  final streamController = StreamController<Room>();
+  ref.watch(newUnReadRoomProvider).whenData((room) async {
+    final currentUserId = ref.read(currentUserIdProvider)!;
+    // we need the latest join status here, so can't put in cached provider
+    // unless its a stream that updates
+    final roomJoined = await ref
+        .read(chatRepositoryProvider)
+        .getJoinStatus(room.id, currentUserId);
+    if (roomJoined) streamController.add(room);
+  });
+  return streamController.stream;
+}
+
+@riverpod
+Stream<Room> newReadRoom(NewReadRoomRef ref) {
+  final currentUserId = ref.watch(currentUserIdProvider)!;
+  final chatLobbyRepository = ref.watch(chatLobbyRepositoryProvider);
+  return chatLobbyRepository.watchNewReadRoom(currentUserId);
 }
 
 @riverpod

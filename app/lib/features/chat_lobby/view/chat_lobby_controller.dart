@@ -1,7 +1,9 @@
 import 'package:chat_app/common/pagination_state.dart';
+import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat_lobby/application/chat_lobby_service.dart';
+import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:chat_app/features/chat_lobby/domain/room.dart';
-import 'package:collection/collection.dart';
+import 'package:chat_app/utils/list_extension.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chat_lobby_controller.g.dart';
@@ -23,11 +25,7 @@ class ChatLobbyController extends _$ChatLobbyController {
         range: numberOfRoomsPerRequest + initialExtraRooms,
         roomType: roomType);
 
-    await chatLobbyService.roomUpdateHandler(
-      roomType: roomType,
-      addNewRoomCallback: _addNewRoom,
-      removeRoomCallback: _removeRoom,
-    );
+    _roomUpdateHandler();
 
     return PaginationState<Room>(
       nextPage: initialPage + 1,
@@ -51,10 +49,45 @@ class ChatLobbyController extends _$ChatLobbyController {
     ));
   }
 
+  void _roomUpdateHandler() {
+    switch (roomType) {
+      case RoomType.all:
+        _allRoomsHandler();
+      case RoomType.unRead:
+        _unReadRoomsHandler();
+      case RoomType.requests:
+        _requestedRoomsHandler();
+    }
+  }
+
+  void _allRoomsHandler() {
+    ref.listen<AsyncValue<Room>>(joinedRoomProvider, (_, state) {
+      state.whenData(_addNewRoom);
+    });
+  }
+
+  void _unReadRoomsHandler() {
+    ref.listen<AsyncValue<Room>>(newUnReadJoinedRoomProvider, (_, state) {
+      state.whenData(_addNewRoom);
+    });
+    ref.listen<AsyncValue<Room>>(newReadRoomProvider, (_, state) {
+      state.whenData(_removeRoom);
+    });
+  }
+
+  void _requestedRoomsHandler() {
+    ref.listen<AsyncValue<Room>>(newRequestedRoomProvider, (_, state) {
+      state.whenData(_addNewRoom);
+    });
+    ref.listen<AsyncValue<Room>>(joinedRoomProvider, (_, state) {
+      state.whenData(_removeRoom);
+    });
+  }
+
   void _addNewRoom(Room newRoom) async {
     final oldState = await future;
 
-    if (roomType == RoomType.unRead && _roomExists(oldState.items, newRoom)) {
+    if (roomType == RoomType.unRead && Room.exists(oldState.items, newRoom)) {
       return;
     }
     state = AsyncData(oldState.copyWith(
@@ -72,18 +105,7 @@ class ChatLobbyController extends _$ChatLobbyController {
     state = AsyncData(oldState.copyWith(items: [...oldState.items]));
   }
 
-  bool _roomExists(List<Room> roomsList, Room newRoom) {
-    final existingRoom =
-        roomsList.firstWhereOrNull((room) => room.id == newRoom.id);
-    return existingRoom != null;
-  }
-
-  int? _roomIndexOrNull(List<Room> roomsList, Room oldRoom) {
-    final roomIndex = roomsList.indexWhere((room) => room.id == oldRoom.id);
-    return _roomFound(roomIndex) ? roomIndex : null;
-  }
-
-  bool _roomFound(int existingRoomIndex) {
-    return existingRoomIndex > -1;
+  int? _roomIndexOrNull(List<Room> roomsList, Room room) {
+    return roomsList.indexWhereOrNull((r) => r.id == room.id);
   }
 }

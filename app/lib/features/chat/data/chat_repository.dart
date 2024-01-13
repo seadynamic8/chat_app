@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
+import 'package:chat_app/features/chat_lobby/domain/room.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:chat_app/utils/pagination.dart';
@@ -220,6 +221,74 @@ class ChatRepository {
       rethrow;
     }
   }
+
+  // * Join / Request Chat Room Status
+
+  Future<bool> getJoinStatus(String roomId, String profileId) async {
+    try {
+      final chatUser = await supabase
+          .from('chat_users')
+          .select<Map<String, dynamic>>('joined')
+          .eq('room_id', roomId)
+          .eq('profile_id', profileId)
+          .single();
+
+      return chatUser['joined'] as bool;
+    } catch (error, st) {
+      await logError('getJoinStatus()', error, st);
+      rethrow;
+    }
+  }
+
+  Stream<Map<String, dynamic>> watchChatUserInsert(String profileId) {
+    final streamController = StreamController<Map<String, dynamic>>();
+
+    supabase.channel('public:chat_users:insert:profile_id=eq.$profileId').on(
+      RealtimeListenTypes.postgresChanges,
+      ChannelFilter(
+        event: 'INSERT',
+        schema: 'public',
+        table: 'chat_users',
+        filter: 'profile_id=eq.$profileId',
+      ),
+      (payload, [ref]) async {
+        final chatUser = payload['new'];
+        streamController.add(chatUser);
+      },
+    ).subscribe();
+
+    return streamController.stream;
+  }
+
+  Stream<Map<String, dynamic>> watchChatUserUpdate(String profileId) {
+    final streamController = StreamController<Map<String, dynamic>>();
+
+    supabase.channel('public:chat_users:update:profile_id=eq.$profileId').on(
+      RealtimeListenTypes.postgresChanges,
+      ChannelFilter(
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'chat_users',
+        filter: 'profile_id=eq.$profileId',
+      ),
+      (payload, [ref]) async {
+        final chatUser = payload['new'];
+        streamController.add(chatUser);
+      },
+    ).subscribe();
+
+    return streamController.stream;
+  }
+
+  Future<void> markRoomAsJoined(String roomId, String currentUserId) async {
+    try {
+      await supabase.from('chat_users').update({'joined': true}).match(
+          {'room_id': roomId, 'profile_id': currentUserId});
+    } catch (error, st) {
+      await logError('markRoomAsJoined()', error, st);
+      rethrow;
+    }
+  }
 }
 
 @riverpod
@@ -241,4 +310,56 @@ FutureOr<Map<String, Profile>> getProfilesForRoom(
 Stream<Message> newMessagesStream(NewMessagesStreamRef ref, String roomId) {
   final chatRepository = ref.watch(chatRepositoryProvider);
   return chatRepository.watchNewMessageForRoom(roomId);
+}
+
+@riverpod
+Stream<Map<String, dynamic>> chatUserInsert(ChatUserInsertRef ref) {
+  final currentUserId = ref.watch(currentUserIdProvider)!;
+  final chatLobbyRepository = ref.watch(chatRepositoryProvider);
+  return chatLobbyRepository.watchChatUserInsert(currentUserId);
+}
+
+@riverpod
+Stream<Map<String, dynamic>> chatUserUpdate(ChatUserUpdateRef ref) {
+  final currentUserId = ref.watch(currentUserIdProvider)!;
+  final chatLobbyRepository = ref.watch(chatRepositoryProvider);
+  return chatLobbyRepository.watchChatUserUpdate(currentUserId);
+}
+
+@riverpod
+Stream<bool> onJoinForRoom(OnJoinForRoomRef ref, String roomId) {
+  final streamController = StreamController<bool>();
+  ref.watch(chatUserUpdateProvider).whenData((chatUser) {
+    if (chatUser['joined'] == true && chatUser['room_id'] == roomId) {
+      streamController.add(true);
+    }
+  });
+  return streamController.stream;
+}
+
+@riverpod
+Stream<Room> newRequestedRoom(NewRequestedRoomRef ref) {
+  final streamController = StreamController<Room>();
+  ref.watch(chatUserInsertProvider).whenData((chatUser) {
+    if (chatUser['joined'] == false) {
+      streamController.add(Room(id: chatUser['room_id']));
+    }
+  });
+  return streamController.stream;
+}
+
+@riverpod
+Stream<Room> joinedRoom(JoinedRoomRef ref) {
+  final streamController = StreamController<Room>();
+  ref.watch(chatUserInsertProvider).whenData((chatUser) {
+    if (chatUser['joined'] == true) {
+      streamController.add(Room(id: chatUser['room_id']));
+    }
+  });
+  ref.watch(chatUserUpdateProvider).whenData((chatUser) {
+    if (chatUser['joined'] == true) {
+      streamController.add(Room(id: chatUser['room_id']));
+    }
+  });
+  return streamController.stream;
 }

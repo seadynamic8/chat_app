@@ -160,8 +160,10 @@ void main() {
     // Mock - otherUser2 enters chatRoom2 with you
     final fakeRoomTwo = await chatLobbyRepository.createRoom();
     final fakeRoomTwoId = fakeRoomTwo.id;
-    await chatLobbyRepository.addUserToRoom(currentProfileId, fakeRoomTwoId);
-    await chatLobbyRepository.addUserToRoom(fakeUserTwoId, fakeRoomTwoId);
+    await chatLobbyRepository.addUserToRoom(
+        profileId: currentProfileId, roomId: fakeRoomTwoId, joined: true);
+    await chatLobbyRepository.addUserToRoom(
+        profileId: fakeUserTwoId, roomId: fakeRoomTwoId, joined: true);
     final chatLobbyItemTileFakeRoomTwo =
         ValueKey('${K.chatLobbyItemTilePrefix}$fakeRoomTwoId');
     await $.pumpAndSettle();

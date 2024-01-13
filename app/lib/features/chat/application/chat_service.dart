@@ -17,22 +17,42 @@ class ChatService {
     required String roomId,
     required String otherProfileId,
     required String messageText,
+    required bool joined,
   }) async {
     final blockState =
         await ref.read(blockedByChangesProvider(otherProfileId).future);
-
     if (blockState.status != BlockStatus.no) return blockState;
 
     final currentProfile = await ref.read(currentProfileStreamProvider.future);
+    await _joinRoomIfNotJoined(joined, roomId, currentProfile!.id!);
+
     await ref.read(chatRepositoryProvider).saveMessage(
           roomId,
           otherProfileId,
-          Message(content: messageText, profileId: currentProfile!.id),
+          Message(content: messageText, profileId: currentProfile.id),
         );
-    await _createMessageNotification(
-        roomId, currentProfile, otherProfileId, messageText);
+
+    if (await _otherProfileJoined(roomId, otherProfileId)) {
+      await _createMessageNotification(
+          roomId, currentProfile, otherProfileId, messageText);
+    }
 
     return blockState;
+  }
+
+  Future<void> _joinRoomIfNotJoined(
+      bool joined, String roomId, String currentProfileId) async {
+    if (!joined) {
+      await ref
+          .read(chatRepositoryProvider)
+          .markRoomAsJoined(roomId, currentProfileId);
+    }
+  }
+
+  Future<bool> _otherProfileJoined(String roomId, String otherProfileId) async {
+    return await ref
+        .read(chatRepositoryProvider)
+        .getJoinStatus(roomId, otherProfileId);
   }
 
   Future<void> _createMessageNotification(

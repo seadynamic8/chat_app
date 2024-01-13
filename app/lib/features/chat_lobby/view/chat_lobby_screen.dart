@@ -15,7 +15,7 @@ class ChatLobbyScreen extends ConsumerWidget {
     return I18n(
       child: SafeArea(
         child: DefaultTabController(
-          length: 2,
+          length: 3,
           child: Scaffold(
             appBar: AppBar(
               title: Text('Chats'.i18n),
@@ -24,13 +24,15 @@ class ChatLobbyScreen extends ConsumerWidget {
                 tabs: [
                   Tab(text: 'All'),
                   Tab(text: 'Unread Only'),
+                  Tab(text: 'Requests'),
                 ],
               ),
             ),
             body: const TabBarView(
               children: [
                 ChatLobbyList(roomType: RoomType.all),
-                ChatLobbyList(roomType: RoomType.unRead)
+                ChatLobbyList(roomType: RoomType.unRead),
+                ChatLobbyList(roomType: RoomType.requests),
               ],
             ),
           ),

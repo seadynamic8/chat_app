@@ -1,7 +1,6 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:chat_app/features/chat_lobby/domain/room.dart';
-import 'package:chat_app/utils/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -37,12 +36,16 @@ class ChatLobbyService {
     required String roomId,
   }) async {
     final currentUserId = ref.read(currentUserIdProvider)!;
-    await ref
-        .read(chatLobbyRepositoryProvider)
-        .addUserToRoom(currentUserId, roomId);
-    await ref
-        .read(chatLobbyRepositoryProvider)
-        .addUserToRoom(otherProfileId, roomId);
+    await ref.read(chatLobbyRepositoryProvider).addUserToRoom(
+          profileId: currentUserId,
+          roomId: roomId,
+          joined: true,
+        );
+    await ref.read(chatLobbyRepositoryProvider).addUserToRoom(
+          profileId: otherProfileId,
+          roomId: roomId,
+          joined: false,
+        );
   }
 
   Future<List<Room>> getRooms({
@@ -52,37 +55,11 @@ class ChatLobbyService {
   }) async {
     switch (roomType) {
       case RoomType.all:
-        return await ref.read(allRoomsProvider(
-          page,
-          range,
-        ).future);
+        return await ref.read(allRoomsProvider(page, range).future);
       case RoomType.unRead:
         return await ref.read(unReadOnlyRoomsProvider(page, range).future);
-      default:
-        return [];
-    }
-  }
-
-  Future<void> roomUpdateHandler({
-    required RoomType roomType,
-    required void Function(Room newRoom) addNewRoomCallback,
-    required void Function(Room oldRoom) removeRoomCallback,
-  }) async {
-    final currentUserId = ref.read(currentUserIdProvider)!;
-    final chatLobbyRepository = ref.read(chatLobbyRepositoryProvider);
-
-    switch (roomType) {
-      case RoomType.all:
-        chatLobbyRepository.watchNewRoomForUser(
-            currentUserId, addNewRoomCallback);
-      case RoomType.unRead:
-        logger.i('adding unRead handlers');
-        chatLobbyRepository.watchNewUnReadMessage(
-            currentUserId, addNewRoomCallback);
-
-        chatLobbyRepository.watchNewReadMessage(
-            currentUserId, removeRoomCallback);
-      default:
+      case RoomType.requests:
+        return await ref.read(requestedRoomsProvider(page, range).future);
     }
   }
 }

@@ -464,6 +464,197 @@ class _UnReadOnlyRoomsProviderElement
   int get range => (origin as UnReadOnlyRoomsProvider).range;
 }
 
+String _$requestedRoomsHash() => r'd4ed0a8432502000ac4a155209b9cf9112bc885a';
+
+/// See also [requestedRooms].
+@ProviderFor(requestedRooms)
+const requestedRoomsProvider = RequestedRoomsFamily();
+
+/// See also [requestedRooms].
+class RequestedRoomsFamily extends Family<AsyncValue<List<Room>>> {
+  /// See also [requestedRooms].
+  const RequestedRoomsFamily();
+
+  /// See also [requestedRooms].
+  RequestedRoomsProvider call(
+    int page,
+    int range,
+  ) {
+    return RequestedRoomsProvider(
+      page,
+      range,
+    );
+  }
+
+  @override
+  RequestedRoomsProvider getProviderOverride(
+    covariant RequestedRoomsProvider provider,
+  ) {
+    return call(
+      provider.page,
+      provider.range,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'requestedRoomsProvider';
+}
+
+/// See also [requestedRooms].
+class RequestedRoomsProvider extends AutoDisposeFutureProvider<List<Room>> {
+  /// See also [requestedRooms].
+  RequestedRoomsProvider(
+    int page,
+    int range,
+  ) : this._internal(
+          (ref) => requestedRooms(
+            ref as RequestedRoomsRef,
+            page,
+            range,
+          ),
+          from: requestedRoomsProvider,
+          name: r'requestedRoomsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$requestedRoomsHash,
+          dependencies: RequestedRoomsFamily._dependencies,
+          allTransitiveDependencies:
+              RequestedRoomsFamily._allTransitiveDependencies,
+          page: page,
+          range: range,
+        );
+
+  RequestedRoomsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.page,
+    required this.range,
+  }) : super.internal();
+
+  final int page;
+  final int range;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<Room>> Function(RequestedRoomsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: RequestedRoomsProvider._internal(
+        (ref) => create(ref as RequestedRoomsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        page: page,
+        range: range,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<Room>> createElement() {
+    return _RequestedRoomsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RequestedRoomsProvider &&
+        other.page == page &&
+        other.range == range;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, page.hashCode);
+    hash = _SystemHash.combine(hash, range.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin RequestedRoomsRef on AutoDisposeFutureProviderRef<List<Room>> {
+  /// The parameter `page` of this provider.
+  int get page;
+
+  /// The parameter `range` of this provider.
+  int get range;
+}
+
+class _RequestedRoomsProviderElement
+    extends AutoDisposeFutureProviderElement<List<Room>>
+    with RequestedRoomsRef {
+  _RequestedRoomsProviderElement(super.provider);
+
+  @override
+  int get page => (origin as RequestedRoomsProvider).page;
+  @override
+  int get range => (origin as RequestedRoomsProvider).range;
+}
+
+String _$newUnReadRoomHash() => r'd680f33cae00d44c420b8635b3ade94f71c4437c';
+
+/// See also [newUnReadRoom].
+@ProviderFor(newUnReadRoom)
+final newUnReadRoomProvider = AutoDisposeStreamProvider<Room>.internal(
+  newUnReadRoom,
+  name: r'newUnReadRoomProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$newUnReadRoomHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef NewUnReadRoomRef = AutoDisposeStreamProviderRef<Room>;
+String _$newUnReadJoinedRoomHash() =>
+    r'503316ca88dc0f59ed641c85f46745677c1da23d';
+
+/// See also [newUnReadJoinedRoom].
+@ProviderFor(newUnReadJoinedRoom)
+final newUnReadJoinedRoomProvider = AutoDisposeStreamProvider<Room>.internal(
+  newUnReadJoinedRoom,
+  name: r'newUnReadJoinedRoomProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$newUnReadJoinedRoomHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef NewUnReadJoinedRoomRef = AutoDisposeStreamProviderRef<Room>;
+String _$newReadRoomHash() => r'294c19d8f6cd7e0080462021f328b39661942c22';
+
+/// See also [newReadRoom].
+@ProviderFor(newReadRoom)
+final newReadRoomProvider = AutoDisposeStreamProvider<Room>.internal(
+  newReadRoom,
+  name: r'newReadRoomProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$newReadRoomHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef NewReadRoomRef = AutoDisposeStreamProviderRef<Room>;
 String _$unReadMessageCountStreamHash() =>
     r'8d501e867a6650ce5ea9bc6e03f6468cfffbb330';
 

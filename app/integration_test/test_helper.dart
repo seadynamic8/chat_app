@@ -83,11 +83,13 @@ class TestHelper {
     required String roomId,
     required String otherProfileId,
     required String messageText,
+    required bool joined,
   }) async {
     await chatService.sendMessage(
       roomId: roomId,
       otherProfileId: otherProfileId,
       messageText: messageText,
+      joined: joined,
     );
   }
 

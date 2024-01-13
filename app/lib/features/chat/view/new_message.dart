@@ -10,10 +10,12 @@ class NewMessage extends ConsumerStatefulWidget {
     super.key,
     required this.roomId,
     required this.otherProfileId,
+    required this.joined,
   });
 
   final String roomId;
   final String otherProfileId;
+  final bool joined;
 
   @override
   ConsumerState<NewMessage> createState() => _NewMessageState();
@@ -35,6 +37,7 @@ class _NewMessageState extends ConsumerState<NewMessage> {
           roomId: widget.roomId,
           otherProfileId: widget.otherProfileId,
           messageText: messageText,
+          joined: widget.joined,
         );
 
     _showBlockMessage(blockState);

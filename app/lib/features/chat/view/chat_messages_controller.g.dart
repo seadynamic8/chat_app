@@ -7,7 +7,7 @@ part of 'chat_messages_controller.dart';
 // **************************************************************************
 
 String _$chatMessagesControllerHash() =>
-    r'4c9a2cb5a13eee7bc69555be7543a97489fab670';
+    r'0d8e5c020da761dd04f1fb96d20de3f09c602dfe';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -32,12 +32,10 @@ class _SystemHash {
 
 abstract class _$ChatMessagesController
     extends BuildlessAutoDisposeAsyncNotifier<PaginationState<Message>> {
-  late final String roomId;
-  late final Map<String, Profile> profiles;
+  late final ChatRoom chatRoom;
 
   FutureOr<PaginationState<Message>> build(
-    String roomId,
-    Map<String, Profile> profiles,
+    ChatRoom chatRoom,
   );
 }
 
@@ -53,12 +51,10 @@ class ChatMessagesControllerFamily
 
   /// See also [ChatMessagesController].
   ChatMessagesControllerProvider call(
-    String roomId,
-    Map<String, Profile> profiles,
+    ChatRoom chatRoom,
   ) {
     return ChatMessagesControllerProvider(
-      roomId,
-      profiles,
+      chatRoom,
     );
   }
 
@@ -67,8 +63,7 @@ class ChatMessagesControllerFamily
     covariant ChatMessagesControllerProvider provider,
   ) {
     return call(
-      provider.roomId,
-      provider.profiles,
+      provider.chatRoom,
     );
   }
 
@@ -93,12 +88,9 @@ class ChatMessagesControllerProvider
         PaginationState<Message>> {
   /// See also [ChatMessagesController].
   ChatMessagesControllerProvider(
-    String roomId,
-    Map<String, Profile> profiles,
+    ChatRoom chatRoom,
   ) : this._internal(
-          () => ChatMessagesController()
-            ..roomId = roomId
-            ..profiles = profiles,
+          () => ChatMessagesController()..chatRoom = chatRoom,
           from: chatMessagesControllerProvider,
           name: r'chatMessagesControllerProvider',
           debugGetCreateSourceHash:
@@ -108,8 +100,7 @@ class ChatMessagesControllerProvider
           dependencies: ChatMessagesControllerFamily._dependencies,
           allTransitiveDependencies:
               ChatMessagesControllerFamily._allTransitiveDependencies,
-          roomId: roomId,
-          profiles: profiles,
+          chatRoom: chatRoom,
         );
 
   ChatMessagesControllerProvider._internal(
@@ -119,20 +110,17 @@ class ChatMessagesControllerProvider
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.roomId,
-    required this.profiles,
+    required this.chatRoom,
   }) : super.internal();
 
-  final String roomId;
-  final Map<String, Profile> profiles;
+  final ChatRoom chatRoom;
 
   @override
   FutureOr<PaginationState<Message>> runNotifierBuild(
     covariant ChatMessagesController notifier,
   ) {
     return notifier.build(
-      roomId,
-      profiles,
+      chatRoom,
     );
   }
 
@@ -141,16 +129,13 @@ class ChatMessagesControllerProvider
     return ProviderOverride(
       origin: this,
       override: ChatMessagesControllerProvider._internal(
-        () => create()
-          ..roomId = roomId
-          ..profiles = profiles,
+        () => create()..chatRoom = chatRoom,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        roomId: roomId,
-        profiles: profiles,
+        chatRoom: chatRoom,
       ),
     );
   }
@@ -164,15 +149,13 @@ class ChatMessagesControllerProvider
   @override
   bool operator ==(Object other) {
     return other is ChatMessagesControllerProvider &&
-        other.roomId == roomId &&
-        other.profiles == profiles;
+        other.chatRoom == chatRoom;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, roomId.hashCode);
-    hash = _SystemHash.combine(hash, profiles.hashCode);
+    hash = _SystemHash.combine(hash, chatRoom.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -180,11 +163,8 @@ class ChatMessagesControllerProvider
 
 mixin ChatMessagesControllerRef
     on AutoDisposeAsyncNotifierProviderRef<PaginationState<Message>> {
-  /// The parameter `roomId` of this provider.
-  String get roomId;
-
-  /// The parameter `profiles` of this provider.
-  Map<String, Profile> get profiles;
+  /// The parameter `chatRoom` of this provider.
+  ChatRoom get chatRoom;
 }
 
 class _ChatMessagesControllerProviderElement
@@ -193,10 +173,7 @@ class _ChatMessagesControllerProviderElement
   _ChatMessagesControllerProviderElement(super.provider);
 
   @override
-  String get roomId => (origin as ChatMessagesControllerProvider).roomId;
-  @override
-  Map<String, Profile> get profiles =>
-      (origin as ChatMessagesControllerProvider).profiles;
+  ChatRoom get chatRoom => (origin as ChatMessagesControllerProvider).chatRoom;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
