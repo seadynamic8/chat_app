@@ -107,7 +107,7 @@ extension ChannelPresenceHandlers on ChannelRepository {
         'username':
             currentProfile?.username, // This field makes debugging easier
         'status': status.name,
-        'enteredAt': DateTime.now().toIso8601String(),
+        'enteredAt': DateTime.now().toUtc().toIso8601String(),
       });
     } catch (error, st) {
       await logError('updatePresence()', error, st);

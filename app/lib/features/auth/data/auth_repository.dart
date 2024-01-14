@@ -351,7 +351,7 @@ class AuthRepository {
 
   Future<void> setOnlineAt() async {
     await supabase.from('profiles').upsert({
-      'online_at': DateTime.now().toIso8601String(),
+      'online_at': DateTime.now().toUtc().toIso8601String(),
     }).eq('id', currentUserId);
 
     // clear offline timestamp
@@ -362,7 +362,7 @@ class AuthRepository {
 
   Future<void> setOfflineAt() async {
     await supabase.from('profiles').upsert({
-      'offline_at': DateTime.now().toIso8601String(),
+      'offline_at': DateTime.now().toUtc().toIso8601String(),
     }).eq('id', currentUserId);
 
     // clear online timestamp

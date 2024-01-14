@@ -152,7 +152,7 @@ class ChatRepository {
     try {
       await supabase.from('messages_users').update({
         'read': true,
-        'read_at': DateTime.now().toIso8601String(),
+        'read_at': DateTime.now().toUtc().toIso8601String(),
       }).match({'room_id': roomId, 'profile_id': profileId});
 
       await supabase.rpc('delete_read_messages_except_last',
