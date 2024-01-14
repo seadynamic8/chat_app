@@ -12,6 +12,8 @@ alter table "public"."fcm_tokens" add column "updated_at" timestamp with time zo
 
 alter table "public"."messages_users" add column "updated_at" timestamp with time zone not null default now();
 
+create extension if not exists moddatetime schema extensions;
+
 CREATE TRIGGER handle_update_at BEFORE UPDATE ON public.access_levels FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at');
 
 CREATE TRIGGER handle_update_at BEFORE UPDATE ON public.blocked_users FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at');
@@ -25,5 +27,3 @@ CREATE TRIGGER handle_update_at BEFORE UPDATE ON public.messages FOR EACH ROW EX
 CREATE TRIGGER handle_update_at BEFORE UPDATE ON public.messages_users FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at');
 
 CREATE TRIGGER handle_update_at BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at');
-
-
