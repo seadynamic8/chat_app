@@ -30,8 +30,8 @@ alter table "public"."profiles" add constraint "profiles_username_key" UNIQUE us
 
 -- Create media bucket  (insert into, if not exists)
 
-insert into storage.buckets (id, name)
-select 'media', 'media'
+insert into storage.buckets (id, name, public)
+select 'media', 'media', true
 where
   not exists (
     select id from storage.buckets where id = 'media'
