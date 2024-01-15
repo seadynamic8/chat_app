@@ -25,11 +25,6 @@ task :gen_envs, [:type] do |task, args|
   system command
 end
 
-desc "Run on S20"
-task :run_s20 do
-  command = "flutter run -d \"SM G981U\" --dart-define-from-file=encryption_key.json --dart-define-from-file=.stage.env --dart-define=ENV=stage"
-  system command
-end
 
 
 desc "Serve supabase functions with environment file"
@@ -49,6 +44,14 @@ namespace :dev do
   end
 end
 
+namespace :stage do
+  
+  desc "Run on S20"
+  task :run_s20 do
+    command = "flutter run -d \"SM G981U\" --dart-define-from-file=encryption_key.json --dart-define-from-file=.stage.env --dart-define=ENV=stage"
+    system command
+  end
+end
 
 namespace :release do
 
