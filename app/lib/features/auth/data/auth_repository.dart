@@ -255,6 +255,10 @@ class AuthRepository {
             'AuthRepository signInWithEmailAndPassword(): Something went wrong with email');
         throw UnknownEmailSignin();
       }
+      if (error.message == "Invalid login credentials") {
+        logger.i(error.message);
+        rethrow;
+      }
       logError('signInWithEmailAndPassword()', error, st);
       rethrow;
     } catch (error, st) {
