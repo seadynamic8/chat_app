@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -13,8 +12,8 @@ class RoutingObserver extends AutoRouteObserver {
 
   @override
   void didPush(Route route, Route? previousRoute) {
-    logger.t(
-        'New route pushed: ${route.settings.name}, previous: ${previousRoute?.settings.name ?? ''}');
+    // logger.t(
+    // 'New route pushed: ${route.settings.name}, previous: ${previousRoute?.settings.name ?? ''}');
     // if (route.settings.name == TabsNavigation.name) {
     // }
   }

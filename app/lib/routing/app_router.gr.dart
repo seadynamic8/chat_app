@@ -8,54 +8,62 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i23;
-import 'package:chat_app/features/auth/domain/profile.dart' as _i26;
-import 'package:chat_app/features/auth/view/auth/auth_form_state.dart' as _i25;
-import 'package:chat_app/features/auth/view/auth/auth_screen.dart' as _i1;
+import 'package:auto_route/auto_route.dart' as _i25;
+import 'package:chat_app/common/error_talker_screen.dart' as _i7;
+import 'package:chat_app/features/auth/domain/profile.dart' as _i28;
+import 'package:chat_app/features/auth/view/auth/auth_form_state.dart' as _i27;
+import 'package:chat_app/features/auth/view/auth/auth_navigation.dart' as _i1;
+import 'package:chat_app/features/auth/view/auth/auth_screen.dart' as _i2;
 import 'package:chat_app/features/auth/view/auth/auth_verify_screen.dart'
-    as _i2;
-import 'package:chat_app/features/auth/view/auth/forgot_password_screen.dart'
-    as _i8;
-import 'package:chat_app/features/auth/view/auth/reset_password_screen.dart'
-    as _i15;
-import 'package:chat_app/features/auth/view/auth/signedup_screen_one.dart'
-    as _i18;
-import 'package:chat_app/features/auth/view/auth/signedup_screen_two.dart'
-    as _i19;
-import 'package:chat_app/features/auth/view/profile/private_profile_screen.dart'
-    as _i11;
-import 'package:chat_app/features/auth/view/profile/profile_edit_screen.dart'
-    as _i12;
-import 'package:chat_app/features/auth/view/profile/profile_navigation.dart'
-    as _i13;
-import 'package:chat_app/features/auth/view/profile/public_profile_screen.dart'
-    as _i14;
-import 'package:chat_app/features/auth/view/profile/settings_screen.dart'
-    as _i17;
-import 'package:chat_app/features/chat/view/chat_navigation.dart' as _i4;
-import 'package:chat_app/features/chat/view/chat_room_screen.dart' as _i5;
-import 'package:chat_app/features/chat_lobby/view/chat_lobby_screen.dart'
     as _i3;
-import 'package:chat_app/features/explore/view/explore_navigation.dart' as _i6;
-import 'package:chat_app/features/explore/view/explore_screen.dart' as _i7;
-import 'package:chat_app/features/home/view/main_navigation.dart' as _i9;
-import 'package:chat_app/features/home/view/tabs_navigation.dart' as _i20;
-import 'package:chat_app/features/paywall/view/paywall_screen.dart' as _i10;
-import 'package:chat_app/features/search/view/search_screen.dart' as _i16;
-import 'package:chat_app/features/video/view/video_room_screen.dart' as _i21;
-import 'package:chat_app/features/video/view/waiting_screen.dart' as _i22;
-import 'package:flutter/material.dart' as _i24;
+import 'package:chat_app/features/auth/view/auth/forgot_password_screen.dart'
+    as _i10;
+import 'package:chat_app/features/auth/view/auth/reset_password_screen.dart'
+    as _i17;
+import 'package:chat_app/features/auth/view/auth/signedup_screen_one.dart'
+    as _i20;
+import 'package:chat_app/features/auth/view/auth/signedup_screen_two.dart'
+    as _i21;
+import 'package:chat_app/features/auth/view/profile/private_profile_screen.dart'
+    as _i13;
+import 'package:chat_app/features/auth/view/profile/profile_edit_screen.dart'
+    as _i14;
+import 'package:chat_app/features/auth/view/profile/profile_navigation.dart'
+    as _i15;
+import 'package:chat_app/features/auth/view/profile/public_profile_screen.dart'
+    as _i16;
+import 'package:chat_app/features/auth/view/profile/settings_screen.dart'
+    as _i19;
+import 'package:chat_app/features/chat/view/chat_navigation.dart' as _i5;
+import 'package:chat_app/features/chat/view/chat_room_screen.dart' as _i6;
+import 'package:chat_app/features/chat_lobby/view/chat_lobby_screen.dart'
+    as _i4;
+import 'package:chat_app/features/explore/view/explore_navigation.dart' as _i8;
+import 'package:chat_app/features/explore/view/explore_screen.dart' as _i9;
+import 'package:chat_app/features/home/view/main_navigation.dart' as _i11;
+import 'package:chat_app/features/home/view/tabs_navigation.dart' as _i22;
+import 'package:chat_app/features/paywall/view/paywall_screen.dart' as _i12;
+import 'package:chat_app/features/search/view/search_screen.dart' as _i18;
+import 'package:chat_app/features/video/view/video_room_screen.dart' as _i23;
+import 'package:chat_app/features/video/view/waiting_screen.dart' as _i24;
+import 'package:flutter/material.dart' as _i26;
 
-abstract class $AppRouter extends _i23.RootStackRouter {
+abstract class $AppRouter extends _i25.RootStackRouter {
   $AppRouter({super.navigatorKey});
 
   @override
-  final Map<String, _i23.PageFactory> pagesMap = {
+  final Map<String, _i25.PageFactory> pagesMap = {
+    AuthNavigation.name: (routeData) {
+      return _i25.AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const _i1.AuthNavigation(),
+      );
+    },
     AuthRoute.name: (routeData) {
       final args = routeData.argsAs<AuthRouteArgs>();
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i1.AuthScreen(
+        child: _i2.AuthScreen(
           key: args.key,
           formType: args.formType,
           resolver: args.resolver,
@@ -64,9 +72,9 @@ abstract class $AppRouter extends _i23.RootStackRouter {
     },
     AuthVerifyRoute.name: (routeData) {
       final args = routeData.argsAs<AuthVerifyRouteArgs>();
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i2.AuthVerifyScreen(
+        child: _i3.AuthVerifyScreen(
           key: args.key,
           email: args.email,
           isResetPassword: args.isResetPassword,
@@ -74,78 +82,84 @@ abstract class $AppRouter extends _i23.RootStackRouter {
       );
     },
     ChatLobbyRoute.name: (routeData) {
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i3.ChatLobbyScreen(),
+        child: const _i4.ChatLobbyScreen(),
       );
     },
     ChatNavigation.name: (routeData) {
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i4.ChatNavigation(),
+        child: const _i5.ChatNavigation(),
       );
     },
     ChatRoomRoute.name: (routeData) {
       final args = routeData.argsAs<ChatRoomRouteArgs>();
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i5.ChatRoomScreen(
+        child: _i6.ChatRoomScreen(
           key: args.key,
           roomId: args.roomId,
           otherProfileId: args.otherProfileId,
         ),
       );
     },
-    ExploreNavigation.name: (routeData) {
-      return _i23.AutoRoutePage<dynamic>(
+    ErrorTalkerRoute.name: (routeData) {
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i6.ExploreNavigation(),
+        child: const _i7.ErrorTalkerScreen(),
+      );
+    },
+    ExploreNavigation.name: (routeData) {
+      return _i25.AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const _i8.ExploreNavigation(),
       );
     },
     ExploreRoute.name: (routeData) {
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i7.ExploreScreen(),
+        child: const _i9.ExploreScreen(),
       );
     },
     ForgotPasswordRoute.name: (routeData) {
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i8.ForgotPasswordScreen(),
+        child: const _i10.ForgotPasswordScreen(),
       );
     },
     MainNavigation.name: (routeData) {
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i9.MainNavigation(),
+        child: const _i11.MainNavigation(),
       );
     },
     PaywallRoute.name: (routeData) {
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i10.PaywallScreen(),
+        child: const _i12.PaywallScreen(),
       );
     },
     PrivateProfileRoute.name: (routeData) {
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i11.PrivateProfileScreen(),
+        child: const _i13.PrivateProfileScreen(),
       );
     },
     ProfileEditRoute.name: (routeData) {
       final args = routeData.argsAs<ProfileEditRouteArgs>();
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i12.ProfileEditScreen(
+        child: _i14.ProfileEditScreen(
           key: args.key,
           profile: args.profile,
         ),
       );
     },
     ProfileNavigation.name: (routeData) {
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i13.ProfileNavigation(),
+        child: const _i15.ProfileNavigation(),
       );
     },
     PublicProfileRoute.name: (routeData) {
@@ -153,59 +167,59 @@ abstract class $AppRouter extends _i23.RootStackRouter {
       final args = routeData.argsAs<PublicProfileRouteArgs>(
           orElse: () =>
               PublicProfileRouteArgs(profileId: pathParams.getString('id')));
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i14.PublicProfileScreen(
+        child: _i16.PublicProfileScreen(
           key: args.key,
           profileId: args.profileId,
         ),
       );
     },
     ResetPasswordRoute.name: (routeData) {
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i15.ResetPasswordScreen(),
+        child: const _i17.ResetPasswordScreen(),
       );
     },
     SearchRoute.name: (routeData) {
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i16.SearchScreen(),
+        child: const _i18.SearchScreen(),
       );
     },
     SettingsRoute.name: (routeData) {
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i17.SettingsScreen(),
+        child: const _i19.SettingsScreen(),
       );
     },
     SignedupRouteOne.name: (routeData) {
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i18.SignedupScreenOne(),
+        child: const _i20.SignedupScreenOne(),
       );
     },
     SignedupRouteTwo.name: (routeData) {
       final args = routeData.argsAs<SignedupRouteTwoArgs>();
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i19.SignedupScreenTwo(
+        child: _i21.SignedupScreenTwo(
           key: args.key,
           updateProfile: args.updateProfile,
         ),
       );
     },
     TabsNavigation.name: (routeData) {
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i20.TabsNavigation(),
+        child: const _i22.TabsNavigation(),
       );
     },
     VideoRoomRoute.name: (routeData) {
       final args = routeData.argsAs<VideoRoomRouteArgs>();
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i21.VideoRoomScreen(
+        child: _i23.VideoRoomScreen(
           key: args.key,
           videoRoomId: args.videoRoomId,
           otherProfileId: args.otherProfileId,
@@ -215,9 +229,9 @@ abstract class $AppRouter extends _i23.RootStackRouter {
     },
     WaitingRoute.name: (routeData) {
       final args = routeData.argsAs<WaitingRouteArgs>();
-      return _i23.AutoRoutePage<dynamic>(
+      return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i22.WaitingScreen(
+        child: _i24.WaitingScreen(
           key: args.key,
           otherProfile: args.otherProfile,
         ),
@@ -227,13 +241,27 @@ abstract class $AppRouter extends _i23.RootStackRouter {
 }
 
 /// generated route for
-/// [_i1.AuthScreen]
-class AuthRoute extends _i23.PageRouteInfo<AuthRouteArgs> {
+/// [_i1.AuthNavigation]
+class AuthNavigation extends _i25.PageRouteInfo<void> {
+  const AuthNavigation({List<_i25.PageRouteInfo>? children})
+      : super(
+          AuthNavigation.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'AuthNavigation';
+
+  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+}
+
+/// generated route for
+/// [_i2.AuthScreen]
+class AuthRoute extends _i25.PageRouteInfo<AuthRouteArgs> {
   AuthRoute({
-    _i24.Key? key,
-    required _i25.AuthFormType formType,
-    required _i23.NavigationResolver resolver,
-    List<_i23.PageRouteInfo>? children,
+    _i26.Key? key,
+    required _i27.AuthFormType formType,
+    required _i25.NavigationResolver resolver,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
           AuthRoute.name,
           args: AuthRouteArgs(
@@ -246,8 +274,8 @@ class AuthRoute extends _i23.PageRouteInfo<AuthRouteArgs> {
 
   static const String name = 'AuthRoute';
 
-  static const _i23.PageInfo<AuthRouteArgs> page =
-      _i23.PageInfo<AuthRouteArgs>(name);
+  static const _i25.PageInfo<AuthRouteArgs> page =
+      _i25.PageInfo<AuthRouteArgs>(name);
 }
 
 class AuthRouteArgs {
@@ -257,11 +285,11 @@ class AuthRouteArgs {
     required this.resolver,
   });
 
-  final _i24.Key? key;
+  final _i26.Key? key;
 
-  final _i25.AuthFormType formType;
+  final _i27.AuthFormType formType;
 
-  final _i23.NavigationResolver resolver;
+  final _i25.NavigationResolver resolver;
 
   @override
   String toString() {
@@ -270,13 +298,13 @@ class AuthRouteArgs {
 }
 
 /// generated route for
-/// [_i2.AuthVerifyScreen]
-class AuthVerifyRoute extends _i23.PageRouteInfo<AuthVerifyRouteArgs> {
+/// [_i3.AuthVerifyScreen]
+class AuthVerifyRoute extends _i25.PageRouteInfo<AuthVerifyRouteArgs> {
   AuthVerifyRoute({
-    _i24.Key? key,
+    _i26.Key? key,
     required String email,
     bool isResetPassword = false,
-    List<_i23.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
           AuthVerifyRoute.name,
           args: AuthVerifyRouteArgs(
@@ -289,8 +317,8 @@ class AuthVerifyRoute extends _i23.PageRouteInfo<AuthVerifyRouteArgs> {
 
   static const String name = 'AuthVerifyRoute';
 
-  static const _i23.PageInfo<AuthVerifyRouteArgs> page =
-      _i23.PageInfo<AuthVerifyRouteArgs>(name);
+  static const _i25.PageInfo<AuthVerifyRouteArgs> page =
+      _i25.PageInfo<AuthVerifyRouteArgs>(name);
 }
 
 class AuthVerifyRouteArgs {
@@ -300,7 +328,7 @@ class AuthVerifyRouteArgs {
     this.isResetPassword = false,
   });
 
-  final _i24.Key? key;
+  final _i26.Key? key;
 
   final String email;
 
@@ -313,9 +341,9 @@ class AuthVerifyRouteArgs {
 }
 
 /// generated route for
-/// [_i3.ChatLobbyScreen]
-class ChatLobbyRoute extends _i23.PageRouteInfo<void> {
-  const ChatLobbyRoute({List<_i23.PageRouteInfo>? children})
+/// [_i4.ChatLobbyScreen]
+class ChatLobbyRoute extends _i25.PageRouteInfo<void> {
+  const ChatLobbyRoute({List<_i25.PageRouteInfo>? children})
       : super(
           ChatLobbyRoute.name,
           initialChildren: children,
@@ -323,13 +351,13 @@ class ChatLobbyRoute extends _i23.PageRouteInfo<void> {
 
   static const String name = 'ChatLobbyRoute';
 
-  static const _i23.PageInfo<void> page = _i23.PageInfo<void>(name);
+  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i4.ChatNavigation]
-class ChatNavigation extends _i23.PageRouteInfo<void> {
-  const ChatNavigation({List<_i23.PageRouteInfo>? children})
+/// [_i5.ChatNavigation]
+class ChatNavigation extends _i25.PageRouteInfo<void> {
+  const ChatNavigation({List<_i25.PageRouteInfo>? children})
       : super(
           ChatNavigation.name,
           initialChildren: children,
@@ -337,17 +365,17 @@ class ChatNavigation extends _i23.PageRouteInfo<void> {
 
   static const String name = 'ChatNavigation';
 
-  static const _i23.PageInfo<void> page = _i23.PageInfo<void>(name);
+  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i5.ChatRoomScreen]
-class ChatRoomRoute extends _i23.PageRouteInfo<ChatRoomRouteArgs> {
+/// [_i6.ChatRoomScreen]
+class ChatRoomRoute extends _i25.PageRouteInfo<ChatRoomRouteArgs> {
   ChatRoomRoute({
-    _i24.Key? key,
+    _i26.Key? key,
     required String roomId,
     required String otherProfileId,
-    List<_i23.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
           ChatRoomRoute.name,
           args: ChatRoomRouteArgs(
@@ -360,8 +388,8 @@ class ChatRoomRoute extends _i23.PageRouteInfo<ChatRoomRouteArgs> {
 
   static const String name = 'ChatRoomRoute';
 
-  static const _i23.PageInfo<ChatRoomRouteArgs> page =
-      _i23.PageInfo<ChatRoomRouteArgs>(name);
+  static const _i25.PageInfo<ChatRoomRouteArgs> page =
+      _i25.PageInfo<ChatRoomRouteArgs>(name);
 }
 
 class ChatRoomRouteArgs {
@@ -371,7 +399,7 @@ class ChatRoomRouteArgs {
     required this.otherProfileId,
   });
 
-  final _i24.Key? key;
+  final _i26.Key? key;
 
   final String roomId;
 
@@ -384,9 +412,23 @@ class ChatRoomRouteArgs {
 }
 
 /// generated route for
-/// [_i6.ExploreNavigation]
-class ExploreNavigation extends _i23.PageRouteInfo<void> {
-  const ExploreNavigation({List<_i23.PageRouteInfo>? children})
+/// [_i7.ErrorTalkerScreen]
+class ErrorTalkerRoute extends _i25.PageRouteInfo<void> {
+  const ErrorTalkerRoute({List<_i25.PageRouteInfo>? children})
+      : super(
+          ErrorTalkerRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ErrorTalkerRoute';
+
+  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+}
+
+/// generated route for
+/// [_i8.ExploreNavigation]
+class ExploreNavigation extends _i25.PageRouteInfo<void> {
+  const ExploreNavigation({List<_i25.PageRouteInfo>? children})
       : super(
           ExploreNavigation.name,
           initialChildren: children,
@@ -394,13 +436,13 @@ class ExploreNavigation extends _i23.PageRouteInfo<void> {
 
   static const String name = 'ExploreNavigation';
 
-  static const _i23.PageInfo<void> page = _i23.PageInfo<void>(name);
+  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i7.ExploreScreen]
-class ExploreRoute extends _i23.PageRouteInfo<void> {
-  const ExploreRoute({List<_i23.PageRouteInfo>? children})
+/// [_i9.ExploreScreen]
+class ExploreRoute extends _i25.PageRouteInfo<void> {
+  const ExploreRoute({List<_i25.PageRouteInfo>? children})
       : super(
           ExploreRoute.name,
           initialChildren: children,
@@ -408,13 +450,13 @@ class ExploreRoute extends _i23.PageRouteInfo<void> {
 
   static const String name = 'ExploreRoute';
 
-  static const _i23.PageInfo<void> page = _i23.PageInfo<void>(name);
+  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i8.ForgotPasswordScreen]
-class ForgotPasswordRoute extends _i23.PageRouteInfo<void> {
-  const ForgotPasswordRoute({List<_i23.PageRouteInfo>? children})
+/// [_i10.ForgotPasswordScreen]
+class ForgotPasswordRoute extends _i25.PageRouteInfo<void> {
+  const ForgotPasswordRoute({List<_i25.PageRouteInfo>? children})
       : super(
           ForgotPasswordRoute.name,
           initialChildren: children,
@@ -422,13 +464,13 @@ class ForgotPasswordRoute extends _i23.PageRouteInfo<void> {
 
   static const String name = 'ForgotPasswordRoute';
 
-  static const _i23.PageInfo<void> page = _i23.PageInfo<void>(name);
+  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i9.MainNavigation]
-class MainNavigation extends _i23.PageRouteInfo<void> {
-  const MainNavigation({List<_i23.PageRouteInfo>? children})
+/// [_i11.MainNavigation]
+class MainNavigation extends _i25.PageRouteInfo<void> {
+  const MainNavigation({List<_i25.PageRouteInfo>? children})
       : super(
           MainNavigation.name,
           initialChildren: children,
@@ -436,13 +478,13 @@ class MainNavigation extends _i23.PageRouteInfo<void> {
 
   static const String name = 'MainNavigation';
 
-  static const _i23.PageInfo<void> page = _i23.PageInfo<void>(name);
+  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i10.PaywallScreen]
-class PaywallRoute extends _i23.PageRouteInfo<void> {
-  const PaywallRoute({List<_i23.PageRouteInfo>? children})
+/// [_i12.PaywallScreen]
+class PaywallRoute extends _i25.PageRouteInfo<void> {
+  const PaywallRoute({List<_i25.PageRouteInfo>? children})
       : super(
           PaywallRoute.name,
           initialChildren: children,
@@ -450,13 +492,13 @@ class PaywallRoute extends _i23.PageRouteInfo<void> {
 
   static const String name = 'PaywallRoute';
 
-  static const _i23.PageInfo<void> page = _i23.PageInfo<void>(name);
+  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i11.PrivateProfileScreen]
-class PrivateProfileRoute extends _i23.PageRouteInfo<void> {
-  const PrivateProfileRoute({List<_i23.PageRouteInfo>? children})
+/// [_i13.PrivateProfileScreen]
+class PrivateProfileRoute extends _i25.PageRouteInfo<void> {
+  const PrivateProfileRoute({List<_i25.PageRouteInfo>? children})
       : super(
           PrivateProfileRoute.name,
           initialChildren: children,
@@ -464,16 +506,16 @@ class PrivateProfileRoute extends _i23.PageRouteInfo<void> {
 
   static const String name = 'PrivateProfileRoute';
 
-  static const _i23.PageInfo<void> page = _i23.PageInfo<void>(name);
+  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i12.ProfileEditScreen]
-class ProfileEditRoute extends _i23.PageRouteInfo<ProfileEditRouteArgs> {
+/// [_i14.ProfileEditScreen]
+class ProfileEditRoute extends _i25.PageRouteInfo<ProfileEditRouteArgs> {
   ProfileEditRoute({
-    _i24.Key? key,
-    required _i26.Profile profile,
-    List<_i23.PageRouteInfo>? children,
+    _i26.Key? key,
+    required _i28.Profile profile,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
           ProfileEditRoute.name,
           args: ProfileEditRouteArgs(
@@ -485,8 +527,8 @@ class ProfileEditRoute extends _i23.PageRouteInfo<ProfileEditRouteArgs> {
 
   static const String name = 'ProfileEditRoute';
 
-  static const _i23.PageInfo<ProfileEditRouteArgs> page =
-      _i23.PageInfo<ProfileEditRouteArgs>(name);
+  static const _i25.PageInfo<ProfileEditRouteArgs> page =
+      _i25.PageInfo<ProfileEditRouteArgs>(name);
 }
 
 class ProfileEditRouteArgs {
@@ -495,9 +537,9 @@ class ProfileEditRouteArgs {
     required this.profile,
   });
 
-  final _i24.Key? key;
+  final _i26.Key? key;
 
-  final _i26.Profile profile;
+  final _i28.Profile profile;
 
   @override
   String toString() {
@@ -506,9 +548,9 @@ class ProfileEditRouteArgs {
 }
 
 /// generated route for
-/// [_i13.ProfileNavigation]
-class ProfileNavigation extends _i23.PageRouteInfo<void> {
-  const ProfileNavigation({List<_i23.PageRouteInfo>? children})
+/// [_i15.ProfileNavigation]
+class ProfileNavigation extends _i25.PageRouteInfo<void> {
+  const ProfileNavigation({List<_i25.PageRouteInfo>? children})
       : super(
           ProfileNavigation.name,
           initialChildren: children,
@@ -516,16 +558,16 @@ class ProfileNavigation extends _i23.PageRouteInfo<void> {
 
   static const String name = 'ProfileNavigation';
 
-  static const _i23.PageInfo<void> page = _i23.PageInfo<void>(name);
+  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i14.PublicProfileScreen]
-class PublicProfileRoute extends _i23.PageRouteInfo<PublicProfileRouteArgs> {
+/// [_i16.PublicProfileScreen]
+class PublicProfileRoute extends _i25.PageRouteInfo<PublicProfileRouteArgs> {
   PublicProfileRoute({
-    _i24.Key? key,
+    _i26.Key? key,
     required String profileId,
-    List<_i23.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
           PublicProfileRoute.name,
           args: PublicProfileRouteArgs(
@@ -538,8 +580,8 @@ class PublicProfileRoute extends _i23.PageRouteInfo<PublicProfileRouteArgs> {
 
   static const String name = 'PublicProfileRoute';
 
-  static const _i23.PageInfo<PublicProfileRouteArgs> page =
-      _i23.PageInfo<PublicProfileRouteArgs>(name);
+  static const _i25.PageInfo<PublicProfileRouteArgs> page =
+      _i25.PageInfo<PublicProfileRouteArgs>(name);
 }
 
 class PublicProfileRouteArgs {
@@ -548,7 +590,7 @@ class PublicProfileRouteArgs {
     required this.profileId,
   });
 
-  final _i24.Key? key;
+  final _i26.Key? key;
 
   final String profileId;
 
@@ -559,9 +601,9 @@ class PublicProfileRouteArgs {
 }
 
 /// generated route for
-/// [_i15.ResetPasswordScreen]
-class ResetPasswordRoute extends _i23.PageRouteInfo<void> {
-  const ResetPasswordRoute({List<_i23.PageRouteInfo>? children})
+/// [_i17.ResetPasswordScreen]
+class ResetPasswordRoute extends _i25.PageRouteInfo<void> {
+  const ResetPasswordRoute({List<_i25.PageRouteInfo>? children})
       : super(
           ResetPasswordRoute.name,
           initialChildren: children,
@@ -569,13 +611,13 @@ class ResetPasswordRoute extends _i23.PageRouteInfo<void> {
 
   static const String name = 'ResetPasswordRoute';
 
-  static const _i23.PageInfo<void> page = _i23.PageInfo<void>(name);
+  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i16.SearchScreen]
-class SearchRoute extends _i23.PageRouteInfo<void> {
-  const SearchRoute({List<_i23.PageRouteInfo>? children})
+/// [_i18.SearchScreen]
+class SearchRoute extends _i25.PageRouteInfo<void> {
+  const SearchRoute({List<_i25.PageRouteInfo>? children})
       : super(
           SearchRoute.name,
           initialChildren: children,
@@ -583,13 +625,13 @@ class SearchRoute extends _i23.PageRouteInfo<void> {
 
   static const String name = 'SearchRoute';
 
-  static const _i23.PageInfo<void> page = _i23.PageInfo<void>(name);
+  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i17.SettingsScreen]
-class SettingsRoute extends _i23.PageRouteInfo<void> {
-  const SettingsRoute({List<_i23.PageRouteInfo>? children})
+/// [_i19.SettingsScreen]
+class SettingsRoute extends _i25.PageRouteInfo<void> {
+  const SettingsRoute({List<_i25.PageRouteInfo>? children})
       : super(
           SettingsRoute.name,
           initialChildren: children,
@@ -597,13 +639,13 @@ class SettingsRoute extends _i23.PageRouteInfo<void> {
 
   static const String name = 'SettingsRoute';
 
-  static const _i23.PageInfo<void> page = _i23.PageInfo<void>(name);
+  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i18.SignedupScreenOne]
-class SignedupRouteOne extends _i23.PageRouteInfo<void> {
-  const SignedupRouteOne({List<_i23.PageRouteInfo>? children})
+/// [_i20.SignedupScreenOne]
+class SignedupRouteOne extends _i25.PageRouteInfo<void> {
+  const SignedupRouteOne({List<_i25.PageRouteInfo>? children})
       : super(
           SignedupRouteOne.name,
           initialChildren: children,
@@ -611,16 +653,16 @@ class SignedupRouteOne extends _i23.PageRouteInfo<void> {
 
   static const String name = 'SignedupRouteOne';
 
-  static const _i23.PageInfo<void> page = _i23.PageInfo<void>(name);
+  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i19.SignedupScreenTwo]
-class SignedupRouteTwo extends _i23.PageRouteInfo<SignedupRouteTwoArgs> {
+/// [_i21.SignedupScreenTwo]
+class SignedupRouteTwo extends _i25.PageRouteInfo<SignedupRouteTwoArgs> {
   SignedupRouteTwo({
-    _i24.Key? key,
-    required _i26.Profile updateProfile,
-    List<_i23.PageRouteInfo>? children,
+    _i26.Key? key,
+    required _i28.Profile updateProfile,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
           SignedupRouteTwo.name,
           args: SignedupRouteTwoArgs(
@@ -632,8 +674,8 @@ class SignedupRouteTwo extends _i23.PageRouteInfo<SignedupRouteTwoArgs> {
 
   static const String name = 'SignedupRouteTwo';
 
-  static const _i23.PageInfo<SignedupRouteTwoArgs> page =
-      _i23.PageInfo<SignedupRouteTwoArgs>(name);
+  static const _i25.PageInfo<SignedupRouteTwoArgs> page =
+      _i25.PageInfo<SignedupRouteTwoArgs>(name);
 }
 
 class SignedupRouteTwoArgs {
@@ -642,9 +684,9 @@ class SignedupRouteTwoArgs {
     required this.updateProfile,
   });
 
-  final _i24.Key? key;
+  final _i26.Key? key;
 
-  final _i26.Profile updateProfile;
+  final _i28.Profile updateProfile;
 
   @override
   String toString() {
@@ -653,9 +695,9 @@ class SignedupRouteTwoArgs {
 }
 
 /// generated route for
-/// [_i20.TabsNavigation]
-class TabsNavigation extends _i23.PageRouteInfo<void> {
-  const TabsNavigation({List<_i23.PageRouteInfo>? children})
+/// [_i22.TabsNavigation]
+class TabsNavigation extends _i25.PageRouteInfo<void> {
+  const TabsNavigation({List<_i25.PageRouteInfo>? children})
       : super(
           TabsNavigation.name,
           initialChildren: children,
@@ -663,18 +705,18 @@ class TabsNavigation extends _i23.PageRouteInfo<void> {
 
   static const String name = 'TabsNavigation';
 
-  static const _i23.PageInfo<void> page = _i23.PageInfo<void>(name);
+  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i21.VideoRoomScreen]
-class VideoRoomRoute extends _i23.PageRouteInfo<VideoRoomRouteArgs> {
+/// [_i23.VideoRoomScreen]
+class VideoRoomRoute extends _i25.PageRouteInfo<VideoRoomRouteArgs> {
   VideoRoomRoute({
-    _i24.Key? key,
+    _i26.Key? key,
     required String videoRoomId,
     required String otherProfileId,
     bool isCaller = false,
-    List<_i23.PageRouteInfo>? children,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
           VideoRoomRoute.name,
           args: VideoRoomRouteArgs(
@@ -688,8 +730,8 @@ class VideoRoomRoute extends _i23.PageRouteInfo<VideoRoomRouteArgs> {
 
   static const String name = 'VideoRoomRoute';
 
-  static const _i23.PageInfo<VideoRoomRouteArgs> page =
-      _i23.PageInfo<VideoRoomRouteArgs>(name);
+  static const _i25.PageInfo<VideoRoomRouteArgs> page =
+      _i25.PageInfo<VideoRoomRouteArgs>(name);
 }
 
 class VideoRoomRouteArgs {
@@ -700,7 +742,7 @@ class VideoRoomRouteArgs {
     this.isCaller = false,
   });
 
-  final _i24.Key? key;
+  final _i26.Key? key;
 
   final String videoRoomId;
 
@@ -715,12 +757,12 @@ class VideoRoomRouteArgs {
 }
 
 /// generated route for
-/// [_i22.WaitingScreen]
-class WaitingRoute extends _i23.PageRouteInfo<WaitingRouteArgs> {
+/// [_i24.WaitingScreen]
+class WaitingRoute extends _i25.PageRouteInfo<WaitingRouteArgs> {
   WaitingRoute({
-    _i24.Key? key,
-    required _i26.Profile otherProfile,
-    List<_i23.PageRouteInfo>? children,
+    _i26.Key? key,
+    required _i28.Profile otherProfile,
+    List<_i25.PageRouteInfo>? children,
   }) : super(
           WaitingRoute.name,
           args: WaitingRouteArgs(
@@ -732,8 +774,8 @@ class WaitingRoute extends _i23.PageRouteInfo<WaitingRouteArgs> {
 
   static const String name = 'WaitingRoute';
 
-  static const _i23.PageInfo<WaitingRouteArgs> page =
-      _i23.PageInfo<WaitingRouteArgs>(name);
+  static const _i25.PageInfo<WaitingRouteArgs> page =
+      _i25.PageInfo<WaitingRouteArgs>(name);
 }
 
 class WaitingRouteArgs {
@@ -742,9 +784,9 @@ class WaitingRouteArgs {
     required this.otherProfile,
   });
 
-  final _i24.Key? key;
+  final _i26.Key? key;
 
-  final _i26.Profile otherProfile;
+  final _i28.Profile otherProfile;
 
   @override
   String toString() {

@@ -14,8 +14,6 @@ class Environment {
   EnvType get envType {
     const currentEnv = String.fromEnvironment('ENV');
 
-    logger.i('Current Env: $currentEnv');
-
     return switch (currentEnv) {
       'PROD' || 'prod' || 'production' => EnvType.production,
       'STAG' || 'STAGE' || 'stag' || 'stage' || 'staging' => EnvType.staging,

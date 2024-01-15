@@ -13,7 +13,6 @@ class AppLifecycleService {
   }
 
   final Ref ref;
-  final logger = getLogger('AppLifecycleService');
 
   void _init() {
     _listenToAppLifecycleChanges();

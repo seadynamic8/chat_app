@@ -1,3 +1,4 @@
+import 'package:chat_app/env/environment.dart';
 import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:chat_app/features/home/application/notification_service.dart';
 import 'package:chat_app/features/home/data/notification_repository.dart';
@@ -49,6 +50,7 @@ class TabsNavigation extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final isProd = ref.watch(environmentProvider).envType == EnvType.production;
 
     ref.watch(initializedNotificationsProvider).when(
           data: (notificationRepository) {
@@ -62,66 +64,80 @@ class TabsNavigation extends ConsumerWidget {
         );
 
     return I18n(
-      child: AutoTabsScaffold(
-        routes: const [
-          ExploreNavigation(),
-          ChatNavigation(),
-          PaywallRoute(),
-          ProfileNavigation(),
+      child: Column(
+        children: [
+          Expanded(
+            child: AutoTabsScaffold(
+              routes: const [
+                ExploreNavigation(),
+                ChatNavigation(),
+                PaywallRoute(),
+                ProfileNavigation(),
+              ],
+              bottomNavigationBuilder: (_, tabsRouter) {
+                final unReadMessageCountStream =
+                    ref.watch(unReadMessageCountStreamProvider());
+
+                const regularChatTab = Icon(
+                  Icons.message,
+                  key: K.chatsTab,
+                );
+
+                return BottomNavigationBar(
+                  currentIndex: tabsRouter.activeIndex,
+                  onTap: tabsRouter.setActiveIndex,
+                  showSelectedLabels: true,
+                  showUnselectedLabels: true,
+                  selectedItemColor:
+                      theme.textTheme.labelMedium!.decorationColor,
+                  unselectedItemColor: theme.colorScheme.primary,
+                  items: [
+                    BottomNavigationBarItem(
+                      icon: const Icon(
+                        // Icons.people_alt_outlined,
+                        Icons.home_rounded,
+                        key: K.exploreTab,
+                      ),
+                      label: 'Home'.i18n,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: unReadMessageCountStream.maybeWhen(
+                        data: (unReadMessageCount) => unReadMessageCount > 0
+                            ? Badge(
+                                key: K.chatsBadgeTab,
+                                label: Text(unReadMessagesCountString(
+                                    unReadMessageCount)),
+                                child: const Icon(Icons.message),
+                              )
+                            : regularChatTab,
+                        orElse: () => regularChatTab,
+                      ),
+                      label: 'Chats'.i18n,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: const Icon(Icons.stars),
+                      label: 'Coins'.i18n,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: const Icon(
+                        Icons.person,
+                        key: K.profileTab,
+                      ),
+                      label: 'Profile'.i18n,
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          if (!isProd)
+            TextButton(
+              onPressed: () {
+                context.router.push(const ErrorTalkerRoute());
+              },
+              child: const Text('Diagnostics'),
+            ),
         ],
-        bottomNavigationBuilder: (_, tabsRouter) {
-          final unReadMessageCountStream =
-              ref.watch(unReadMessageCountStreamProvider());
-
-          const regularChatTab = Icon(
-            Icons.message,
-            key: K.chatsTab,
-          );
-
-          return BottomNavigationBar(
-            currentIndex: tabsRouter.activeIndex,
-            onTap: tabsRouter.setActiveIndex,
-            showSelectedLabels: true,
-            showUnselectedLabels: true,
-            selectedItemColor: theme.textTheme.labelMedium!.decorationColor,
-            unselectedItemColor: theme.colorScheme.primary,
-            items: [
-              BottomNavigationBarItem(
-                icon: const Icon(
-                  // Icons.people_alt_outlined,
-                  Icons.home_rounded,
-                  key: K.exploreTab,
-                ),
-                label: 'Home'.i18n,
-              ),
-              BottomNavigationBarItem(
-                icon: unReadMessageCountStream.maybeWhen(
-                  data: (unReadMessageCount) => unReadMessageCount > 0
-                      ? Badge(
-                          key: K.chatsBadgeTab,
-                          label: Text(
-                              unReadMessagesCountString(unReadMessageCount)),
-                          child: const Icon(Icons.message),
-                        )
-                      : regularChatTab,
-                  orElse: () => regularChatTab,
-                ),
-                label: 'Chats'.i18n,
-              ),
-              BottomNavigationBarItem(
-                icon: const Icon(Icons.stars),
-                label: 'Coins'.i18n,
-              ),
-              BottomNavigationBarItem(
-                icon: const Icon(
-                  Icons.person,
-                  key: K.profileTab,
-                ),
-                label: 'Profile'.i18n,
-              ),
-            ],
-          );
-        },
       ),
     );
   }

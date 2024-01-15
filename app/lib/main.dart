@@ -14,6 +14,7 @@ import 'package:chat_app/routing/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +22,10 @@ void main() async {
   final environment = ProviderContainer().read(environmentProvider);
   final (supabaseUrl, supabaseKey) = environment.getSupabaseUrlAndKey();
 
-  logger.t('supabaseUrl: $supabaseUrl');
+  logger.i('Current Environment: ${environment.envType.name}');
+  logger.t('Supabase Url: $supabaseUrl');
+
+  logger.logClass('a random log message', className: 'main()');
 
   await Supabase.initialize(
     url: supabaseUrl,
@@ -71,7 +75,10 @@ class MyApp extends ConsumerWidget {
         reevaluateListenable: ReevaluateListenable.stream(
           ref.watch(authRepositoryProvider).onAuthStateChanges(),
         ),
-        navigatorObservers: () => [ref.read(routingObserverProvider)],
+        navigatorObservers: () => [
+          ref.read(routingObserverProvider),
+          TalkerRouteObserver(talker),
+        ],
       ),
       localizationsDelegates: localizationDelegates,
       supportedLocales: supportedLocales,
