@@ -1,5 +1,4 @@
 import 'package:chat_app/env/env.dart';
-import 'package:chat_app/utils/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'environment.g.dart';
