@@ -1,7 +1,7 @@
 import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/common/scroll_to_end_button.dart';
 import 'package:chat_app/features/chat/view/chat_messages.dart';
-import 'package:chat_app/features/chat/view/chat_room_screen_controller.dart';
+import 'package:chat_app/features/chat/data/joined_room_notifier.dart';
 import 'package:chat_app/features/chat/view/chat_room_top_bar.dart';
 import 'package:chat_app/features/chat/view/new_message.dart';
 import 'package:chat_app/utils/keys.dart';
@@ -25,33 +25,35 @@ class ChatRoomScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scrollController = ScrollController();
-    final chatRoomValue =
-        ref.watch(chatRoomScreenControllerProvider(roomId, otherProfileId));
+    final joinedValue =
+        ref.watch(joinedRoomNotifierProvider(roomId, otherProfileId));
 
     return I18n(
       child: SafeArea(
         child: KeyboardDismissOnTap(
           child: AsyncValueWidget(
-            value: chatRoomValue,
-            data: (chatRoom) => Scaffold(
+            value: joinedValue,
+            data: (joined) => Scaffold(
               key: K.chatRoom,
               appBar: ChatRoomTopBar(
                 roomId: roomId,
-                otherProfile: chatRoom.profiles[otherProfileId]!,
+                otherProfileId: otherProfileId,
               ),
               body: Column(
                 children: [
                   Expanded(
                     child: ChatMessages(
                       key: K.chatRoomMessages,
-                      chatRoom: chatRoom,
+                      roomId: roomId,
+                      otherProfileId: otherProfileId,
+                      joined: joined,
                       scrollController: scrollController,
                     ),
                   ),
                   NewMessage(
                     roomId: roomId,
                     otherProfileId: otherProfileId,
-                    joined: chatRoom.joined,
+                    joined: joined,
                   ),
                 ],
               ),

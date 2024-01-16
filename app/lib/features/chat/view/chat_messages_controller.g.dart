@@ -7,7 +7,7 @@ part of 'chat_messages_controller.dart';
 // **************************************************************************
 
 String _$chatMessagesControllerHash() =>
-    r'0d8e5c020da761dd04f1fb96d20de3f09c602dfe';
+    r'b601b7c390f16e53ce667e99304683012d2c831e';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -32,10 +32,10 @@ class _SystemHash {
 
 abstract class _$ChatMessagesController
     extends BuildlessAutoDisposeAsyncNotifier<PaginationState<Message>> {
-  late final ChatRoom chatRoom;
+  late final String roomId;
 
   FutureOr<PaginationState<Message>> build(
-    ChatRoom chatRoom,
+    String roomId,
   );
 }
 
@@ -51,10 +51,10 @@ class ChatMessagesControllerFamily
 
   /// See also [ChatMessagesController].
   ChatMessagesControllerProvider call(
-    ChatRoom chatRoom,
+    String roomId,
   ) {
     return ChatMessagesControllerProvider(
-      chatRoom,
+      roomId,
     );
   }
 
@@ -63,7 +63,7 @@ class ChatMessagesControllerFamily
     covariant ChatMessagesControllerProvider provider,
   ) {
     return call(
-      provider.chatRoom,
+      provider.roomId,
     );
   }
 
@@ -88,9 +88,9 @@ class ChatMessagesControllerProvider
         PaginationState<Message>> {
   /// See also [ChatMessagesController].
   ChatMessagesControllerProvider(
-    ChatRoom chatRoom,
+    String roomId,
   ) : this._internal(
-          () => ChatMessagesController()..chatRoom = chatRoom,
+          () => ChatMessagesController()..roomId = roomId,
           from: chatMessagesControllerProvider,
           name: r'chatMessagesControllerProvider',
           debugGetCreateSourceHash:
@@ -100,7 +100,7 @@ class ChatMessagesControllerProvider
           dependencies: ChatMessagesControllerFamily._dependencies,
           allTransitiveDependencies:
               ChatMessagesControllerFamily._allTransitiveDependencies,
-          chatRoom: chatRoom,
+          roomId: roomId,
         );
 
   ChatMessagesControllerProvider._internal(
@@ -110,17 +110,17 @@ class ChatMessagesControllerProvider
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.chatRoom,
+    required this.roomId,
   }) : super.internal();
 
-  final ChatRoom chatRoom;
+  final String roomId;
 
   @override
   FutureOr<PaginationState<Message>> runNotifierBuild(
     covariant ChatMessagesController notifier,
   ) {
     return notifier.build(
-      chatRoom,
+      roomId,
     );
   }
 
@@ -129,13 +129,13 @@ class ChatMessagesControllerProvider
     return ProviderOverride(
       origin: this,
       override: ChatMessagesControllerProvider._internal(
-        () => create()..chatRoom = chatRoom,
+        () => create()..roomId = roomId,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        chatRoom: chatRoom,
+        roomId: roomId,
       ),
     );
   }
@@ -148,14 +148,13 @@ class ChatMessagesControllerProvider
 
   @override
   bool operator ==(Object other) {
-    return other is ChatMessagesControllerProvider &&
-        other.chatRoom == chatRoom;
+    return other is ChatMessagesControllerProvider && other.roomId == roomId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, chatRoom.hashCode);
+    hash = _SystemHash.combine(hash, roomId.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -163,8 +162,8 @@ class ChatMessagesControllerProvider
 
 mixin ChatMessagesControllerRef
     on AutoDisposeAsyncNotifierProviderRef<PaginationState<Message>> {
-  /// The parameter `chatRoom` of this provider.
-  ChatRoom get chatRoom;
+  /// The parameter `roomId` of this provider.
+  String get roomId;
 }
 
 class _ChatMessagesControllerProviderElement
@@ -173,7 +172,7 @@ class _ChatMessagesControllerProviderElement
   _ChatMessagesControllerProviderElement(super.provider);
 
   @override
-  ChatRoom get chatRoom => (origin as ChatMessagesControllerProvider).chatRoom;
+  String get roomId => (origin as ChatMessagesControllerProvider).roomId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

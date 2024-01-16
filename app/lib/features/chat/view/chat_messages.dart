@@ -1,6 +1,5 @@
 import 'package:chat_app/common/paginated_list_view.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/chat/domain/chat_room.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/view/chat_messages_controller.dart';
 import 'package:chat_app/features/chat/view/message_bubble.dart';
@@ -12,26 +11,33 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ChatMessages extends ConsumerWidget {
   const ChatMessages({
     super.key,
-    required this.chatRoom,
+    required this.roomId,
+    required this.otherProfileId,
+    required this.joined,
     required this.scrollController,
   });
 
-  final ChatRoom chatRoom;
+  final String roomId;
+  final String otherProfileId;
+  final bool joined;
   final ScrollController scrollController;
 
+  bool isCurrentUser(WidgetRef ref, String profileId) {
+    return profileId == ref.watch(currentUserIdProvider)!;
+  }
+
   String getblockAction(WidgetRef ref, Message message) {
-    final isCurrentUser =
-        message.profileId == ref.watch(currentUserIdProvider)!;
-    return message.blockAction(isCurrentUser: isCurrentUser);
+    return message.blockAction(
+        isCurrentUser: isCurrentUser(ref, message.profileId!));
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final stateValue = ref.watch(chatMessagesControllerProvider(chatRoom));
+    final stateValue = ref.watch(chatMessagesControllerProvider(roomId));
 
     final getNextPage = ref
-        .read(chatMessagesControllerProvider(chatRoom).notifier)
+        .read(chatMessagesControllerProvider(roomId).notifier)
         .getNextPageOfMessages;
 
     return PaginatedListView<Message>(
@@ -68,14 +74,14 @@ class ChatMessages extends ConsumerWidget {
                       _ => MessageBubble(
                           key: ValueKey(message.id),
                           message: message,
-                          profile: chatRoom.profiles[message.profileId]!,
+                          isCurrentUser: isCurrentUser(ref, message.profileId!),
                         ),
                     };
                   },
                 ),
               );
       },
-      beforeSlivers: chatRoom.joined == false
+      beforeSlivers: joined == false
           ? SliverToBoxAdapter(
               child: Padding(
                 padding:

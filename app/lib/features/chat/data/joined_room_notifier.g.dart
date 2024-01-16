@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'chat_room_screen_controller.dart';
+part of 'joined_room_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$chatRoomScreenControllerHash() =>
-    r'990fd41a5fe319f7c08ed2ab35b74a8774938636';
+String _$joinedRoomNotifierHash() =>
+    r'0051915fe95829f9b2c543b19c2108cb954dde70';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,40 +30,40 @@ class _SystemHash {
   }
 }
 
-abstract class _$ChatRoomScreenController
-    extends BuildlessAutoDisposeAsyncNotifier<ChatRoom> {
+abstract class _$JoinedRoomNotifier
+    extends BuildlessAutoDisposeAsyncNotifier<bool> {
   late final String roomId;
   late final String otherProfileId;
 
-  FutureOr<ChatRoom> build(
+  FutureOr<bool> build(
     String roomId,
     String otherProfileId,
   );
 }
 
-/// See also [ChatRoomScreenController].
-@ProviderFor(ChatRoomScreenController)
-const chatRoomScreenControllerProvider = ChatRoomScreenControllerFamily();
+/// See also [JoinedRoomNotifier].
+@ProviderFor(JoinedRoomNotifier)
+const joinedRoomNotifierProvider = JoinedRoomNotifierFamily();
 
-/// See also [ChatRoomScreenController].
-class ChatRoomScreenControllerFamily extends Family<AsyncValue<ChatRoom>> {
-  /// See also [ChatRoomScreenController].
-  const ChatRoomScreenControllerFamily();
+/// See also [JoinedRoomNotifier].
+class JoinedRoomNotifierFamily extends Family<AsyncValue<bool>> {
+  /// See also [JoinedRoomNotifier].
+  const JoinedRoomNotifierFamily();
 
-  /// See also [ChatRoomScreenController].
-  ChatRoomScreenControllerProvider call(
+  /// See also [JoinedRoomNotifier].
+  JoinedRoomNotifierProvider call(
     String roomId,
     String otherProfileId,
   ) {
-    return ChatRoomScreenControllerProvider(
+    return JoinedRoomNotifierProvider(
       roomId,
       otherProfileId,
     );
   }
 
   @override
-  ChatRoomScreenControllerProvider getProviderOverride(
-    covariant ChatRoomScreenControllerProvider provider,
+  JoinedRoomNotifierProvider getProviderOverride(
+    covariant JoinedRoomNotifierProvider provider,
   ) {
     return call(
       provider.roomId,
@@ -83,35 +83,34 @@ class ChatRoomScreenControllerFamily extends Family<AsyncValue<ChatRoom>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'chatRoomScreenControllerProvider';
+  String? get name => r'joinedRoomNotifierProvider';
 }
 
-/// See also [ChatRoomScreenController].
-class ChatRoomScreenControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<ChatRoomScreenController,
-        ChatRoom> {
-  /// See also [ChatRoomScreenController].
-  ChatRoomScreenControllerProvider(
+/// See also [JoinedRoomNotifier].
+class JoinedRoomNotifierProvider
+    extends AutoDisposeAsyncNotifierProviderImpl<JoinedRoomNotifier, bool> {
+  /// See also [JoinedRoomNotifier].
+  JoinedRoomNotifierProvider(
     String roomId,
     String otherProfileId,
   ) : this._internal(
-          () => ChatRoomScreenController()
+          () => JoinedRoomNotifier()
             ..roomId = roomId
             ..otherProfileId = otherProfileId,
-          from: chatRoomScreenControllerProvider,
-          name: r'chatRoomScreenControllerProvider',
+          from: joinedRoomNotifierProvider,
+          name: r'joinedRoomNotifierProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$chatRoomScreenControllerHash,
-          dependencies: ChatRoomScreenControllerFamily._dependencies,
+                  : _$joinedRoomNotifierHash,
+          dependencies: JoinedRoomNotifierFamily._dependencies,
           allTransitiveDependencies:
-              ChatRoomScreenControllerFamily._allTransitiveDependencies,
+              JoinedRoomNotifierFamily._allTransitiveDependencies,
           roomId: roomId,
           otherProfileId: otherProfileId,
         );
 
-  ChatRoomScreenControllerProvider._internal(
+  JoinedRoomNotifierProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -126,8 +125,8 @@ class ChatRoomScreenControllerProvider
   final String otherProfileId;
 
   @override
-  FutureOr<ChatRoom> runNotifierBuild(
-    covariant ChatRoomScreenController notifier,
+  FutureOr<bool> runNotifierBuild(
+    covariant JoinedRoomNotifier notifier,
   ) {
     return notifier.build(
       roomId,
@@ -136,10 +135,10 @@ class ChatRoomScreenControllerProvider
   }
 
   @override
-  Override overrideWith(ChatRoomScreenController Function() create) {
+  Override overrideWith(JoinedRoomNotifier Function() create) {
     return ProviderOverride(
       origin: this,
-      override: ChatRoomScreenControllerProvider._internal(
+      override: JoinedRoomNotifierProvider._internal(
         () => create()
           ..roomId = roomId
           ..otherProfileId = otherProfileId,
@@ -155,14 +154,14 @@ class ChatRoomScreenControllerProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<ChatRoomScreenController, ChatRoom>
+  AutoDisposeAsyncNotifierProviderElement<JoinedRoomNotifier, bool>
       createElement() {
-    return _ChatRoomScreenControllerProviderElement(this);
+    return _JoinedRoomNotifierProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is ChatRoomScreenControllerProvider &&
+    return other is JoinedRoomNotifierProvider &&
         other.roomId == roomId &&
         other.otherProfileId == otherProfileId;
   }
@@ -177,8 +176,7 @@ class ChatRoomScreenControllerProvider
   }
 }
 
-mixin ChatRoomScreenControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<ChatRoom> {
+mixin JoinedRoomNotifierRef on AutoDisposeAsyncNotifierProviderRef<bool> {
   /// The parameter `roomId` of this provider.
   String get roomId;
 
@@ -186,16 +184,16 @@ mixin ChatRoomScreenControllerRef
   String get otherProfileId;
 }
 
-class _ChatRoomScreenControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<ChatRoomScreenController,
-        ChatRoom> with ChatRoomScreenControllerRef {
-  _ChatRoomScreenControllerProviderElement(super.provider);
+class _JoinedRoomNotifierProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<JoinedRoomNotifier, bool>
+    with JoinedRoomNotifierRef {
+  _JoinedRoomNotifierProviderElement(super.provider);
 
   @override
-  String get roomId => (origin as ChatRoomScreenControllerProvider).roomId;
+  String get roomId => (origin as JoinedRoomNotifierProvider).roomId;
   @override
   String get otherProfileId =>
-      (origin as ChatRoomScreenControllerProvider).otherProfileId;
+      (origin as JoinedRoomNotifierProvider).otherProfileId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
