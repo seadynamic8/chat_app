@@ -1,7 +1,7 @@
 import 'package:chat_app/common/async_value_widget.dart';
+import 'package:chat_app/common/avatar_image.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
-import 'package:chat_app/utils/constants.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,13 +55,9 @@ class PrivateProfileScreen extends ConsumerWidget {
                           width: double.infinity,
                           child: CircleAvatar(
                             radius: 70,
-                            child: CircleAvatar(
-                              backgroundImage:
-                                  const AssetImage(defaultAvatarImage),
-                              foregroundImage: profile.avatarUrl == null
-                                  ? null
-                                  : NetworkImage(profile.avatarUrl!),
-                              radius: 70,
+                            child: AvatarImage(
+                              profileId: profile.id!,
+                              radiusSize: 70,
                             ),
                           ),
                         ),

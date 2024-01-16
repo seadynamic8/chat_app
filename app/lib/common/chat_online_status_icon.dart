@@ -15,14 +15,10 @@ class ChatOnlineStatusIcon extends ConsumerWidget {
       data: (onlinePresences) {
         final userStatus = onlinePresences.onlineStatusFor(userId);
 
-        return Positioned(
-          bottom: 0,
-          right: 0,
-          child: Icon(
-            Icons.circle,
-            size: 10,
-            color: userStatus.color,
-          ),
+        return Icon(
+          Icons.circle,
+          size: 10,
+          color: userStatus.color,
         );
       },
       orElse: SizedBox.shrink,

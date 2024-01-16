@@ -1,6 +1,6 @@
+import 'package:chat_app/common/avatar_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/utils/constants.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 
@@ -23,13 +23,7 @@ class RemoteBadge extends ConsumerWidget {
           child: Row(
             children: [
               // AVATAR
-              CircleAvatar(
-                backgroundImage: const AssetImage(defaultAvatarImage),
-                foregroundImage: otherProfile.avatarUrl == null
-                    ? null
-                    : NetworkImage(otherProfile.avatarUrl!),
-                radius: 13,
-              ),
+              AvatarImage(profileId: otherProfileId, radiusSize: 13),
               const SizedBox(width: 8),
 
               Column(

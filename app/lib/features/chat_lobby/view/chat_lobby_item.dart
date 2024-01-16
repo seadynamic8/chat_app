@@ -1,4 +1,5 @@
 import 'package:chat_app/common/async_value_widget.dart';
+import 'package:chat_app/common/avatar_online_status.dart';
 import 'package:chat_app/features/chat_lobby/view/chat_lobby_item_controller.dart';
 import 'package:chat_app/features/chat_lobby/view/newest_message_content.dart';
 import 'package:chat_app/features/chat_lobby/view/un_read_message_count.dart';
@@ -6,7 +7,6 @@ import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:chat_app/common/chat_online_status_icon.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -41,19 +41,10 @@ class ChatLobbyItem extends ConsumerWidget {
           ? removedUserTile
           : ListTile(
               key: ValueKey('${K.chatLobbyItemTilePrefix}$roomId'),
-              leading: Stack(
-                children: [
-                  CircleAvatar(
-                    key: K.chatLobbyItemAvatar,
-                    backgroundImage: const AssetImage(defaultAvatarImage),
-                    foregroundImage: chatLobbyItem.otherProfile.avatarUrl ==
-                            null
-                        ? null
-                        : NetworkImage(chatLobbyItem.otherProfile.avatarUrl!),
-                    radius: 15,
-                  ),
-                  ChatOnlineStatusIcon(userId: chatLobbyItem.otherProfile.id!)
-                ],
+              leading: AvatarOnlineStatus(
+                key: K.chatLobbyItemAvatar,
+                profileId: chatLobbyItem.otherProfile.id!,
+                radiusSize: 15,
               ),
               title: Text(
                 chatLobbyItem.otherProfile.username!,

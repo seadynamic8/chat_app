@@ -1,11 +1,10 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:chat_app/common/chat_online_status_icon.dart';
+import 'package:chat_app/common/avatar_online_status.dart';
 import 'package:chat_app/common/paginated_list_view.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/explore/view/explore_screen_controller.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
-import 'package:chat_app/utils/constants.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
@@ -61,19 +60,9 @@ class ExploreScreen extends ConsumerWidget {
                     final profile = onlineProfiles[index];
 
                     return ListTile(
-                      leading: Stack(
-                        children: [
-                          CircleAvatar(
-                            key: K.chatLobbyItemAvatar,
-                            backgroundImage:
-                                const AssetImage(defaultAvatarImage),
-                            foregroundImage: profile.avatarUrl == null
-                                ? null
-                                : NetworkImage(profile.avatarUrl!),
-                            radius: 15,
-                          ),
-                          ChatOnlineStatusIcon(userId: profile.id!)
-                        ],
+                      leading: AvatarOnlineStatus(
+                        profileId: profile.id!,
+                        radiusSize: 15,
                       ),
                       title: Text(profile.username!),
                       subtitle: profile.age == null

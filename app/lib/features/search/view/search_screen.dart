@@ -1,9 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/async_value_widget.dart';
-import 'package:chat_app/common/chat_online_status_icon.dart';
+import 'package:chat_app/common/avatar_online_status.dart';
 import 'package:chat_app/features/search/view/search_controller.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
-import 'package:chat_app/utils/constants.dart';
 import 'package:chat_app/utils/debouncer.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:flutter/material.dart';
@@ -73,16 +72,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   key: K.searchScreenResultTile,
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                  leading: Stack(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        backgroundImage:
-                            AssetImage(profile.avatarUrl ?? defaultAvatarImage),
-                        radius: 20,
-                      ),
-                      ChatOnlineStatusIcon(userId: profile.id!)
-                    ],
+                  leading: AvatarOnlineStatus(
+                    key: K.chatLobbyItemAvatar,
+                    profileId: profile.id!,
+                    radiusSize: 20,
                   ),
                   title: Text(
                     profile.username ?? '',

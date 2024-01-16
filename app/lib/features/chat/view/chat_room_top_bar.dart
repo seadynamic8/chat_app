@@ -1,12 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/async_value_widget.dart';
-import 'package:chat_app/common/avatar_image.dart';
+import 'package:chat_app/common/avatar_online_status.dart';
 import 'package:chat_app/common/video_call_button.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat/view/chat_more_menu.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:chat_app/common/chat_online_status_icon.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomTopBar extends ConsumerStatefulWidget
@@ -41,12 +40,7 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Stack(
-                children: [
-                  AvatarImage(profileId: otherProfile.id!, radiusSize: 15),
-                  ChatOnlineStatusIcon(userId: otherProfile.id!)
-                ],
-              ),
+              AvatarOnlineStatus(profileId: otherProfile.id!, radiusSize: 15),
               const SizedBox(width: 15),
               Expanded(
                 child: Text(
