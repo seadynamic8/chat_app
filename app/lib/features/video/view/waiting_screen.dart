@@ -1,4 +1,3 @@
-import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/common/avatar_image.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/home/domain/call_request_state.dart';
@@ -61,14 +60,12 @@ class _WaitingScreenState extends ConsumerState<WaitingScreen> {
               children: [
                 AvatarImage(profileId: widget.otherProfileId, radiusSize: 70),
                 const SizedBox(height: 15),
-                AsyncValueWidget(
-                  value: otherUsernameValue,
+                otherUsernameValue.maybeWhen(
                   data: (otherUsername) => Text(
                     'Wating for ${otherUsername ?? 'User'} ...',
                     style: Theme.of(context).textTheme.titleLarge!,
                   ),
-                  showLoading: false,
-                  showError: false,
+                  orElse: SizedBox.shrink,
                 ),
                 const SizedBox(height: 20),
                 const CallPrice(),

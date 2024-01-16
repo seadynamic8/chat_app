@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/common/avatar_online_status.dart';
 import 'package:chat_app/common/video_call_button.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
@@ -43,8 +42,7 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar> {
                 profileId: widget.otherProfileId, radiusSize: 15),
             const SizedBox(width: 15),
             Expanded(
-              child: AsyncValueWidget(
-                value: otherUsernameValue,
+              child: otherUsernameValue.maybeWhen(
                 data: (otherUsername) => Text(
                   otherUsername!,
                   style: theme.textTheme.labelLarge!.copyWith(
@@ -53,8 +51,7 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar> {
                   overflow: TextOverflow.fade,
                   softWrap: false,
                 ),
-                showLoading: false,
-                showError: false,
+                orElse: SizedBox.shrink,
               ),
             ),
           ],

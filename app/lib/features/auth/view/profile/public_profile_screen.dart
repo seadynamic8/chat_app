@@ -178,7 +178,7 @@ class PublicProfileScreen extends ConsumerWidget {
                       ),
                       VideoCallButton(
                         buttonType: VideoCallButtonType.profile,
-                        otherProfile: profile,
+                        otherProfileId: profileId,
                       )
                       // TODO: Add Follow Button
                       // FloatingActionButton.extended(
