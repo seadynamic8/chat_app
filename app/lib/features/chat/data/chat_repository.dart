@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat_lobby/domain/room.dart';
 import 'package:chat_app/i18n/localizations.dart';
@@ -18,31 +17,6 @@ class ChatRepository {
   ChatRepository({required this.supabase});
 
   final SupabaseClient supabase;
-
-  // * Get Profiles for the rooms
-
-  Future<Map<String, Profile>> getBothProfiles({
-    required String currentProfileId,
-    required String otherProfileId,
-  }) async {
-    try {
-      final profilesList = await supabase
-          .from('profiles')
-          .select<List<Map<String, dynamic>>>(
-              'id, username, avatar_url, language, country')
-          .in_('id', [currentProfileId, otherProfileId]);
-
-      return {
-        for (final profile in profilesList)
-          profile['id']: Profile.fromMap(profile)
-      };
-    } catch (error, st) {
-      await logError('getBothProfiles()', error, st);
-      rethrow;
-    }
-  }
-
-  // * MESSAGES
 
   // * New message being sent, saved to DB
 
@@ -294,15 +268,6 @@ class ChatRepository {
 ChatRepository chatRepository(ChatRepositoryRef ref) {
   final supabase = ref.watch(supabaseProvider);
   return ChatRepository(supabase: supabase);
-}
-
-@riverpod
-FutureOr<Map<String, Profile>> getProfilesForRoom(
-    GetProfilesForRoomRef ref, String otherProfileId) {
-  final currentProfileId = ref.watch(currentUserIdProvider)!;
-  final chatRepository = ref.watch(chatRepositoryProvider);
-  return chatRepository.getBothProfiles(
-      currentProfileId: currentProfileId, otherProfileId: otherProfileId);
 }
 
 @riverpod
