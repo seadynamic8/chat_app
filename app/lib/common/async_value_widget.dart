@@ -10,11 +10,15 @@ class AsyncValueWidget<T> extends StatelessWidget {
     required this.value,
     required this.data,
     this.loading,
+    this.showLoading = true,
+    this.showError = true,
   });
 
   final AsyncValue<T> value;
   final Widget Function(T) data;
   final Widget? loading;
+  final bool showLoading;
+  final bool showError;
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +27,17 @@ class AsyncValueWidget<T> extends StatelessWidget {
       error: (error, st) {
         logError('AsyncValueWidget', error, st);
 
-        return Center(
-          child: ErrorMessageWidget('Something went wrong'.i18n),
-        );
+        return showLoading
+            ? Center(
+                child: ErrorMessageWidget('Something went wrong'.i18n),
+              )
+            : const SizedBox.shrink();
       },
-      loading: () => loading == null
-          ? const Center(child: CircularProgressIndicator())
-          : loading!,
+      loading: () => showLoading
+          ? loading == null
+              ? const Center(child: CircularProgressIndicator())
+              : loading!
+          : const SizedBox.shrink(),
     );
   }
 }

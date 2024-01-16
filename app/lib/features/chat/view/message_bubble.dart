@@ -1,11 +1,9 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:chat_app/common/async_value_widget.dart';
-import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/common/avatar_image.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/view/message_bubble_content.dart';
 import 'package:chat_app/features/chat/view/message_bubble_translation.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
-import 'package:chat_app/utils/constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +17,6 @@ class MessageBubble extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final profileValue = ref.watch(profileStreamProvider(message.profileId!));
 
     final messageBodyItems = [
       ConstrainedBox(
@@ -70,41 +67,31 @@ class MessageBubble extends ConsumerWidget {
       )
     ];
 
-    return AsyncValueWidget(
-      value: profileValue,
-      data: (profile) => Stack(
-        children: [
-          Positioned(
-            right: isCurrentUser ? 0 : null,
-            child: InkWell(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: CircleAvatar(
-                  backgroundImage: const AssetImage(defaultAvatarImage),
-                  foregroundImage: profile.avatarUrl == null
-                      ? null
-                      : NetworkImage(profile.avatarUrl!),
-                  radius: 13,
-                ),
-              ),
-              onTap: () => context.router
-                  .push(PublicProfileRoute(profileId: profile.id!)),
+    return Stack(
+      children: [
+        Positioned(
+          right: isCurrentUser ? 0 : null,
+          child: InkWell(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: AvatarImage(profileId: message.profileId!, radiusSize: 13),
             ),
+            onTap: () => context.router
+                .push(PublicProfileRoute(profileId: message.profileId!)),
           ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 42),
-            child: Row(
-              mainAxisAlignment: isCurrentUser
-                  ? MainAxisAlignment.end
-                  : MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: isCurrentUser
-                  ? messageBodyItems.reversed.toList()
-                  : messageBodyItems,
-            ),
+        ),
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 42),
+          child: Row(
+            mainAxisAlignment:
+                isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: isCurrentUser
+                ? messageBodyItems.reversed.toList()
+                : messageBodyItems,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
