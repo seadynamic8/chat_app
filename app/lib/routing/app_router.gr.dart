@@ -233,7 +233,7 @@ abstract class $AppRouter extends _i25.RootStackRouter {
         routeData: routeData,
         child: _i24.WaitingScreen(
           key: args.key,
-          otherProfile: args.otherProfile,
+          otherProfileId: args.otherProfileId,
         ),
       );
     },
@@ -761,13 +761,13 @@ class VideoRoomRouteArgs {
 class WaitingRoute extends _i25.PageRouteInfo<WaitingRouteArgs> {
   WaitingRoute({
     _i26.Key? key,
-    required _i28.Profile otherProfile,
+    required String otherProfileId,
     List<_i25.PageRouteInfo>? children,
   }) : super(
           WaitingRoute.name,
           args: WaitingRouteArgs(
             key: key,
-            otherProfile: otherProfile,
+            otherProfileId: otherProfileId,
           ),
           initialChildren: children,
         );
@@ -781,15 +781,15 @@ class WaitingRoute extends _i25.PageRouteInfo<WaitingRouteArgs> {
 class WaitingRouteArgs {
   const WaitingRouteArgs({
     this.key,
-    required this.otherProfile,
+    required this.otherProfileId,
   });
 
   final _i26.Key? key;
 
-  final _i28.Profile otherProfile;
+  final String otherProfileId;
 
   @override
   String toString() {
-    return 'WaitingRouteArgs{key: $key, otherProfile: $otherProfile}';
+    return 'WaitingRouteArgs{key: $key, otherProfileId: $otherProfileId}';
   }
 }

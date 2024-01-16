@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/video_call_messages_extension.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/auth/domain/user_access.dart';
 import 'package:chat_app/features/video/application/video_service.dart';
 import 'package:chat_app/features/video/data/call_availability_provider.dart';
@@ -25,11 +24,11 @@ class VideoCallButton extends ConsumerStatefulWidget {
   const VideoCallButton({
     super.key,
     required this.buttonType,
-    required this.otherProfile,
+    required this.otherProfileId,
   });
 
   final VideoCallButtonType buttonType;
-  final Profile otherProfile;
+  final String otherProfileId;
 
   @override
   ConsumerState<VideoCallButton> createState() => _VideoCallButtonState();
@@ -58,9 +57,9 @@ class _VideoCallButtonState extends ConsumerState<VideoCallButton> {
   void _makeVideoCallAndWait() async {
     final router = context.router;
     try {
-      await ref.read(videoServiceProvider).makeVideoCall(widget.otherProfile);
+      await ref.read(videoServiceProvider).makeVideoCall(widget.otherProfileId);
 
-      router.push(WaitingRoute(otherProfile: widget.otherProfile));
+      router.push(WaitingRoute(otherProfileId: widget.otherProfileId));
     } catch (error, st) {
       if (!context.mounted) return;
       context.logAndShowError(widget.buttonType.className, error, st);
@@ -71,7 +70,7 @@ class _VideoCallButtonState extends ConsumerState<VideoCallButton> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final callAvailability =
-        ref.watch(callAvailabilityProvider(widget.otherProfile.id!));
+        ref.watch(callAvailabilityProvider(widget.otherProfileId));
 
     const videoProfileIconSize = 30.0;
     final videoProfileButtonText = Text(

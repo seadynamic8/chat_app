@@ -1,6 +1,5 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
-import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:chat_app/features/home/domain/call_request_state.dart';
@@ -90,14 +89,15 @@ class CallRequestController extends _$CallRequestController {
 
   // Caller Send
 
-  Future<void> sendNewCall(String videoRoomId, Profile otherProfile) async {
+  Future<void> sendNewCall(String videoRoomId, String otherProfileId) async {
     await ref
         .read(videoServiceProvider)
-        .createChatMessageForVideoStatus(VideoStatus.started, otherProfile.id!);
+        .createChatMessageForVideoStatus(VideoStatus.started, otherProfileId);
 
     final currentProfile = await ref.read(currentProfileStreamProvider.future);
+
     await _sendMessageToOtherUser(
-      channelName: otherProfile.id!,
+      channelName: otherProfileId,
       event: 'new_call',
       payload: {
         'fromUserId': currentProfile!.id,
@@ -106,8 +106,11 @@ class CallRequestController extends _$CallRequestController {
       },
     );
 
+    final otherProfile =
+        await ref.read(profileStreamProvider(otherProfileId).future);
+
     state = state.copyWith(
-      otherUserId: otherProfile.id,
+      otherUserId: otherProfileId,
       otherUsername: otherProfile.username,
       videoRoomId: videoRoomId,
     );

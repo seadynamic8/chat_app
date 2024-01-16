@@ -1,5 +1,4 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat_lobby/application/chat_lobby_service.dart';
@@ -21,15 +20,15 @@ class VideoService {
 
   final Ref ref;
 
-  Future<void> makeVideoCall(Profile otherProfile) async {
+  Future<void> makeVideoCall(String otherProfileId) async {
     final videoRoomId = await _getVideoRoomId();
     if (videoRoomId == null) {
       logger.e('VideoService: videoRoomId is null');
       throw Exception('Something went wrong with video call.'.i18n);
     }
     await _setOnlineStatusToBusy();
-    await _ensureChatRoomExists(otherProfile.id!);
-    await _sendNewCall(videoRoomId, otherProfile);
+    await _ensureChatRoomExists(otherProfileId);
+    await _sendNewCall(videoRoomId, otherProfileId);
   }
 
   Future<void> createChatMessageForVideoStatus(
@@ -72,10 +71,10 @@ class VideoService {
         .updateCurrentUserPresence(OnlineStatus.busy);
   }
 
-  Future<void> _sendNewCall(String videoRoomId, Profile otherProfile) async {
+  Future<void> _sendNewCall(String videoRoomId, String otherProfileId) async {
     await ref
         .read(callRequestControllerProvider.notifier)
-        .sendNewCall(videoRoomId, otherProfile);
+        .sendNewCall(videoRoomId, otherProfileId);
   }
 
   Future<void> _ensureChatRoomExists(String otherProfileId) async {

@@ -30,45 +30,49 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final otherProfileValue =
-        ref.watch(profileStreamProvider(widget.otherProfileId));
+    final otherUsernameValue = ref.watch(
+        profileStreamProvider(widget.otherProfileId)
+            .select((value) => value.whenData((profile) => profile.username)));
 
-    return AsyncValueWidget(
-      value: otherProfileValue,
-      data: (otherProfile) => AppBar(
-        title: InkWell(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              AvatarOnlineStatus(profileId: otherProfile.id!, radiusSize: 15),
-              const SizedBox(width: 15),
-              Expanded(
-                child: Text(
-                  otherProfile.username!,
+    return AppBar(
+      title: InkWell(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            AvatarOnlineStatus(
+                profileId: widget.otherProfileId, radiusSize: 15),
+            const SizedBox(width: 15),
+            Expanded(
+              child: AsyncValueWidget(
+                value: otherUsernameValue,
+                data: (otherUsername) => Text(
+                  otherUsername!,
                   style: theme.textTheme.labelLarge!.copyWith(
                     fontSize: 15,
                   ),
                   overflow: TextOverflow.fade,
                   softWrap: false,
                 ),
+                showLoading: false,
+                showError: false,
               ),
-            ],
-          ),
-          onTap: () => context.router
-              .push(PublicProfileRoute(profileId: otherProfile.id!)),
+            ),
+          ],
         ),
-        titleSpacing: 5,
-        actions: [
-          VideoCallButton(
-            buttonType: VideoCallButtonType.chat,
-            otherProfile: otherProfile,
-          ),
-          ChatMoreMenu(
-            roomId: widget.roomId,
-            otherProfileId: otherProfile.id!,
-          ),
-        ],
+        onTap: () => context.router
+            .push(PublicProfileRoute(profileId: widget.otherProfileId)),
       ),
+      titleSpacing: 5,
+      actions: [
+        VideoCallButton(
+          buttonType: VideoCallButtonType.chat,
+          otherProfileId: widget.otherProfileId,
+        ),
+        ChatMoreMenu(
+          roomId: widget.roomId,
+          otherProfileId: widget.otherProfileId,
+        ),
+      ],
     );
   }
 }
