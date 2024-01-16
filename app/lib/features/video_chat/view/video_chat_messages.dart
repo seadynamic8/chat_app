@@ -19,9 +19,7 @@ class VideoChatMessages extends ConsumerWidget {
       width: mediaQuerySize.width * 0.7,
       child: AsyncValueWidget(
         value: stateValue,
-        data: (state) {
-          final messages = state.messages;
-
+        data: (messages) {
           return ListView.builder(
             itemCount: messages.length,
             itemBuilder: (context, index) {
@@ -30,7 +28,6 @@ class VideoChatMessages extends ConsumerWidget {
               return VideoChatMessageBubble(
                 key: ValueKey(message.id),
                 message: message,
-                profile: state.profiles[message.senderId]!,
               );
             },
           );

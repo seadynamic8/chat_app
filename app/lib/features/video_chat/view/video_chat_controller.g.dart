@@ -7,7 +7,7 @@ part of 'video_chat_controller.dart';
 // **************************************************************************
 
 String _$videoChatControllerHash() =>
-    r'ee2dc6769c5e0195283c8951c1b9347be041e3d0';
+    r'73ea2cf2c2e3725f6d392b1f34255c29b2a1a9e5';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,10 +31,10 @@ class _SystemHash {
 }
 
 abstract class _$VideoChatController
-    extends BuildlessAutoDisposeAsyncNotifier<VideoChatState> {
+    extends BuildlessAutoDisposeAsyncNotifier<List<VideoChatMessage>> {
   late final String otherProfileId;
 
-  FutureOr<VideoChatState> build(
+  FutureOr<List<VideoChatMessage>> build(
     String otherProfileId,
   );
 }
@@ -44,7 +44,8 @@ abstract class _$VideoChatController
 const videoChatControllerProvider = VideoChatControllerFamily();
 
 /// See also [VideoChatController].
-class VideoChatControllerFamily extends Family<AsyncValue<VideoChatState>> {
+class VideoChatControllerFamily
+    extends Family<AsyncValue<List<VideoChatMessage>>> {
   /// See also [VideoChatController].
   const VideoChatControllerFamily();
 
@@ -83,7 +84,7 @@ class VideoChatControllerFamily extends Family<AsyncValue<VideoChatState>> {
 
 /// See also [VideoChatController].
 class VideoChatControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
-    VideoChatController, VideoChatState> {
+    VideoChatController, List<VideoChatMessage>> {
   /// See also [VideoChatController].
   VideoChatControllerProvider(
     String otherProfileId,
@@ -114,7 +115,7 @@ class VideoChatControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
   final String otherProfileId;
 
   @override
-  FutureOr<VideoChatState> runNotifierBuild(
+  FutureOr<List<VideoChatMessage>> runNotifierBuild(
     covariant VideoChatController notifier,
   ) {
     return notifier.build(
@@ -139,8 +140,8 @@ class VideoChatControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<VideoChatController, VideoChatState>
-      createElement() {
+  AutoDisposeAsyncNotifierProviderElement<VideoChatController,
+      List<VideoChatMessage>> createElement() {
     return _VideoChatControllerProviderElement(this);
   }
 
@@ -160,14 +161,14 @@ class VideoChatControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
 }
 
 mixin VideoChatControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<VideoChatState> {
+    on AutoDisposeAsyncNotifierProviderRef<List<VideoChatMessage>> {
   /// The parameter `otherProfileId` of this provider.
   String get otherProfileId;
 }
 
 class _VideoChatControllerProviderElement
     extends AutoDisposeAsyncNotifierProviderElement<VideoChatController,
-        VideoChatState> with VideoChatControllerRef {
+        List<VideoChatMessage>> with VideoChatControllerRef {
   _VideoChatControllerProviderElement(super.provider);
 
   @override
