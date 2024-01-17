@@ -25,6 +25,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
   final _form = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
   var _submitted = false;
+  var _passwordObscured = true;
 
   String get password => _passwordController.text.trim();
 
@@ -95,10 +96,20 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
                   TextFormField(
                     key: K.resetPasswordField,
                     controller: _passwordController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'New Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _passwordObscured
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          size: 18,
+                        ),
+                        onPressed: () => setState(
+                            () => _passwordObscured = !_passwordObscured),
+                      ),
                     ),
-                    obscureText: true,
+                    obscureText: _passwordObscured,
                     autocorrect: false,
                     textInputAction: TextInputAction.done,
                     onEditingComplete: _passwordEditingComplete,

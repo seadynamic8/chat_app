@@ -32,6 +32,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   // local variable used to apply AutovalidateMode.onUserInteraction and show
   // error hints only when the form has been submitted
   var _submitted = false;
+  var _passwordObscured = true;
 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -156,8 +157,18 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   decoration: InputDecoration(
                     labelText: state.passwordLabelText,
                     enabled: !state.value.isLoading,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _passwordObscured
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        size: 18,
+                      ),
+                      onPressed: () => setState(
+                          () => _passwordObscured = !_passwordObscured),
+                    ),
                   ),
-                  obscureText: true,
+                  obscureText: _passwordObscured,
                   autocorrect: false,
                   textInputAction: TextInputAction.done,
                   onEditingComplete: () => _passwordEditingComplete(state),
