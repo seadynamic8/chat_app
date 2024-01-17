@@ -28,9 +28,9 @@ INSERT INTO "auth"."identities" ("id", "user_id", "identity_data", "provider", "
 -- Generated with this command:
 -- supabase db dump -f supabase/schema.sql --local -s public --data-only
 
-INSERT INTO "public"."profiles" ("id", "created_at", "updated_at", "username", "birthdate", "bio", "avatar_url") VALUES
-	('f46cb5be-0832-451f-a2e3-e2422debaccb', '2023-10-30 03:03:07.088613+00', '2023-10-30 03:03:07.088613+00', 'registered_clustering_83', NULL, NULL, NULL),
-	('8916e484-8ef1-4a01-bc11-e82bcdc0b02b', '2023-10-30 14:17:24.349924+00', '2023-10-30 14:17:24.349924+00', 'jarvis', NULL, NULL, NULL),
-	('fcd95429-e523-4d5f-afbd-9fef8f282a73', '2023-10-30 14:17:46.903188+00', '2023-10-30 14:17:46.903188+00', 'jov', NULL, NULL, NULL),
-	('33f5b0a8-b9d8-4546-aae0-592ab5729a40', '2023-10-30 14:18:01.034867+00', '2023-10-30 14:18:01.034867+00', 'jenny', NULL, NULL, NULL),
-	('9646c7c0-dde2-46b8-aa4f-cdc1027469ff', '2023-10-30 14:18:15.036121+00', '2023-10-30 14:18:15.036121+00', 'charles', NULL, NULL, NULL);
+INSERT INTO "public"."profiles" ("id", "created_at", "updated_at", "username", "birthdate", "bio", "avatar_url", "gender") VALUES
+	('f46cb5be-0832-451f-a2e3-e2422debaccb', '2023-10-30 03:03:07.088613+00', '2023-10-30 03:03:07.088613+00', 'registered_clustering_83', '2005-01-01', NULL, NULL, 'male'),
+	('8916e484-8ef1-4a01-bc11-e82bcdc0b02b', '2023-10-30 14:17:24.349924+00', '2023-10-30 14:17:24.349924+00', 'jarvis', '1984-06-01', NULL, NULL, 'male'),
+	('fcd95429-e523-4d5f-afbd-9fef8f282a73', '2023-10-30 14:17:46.903188+00', '2023-10-30 14:17:46.903188+00', 'jov', '1986-10-01', NULL, NULL, 'female'),
+	('33f5b0a8-b9d8-4546-aae0-592ab5729a40', '2023-10-30 14:18:01.034867+00', '2023-10-30 14:18:01.034867+00', 'jenny', '2005-01-01', NULL, NULL, 'female'),
+	('9646c7c0-dde2-46b8-aa4f-cdc1027469ff', '2023-10-30 14:18:15.036121+00', '2023-10-30 14:18:15.036121+00', 'charles', '1986-10-21', NULL, NULL, 'male');

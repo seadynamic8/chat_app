@@ -17,6 +17,7 @@ class ExploreScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final scrollController = ScrollController();
     final stateValue = ref.watch(exploreScreenControllerProvider);
 
@@ -65,9 +66,20 @@ class ExploreScreen extends ConsumerWidget {
                         radiusSize: 15,
                       ),
                       title: Text(profile.username!),
-                      subtitle: profile.age == null
+                      subtitle: profile.gender == null
                           ? const SizedBox.shrink()
-                          : Text('${profile.age} yrs old.'.i18n),
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  profile.gender == Gender.male
+                                      ? Icons.male
+                                      : Icons.female,
+                                  size: 15,
+                                  color: theme.primaryColorLight,
+                                ),
+                              ],
+                            ),
                       trailing: CountryFlag.fromCountryCode(
                         profile.country!,
                         height: 15,

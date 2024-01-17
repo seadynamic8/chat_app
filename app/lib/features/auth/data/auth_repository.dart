@@ -63,7 +63,7 @@ class AuthRepository {
       final profiles = await supabase
           .from('profiles')
           .select<List<Map<String, dynamic>>>(
-              'id, username, birthdate, avatar_url, country, online_at')
+              'id, username, birthdate, gender, avatar_url, country, online_at')
           .in_('id', userIds)
           .neq('id', currentUserId)
           .order('online_at', ascending: false);
