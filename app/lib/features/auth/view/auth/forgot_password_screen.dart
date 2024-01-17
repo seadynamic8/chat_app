@@ -12,7 +12,9 @@ import 'package:i18n_extension/i18n_widget.dart';
 
 @RoutePage()
 class ForgotPasswordScreen extends ConsumerStatefulWidget {
-  const ForgotPasswordScreen({super.key});
+  const ForgotPasswordScreen({super.key, required this.previousEmail});
+
+  final String previousEmail;
 
   @override
   ConsumerState<ForgotPasswordScreen> createState() =>
@@ -26,6 +28,13 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
   var _submitted = false;
 
   String get email => _emailController.text.trim();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _emailController.text = widget.previousEmail;
+  }
 
   void _submit() async {
     setState(() => _submitted = true);

@@ -186,8 +186,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       key: K.authFormForgotPasswordBtn,
-                      onPressed: () =>
-                          context.router.push(const ForgotPasswordRoute()),
+                      onPressed: () => context.router.push(ForgotPasswordRoute(
+                          previousEmail: _emailController.text)),
                       child: Text(
                         'Forgot Password?'.i18n,
                         style: TextStyle(

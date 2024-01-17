@@ -123,9 +123,13 @@ abstract class $AppRouter extends _i25.RootStackRouter {
       );
     },
     ForgotPasswordRoute.name: (routeData) {
+      final args = routeData.argsAs<ForgotPasswordRouteArgs>();
       return _i25.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i10.ForgotPasswordScreen(),
+        child: _i10.ForgotPasswordScreen(
+          key: args.key,
+          previousEmail: args.previousEmail,
+        ),
       );
     },
     MainNavigation.name: (routeData) {
@@ -455,16 +459,40 @@ class ExploreRoute extends _i25.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i10.ForgotPasswordScreen]
-class ForgotPasswordRoute extends _i25.PageRouteInfo<void> {
-  const ForgotPasswordRoute({List<_i25.PageRouteInfo>? children})
-      : super(
+class ForgotPasswordRoute extends _i25.PageRouteInfo<ForgotPasswordRouteArgs> {
+  ForgotPasswordRoute({
+    _i26.Key? key,
+    required String previousEmail,
+    List<_i25.PageRouteInfo>? children,
+  }) : super(
           ForgotPasswordRoute.name,
+          args: ForgotPasswordRouteArgs(
+            key: key,
+            previousEmail: previousEmail,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'ForgotPasswordRoute';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i25.PageInfo<ForgotPasswordRouteArgs> page =
+      _i25.PageInfo<ForgotPasswordRouteArgs>(name);
+}
+
+class ForgotPasswordRouteArgs {
+  const ForgotPasswordRouteArgs({
+    this.key,
+    required this.previousEmail,
+  });
+
+  final _i26.Key? key;
+
+  final String previousEmail;
+
+  @override
+  String toString() {
+    return 'ForgotPasswordRouteArgs{key: $key, previousEmail: $previousEmail}';
+  }
 }
 
 /// generated route for
