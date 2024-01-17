@@ -62,11 +62,18 @@ class AuthRepository {
     try {
       final profiles = await supabase
           .from('profiles')
-          .select<List<Map<String, dynamic>>>(
-              'id, username, birthdate, gender, avatar_url, country, online_at')
+          .select<List<Map<String, dynamic>>>('''
+            id, 
+            username, 
+            birthdate, 
+            gender,
+            avatar_url, 
+            country, 
+            ... online_status (online_at)
+          ''')
           .in_('id', userIds)
           .neq('id', currentUserId)
-          .order('online_at', ascending: false);
+          .order('online_at', foreignTable: 'online_status', ascending: false);
 
       return profiles.map((profile) => Profile.fromMap(profile)).toList();
     } catch (error, st) {
@@ -354,24 +361,26 @@ class AuthRepository {
   // * Online Status
 
   Future<void> setOnlineAt() async {
-    await supabase.from('profiles').upsert({
+    await supabase.from('online_status').upsert({
+      'id': currentUserId,
       'online_at': DateTime.now().toUtc().toIso8601String(),
-    }).eq('id', currentUserId);
+    });
 
     // clear offline timestamp
     await supabase
-        .from('profiles')
+        .from('online_status')
         .update({'offline_at': null}).eq('id', currentUserId);
   }
 
   Future<void> setOfflineAt() async {
-    await supabase.from('profiles').upsert({
+    await supabase.from('online_status').upsert({
+      'id': currentUserId,
       'offline_at': DateTime.now().toUtc().toIso8601String(),
-    }).eq('id', currentUserId);
+    });
 
     // clear online timestamp
     await supabase
-        .from('profiles')
+        .from('online_status')
         .update({'online_at': null}).eq('id', currentUserId);
   }
 
