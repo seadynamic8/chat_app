@@ -16,7 +16,10 @@ class VideoChatMessageBubble extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AvatarImage(profileId: message.senderId, radiusSize: 13),
+          AvatarImage(profileId: message.senderId, radiusSize: 11),
+          const SizedBox(
+            width: 5,
+          ),
           ConstrainedBox(
             constraints: BoxConstraints(
               maxWidth: MediaQuery.sizeOf(context).width * 0.45,

@@ -80,6 +80,12 @@ class VideoRoomScreen extends ConsumerWidget {
 
     final stateValue = ref.watch(videoRoomControllerProvider(isCaller));
 
+    final mediaQuerySize = MediaQuery.sizeOf(context);
+
+    const double localTileTopOffset = 40;
+    final double localTileHeight = mediaQuerySize.height * 0.19;
+    const double stopwatchHeight = 20;
+
     return I18n(
       child: SafeArea(
         child: Scaffold(
@@ -96,6 +102,7 @@ class VideoRoomScreen extends ConsumerWidget {
                           state.remoteParticipants[otherProfileId],
                     ),
                     Positioned(
+                      top: localTileTopOffset + localTileHeight,
                       bottom: 0,
                       left: 0,
                       right: 0,
@@ -121,22 +128,25 @@ class VideoRoomScreen extends ConsumerWidget {
                               ],
                             ),
                           ),
+
                           RemoteBadge(otherProfileId: otherProfileId),
                         ],
                       ),
                     ),
                     Positioned(
-                      top: 60,
+                      top: localTileTopOffset,
                       right: 20,
-                      child:
-                          LocalTile(localParticipant: state.localParticipant),
+                      child: LocalTile(
+                        localParticipant: state.localParticipant,
+                        height: localTileHeight,
+                      ),
                     ),
                     Positioned(
-                      top: 60 +
-                          MediaQuery.sizeOf(context).height *
-                              0.19, // Position below LocalTile
+                      top: localTileTopOffset +
+                          localTileHeight -
+                          stopwatchHeight,
                       right: 20,
-                      child: const VideoStopwatch(),
+                      child: const VideoStopwatch(height: stopwatchHeight),
                     ),
                     const Positioned(
                       top: 50,

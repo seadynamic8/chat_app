@@ -7,7 +7,7 @@ part of 'video_chat_controller.dart';
 // **************************************************************************
 
 String _$videoChatControllerHash() =>
-    r'73ea2cf2c2e3725f6d392b1f34255c29b2a1a9e5';
+    r'72501f8f474730ff46d9ed3d501e6f078faab73b';
 
 /// Copied from Dart SDK
 class _SystemHash {

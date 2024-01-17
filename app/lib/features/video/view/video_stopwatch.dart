@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class VideoStopwatch extends ConsumerWidget {
-  const VideoStopwatch({super.key});
+  const VideoStopwatch({super.key, required this.height});
+
+  final double height;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -12,6 +14,7 @@ class VideoStopwatch extends ConsumerWidget {
 
     return stopWatchStream.maybeWhen(
       data: (milliseconds) => Container(
+        height: height,
         decoration: const BoxDecoration(
           color: Colors.black38,
         ),

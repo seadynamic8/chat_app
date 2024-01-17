@@ -21,6 +21,7 @@ class VideoChatMessages extends ConsumerWidget {
         value: stateValue,
         data: (messages) {
           return ListView.builder(
+            reverse: true,
             itemCount: messages.length,
             itemBuilder: (context, index) {
               final message = messages[index];

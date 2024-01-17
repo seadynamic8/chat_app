@@ -27,7 +27,7 @@ class VideoChatController extends _$VideoChatController {
 
   Future<void> _addVideoChatMessage(VideoChatMessage videoChatMessage) async {
     final oldState = await future;
-    state = AsyncData([...oldState, videoChatMessage]);
+    state = AsyncData([videoChatMessage, ...oldState]);
 
     final currentUserId = ref.read(authRepositoryProvider).currentUserId;
     if (videoChatMessage.senderId != currentUserId) {
