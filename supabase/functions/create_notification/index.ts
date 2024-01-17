@@ -75,9 +75,16 @@ Deno.serve(async (req) => {
       }
     } catch (error) {
       // Token either was refreshed or uninstalled or etc, anyways invalid now
-      if (error.error.status == "UNREGISTERED") {
+      if (
+        error.error.status == "UNREGISTERED" ||
+        (error.error.details instanceof Array &&
+          error.error.details.length > 0 &&
+          error.error.details[0].errorCode == "UNREGISTERED")
+      ) {
+        console.log("[NOTICE] Found token unregistered, deleting token");
         // Delete token
         await deleteFCMToken(token.fcm);
+        return;
       }
       throw error;
     }
