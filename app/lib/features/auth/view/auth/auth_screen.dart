@@ -8,6 +8,7 @@ import 'package:chat_app/utils/string_validators.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:chat_app/utils/logger.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,7 +56,10 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
       data: (responseSuccess) {
         if (responseSuccess) {
           if (state.formType == AuthFormType.login) {
-            widget.resolver.resolveNext(true, reevaluateNext: false);
+            if (kIsWeb) {
+              widget.resolver.resolveNext(true, reevaluateNext: false);
+            }
+            router.replaceAll([const MainNavigation()]);
           } else {
             router.push(AuthVerifyRoute(email: email));
           }

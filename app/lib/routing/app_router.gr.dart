@@ -10,7 +10,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i25;
 import 'package:chat_app/common/error_talker_screen.dart' as _i7;
-import 'package:chat_app/features/auth/domain/profile.dart' as _i28;
+import 'package:chat_app/features/auth/domain/profile.dart' as _i29;
 import 'package:chat_app/features/auth/view/auth/auth_form_state.dart' as _i27;
 import 'package:chat_app/features/auth/view/auth/auth_navigation.dart' as _i1;
 import 'package:chat_app/features/auth/view/auth/auth_screen.dart' as _i2;
@@ -46,7 +46,8 @@ import 'package:chat_app/features/paywall/view/paywall_screen.dart' as _i12;
 import 'package:chat_app/features/search/view/search_screen.dart' as _i18;
 import 'package:chat_app/features/video/view/video_room_screen.dart' as _i23;
 import 'package:chat_app/features/video/view/waiting_screen.dart' as _i24;
-import 'package:flutter/material.dart' as _i26;
+import 'package:flutter/foundation.dart' as _i26;
+import 'package:flutter/material.dart' as _i28;
 
 abstract class $AppRouter extends _i25.RootStackRouter {
   $AppRouter({super.navigatorKey});
@@ -305,7 +306,7 @@ class AuthRouteArgs {
 /// [_i3.AuthVerifyScreen]
 class AuthVerifyRoute extends _i25.PageRouteInfo<AuthVerifyRouteArgs> {
   AuthVerifyRoute({
-    _i26.Key? key,
+    _i28.Key? key,
     required String email,
     bool isResetPassword = false,
     List<_i25.PageRouteInfo>? children,
@@ -332,7 +333,7 @@ class AuthVerifyRouteArgs {
     this.isResetPassword = false,
   });
 
-  final _i26.Key? key;
+  final _i28.Key? key;
 
   final String email;
 
@@ -376,7 +377,7 @@ class ChatNavigation extends _i25.PageRouteInfo<void> {
 /// [_i6.ChatRoomScreen]
 class ChatRoomRoute extends _i25.PageRouteInfo<ChatRoomRouteArgs> {
   ChatRoomRoute({
-    _i26.Key? key,
+    _i28.Key? key,
     required String roomId,
     required String otherProfileId,
     List<_i25.PageRouteInfo>? children,
@@ -403,7 +404,7 @@ class ChatRoomRouteArgs {
     required this.otherProfileId,
   });
 
-  final _i26.Key? key;
+  final _i28.Key? key;
 
   final String roomId;
 
@@ -461,7 +462,7 @@ class ExploreRoute extends _i25.PageRouteInfo<void> {
 /// [_i10.ForgotPasswordScreen]
 class ForgotPasswordRoute extends _i25.PageRouteInfo<ForgotPasswordRouteArgs> {
   ForgotPasswordRoute({
-    _i26.Key? key,
+    _i28.Key? key,
     required String previousEmail,
     List<_i25.PageRouteInfo>? children,
   }) : super(
@@ -485,7 +486,7 @@ class ForgotPasswordRouteArgs {
     required this.previousEmail,
   });
 
-  final _i26.Key? key;
+  final _i28.Key? key;
 
   final String previousEmail;
 
@@ -541,8 +542,8 @@ class PrivateProfileRoute extends _i25.PageRouteInfo<void> {
 /// [_i14.ProfileEditScreen]
 class ProfileEditRoute extends _i25.PageRouteInfo<ProfileEditRouteArgs> {
   ProfileEditRoute({
-    _i26.Key? key,
-    required _i28.Profile profile,
+    _i28.Key? key,
+    required _i29.Profile profile,
     List<_i25.PageRouteInfo>? children,
   }) : super(
           ProfileEditRoute.name,
@@ -565,9 +566,9 @@ class ProfileEditRouteArgs {
     required this.profile,
   });
 
-  final _i26.Key? key;
+  final _i28.Key? key;
 
-  final _i28.Profile profile;
+  final _i29.Profile profile;
 
   @override
   String toString() {
@@ -593,7 +594,7 @@ class ProfileNavigation extends _i25.PageRouteInfo<void> {
 /// [_i16.PublicProfileScreen]
 class PublicProfileRoute extends _i25.PageRouteInfo<PublicProfileRouteArgs> {
   PublicProfileRoute({
-    _i26.Key? key,
+    _i28.Key? key,
     required String profileId,
     List<_i25.PageRouteInfo>? children,
   }) : super(
@@ -618,7 +619,7 @@ class PublicProfileRouteArgs {
     required this.profileId,
   });
 
-  final _i26.Key? key;
+  final _i28.Key? key;
 
   final String profileId;
 
@@ -688,8 +689,8 @@ class SignedupRouteOne extends _i25.PageRouteInfo<void> {
 /// [_i21.SignedupScreenTwo]
 class SignedupRouteTwo extends _i25.PageRouteInfo<SignedupRouteTwoArgs> {
   SignedupRouteTwo({
-    _i26.Key? key,
-    required _i28.Profile updateProfile,
+    _i28.Key? key,
+    required _i29.Profile updateProfile,
     List<_i25.PageRouteInfo>? children,
   }) : super(
           SignedupRouteTwo.name,
@@ -712,9 +713,9 @@ class SignedupRouteTwoArgs {
     required this.updateProfile,
   });
 
-  final _i26.Key? key;
+  final _i28.Key? key;
 
-  final _i28.Profile updateProfile;
+  final _i29.Profile updateProfile;
 
   @override
   String toString() {
@@ -740,7 +741,7 @@ class TabsNavigation extends _i25.PageRouteInfo<void> {
 /// [_i23.VideoRoomScreen]
 class VideoRoomRoute extends _i25.PageRouteInfo<VideoRoomRouteArgs> {
   VideoRoomRoute({
-    _i26.Key? key,
+    _i28.Key? key,
     required String videoRoomId,
     required String otherProfileId,
     bool isCaller = false,
@@ -770,7 +771,7 @@ class VideoRoomRouteArgs {
     this.isCaller = false,
   });
 
-  final _i26.Key? key;
+  final _i28.Key? key;
 
   final String videoRoomId;
 
@@ -788,7 +789,7 @@ class VideoRoomRouteArgs {
 /// [_i24.WaitingScreen]
 class WaitingRoute extends _i25.PageRouteInfo<WaitingRouteArgs> {
   WaitingRoute({
-    _i26.Key? key,
+    _i28.Key? key,
     required String otherProfileId,
     List<_i25.PageRouteInfo>? children,
   }) : super(
@@ -812,7 +813,7 @@ class WaitingRouteArgs {
     required this.otherProfileId,
   });
 
-  final _i26.Key? key;
+  final _i28.Key? key;
 
   final String otherProfileId;
 
