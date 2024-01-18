@@ -50,7 +50,7 @@ class ChatLobbyItemController extends _$ChatLobbyItemController {
 
     final translatedText = await ref
         .read(translationServiceProvider)
-        .getTranslation(oldState!.otherProfile.language!, message.content);
+        .getTranslation(oldState!.otherProfile.language!, message.content!);
 
     if (translatedText == null) return;
 

@@ -68,7 +68,7 @@ class ChatMessages extends ConsumerWidget {
 
                     return switch (message.type) {
                       MessageType.newday =>
-                        StatusMessage(content: message.content),
+                        StatusMessage(content: message.content!),
                       MessageType.block =>
                         StatusMessage(content: getblockAction(ref, message)),
                       _ => MessageBubble(

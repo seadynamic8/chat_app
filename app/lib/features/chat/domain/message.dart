@@ -5,21 +5,25 @@ import 'package:intl/intl.dart';
 enum MessageType { video, block, newday, user }
 
 class Message {
-  Message({
+  const Message({
     this.id,
     this.type,
-    required this.content,
+    this.content,
     this.translation,
     this.profileId,
+    this.roomId,
     this.createdAt,
+    this.read,
   });
 
   final String? id;
   final MessageType? type;
-  final String content;
+  final String? content;
   final String? translation;
   final String? profileId;
+  final String? roomId;
   final DateTime? createdAt;
+  final bool? read;
 
   bool isCurrentUser(String currentUserId) {
     return profileId == currentUserId;
@@ -55,21 +59,10 @@ class Message {
   }
 
   String blockAction({required bool isCurrentUser}) {
-    final blockAction = ChatBlockAction.values.byName(content);
+    final blockAction = ChatBlockAction.values.byName(content!);
     return isCurrentUser
         ? 'You have ${blockAction.name}ed the other user'.i18n
         : 'The other user has ${blockAction.name}ed you'.i18n;
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'type': type,
-      'content': content,
-      'translation': translation,
-      'profileId': profileId,
-      'createdAt': createdAt?.toIso8601String(),
-    };
   }
 
   factory Message.fromMap(Map<String, dynamic> map) {
@@ -78,13 +71,15 @@ class Message {
       type: map['type'] != null
           ? MessageType.values.byName(map['type'] as String)
           : null,
-      content: map['content'] as String,
+      content: map['content'] != null ? map['content'] as String : null,
       translation:
           map['translation'] != null ? map['translation'] as String : null,
-      profileId: map['profile_id'] as String,
+      profileId: map['profile_id'] != null ? map['profile_id'] as String : null,
+      roomId: map['room_id'] != null ? map['room_id'] as String : null,
       createdAt: map['created_at'] != null
           ? DateTime.parse(map['created_at'] as String)
           : null,
+      read: map['read'] != null ? map['read'] as bool : null,
     );
   }
 
@@ -94,7 +89,9 @@ class Message {
     String? content,
     String? translation,
     String? profileId,
+    String? roomId,
     DateTime? createdAt,
+    bool? read,
   }) {
     return Message(
       id: id ?? this.id,
@@ -102,13 +99,15 @@ class Message {
       content: content ?? this.content,
       translation: translation ?? this.translation,
       profileId: profileId ?? this.profileId,
+      roomId: roomId ?? this.roomId,
       createdAt: createdAt ?? this.createdAt,
+      read: read ?? this.read,
     );
   }
 
   @override
   String toString() {
-    return 'Message(id: $id, type: $type, content: $content, translation: $translation, profileId: $profileId, createdAt: $createdAt)';
+    return 'Message(id: $id, type: $type, content: $content, translation: $translation, profileId: $profileId, roomId: $roomId, createdAt: $createdAt, read: $read)';
   }
 
   // Friendly video status
@@ -118,6 +117,6 @@ class Message {
 
       if (content == 'cancelled' && !isCurrentUser) return 'missed'.i18n;
     }
-    return content;
+    return content!;
   }
 }

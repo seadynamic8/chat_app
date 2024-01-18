@@ -24,7 +24,7 @@ class MessageBubbleContent extends StatelessWidget {
 
         // MESSAGE CONTENT
         _ => Text(
-            message.content,
+            message.content!,
             style: TextStyle(
               height: 1.3,
               color: isCurrentUser

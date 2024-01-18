@@ -20,7 +20,7 @@ class NewestMessageContent extends ConsumerWidget {
         if (newestMessage.translation != null && !isCurrentUser) {
           return newestMessage.translation!;
         }
-        return newestMessage.content;
+        return newestMessage.content!;
     }
   }
 

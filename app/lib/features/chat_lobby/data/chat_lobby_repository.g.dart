@@ -610,7 +610,39 @@ class _RequestedRoomsProviderElement
   int get range => (origin as RequestedRoomsProvider).range;
 }
 
-String _$newUnReadRoomHash() => r'd680f33cae00d44c420b8635b3ade94f71c4437c';
+String _$messagesUsersInsertHash() =>
+    r'ec4947dd37054d2cb9ea33ecda037136ca5c748b';
+
+/// See also [messagesUsersInsert].
+@ProviderFor(messagesUsersInsert)
+final messagesUsersInsertProvider = AutoDisposeStreamProvider<Message>.internal(
+  messagesUsersInsert,
+  name: r'messagesUsersInsertProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$messagesUsersInsertHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef MessagesUsersInsertRef = AutoDisposeStreamProviderRef<Message>;
+String _$messagesUsersUpdateHash() =>
+    r'74b1e0e2cdcc14a725473b19f053915b50d60fa4';
+
+/// See also [messagesUsersUpdate].
+@ProviderFor(messagesUsersUpdate)
+final messagesUsersUpdateProvider = AutoDisposeStreamProvider<Message>.internal(
+  messagesUsersUpdate,
+  name: r'messagesUsersUpdateProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$messagesUsersUpdateHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef MessagesUsersUpdateRef = AutoDisposeStreamProviderRef<Message>;
+String _$newUnReadRoomHash() => r'4a0bd609dc8ea00eaace31148923c8b2e147a2b6';
 
 /// See also [newUnReadRoom].
 @ProviderFor(newUnReadRoom)
@@ -641,7 +673,7 @@ final newUnReadJoinedRoomProvider = AutoDisposeStreamProvider<Room>.internal(
 );
 
 typedef NewUnReadJoinedRoomRef = AutoDisposeStreamProviderRef<Room>;
-String _$newReadRoomHash() => r'294c19d8f6cd7e0080462021f328b39661942c22';
+String _$newReadRoomHash() => r'86a7ca7390e31079ebed0d769e974ce60fd1ad07';
 
 /// See also [newReadRoom].
 @ProviderFor(newReadRoom)
@@ -656,7 +688,7 @@ final newReadRoomProvider = AutoDisposeStreamProvider<Room>.internal(
 
 typedef NewReadRoomRef = AutoDisposeStreamProviderRef<Room>;
 String _$unReadMessageCountStreamHash() =>
-    r'8d501e867a6650ce5ea9bc6e03f6468cfffbb330';
+    r'61faa8e7d094cc24745bc56db8e842677d80fee6';
 
 /// See also [unReadMessageCountStream].
 @ProviderFor(unReadMessageCountStream)

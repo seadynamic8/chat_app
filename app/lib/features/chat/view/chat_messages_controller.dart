@@ -93,7 +93,7 @@ class ChatMessagesController extends _$ChatMessagesController {
         await ref.read(profileStreamProvider(newMessage.profileId!).future);
     final translatedText = await ref
         .read(translationServiceProvider)
-        .getTranslation(otherProfile.language!, newMessage.content);
+        .getTranslation(otherProfile.language!, newMessage.content!);
 
     if (translatedText == null) return;
 

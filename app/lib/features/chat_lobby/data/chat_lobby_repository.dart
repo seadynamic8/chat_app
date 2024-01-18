@@ -185,7 +185,7 @@ class ChatLobbyRepository {
 
   // * Watch for new unread messages
 
-  Stream<int> watchUnReadMessages({
+  Stream<int> watchUnReadMessagesCount({
     required String profileId,
     String? roomId,
   }) {
@@ -208,8 +208,8 @@ class ChatLobbyRepository {
     });
   }
 
-  Stream<Room> watchNewUnReadRoom(String currentUserId) {
-    final streamController = StreamController<Room>();
+  Stream<Message> watchMessagesUsersInsert(String currentUserId) {
+    final streamController = StreamController<Message>();
 
     supabase
         .channel('public:messages_users:insert:profile_id=eq.$currentUserId')
@@ -222,19 +222,16 @@ class ChatLobbyRepository {
         filter: 'profile_id=eq.$currentUserId',
       ),
       (payload, [ref]) async {
-        final message = payload['new'];
-
-        if (!message['read']) {
-          streamController.add(Room(id: message['room_id']));
-        }
+        final messagesUser = payload['new'];
+        streamController.add(Message.fromMap(messagesUser));
       },
     ).subscribe();
 
     return streamController.stream;
   }
 
-  Stream<Room> watchNewReadRoom(String currentUserId) {
-    final streamController = StreamController<Room>();
+  Stream<Message> watchMessagesUsersUpdate(String currentUserId) {
+    final streamController = StreamController<Message>();
 
     supabase
         .channel('public:messages_users:update:profile_id=eq.$currentUserId')
@@ -247,11 +244,8 @@ class ChatLobbyRepository {
         filter: 'profile_id=eq.$currentUserId',
       ),
       (payload, [ref]) async {
-        final message = payload['new'];
-
-        if (message['read']) {
-          streamController.add(Room(id: message['room_id']));
-        }
+        final messagesUser = payload['new'];
+        streamController.add(Message.fromMap(messagesUser));
       },
     ).subscribe();
 
@@ -310,10 +304,28 @@ FutureOr<List<Room>> requestedRooms(
 }
 
 @riverpod
-Stream<Room> newUnReadRoom(NewUnReadRoomRef ref) {
+Stream<Message> messagesUsersInsert(MessagesUsersInsertRef ref) {
   final currentUserId = ref.watch(currentUserIdProvider)!;
   final chatLobbyRepository = ref.watch(chatLobbyRepositoryProvider);
-  return chatLobbyRepository.watchNewUnReadRoom(currentUserId);
+  return chatLobbyRepository.watchMessagesUsersInsert(currentUserId);
+}
+
+@riverpod
+Stream<Message> messagesUsersUpdate(MessagesUsersUpdateRef ref) {
+  final currentUserId = ref.watch(currentUserIdProvider)!;
+  final chatLobbyRepository = ref.watch(chatLobbyRepositoryProvider);
+  return chatLobbyRepository.watchMessagesUsersUpdate(currentUserId);
+}
+
+@riverpod
+Stream<Room> newUnReadRoom(NewUnReadRoomRef ref) {
+  final streamController = StreamController<Room>();
+  ref.watch(messagesUsersInsertProvider).whenData((message) {
+    if (message.read == false) {
+      streamController.add(Room(id: message.roomId!));
+    }
+  });
+  return streamController.stream;
 }
 
 @riverpod
@@ -333,9 +345,13 @@ Stream<Room> newUnReadJoinedRoom(NewUnReadJoinedRoomRef ref) {
 
 @riverpod
 Stream<Room> newReadRoom(NewReadRoomRef ref) {
-  final currentUserId = ref.watch(currentUserIdProvider)!;
-  final chatLobbyRepository = ref.watch(chatLobbyRepositoryProvider);
-  return chatLobbyRepository.watchNewReadRoom(currentUserId);
+  final streamController = StreamController<Room>();
+  ref.watch(messagesUsersUpdateProvider).whenData((message) {
+    if (message.read == true) {
+      streamController.add(Room(id: message.roomId!));
+    }
+  });
+  return streamController.stream;
 }
 
 @riverpod
@@ -343,6 +359,6 @@ Stream<int> unReadMessageCountStream(UnReadMessageCountStreamRef ref,
     [String? roomId]) {
   final currentProfileId = ref.watch(currentUserIdProvider)!;
   final chatLobbyRepository = ref.watch(chatLobbyRepositoryProvider);
-  return chatLobbyRepository.watchUnReadMessages(
+  return chatLobbyRepository.watchUnReadMessagesCount(
       profileId: currentProfileId, roomId: roomId);
 }
