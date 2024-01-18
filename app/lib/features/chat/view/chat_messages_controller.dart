@@ -1,5 +1,6 @@
 import 'package:chat_app/common/pagination_state.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/chat/application/chat_service.dart';
 import 'package:chat_app/features/chat/application/translation_service.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
@@ -18,26 +19,28 @@ class ChatMessagesController extends _$ChatMessagesController {
 
   @override
   FutureOr<PaginationState<Message>> build(String roomId) async {
+    final chatService = ref.read(chatServiceProvider);
+
+    // Mark all messages as read first
+    await chatService.markAllMessagesAsRead(roomId);
+
+    // Get messages for room
+    final (messages, _) = await chatService.getMessagesForRoom(
+      roomId: roomId,
+      page: initialPage,
+      range: numberOfMessagesPerRequest + initialExtraMessages,
+      maxMessages: numberOfMessagesPerRequest,
+    );
+
     // Setup handlers for any new messages
     ref.listen<AsyncValue<Message>>(newMessagesStreamProvider(roomId),
         (_, state) {
       if (state.hasValue) _handleNewMessage(state.value!);
     });
 
-    final chatRepository = ref.watch(chatRepositoryProvider);
-
-    final messages = await chatRepository.getAllMessagesForRoom(
-        roomId, initialPage, numberOfMessagesPerRequest + initialExtraMessages);
-
-    final updatedMessages = _addNewDayToMessages(null, messages);
-
-    final currentProfileId = ref.read(currentUserIdProvider)!;
-
-    await chatRepository.markAllMessagesAsReadForRoom(roomId, currentProfileId);
-
     return PaginationState<Message>(
       nextPage: initialPage + 1,
-      items: updatedMessages,
+      items: messages,
     );
   }
 
@@ -46,20 +49,19 @@ class ChatMessagesController extends _$ChatMessagesController {
 
     if (oldState.isLastPage) return;
 
-    final newMessages = await ref
-        .watch(chatRepositoryProvider)
-        .getAllMessagesForRoom(
-            roomId, oldState.nextPage!, numberOfMessagesPerRequest);
-
-    final isLastPage = newMessages.length < numberOfMessagesPerRequest;
-
-    final updatedMessages =
-        _addNewDayToMessages(oldState.items.last, newMessages);
+    final (newMessages, isLastPage) =
+        await ref.read(chatServiceProvider).getMessagesForRoom(
+              roomId: roomId,
+              page: oldState.nextPage!,
+              range: numberOfMessagesPerRequest,
+              maxMessages: numberOfMessagesPerRequest,
+              lastMessage: oldState.items.last,
+            );
 
     state = AsyncData(oldState.copyWith(
       isLastPage: isLastPage,
       nextPage: oldState.nextPage! + 1,
-      items: [...oldState.items, ...updatedMessages],
+      items: [...oldState.items, ...newMessages],
     ));
   }
 
@@ -108,28 +110,5 @@ class ChatMessagesController extends _$ChatMessagesController {
     ref
         .read(chatRepositoryProvider)
         .saveTranslationForMessage(newMessage.id!, translatedText);
-  }
-
-  // - Handle 2 situations:
-  //  - New build with existing messages (no prev message - null)
-  //  - getNextPageOfMessages, it needs the last message from the last page.
-  List<Message> _addNewDayToMessages(
-      Message? prevMessage, List<Message> messages) {
-    List<Message> updatedMessages = [];
-    // Can be null, also never should add to updated list since it's used only
-    //for checking dates, so not inside loop.
-    var prev = prevMessage;
-
-    for (final message in messages) {
-      if (prev != null && prev.createdAt!.isNewDayAfter(message.createdAt!)) {
-        updatedMessages.add(Message.newDay(prev));
-      }
-      // Always add the current message
-      updatedMessages.add(message);
-
-      // Update prev to current message
-      prev = message;
-    }
-    return updatedMessages;
   }
 }
