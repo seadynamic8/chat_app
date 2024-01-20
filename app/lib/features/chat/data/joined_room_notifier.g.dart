@@ -7,7 +7,7 @@ part of 'joined_room_notifier.dart';
 // **************************************************************************
 
 String _$joinedRoomNotifierHash() =>
-    r'0051915fe95829f9b2c543b19c2108cb954dde70';
+    r'35693e6c6a4b7601d87eea2892e2996d42abce13';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -33,11 +33,9 @@ class _SystemHash {
 abstract class _$JoinedRoomNotifier
     extends BuildlessAutoDisposeAsyncNotifier<bool> {
   late final String roomId;
-  late final String otherProfileId;
 
   FutureOr<bool> build(
     String roomId,
-    String otherProfileId,
   );
 }
 
@@ -53,11 +51,9 @@ class JoinedRoomNotifierFamily extends Family<AsyncValue<bool>> {
   /// See also [JoinedRoomNotifier].
   JoinedRoomNotifierProvider call(
     String roomId,
-    String otherProfileId,
   ) {
     return JoinedRoomNotifierProvider(
       roomId,
-      otherProfileId,
     );
   }
 
@@ -67,7 +63,6 @@ class JoinedRoomNotifierFamily extends Family<AsyncValue<bool>> {
   ) {
     return call(
       provider.roomId,
-      provider.otherProfileId,
     );
   }
 
@@ -92,11 +87,8 @@ class JoinedRoomNotifierProvider
   /// See also [JoinedRoomNotifier].
   JoinedRoomNotifierProvider(
     String roomId,
-    String otherProfileId,
   ) : this._internal(
-          () => JoinedRoomNotifier()
-            ..roomId = roomId
-            ..otherProfileId = otherProfileId,
+          () => JoinedRoomNotifier()..roomId = roomId,
           from: joinedRoomNotifierProvider,
           name: r'joinedRoomNotifierProvider',
           debugGetCreateSourceHash:
@@ -107,7 +99,6 @@ class JoinedRoomNotifierProvider
           allTransitiveDependencies:
               JoinedRoomNotifierFamily._allTransitiveDependencies,
           roomId: roomId,
-          otherProfileId: otherProfileId,
         );
 
   JoinedRoomNotifierProvider._internal(
@@ -118,11 +109,9 @@ class JoinedRoomNotifierProvider
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.roomId,
-    required this.otherProfileId,
   }) : super.internal();
 
   final String roomId;
-  final String otherProfileId;
 
   @override
   FutureOr<bool> runNotifierBuild(
@@ -130,7 +119,6 @@ class JoinedRoomNotifierProvider
   ) {
     return notifier.build(
       roomId,
-      otherProfileId,
     );
   }
 
@@ -139,16 +127,13 @@ class JoinedRoomNotifierProvider
     return ProviderOverride(
       origin: this,
       override: JoinedRoomNotifierProvider._internal(
-        () => create()
-          ..roomId = roomId
-          ..otherProfileId = otherProfileId,
+        () => create()..roomId = roomId,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         roomId: roomId,
-        otherProfileId: otherProfileId,
       ),
     );
   }
@@ -161,16 +146,13 @@ class JoinedRoomNotifierProvider
 
   @override
   bool operator ==(Object other) {
-    return other is JoinedRoomNotifierProvider &&
-        other.roomId == roomId &&
-        other.otherProfileId == otherProfileId;
+    return other is JoinedRoomNotifierProvider && other.roomId == roomId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, roomId.hashCode);
-    hash = _SystemHash.combine(hash, otherProfileId.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -179,9 +161,6 @@ class JoinedRoomNotifierProvider
 mixin JoinedRoomNotifierRef on AutoDisposeAsyncNotifierProviderRef<bool> {
   /// The parameter `roomId` of this provider.
   String get roomId;
-
-  /// The parameter `otherProfileId` of this provider.
-  String get otherProfileId;
 }
 
 class _JoinedRoomNotifierProviderElement
@@ -191,9 +170,6 @@ class _JoinedRoomNotifierProviderElement
 
   @override
   String get roomId => (origin as JoinedRoomNotifierProvider).roomId;
-  @override
-  String get otherProfileId =>
-      (origin as JoinedRoomNotifierProvider).otherProfileId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -2,6 +2,7 @@ import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/block_state.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
+import 'package:chat_app/features/chat/data/joined_room_notifier.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/utils/new_day_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,14 +42,13 @@ class ChatService {
     required String roomId,
     required String otherProfileId,
     required String messageText,
-    required bool joined,
   }) async {
     final blockState =
         await ref.read(blockedByChangesProvider(otherProfileId).future);
     if (blockState.status != BlockStatus.no) return blockState;
 
     final currentProfile = await ref.read(currentProfileStreamProvider.future);
-    await _joinRoomIfNotJoined(joined, roomId, currentProfile!.id!);
+    await _joinRoomIfNotJoined(roomId, currentProfile!.id!);
 
     await ref.read(chatRepositoryProvider).saveMessage(
           roomId,
@@ -88,12 +88,15 @@ class ChatService {
   }
 
   Future<void> _joinRoomIfNotJoined(
-      bool joined, String roomId, String currentProfileId) async {
-    if (!joined) {
-      await ref
-          .read(chatRepositoryProvider)
-          .markRoomAsJoined(roomId, currentProfileId);
-    }
+    String roomId,
+    String currentProfileId,
+  ) async {
+    final joined = await ref.read(joinedRoomNotifierProvider(roomId).future);
+    if (joined) return;
+
+    await ref
+        .read(chatRepositoryProvider)
+        .markRoomAsJoined(roomId, currentProfileId);
   }
 
   Future<bool> _otherProfileJoined(String roomId, String otherProfileId) async {

@@ -1,5 +1,6 @@
 import 'package:chat_app/common/paginated_list_view.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/chat/data/joined_room_notifier.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/view/chat_messages_controller.dart';
 import 'package:chat_app/features/chat/view/message_bubble.dart';
@@ -13,13 +14,11 @@ class ChatMessages extends ConsumerWidget {
     super.key,
     required this.roomId,
     required this.otherProfileId,
-    required this.joined,
     required this.scrollController,
   });
 
   final String roomId;
   final String otherProfileId;
-  final bool joined;
   final ScrollController scrollController;
 
   bool isCurrentUser(WidgetRef ref, String profileId) {
@@ -34,6 +33,7 @@ class ChatMessages extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final joinedValue = ref.watch(joinedRoomNotifierProvider(roomId));
     final stateValue = ref.watch(chatMessagesControllerProvider(roomId));
 
     final getNextPage = ref
@@ -81,21 +81,24 @@ class ChatMessages extends ConsumerWidget {
                 ),
               );
       },
-      beforeSlivers: joined == false
-          ? SliverToBoxAdapter(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 40),
-                child: Center(
-                  child: Text(
-                    'When you reply, the other user will be able to contact you.'
-                        .i18n,
-                    textAlign: TextAlign.center,
+      beforeSlivers: joinedValue.maybeWhen(
+        data: (joined) => joined == false
+            ? SliverToBoxAdapter(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+                  child: Center(
+                    child: Text(
+                      'When you reply, the other user will be able to contact you.'
+                          .i18n,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
-              ),
-            )
-          : null,
+              )
+            : const SliverToBoxAdapter(),
+        orElse: () => const SliverToBoxAdapter(),
+      ),
     );
   }
 }

@@ -7,7 +7,7 @@ part 'joined_room_notifier.g.dart';
 @riverpod
 class JoinedRoomNotifier extends _$JoinedRoomNotifier {
   @override
-  FutureOr<bool> build(String roomId, String otherProfileId) async {
+  FutureOr<bool> build(String roomId) async {
     final currentUserId = ref.watch(currentUserIdProvider);
 
     final joined = await ref

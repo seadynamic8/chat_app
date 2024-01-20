@@ -89,7 +89,6 @@ class TestHelper {
       roomId: roomId,
       otherProfileId: otherProfileId,
       messageText: messageText,
-      joined: joined,
     );
   }
 
