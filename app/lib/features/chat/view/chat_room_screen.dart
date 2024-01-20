@@ -25,38 +25,42 @@ class ChatRoomScreen extends ConsumerWidget {
     final scrollController = ScrollController();
 
     return I18n(
-      child: SafeArea(
-        child: KeyboardDismissOnTap(
-          child: Scaffold(
-            key: K.chatRoom,
-            appBar: ChatRoomTopBar(
-              roomId: roomId,
-              otherProfileId: otherProfileId,
-            ),
-            body: Column(
-              children: [
-                Expanded(
-                  child: ChatMessages(
-                    key: K.chatRoomMessages,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 16),
+        child: SafeArea(
+          child: KeyboardDismissOnTap(
+            child: Scaffold(
+              key: K.chatRoom,
+              appBar: ChatRoomTopBar(
+                roomId: roomId,
+                otherProfileId: otherProfileId,
+              ),
+              body: Column(
+                children: [
+                  Expanded(
+                    child: ChatMessages(
+                      key: K.chatRoomMessages,
+                      roomId: roomId,
+                      otherProfileId: otherProfileId,
+                      scrollController: scrollController,
+                    ),
+                  ),
+                  NewMessage(
                     roomId: roomId,
                     otherProfileId: otherProfileId,
-                    scrollController: scrollController,
                   ),
-                ),
-                NewMessage(
-                  roomId: roomId,
-                  otherProfileId: otherProfileId,
-                ),
-              ],
-            ),
-            floatingActionButton: Padding(
-              padding: const EdgeInsets.only(top: 90.0, left: 10),
-              child: ScrollToEndButton(
-                scrollController: scrollController,
-                direction: ScrollDirection.bottom,
+                ],
               ),
+              floatingActionButton: Padding(
+                padding: const EdgeInsets.only(top: 90.0, left: 10),
+                child: ScrollToEndButton(
+                  scrollController: scrollController,
+                  direction: ScrollDirection.bottom,
+                ),
+              ),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.startTop,
             ),
-            floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
           ),
         ),
       ),

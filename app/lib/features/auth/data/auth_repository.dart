@@ -384,6 +384,19 @@ class AuthRepository {
         .update({'online_at': null}).eq('id', currentUserId);
   }
 
+  Stream<DateTime?> watchOfflineTime(String profileId) {
+    final onlineStatusStream = supabase
+        .from('online_status')
+        .stream(primaryKey: ['id']).eq('id', profileId);
+
+    return onlineStatusStream.map((onlineStatuses) {
+      if (onlineStatuses.isEmpty) return null;
+
+      final offlineAtString = onlineStatuses.first['offline_at'];
+      return offlineAtString != null ? DateTime.parse(offlineAtString) : null;
+    });
+  }
+
   // * Notifications
 
   Future<bool> hasToken(Token token) async {
@@ -574,4 +587,10 @@ Stream<UserAccess> userAccessStream(UserAccessStreamRef ref) {
   final currentProfileId = ref.watch(currentUserIdProvider)!;
   final authRepository = ref.watch(authRepositoryProvider);
   return authRepository.getAccessLevelChanges(currentProfileId);
+}
+
+@riverpod
+Stream<DateTime?> offlineAt(OfflineAtRef ref, String profileId) {
+  final authRepository = ref.watch(authRepositoryProvider);
+  return authRepository.watchOfflineTime(profileId);
 }

@@ -3,6 +3,7 @@ import 'package:chat_app/common/avatar_online_status.dart';
 import 'package:chat_app/common/video_call_button.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat/view/chat_more_menu.dart';
+import 'package:chat_app/features/chat/view/user_last_active.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
@@ -42,16 +43,22 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar> {
                 profileId: widget.otherProfileId, radiusSize: 15),
             const SizedBox(width: 15),
             Expanded(
-              child: otherUsernameValue.maybeWhen(
-                data: (otherUsername) => Text(
-                  otherUsername!,
-                  style: theme.textTheme.labelLarge!.copyWith(
-                    fontSize: 15,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  otherUsernameValue.maybeWhen(
+                    data: (otherUsername) => Text(
+                      otherUsername!,
+                      style: theme.textTheme.labelLarge!.copyWith(
+                        fontSize: 15,
+                      ),
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                    ),
+                    orElse: SizedBox.shrink,
                   ),
-                  overflow: TextOverflow.fade,
-                  softWrap: false,
-                ),
-                orElse: SizedBox.shrink,
+                  UserLastActive(profileId: widget.otherProfileId)
+                ],
               ),
             ),
           ],

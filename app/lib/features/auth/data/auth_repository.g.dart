@@ -784,5 +784,131 @@ final userAccessStreamProvider = AutoDisposeStreamProvider<UserAccess>.internal(
 );
 
 typedef UserAccessStreamRef = AutoDisposeStreamProviderRef<UserAccess>;
+String _$offlineAtHash() => r'198952519a3145871e5a65301c4df3af23ae236d';
+
+/// See also [offlineAt].
+@ProviderFor(offlineAt)
+const offlineAtProvider = OfflineAtFamily();
+
+/// See also [offlineAt].
+class OfflineAtFamily extends Family<AsyncValue<DateTime?>> {
+  /// See also [offlineAt].
+  const OfflineAtFamily();
+
+  /// See also [offlineAt].
+  OfflineAtProvider call(
+    String profileId,
+  ) {
+    return OfflineAtProvider(
+      profileId,
+    );
+  }
+
+  @override
+  OfflineAtProvider getProviderOverride(
+    covariant OfflineAtProvider provider,
+  ) {
+    return call(
+      provider.profileId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'offlineAtProvider';
+}
+
+/// See also [offlineAt].
+class OfflineAtProvider extends AutoDisposeStreamProvider<DateTime?> {
+  /// See also [offlineAt].
+  OfflineAtProvider(
+    String profileId,
+  ) : this._internal(
+          (ref) => offlineAt(
+            ref as OfflineAtRef,
+            profileId,
+          ),
+          from: offlineAtProvider,
+          name: r'offlineAtProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$offlineAtHash,
+          dependencies: OfflineAtFamily._dependencies,
+          allTransitiveDependencies: OfflineAtFamily._allTransitiveDependencies,
+          profileId: profileId,
+        );
+
+  OfflineAtProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.profileId,
+  }) : super.internal();
+
+  final String profileId;
+
+  @override
+  Override overrideWith(
+    Stream<DateTime?> Function(OfflineAtRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: OfflineAtProvider._internal(
+        (ref) => create(ref as OfflineAtRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        profileId: profileId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<DateTime?> createElement() {
+    return _OfflineAtProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is OfflineAtProvider && other.profileId == profileId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, profileId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin OfflineAtRef on AutoDisposeStreamProviderRef<DateTime?> {
+  /// The parameter `profileId` of this provider.
+  String get profileId;
+}
+
+class _OfflineAtProviderElement
+    extends AutoDisposeStreamProviderElement<DateTime?> with OfflineAtRef {
+  _OfflineAtProviderElement(super.provider);
+
+  @override
+  String get profileId => (origin as OfflineAtProvider).profileId;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
