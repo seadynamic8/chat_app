@@ -26,8 +26,6 @@ void main() async {
   logger.i('Current Environment: ${environment.envType.name}');
   logger.t('Supabase Url: $supabaseUrl');
 
-  logger.logClass('a random log message', className: 'main()');
-
   await Supabase.initialize(
     url: supabaseUrl,
     anonKey: supabaseKey,
