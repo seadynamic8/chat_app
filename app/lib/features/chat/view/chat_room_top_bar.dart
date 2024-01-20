@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/avatar_online_status.dart';
+import 'package:chat_app/common/username_widget.dart';
 import 'package:chat_app/common/video_call_button.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat/view/chat_more_menu.dart';
@@ -29,11 +30,6 @@ class ChatRoomTopBar extends ConsumerStatefulWidget
 class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar> {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final otherUsernameValue = ref.watch(
-        profileStreamProvider(widget.otherProfileId)
-            .select((value) => value.whenData((profile) => profile.username)));
-
     return AppBar(
       title: InkWell(
         child: Row(
@@ -46,17 +42,7 @@ class _ChatRoomTopBarState extends ConsumerState<ChatRoomTopBar> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  otherUsernameValue.maybeWhen(
-                    data: (otherUsername) => Text(
-                      otherUsername!,
-                      style: theme.textTheme.labelLarge!.copyWith(
-                        fontSize: 15,
-                      ),
-                      overflow: TextOverflow.fade,
-                      softWrap: false,
-                    ),
-                    orElse: SizedBox.shrink,
-                  ),
+                  UsernameWidget(profileId: widget.otherProfileId),
                   UserLastActive(profileId: widget.otherProfileId)
                 ],
               ),
