@@ -41,7 +41,7 @@ class ExploreScreen extends ConsumerWidget {
           body: PaginatedListView<Profile>(
             scrollController: scrollController,
             getNextPage: getNextPage,
-            emptyItemsMessage: 'No online users',
+            emptyItemsMessage: 'No online users'.i18n,
             itemsLabel: 'profiles'.i18n,
             value: stateValue,
             beforeSlivers: SliverToBoxAdapter(

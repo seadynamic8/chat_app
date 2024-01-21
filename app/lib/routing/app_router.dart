@@ -39,6 +39,7 @@ class AppRouter extends $AppRouter {
                   initial: true,
                   children: [
                     AutoRoute(page: ExploreRoute.page, initial: true),
+                    AutoRoute(page: SearchRoute.page),
                   ],
                 ),
                 AutoRoute(
@@ -58,7 +59,6 @@ class AppRouter extends $AppRouter {
                 ),
               ],
             ), // End TabsNavigationRoute
-            AutoRoute(page: SearchRoute.page),
             AutoRoute(page: PublicProfileRoute.page),
             AutoRoute(page: ChatRoomRoute.page),
             AutoRoute(page: WaitingRoute.page),

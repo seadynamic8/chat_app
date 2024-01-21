@@ -1,8 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:chat_app/common/async_value_widget.dart';
-import 'package:chat_app/common/avatar_online_status.dart';
 import 'package:chat_app/features/search/view/search_controller.dart';
-import 'package:chat_app/routing/app_router.gr.dart';
+import 'package:chat_app/features/search/view/search_results.dart';
 import 'package:chat_app/utils/debouncer.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:flutter/material.dart';
@@ -19,19 +17,25 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final _searchController = TextEditingController();
+  var _beforeSearch = true;
+  final debounceTime = const Duration(milliseconds: 500);
+
+  String get searchText => _searchController.text.trim();
 
   void _search() {
-    final searchText = _searchController.text.trim();
+    setState(() => _beforeSearch = false);
 
     if (searchText.isEmpty) {
       ref.read(searchControllerProvider.notifier).clearProfiles();
       return;
     }
 
-    final debouncer = Debouncer(delay: const Duration(milliseconds: 1000));
-
-    debouncer.run(() =>
-        ref.read(searchControllerProvider.notifier).searchProfiles(searchText));
+    final debouncer = Debouncer(delay: debounceTime);
+    debouncer.run(() async {
+      await ref
+          .read(searchControllerProvider.notifier)
+          .searchInitialProfiles(searchText);
+    });
   }
 
   @override
@@ -42,7 +46,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final profilesValue = ref.watch(searchControllerProvider);
+    final getNextPage = ref
+        .read(searchControllerProvider.notifier)
+        .searchNextProfiles(searchText);
 
     return I18n(
       child: SafeArea(
@@ -61,34 +67,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               onChanged: (value) => _search(),
             ),
           ),
-          body: AsyncValueWidget(
-            value: profilesValue,
-            data: (profiles) => ListView.builder(
-              itemCount: profiles.length,
-              itemBuilder: (context, index) {
-                final profile = profiles[index];
-
-                return ListTile(
-                  key: K.searchScreenResultTile,
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                  leading: AvatarOnlineStatus(
-                    key: K.chatLobbyItemAvatar,
-                    profileId: profile.id!,
-                    radiusSize: 20,
-                  ),
-                  title: Text(
-                    profile.username ?? '',
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                    maxLines: 1,
-                  ),
-                  onTap: () => context.router
-                      .push(PublicProfileRoute(profileId: profile.id!)),
-                );
-              },
-            ),
-          ),
+          body: _beforeSearch
+              ? const Center(
+                  child: Text('Search above for users'),
+                )
+              : SearchResults(
+                  debounceTime: debounceTime,
+                  getNextPage: () => getNextPage,
+                ),
         ),
       ),
     );

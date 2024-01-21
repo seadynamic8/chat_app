@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/avatar_online_status.dart';
 import 'package:chat_app/common/username_widget.dart';
 import 'package:chat_app/common/video_call_button.dart';
-import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat/view/chat_more_menu.dart';
 import 'package:chat_app/features/chat/view/user_last_active.dart';
 import 'package:chat_app/routing/app_router.gr.dart';

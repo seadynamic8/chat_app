@@ -12,7 +12,8 @@ class PaginatedListView<T> extends StatelessWidget {
     required this.scrollController,
     this.reverse = false,
     required this.getNextPage,
-    required this.value,
+    this.state, // Either use state or value
+    this.value,
     required this.data,
     this.beforeSlivers,
     this.emptyItemsMessage,
@@ -22,7 +23,8 @@ class PaginatedListView<T> extends StatelessWidget {
   final ScrollController scrollController;
   final bool reverse;
   final Function getNextPage;
-  final AsyncValue<PaginationState<T>> value;
+  final PaginationState<T>? state; // Either use state or value
+  final AsyncValue<PaginationState<T>>? value;
   final Widget Function(PaginationState<T>) data; // * Has to return sliver
   final Widget? beforeSlivers; // Use MultiSliver to add multiple
   final String? emptyItemsMessage;
@@ -44,38 +46,44 @@ class PaginatedListView<T> extends StatelessWidget {
 
     scrollController.addListener(fetchNewItems);
 
+    Widget getMainSliver(PaginationState<T> state) {
+      return state.items.isEmpty && emptyItemsMessage != null
+          ? SliverFillRemaining(
+              child: Center(
+                child: Text(emptyItemsMessage!),
+              ),
+            )
+          : MultiSliver(
+              children: [
+                data(state),
+                if (state.isLastPage) noMoreItems(context),
+              ],
+            );
+    }
+
     return CustomScrollView(
       controller: scrollController,
       reverse: reverse,
       slivers: [
         if (beforeSlivers != null) beforeSlivers!,
-        value.when(
-          data: (state) => state.items.isEmpty && emptyItemsMessage != null
-              ? SliverToBoxAdapter(
-                  child: Center(
-                    child: Text(emptyItemsMessage!),
-                  ),
-                )
-              : MultiSliver(
-                  children: [
-                    data(state),
-                    if (state.isLastPage) noMoreItems(context),
-                  ],
-                ),
-          loading: () => const SliverToBoxAdapter(
-            child: Center(
-              child: CircularProgressIndicator(),
-            ),
-          ),
-          error: (e, st) {
-            logError('paginate slivers', e, st);
-            return SliverToBoxAdapter(
+        if (state != null) getMainSliver(state!),
+        if (value != null)
+          value!.when(
+            data: (state) => getMainSliver(state),
+            loading: () => const SliverToBoxAdapter(
               child: Center(
-                child: ErrorMessageWidget('Error: Something went wrong'.i18n),
+                child: CircularProgressIndicator(),
               ),
-            );
-          },
-        ),
+            ),
+            error: (e, st) {
+              logError('paginate slivers', e, st);
+              return SliverToBoxAdapter(
+                child: Center(
+                  child: ErrorMessageWidget('Error: Something went wrong'.i18n),
+                ),
+              );
+            },
+          ),
       ],
     );
   }

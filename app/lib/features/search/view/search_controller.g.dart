@@ -6,12 +6,12 @@ part of 'search_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$searchControllerHash() => r'cbfbbbd622e4b4703e3cbe84be4b6c1a8fc98455';
+String _$searchControllerHash() => r'fdf55d1d26bb7100521adc8fd7c3394217130be1';
 
 /// See also [SearchController].
 @ProviderFor(SearchController)
 final searchControllerProvider = AutoDisposeNotifierProvider<SearchController,
-    AsyncValue<List<Profile>>>.internal(
+    PaginationState<Profile>>.internal(
   SearchController.new,
   name: r'searchControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -21,6 +21,6 @@ final searchControllerProvider = AutoDisposeNotifierProvider<SearchController,
   allTransitiveDependencies: null,
 );
 
-typedef _$SearchController = AutoDisposeNotifier<AsyncValue<List<Profile>>>;
+typedef _$SearchController = AutoDisposeNotifier<PaginationState<Profile>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
