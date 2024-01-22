@@ -16,36 +16,43 @@ class MessageTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final messageBodyItems = [
+    final tileRowItems = [
+      Align(
+        alignment: Alignment.topCenter,
+        child: MessageTileAvatar(profileId: message.profileId!),
+      ),
       MessageBubble(message: message, isCurrentUser: isCurrentUser),
-      MessageTimestamp(timeString: message.localTime!),
+      Align(
+        alignment: Alignment.bottomCenter,
+        child: MessageTimestamp(timeString: message.localTime!),
+      ),
     ];
 
-    return Stack(
-      children: [
-        Positioned(
-          right: isCurrentUser ? 0 : null,
-          child: InkWell(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: AvatarImage(profileId: message.profileId!, radiusSize: 13),
-            ),
-            onTap: () => context.router
-                .push(PublicProfileRoute(profileId: message.profileId!)),
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 42),
-          child: Row(
-            mainAxisAlignment:
-                isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: isCurrentUser
-                ? messageBodyItems.reversed.toList()
-                : messageBodyItems,
-          ),
-        ),
-      ],
+    return IntrinsicHeight(
+      child: Row(
+        mainAxisAlignment:
+            isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: isCurrentUser ? tileRowItems.reversed.toList() : tileRowItems,
+      ),
+    );
+  }
+}
+
+class MessageTileAvatar extends StatelessWidget {
+  const MessageTileAvatar({super.key, required this.profileId});
+
+  final String profileId;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: AvatarImage(profileId: profileId, radiusSize: 13),
+      ),
+      onTap: () =>
+          context.router.push(PublicProfileRoute(profileId: profileId)),
     );
   }
 }
