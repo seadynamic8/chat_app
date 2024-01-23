@@ -124,9 +124,11 @@ void main() {
     // Mock - other user sends message to that chat room
     const fakeUserOneMessage = 'hello';
     await chatRepository.saveMessage(
-      fakeRoomOneId,
       currentProfileId,
-      Message(content: fakeUserOneMessage, profileId: fakeUserOneId),
+      Message(
+          content: fakeUserOneMessage,
+          profileId: fakeUserOneId,
+          roomId: fakeRoomOneId),
     );
     await $.pumpAndSettle();
     // Add duration to see new timestamp, comment out because too long
@@ -181,9 +183,11 @@ void main() {
     // Mock call - otherUser2 sends message to chatRoom2
     const fakeTwoMessageOne = 'how are you?';
     await chatRepository.saveMessage(
-      fakeRoomTwoId,
       currentProfileId,
-      Message(content: fakeTwoMessageOne, profileId: fakeUserTwoId),
+      Message(
+          content: fakeTwoMessageOne,
+          profileId: fakeUserTwoId,
+          roomId: fakeRoomTwoId),
     );
     await $.pumpAndSettle();
 

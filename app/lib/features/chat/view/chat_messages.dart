@@ -1,13 +1,15 @@
 import 'package:chat_app/common/paginated_list_view.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat/data/joined_room_notifier.dart';
+import 'package:chat_app/features/chat/data/swiped_message_provider.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/view/chat_messages_controller.dart';
-import 'package:chat_app/features/chat/view/message_bubble.dart';
+import 'package:chat_app/features/chat/view/message_tile.dart';
 import 'package:chat_app/features/chat/view/status_message.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:swipe_to/swipe_to.dart';
 
 class ChatMessages extends ConsumerWidget {
   const ChatMessages({
@@ -15,11 +17,13 @@ class ChatMessages extends ConsumerWidget {
     required this.roomId,
     required this.otherProfileId,
     required this.scrollController,
+    required this.msgFieldFocusNode,
   });
 
   final String roomId;
   final String otherProfileId;
   final ScrollController scrollController;
+  final FocusNode msgFieldFocusNode;
 
   bool isCurrentUser(WidgetRef ref, String profileId) {
     return profileId == ref.watch(currentUserIdProvider)!;
@@ -28,6 +32,11 @@ class ChatMessages extends ConsumerWidget {
   String getblockAction(WidgetRef ref, Message message) {
     return message.blockAction(
         isCurrentUser: isCurrentUser(ref, message.profileId!));
+  }
+
+  void onSwipedMessage(WidgetRef ref, Message swipedMessage) {
+    ref.read(swipedMessageProvider.notifier).set(swipedMessage);
+    msgFieldFocusNode.requestFocus();
   }
 
   @override
@@ -67,14 +76,26 @@ class ChatMessages extends ConsumerWidget {
                     final message = messages[index];
 
                     return switch (message.type) {
-                      MessageType.newday =>
-                        StatusMessage(content: message.content!),
-                      MessageType.block =>
-                        StatusMessage(content: getblockAction(ref, message)),
-                      _ => MessageBubble(
+                      MessageType.newday => StatusMessage(
+                          key: UniqueKey(), content: message.content!),
+                      MessageType.block => StatusMessage(
+                          key: UniqueKey(),
+                          content: getblockAction(ref, message),
+                        ),
+                      _ => SwipeTo(
                           key: ValueKey(message.id),
-                          message: message,
-                          isCurrentUser: isCurrentUser(ref, message.profileId!),
+                          onRightSwipe: isCurrentUser(ref, message.profileId!)
+                              ? null
+                              : (_) => onSwipedMessage(ref, message),
+                          onLeftSwipe: isCurrentUser(ref, message.profileId!)
+                              ? (_) => onSwipedMessage(ref, message)
+                              : null,
+                          child: MessageTile(
+                            key: ValueKey(message.id),
+                            message: message,
+                            isCurrentUser:
+                                isCurrentUser(ref, message.profileId!),
+                          ),
                         ),
                     };
                   },

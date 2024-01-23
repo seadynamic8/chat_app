@@ -19,11 +19,11 @@ class MessageBubbleTranslation extends StatelessWidget {
         color: isCurrentUser
             ? Colors.grey.withAlpha(200)
             : theme.colorScheme.background.withAlpha(100),
-        borderRadius: const BorderRadius.only(
+        borderRadius: BorderRadius.only(
           topLeft: Radius.zero,
           topRight: Radius.zero,
-          bottomLeft: Radius.circular(9),
-          bottomRight: Radius.circular(9),
+          bottomLeft: !isCurrentUser ? Radius.zero : const Radius.circular(9),
+          bottomRight: isCurrentUser ? Radius.zero : const Radius.circular(9),
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),

@@ -3,6 +3,7 @@ import 'package:chat_app/features/auth/domain/block_state.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/data/joined_room_notifier.dart';
+import 'package:chat_app/features/chat/data/swiped_message_provider.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/utils/new_day_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,10 +51,16 @@ class ChatService {
     final currentProfile = await ref.read(currentProfileStreamProvider.future);
     await _joinRoomIfNotJoined(roomId, currentProfile!.id!);
 
+    final replyMessage = ref.read(swipedMessageProvider);
+
     await ref.read(chatRepositoryProvider).saveMessage(
-          roomId,
           otherProfileId,
-          Message(content: messageText, profileId: currentProfile.id),
+          Message(
+            content: messageText,
+            profileId: currentProfile.id,
+            roomId: roomId,
+            replyMessage: replyMessage,
+          ),
         );
 
     if (await _otherProfileJoined(roomId, otherProfileId)) {

@@ -14,6 +14,7 @@ class Message {
     this.roomId,
     this.createdAt,
     this.read,
+    this.replyMessage,
   });
 
   final String? id;
@@ -24,6 +25,7 @@ class Message {
   final String? roomId;
   final DateTime? createdAt;
   final bool? read;
+  final Message? replyMessage;
 
   bool isCurrentUser(String currentUserId) {
     return profileId == currentUserId;
@@ -65,6 +67,20 @@ class Message {
         : 'The other user has ${blockAction.name}ed you'.i18n;
   }
 
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'id': id,
+      'type': type,
+      'content': content,
+      'translation': translation,
+      'profile_id': profileId,
+      'room_id': roomId,
+      'created_at': createdAt?.toIso8601String(),
+      'read': read,
+      'parent_message_id': replyMessage?.id,
+    }..removeWhere((key, value) => value == null);
+  }
+
   factory Message.fromMap(Map<String, dynamic> map) {
     return Message(
       id: map['id'] != null ? map['id'] as String : null,
@@ -80,6 +96,9 @@ class Message {
           ? DateTime.parse(map['created_at'] as String)
           : null,
       read: map['read'] != null ? map['read'] as bool : null,
+      replyMessage: map['reply_message'] != null
+          ? Message.fromMap(map['reply_message'] as Map<String, dynamic>)
+          : null,
     );
   }
 
@@ -92,6 +111,7 @@ class Message {
     String? roomId,
     DateTime? createdAt,
     bool? read,
+    Message? replyMessage,
   }) {
     return Message(
       id: id ?? this.id,
@@ -102,12 +122,13 @@ class Message {
       roomId: roomId ?? this.roomId,
       createdAt: createdAt ?? this.createdAt,
       read: read ?? this.read,
+      replyMessage: replyMessage ?? this.replyMessage,
     );
   }
 
   @override
   String toString() {
-    return 'Message(id: $id, type: $type, content: $content, translation: $translation, profileId: $profileId, roomId: $roomId, createdAt: $createdAt, read: $read)';
+    return 'Message(id: $id, type: $type, content: $content, translation: $translation, profileId: $profileId, roomId: $roomId, createdAt: $createdAt, read: $read, replyMessage: $replyMessage)';
   }
 
   // Friendly video status

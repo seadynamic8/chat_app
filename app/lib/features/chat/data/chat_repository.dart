@@ -18,18 +18,29 @@ class ChatRepository {
 
   final SupabaseClient supabase;
 
+  // * Get message
+
+  Future<Message> getMessage(String messageId) async {
+    try {
+      final message = await supabase
+          .from('messages')
+          .select('id, type, profile_id, content, translation, created_at')
+          .eq('id', messageId)
+          .single();
+      return Message.fromMap(message);
+    } catch (error, st) {
+      await logError('getMessage()', error, st);
+      rethrow;
+    }
+  }
+
   // * New message being sent, saved to DB
 
-  Future<void> saveMessage(
-      String roomId, String otherProfileId, Message message) async {
+  Future<void> saveMessage(String otherProfileId, Message message) async {
     try {
       final messageResponse = await supabase
           .from('messages')
-          .insert({
-            'content': message.content,
-            'profile_id': message.profileId,
-            'room_id': roomId,
-          })
+          .insert(message.toMap())
           .select<Map<String, dynamic>>()
           .single();
 
@@ -37,7 +48,7 @@ class ChatRepository {
       await supabase.from('messages_users').insert({
         'message_id': messageResponse['id'],
         'profile_id': otherProfileId,
-        'room_id': roomId,
+        'room_id': message.roomId,
         'read':
             false, // Though this is default, setting it to be safe and clear
       });
@@ -63,7 +74,8 @@ class ChatRepository {
           content,
           profile_id,
           translation,
-          created_at
+          created_at,
+          reply_message:parent_message_id (id, type, profile_id, content, translation, created_at)
         ''')
           .eq('room_id', roomId)
           .order('created_at', ascending: false)
@@ -111,8 +123,20 @@ class ChatRepository {
         table: 'messages',
         filter: 'room_id=eq.$roomId',
       ),
-      (payload, [ref]) {
-        streamController.add(Message.fromMap(payload['new']));
+      (payload, [ref]) async {
+        try {
+          final messageMap = payload['new'];
+          var message = Message.fromMap(messageMap);
+
+          if (messageMap['parent_message_id'] != null) {
+            final replyMessage =
+                await getMessage(messageMap['parent_message_id'] as String);
+            message = message.copyWith(replyMessage: replyMessage);
+          }
+          streamController.add(message);
+        } catch (error, st) {
+          await logError('watchNewMessageForRoom()', error, st);
+        }
       },
     ).subscribe();
 

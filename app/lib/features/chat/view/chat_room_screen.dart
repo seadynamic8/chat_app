@@ -1,4 +1,5 @@
 import 'package:chat_app/common/scroll_to_end_button.dart';
+import 'package:chat_app/features/chat/data/swiped_message_provider.dart';
 import 'package:chat_app/features/chat/view/chat_messages.dart';
 import 'package:chat_app/features/chat/view/chat_room_top_bar.dart';
 import 'package:chat_app/features/chat/view/new_message.dart';
@@ -10,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:i18n_extension/i18n_widget.dart';
 
 @RoutePage()
-class ChatRoomScreen extends ConsumerWidget {
+class ChatRoomScreen extends ConsumerStatefulWidget {
   const ChatRoomScreen({
     super.key,
     required this.roomId,
@@ -21,8 +22,22 @@ class ChatRoomScreen extends ConsumerWidget {
   final String otherProfileId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ChatRoomScreen> createState() => _ChatRoomScreenState();
+}
+
+class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
+  final _focusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final scrollController = ScrollController();
+    ref.watch(swipedMessageProvider);
 
     return I18n(
       child: Padding(
@@ -32,22 +47,24 @@ class ChatRoomScreen extends ConsumerWidget {
             child: Scaffold(
               key: K.chatRoom,
               appBar: ChatRoomTopBar(
-                roomId: roomId,
-                otherProfileId: otherProfileId,
+                roomId: widget.roomId,
+                otherProfileId: widget.otherProfileId,
               ),
               body: Column(
                 children: [
                   Expanded(
                     child: ChatMessages(
                       key: K.chatRoomMessages,
-                      roomId: roomId,
-                      otherProfileId: otherProfileId,
+                      roomId: widget.roomId,
+                      otherProfileId: widget.otherProfileId,
                       scrollController: scrollController,
+                      msgFieldFocusNode: _focusNode,
                     ),
                   ),
                   NewMessage(
-                    roomId: roomId,
-                    otherProfileId: otherProfileId,
+                    roomId: widget.roomId,
+                    otherProfileId: widget.otherProfileId,
+                    focusNode: _focusNode,
                   ),
                 ],
               ),
