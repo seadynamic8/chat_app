@@ -1,9 +1,8 @@
-import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/view/message_bubble_content.dart';
 import 'package:chat_app/features/chat/view/message_bubble_translation.dart';
-import 'package:chat_app/features/chat/view/reply_message_widget.dart';
-import 'package:chat_app/i18n/localizations.dart';
+import 'package:chat_app/features/chat/view/reply/receive_reply_widget.dart';
+import 'package:chat_app/features/chat/view/reply/reply_header_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,33 +17,10 @@ class MessageBubble extends ConsumerWidget {
   final bool isCurrentUser;
 
   bool get isReplying => message.replyMessage != null;
-  String? get replyId => message.replyMessage?.profileId;
-
-  String _replyToText(bool isReplyCurrentUser) {
-    if (isCurrentUser && isReplyCurrentUser) {
-      return 'You replied to yourself'.i18n;
-    }
-    if (isCurrentUser && !isReplyCurrentUser) {
-      return 'You replied'.i18n;
-    }
-    if (!isCurrentUser && !isReplyCurrentUser) {
-      return 'Replied to themself'.i18n;
-    } else {
-      return 'Replied to you'.i18n;
-    }
-  }
-
-  bool _isReplySelf(bool isReplyCurrentUser) {
-    return (isCurrentUser && isReplyCurrentUser) ||
-        (!isCurrentUser && !isReplyCurrentUser);
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final currentUserId = ref.read(currentUserIdProvider);
-
-    final isReplyCurrentUser = replyId == currentUserId;
 
     return ConstrainedBox(
       constraints:
@@ -54,31 +30,14 @@ class MessageBubble extends ConsumerWidget {
             isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           if (isReplying)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: Text(
-                _replyToText(isReplyCurrentUser),
-                style: theme.textTheme.bodySmall!.copyWith(
-                  color: theme.hintColor,
-                  fontSize: 10,
-                ),
-              ),
+            ReplyHeaderWidget(
+              replyMessageId: message.replyMessage!.profileId!,
+              isCurrentUser: isCurrentUser,
             ),
           if (isReplying)
-            IntrinsicWidth(
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                decoration: BoxDecoration(
-                  color: _isReplySelf(isReplyCurrentUser)
-                      ? Colors.grey.withOpacity(0.2)
-                      : isCurrentUser
-                          ? theme.colorScheme.primary.withOpacity(0.2)
-                          : theme.colorScheme.secondary.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: ReplyMessageWidget(replyMessage: message.replyMessage!),
-              ),
+            ReceiveReplyWidget(
+              replyMessage: message.replyMessage!,
+              isCurrentUser: isCurrentUser,
             ),
           Container(
             decoration: BoxDecoration(

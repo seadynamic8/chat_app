@@ -1,6 +1,7 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat/data/swiped_message_provider.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
+import 'package:chat_app/features/chat/view/reply/reply_message_translation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
@@ -66,44 +67,6 @@ class ReplyMessageWidget extends ConsumerWidget {
               ),
             )
         ],
-      ),
-    );
-  }
-}
-
-class ReplyMessageTranslation extends StatelessWidget {
-  const ReplyMessageTranslation({
-    super.key,
-    required this.translation,
-    required this.isCurrentUser,
-  });
-
-  final String translation;
-  final bool isCurrentUser;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: isCurrentUser
-            ? Colors.grey.withAlpha(200)
-            : theme.colorScheme.background.withAlpha(100),
-        // borderRadius: BorderRadius.circular(9),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-      child: Text(
-        translation,
-        style: theme.textTheme.bodySmall!.copyWith(
-          height: 1.3,
-          fontSize: 10,
-          color: isCurrentUser
-              ? Colors.black87
-              : theme.colorScheme.onBackground.withAlpha(200),
-        ),
-        overflow: TextOverflow.ellipsis,
-        maxLines: 3,
       ),
     );
   }
