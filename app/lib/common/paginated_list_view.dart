@@ -30,21 +30,23 @@ class PaginatedListView<T> extends StatelessWidget {
   final String? emptyItemsMessage;
   final String itemsLabel;
 
+  void fetchNewItems(double screenHeight) {
+    final maxScroll = scrollController.position.maxScrollExtent;
+    final currentScroll = scrollController.position.pixels;
+
+    // Set it to update when only 30% of the screen left.
+    final delta = screenHeight * 0.30;
+
+    if (maxScroll - currentScroll <= delta) {
+      getNextPage();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    void fetchNewItems() {
-      final maxScroll = scrollController.position.maxScrollExtent;
-      final currentScroll = scrollController.position.pixels;
+    final screenHeight = MediaQuery.sizeOf(context).height;
 
-      // Set it to update when only 30% of the screen left.
-      final delta = MediaQuery.sizeOf(context).height * 0.30;
-
-      if (maxScroll - currentScroll <= delta) {
-        getNextPage();
-      }
-    }
-
-    scrollController.addListener(fetchNewItems);
+    scrollController.addListener(() => fetchNewItems(screenHeight));
 
     Widget getMainSliver(PaginationState<T> state) {
       return state.items.isEmpty && emptyItemsMessage != null
