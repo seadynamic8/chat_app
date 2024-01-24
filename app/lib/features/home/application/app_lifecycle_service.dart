@@ -46,6 +46,7 @@ class AppLifecycleService {
   }
 
   Future<void> setOfflineTimestamp() async {
+    if (_notLoggedIn()) return;
     await ref.read(authRepositoryProvider).setOfflineAt();
   }
 
@@ -59,6 +60,10 @@ class AppLifecycleService {
     final currentProfileId = ref.read(currentUserIdProvider);
     if (currentProfileId == null) return;
     ref.invalidate(channelRepositoryProvider(currentProfileId));
+  }
+
+  bool _notLoggedIn() {
+    return ref.read(currentUserIdProvider) == null;
   }
 }
 
