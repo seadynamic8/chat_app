@@ -63,7 +63,8 @@ class AppLifecycleService {
   }
 
   bool _notLoggedIn() {
-    return ref.read(currentUserIdProvider) == null;
+    // Don't use currentUserIdProvider (since it's cached, use the actual value)
+    return ref.read(authRepositoryProvider).currentSession == null;
   }
 }
 
