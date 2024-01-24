@@ -32,12 +32,6 @@ class ChatMessagesController extends _$ChatMessagesController {
       maxMessages: numberOfMessagesPerRequest,
     );
 
-    // Setup handlers for any new messages
-    ref.listen<AsyncValue<Message>>(newMessagesStreamProvider(roomId),
-        (_, state) {
-      if (state.hasValue) _handleNewMessage(state.value!);
-    });
-
     return PaginationState<Message>(
       nextPage: initialPage + 1,
       items: messages,
@@ -65,7 +59,7 @@ class ChatMessagesController extends _$ChatMessagesController {
     ));
   }
 
-  void _handleNewMessage(Message newMessage) async {
+  Future<void> handleNewMessage(Message newMessage) async {
     final oldState = await future;
 
     final updatedNewMessages = [newMessage];
@@ -84,11 +78,11 @@ class ChatMessagesController extends _$ChatMessagesController {
     if (!newMessage.isCurrentUser(currentUserId)) {
       ref.read(chatRepositoryProvider).markMessageAsRead(newMessage.id!);
 
-      _updateNewMessageTranslation(newMessage);
+      await _updateNewMessageTranslation(newMessage);
     }
   }
 
-  void _updateNewMessageTranslation(Message newMessage) async {
+  Future<void> _updateNewMessageTranslation(Message newMessage) async {
     final otherProfile =
         await ref.read(profileStreamProvider(newMessage.profileId!).future);
     final translatedText = await ref

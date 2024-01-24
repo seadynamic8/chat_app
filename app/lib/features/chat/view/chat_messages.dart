@@ -1,5 +1,6 @@
 import 'package:chat_app/common/paginated_list_view.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/data/joined_room_notifier.dart';
 import 'package:chat_app/features/chat/data/swiped_message_provider.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
@@ -39,6 +40,26 @@ class ChatMessages extends ConsumerWidget {
     msgFieldFocusNode.requestFocus();
   }
 
+  void listenForNewMessage(WidgetRef ref) {
+    ref.listen<AsyncValue<Message>>(
+      newMessagesStreamProvider(roomId),
+      (_, state) => state.whenData((newMessage) async {
+        await ref
+            .read(chatMessagesControllerProvider(roomId).notifier)
+            .handleNewMessage(newMessage);
+        _scrollUp();
+      }),
+    );
+  }
+
+  void _scrollUp() {
+    scrollController.animateTo(
+      scrollController.position.minScrollExtent,
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
@@ -48,6 +69,8 @@ class ChatMessages extends ConsumerWidget {
     final getNextPage = ref
         .read(chatMessagesControllerProvider(roomId).notifier)
         .getNextPageOfMessages;
+
+    listenForNewMessage(ref);
 
     return PaginatedListView<Message>(
       scrollController: scrollController,
