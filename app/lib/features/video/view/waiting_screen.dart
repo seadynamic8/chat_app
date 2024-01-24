@@ -62,8 +62,10 @@ class _WaitingScreenState extends ConsumerState<WaitingScreen> {
                 const SizedBox(height: 15),
                 otherUsernameValue.maybeWhen(
                   data: (otherUsername) => Text(
-                    'Wating for ${otherUsername ?? 'User'} ...',
+                    'Wating for ${otherUsername ?? 'User'}',
                     style: Theme.of(context).textTheme.titleLarge!,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   orElse: SizedBox.shrink,
                 ),

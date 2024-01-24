@@ -82,9 +82,13 @@ class VideoRoomScreen extends ConsumerWidget {
 
     final mediaQuerySize = MediaQuery.sizeOf(context);
 
+    final double localTileWidth = mediaQuerySize.width * 0.30;
     const double localTileTopOffset = 40;
+    const double localTileRightOffset = 20;
     final double localTileHeight = mediaQuerySize.height * 0.19;
     const double stopwatchHeight = 20;
+    const double backButtonWidth = 48;
+    const double backButtonLeftOffset = 15;
 
     return I18n(
       child: SafeArea(
@@ -114,43 +118,60 @@ class VideoRoomScreen extends ConsumerWidget {
                     ),
                     Positioned(
                       top: 10,
-                      left: 15,
+                      left: backButtonLeftOffset,
+                      right: localTileWidth + localTileRightOffset,
                       child: Row(
                         children: [
                           // BACK BUTTON
-                          IconButton(
-                            onPressed: () => _pressEndCall(context, ref),
-                            color: Colors.white.withAlpha(200),
-                            icon: const Icon(
-                              Icons.arrow_back,
-                              shadows: [
-                                Shadow(color: Colors.black, blurRadius: 1),
-                              ],
+                          SizedBox(
+                            width: backButtonWidth,
+                            child: IconButton(
+                              onPressed: () => _pressEndCall(context, ref),
+                              color: Colors.white.withAlpha(200),
+                              icon: const Icon(
+                                Icons.arrow_back,
+                                shadows: [
+                                  Shadow(color: Colors.black, blurRadius: 1),
+                                ],
+                              ),
                             ),
                           ),
 
-                          RemoteBadge(otherProfileId: otherProfileId),
+                          IntrinsicWidth(
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: mediaQuerySize.width -
+                                    backButtonLeftOffset -
+                                    backButtonWidth -
+                                    localTileWidth -
+                                    localTileRightOffset,
+                              ),
+                              child:
+                                  RemoteBadge(otherProfileId: otherProfileId),
+                            ),
+                          ),
                         ],
                       ),
                     ),
                     Positioned(
                       top: localTileTopOffset,
-                      right: 20,
+                      right: localTileRightOffset,
                       child: LocalTile(
                         localParticipant: state.localParticipant,
                         height: localTileHeight,
+                        width: localTileWidth,
                       ),
                     ),
                     Positioned(
                       top: localTileTopOffset +
                           localTileHeight -
                           stopwatchHeight,
-                      right: 20,
+                      right: localTileRightOffset,
                       child: const VideoStopwatch(height: stopwatchHeight),
                     ),
                     const Positioned(
                       top: 50,
-                      left: 15,
+                      left: backButtonLeftOffset,
                       child: VideoControls(),
                     ),
                   ],

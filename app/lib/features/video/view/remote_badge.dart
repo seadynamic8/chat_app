@@ -16,8 +16,9 @@ class RemoteBadge extends ConsumerWidget {
     return otherProfileValue.maybeWhen(
       data: (otherProfile) => Container(
         decoration: const BoxDecoration(
-            color: Colors.black38,
-            borderRadius: BorderRadius.all(Radius.circular(25))),
+          color: Colors.black38,
+          borderRadius: BorderRadius.all(Radius.circular(25)),
+        ),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(8, 4, 12, 4),
           child: Row(
@@ -26,20 +27,27 @@ class RemoteBadge extends ConsumerWidget {
               AvatarImage(profileId: otherProfileId, radiusSize: 13),
               const SizedBox(width: 8),
 
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // USERNAME
-                  Text(otherProfile.username!),
-                  const SizedBox(height: 4),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // USERNAME
+                    Text(
+                      otherProfile.username!,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                      maxLines: 1,
+                    ),
+                    const SizedBox(height: 4),
 
-                  // COUNTRY
-                  CountryFlag.fromCountryCode(
-                    otherProfile.country!,
-                    height: 9,
-                    width: 15,
-                  ),
-                ],
+                    // COUNTRY
+                    CountryFlag.fromCountryCode(
+                      otherProfile.country!,
+                      height: 9,
+                      width: 15,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

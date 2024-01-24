@@ -31,7 +31,7 @@ class CallPrice extends ConsumerWidget {
               ],
             )
           : Center(
-              child: Text('Calling for Free'.i18n),
+              child: Text('Calling for Free (Trial)'.i18n),
             ),
       orElse: () => const SizedBox.shrink(),
     );

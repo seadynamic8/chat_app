@@ -3,19 +3,22 @@ import 'package:chat_app/features/video/view/video_tile.dart';
 import 'package:flutter/material.dart';
 
 class LocalTile extends StatelessWidget {
-  const LocalTile(
-      {super.key, required this.localParticipant, required this.height});
+  const LocalTile({
+    super.key,
+    required this.localParticipant,
+    required this.height,
+    required this.width,
+  });
 
   final VideoParticipant localParticipant;
   final double height;
+  final double width;
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.sizeOf(context);
-
     return SizedBox(
       height: height,
-      width: mediaQuery.width * 0.30,
+      width: width,
       child: VideoTile(participant: localParticipant),
     );
   }
