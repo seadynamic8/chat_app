@@ -6,6 +6,7 @@ import 'package:chat_app/features/video/data/video_timer_provider.dart';
 import 'package:chat_app/features/video/view/local_tile.dart';
 import 'package:chat_app/features/video/view/remote_badge.dart';
 import 'package:chat_app/features/video/view/remote_tile.dart';
+import 'package:chat_app/features/video/view/video_back_button.dart';
 import 'package:chat_app/features/video/view/video_controls.dart';
 import 'package:chat_app/features/video/view/video_room_controller.dart';
 import 'package:chat_app/features/video/view/video_stopwatch.dart';
@@ -123,18 +124,9 @@ class VideoRoomScreen extends ConsumerWidget {
                       child: Row(
                         children: [
                           // BACK BUTTON
-                          SizedBox(
+                          VideoBackButton(
                             width: backButtonWidth,
-                            child: IconButton(
-                              onPressed: () => _pressEndCall(context, ref),
-                              color: Colors.white.withAlpha(200),
-                              icon: const Icon(
-                                Icons.arrow_back,
-                                shadows: [
-                                  Shadow(color: Colors.black, blurRadius: 1),
-                                ],
-                              ),
-                            ),
+                            onPressEndCall: () => _pressEndCall(context, ref),
                           ),
 
                           IntrinsicWidth(
