@@ -364,24 +364,16 @@ class AuthRepository {
     await supabase.from('online_status').upsert({
       'id': currentUserId,
       'online_at': DateTime.now().toUtc().toIso8601String(),
+      'offline_at': null, // clear offline timestamp
     });
-
-    // clear offline timestamp
-    await supabase
-        .from('online_status')
-        .update({'offline_at': null}).eq('id', currentUserId);
   }
 
   Future<void> setOfflineAt() async {
     await supabase.from('online_status').upsert({
       'id': currentUserId,
       'offline_at': DateTime.now().toUtc().toIso8601String(),
+      'online_at': null // clear online timestamp
     });
-
-    // clear online timestamp
-    await supabase
-        .from('online_status')
-        .update({'online_at': null}).eq('id', currentUserId);
   }
 
   Stream<DateTime?> watchOfflineTime(String profileId) {
