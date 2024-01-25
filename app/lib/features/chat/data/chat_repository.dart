@@ -29,7 +29,7 @@ class ChatRepository {
           .single();
       return Message.fromMap(message);
     } catch (error, st) {
-      await logError('getMessage()', error, st);
+      logger.error('getMessage()', error, st);
       rethrow;
     }
   }
@@ -53,7 +53,7 @@ class ChatRepository {
             false, // Though this is default, setting it to be safe and clear
       });
     } catch (error, st) {
-      await logError('saveMessage()', error, st);
+      logger.error('saveMessage()', error, st);
       throw Exception('Unable to create message'.i18n);
     }
   }
@@ -83,7 +83,7 @@ class ChatRepository {
 
       return messages.map((message) => Message.fromMap(message)).toList();
     } catch (error, st) {
-      await logError('getAllMessagesForRoom()', error, st);
+      logger.error('getAllMessagesForRoom()', error, st);
       throw Exception(
           'Something went wrong with getting list of previous messages'.i18n);
     }
@@ -105,7 +105,7 @@ class ChatRepository {
         'profile_id': profileId
       });
     } catch (error, st) {
-      await logError('updateStatus()', error, st);
+      logger.error('updateStatus()', error, st);
       rethrow;
     }
   }
@@ -135,7 +135,7 @@ class ChatRepository {
           }
           streamController.add(message);
         } catch (error, st) {
-          await logError('watchNewMessageForRoom()', error, st);
+          logger.error('watchNewMessageForRoom()', error, st);
         }
       },
     ).subscribe();
@@ -156,7 +156,7 @@ class ChatRepository {
       await supabase.rpc('delete_read_messages_except_last',
           params: {'profile_id': profileId, 'room_id': roomId});
     } catch (error, st) {
-      await logError('markAllMessagesAsReadForRoom()', error, st);
+      logger.error('markAllMessagesAsReadForRoom()', error, st);
       rethrow;
     }
   }
@@ -170,7 +170,7 @@ class ChatRepository {
         'read_at': DateTime.now().toIso8601String(),
       }).eq('message_id', messageId);
     } catch (error, st) {
-      await logError('markMessageAsRead()', error, st);
+      logger.error('markMessageAsRead()', error, st);
       rethrow;
     }
   }
@@ -182,7 +182,7 @@ class ChatRepository {
         .from('messages')
         .update({'translation': translation}).eq('id', messageId);
     try {} catch (error, st) {
-      await logError('saveTranslationForMessage()', error, st);
+      logger.error('saveTranslationForMessage()', error, st);
       rethrow;
     }
   }
@@ -199,7 +199,7 @@ class ChatRepository {
         'blocked_id': blockedProfileId,
       });
     } catch (error, st) {
-      await logError('blockUser()', error, st);
+      logger.error('blockUser()', error, st);
       rethrow;
     }
   }
@@ -214,7 +214,7 @@ class ChatRepository {
         'blocked_id': blockedProfileId,
       });
     } catch (error, st) {
-      await logError('unBlockUser()', error, st);
+      logger.error('unBlockUser()', error, st);
       rethrow;
     }
   }
@@ -232,7 +232,7 @@ class ChatRepository {
 
       return chatUser['joined'] as bool;
     } catch (error, st) {
-      await logError('getJoinStatus()', error, st);
+      logger.error('getJoinStatus()', error, st);
       rethrow;
     }
   }
@@ -282,7 +282,7 @@ class ChatRepository {
       await supabase.from('chat_users').update({'joined': true}).match(
           {'room_id': roomId, 'profile_id': currentUserId});
     } catch (error, st) {
-      await logError('markRoomAsJoined()', error, st);
+      logger.error('markRoomAsJoined()', error, st);
       rethrow;
     }
   }

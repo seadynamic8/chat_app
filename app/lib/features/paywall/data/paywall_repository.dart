@@ -22,9 +22,9 @@ class PaywallRepository {
       final currentUserId = ref.read(currentUserIdProvider)!;
       await adapty.identify(currentUserId);
     } on AdaptyError catch (adaptyError, st) {
-      await logError('AdaptyError initialize(): $adaptyError', adaptyError, st);
+      logger.error('AdaptyError initialize(): $adaptyError', adaptyError, st);
     } catch (error, st) {
-      await logError('initialize()', error, st);
+      logger.error('initialize()', error, st);
     }
   }
 
@@ -32,10 +32,10 @@ class PaywallRepository {
     try {
       return await adapty.getProfile();
     } on AdaptyError catch (adaptyError, st) {
-      await logError('AdaptyError getProfile(): $adaptyError', adaptyError, st);
+      logger.error('AdaptyError getProfile(): $adaptyError', adaptyError, st);
       rethrow;
     } catch (error, st) {
-      await logError('getProfile()', error, st);
+      logger.error('getProfile()', error, st);
       rethrow;
     }
   }
@@ -44,10 +44,10 @@ class PaywallRepository {
     try {
       return await adapty.getPaywall(id: 'main', locale: 'en');
     } on AdaptyError catch (adaptyError, st) {
-      await logError('AdaptyError getPaywall(): $adaptyError', adaptyError, st);
+      logger.error('AdaptyError getPaywall(): $adaptyError', adaptyError, st);
       rethrow;
     } catch (error, st) {
-      await logError('getPaywall()', error, st);
+      logger.error('getPaywall()', error, st);
       rethrow;
     }
   }
@@ -63,11 +63,11 @@ class PaywallRepository {
         logger.w('Billing service unavailable');
         throw BillingServiceUnavailable();
       }
-      await logError(
+      logger.error(
           'AdaptyError getPaywallProducts(): $adaptyError', adaptyError, st);
       rethrow;
     } catch (error, st) {
-      await logError('getPaywallProducts()', error, st);
+      logger.error('getPaywallProducts()', error, st);
       rethrow;
     }
   }
@@ -83,7 +83,7 @@ class PaywallRepository {
           error: adaptyError, stackTrace: st);
       rethrow;
     } catch (error, st) {
-      await logError('makePurchase()', error, st);
+      logger.error('makePurchase()', error, st);
       rethrow;
     }
   }
@@ -92,10 +92,10 @@ class PaywallRepository {
     try {
       await adapty.logout();
     } on AdaptyError catch (adaptyError, st) {
-      await logError(
+      logger.error(
           'AdaptyError paywallLogout(): $adaptyError', adaptyError, st);
     } catch (error, st) {
-      await logError('paywallLogout()', error, st);
+      logger.error('paywallLogout()', error, st);
     }
   }
 }

@@ -82,19 +82,18 @@ class TranslateRepository {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
       if (e.response != null) {
-        await logError(
-            'translate(): Data: ${e.response!.data}', e, e.stackTrace);
-        await logError(
+        logger.error('translate(): Data: ${e.response!.data}', e, e.stackTrace);
+        logger.error(
             'translate(): Request options: ${e.response!.requestOptions.headers}',
             e,
             e.stackTrace);
       } else {
-        await logError(
+        logger.error(
             'translate(): Error message: ${e.message}', e, e.stackTrace);
       }
       rethrow;
     } catch (error, st) {
-      await logError('translate()', error, st);
+      logger.error('translate()', error, st);
       throw Exception('Unable to translate message'.i18n);
     }
   }

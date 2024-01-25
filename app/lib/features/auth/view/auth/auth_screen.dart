@@ -78,7 +78,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
           case AuthException _:
             context.showErrorSnackBar(error.message);
           default:
-            logError('_submit()', error, st);
+            logger.error('_submit()', error, st);
             context.showErrorSnackBar(unexpectedErrorMessage);
         }
       },

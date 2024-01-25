@@ -26,7 +26,7 @@ class CallAvailability extends _$CallAvailability {
       return CallAvailabilityState(
           status: CallAvailabilityStatus.canCall, data: null);
     } catch (error, st) {
-      await logError('build()', error, st);
+      logger.error('build()', error, st);
       rethrow;
     }
   }

@@ -51,7 +51,7 @@ class AuthRepository {
 
       return Profile.fromMap(profileUser);
     } catch (error, st) {
-      await logError('getProfile()', error, st);
+      logger.error('getProfile()', error, st);
       throw Exception('Unable to get profile'.i18n);
     }
   }
@@ -77,7 +77,7 @@ class AuthRepository {
 
       return profiles.map((profile) => Profile.fromMap(profile)).toList();
     } catch (error, st) {
-      await logError('getOtherOnlineProfiles()', error, st);
+      logger.error('getOtherOnlineProfiles()', error, st);
       throw Exception('Unable to get other online profiles'.i18n);
     }
   }
@@ -123,10 +123,10 @@ class AuthRepository {
           'duplicate key value violates unique constraint "profiles_username_key"') {
         throw DuplicateUsernameException();
       }
-      await logError('updateProfile()', error, st);
+      logger.error('updateProfile()', error, st);
       throw Exception('Unable to update profile'.i18n);
     } catch (error, st) {
-      await logError('updateProfile()', error, st);
+      logger.error('updateProfile()', error, st);
       throw Exception('Something went wrong with creating user'.i18n);
     }
   }
@@ -142,7 +142,7 @@ class AuthRepository {
       await supabase.storage.from('media').upload(imagePath, image);
       return imagePath;
     } catch (error, st) {
-      await logError('storeAvatar()', error, st);
+      logger.error('storeAvatar()', error, st);
       throw Exception('Unable to save avatar'.i18n);
     }
   }
@@ -167,10 +167,10 @@ class AuthRepository {
         logger.w('AuthRepository signUp(): Email already registered');
         throw DuplicateEmailException();
       }
-      logError('signUp()', error, st);
+      logger.error('signUp()', error, st);
       rethrow;
     } catch (error, st) {
-      await logError('signUp()', error, st);
+      logger.error('signUp()', error, st);
       rethrow;
     }
   }
@@ -184,7 +184,7 @@ class AuthRepository {
     try {
       await supabase.auth.resend(type: authOtpType.otpType, email: email);
     } catch (error, st) {
-      await logError('resendOTP()', error, st);
+      logger.error('resendOTP()', error, st);
       rethrow;
     }
   }
@@ -212,7 +212,7 @@ class AuthRepository {
       }
       return true;
     } catch (error, st) {
-      await logError('verifyOTP()', error, st);
+      logger.error('verifyOTP()', error, st);
       rethrow;
     }
   }
@@ -224,7 +224,7 @@ class AuthRepository {
     try {
       await supabase.auth.resetPasswordForEmail(email);
     } catch (error, st) {
-      await logError('resetPassword()', error, st);
+      logger.error('resetPassword()', error, st);
       rethrow;
     }
   }
@@ -241,7 +241,7 @@ class AuthRepository {
         nonce: pinCode,
       ));
     } catch (error, st) {
-      await logError('updateUser()', error, st);
+      logger.error('updateUser()', error, st);
       rethrow;
     }
   }
@@ -266,10 +266,10 @@ class AuthRepository {
         logger.i(error.message);
         rethrow;
       }
-      logError('signInWithEmailAndPassword()', error, st);
+      logger.error('signInWithEmailAndPassword()', error, st);
       rethrow;
     } catch (error, st) {
-      await logError('signInWithEmailAndPassword()', error, st);
+      logger.error('signInWithEmailAndPassword()', error, st);
       rethrow;
     }
   }
@@ -279,7 +279,7 @@ class AuthRepository {
       await setOfflineAt();
       await supabase.auth.signOut();
     } catch (error, st) {
-      await logError('signOut()', error, st);
+      logger.error('signOut()', error, st);
       rethrow;
     }
   }
@@ -295,7 +295,7 @@ class AuthRepository {
       }
       return (jwtResponse.data as String).replaceAll('"', '');
     } catch (error, st) {
-      await logError('generateJWTToken()', error, st);
+      logger.error('generateJWTToken()', error, st);
       rethrow;
     }
   }
@@ -353,7 +353,7 @@ class AuthRepository {
           .update(userAccess.toMap())
           .eq('id', profileId);
     } catch (error, st) {
-      await logError('updateAccessLevel()', error, st);
+      logger.error('updateAccessLevel()', error, st);
       throw Exception('Something went wrong with updating your subscription');
     }
   }
@@ -368,7 +368,7 @@ class AuthRepository {
         'offline_at': null, // clear offline timestamp
       });
     } catch (error, st) {
-      await logError('setOnlineAt()', error, st);
+      logger.error('setOnlineAt()', error, st);
     }
   }
 
@@ -380,7 +380,7 @@ class AuthRepository {
         'online_at': null // clear online timestamp
       });
     } catch (error, st) {
-      await logError('setOfflineAt()', error, st);
+      logger.error('setOfflineAt()', error, st);
     }
   }
 
@@ -409,7 +409,7 @@ class AuthRepository {
 
       return tokens > 0;
     } catch (error, st) {
-      await logError('hasToken()', error, st);
+      logger.error('hasToken()', error, st);
       rethrow;
     }
   }
@@ -429,7 +429,7 @@ class AuthRepository {
 
       await supabase.from('fcm_tokens').insert(tokenMap);
     } catch (error, st) {
-      await logError('addFCMToken()', error, st);
+      logger.error('addFCMToken()', error, st);
     }
   }
 
@@ -445,7 +445,7 @@ class AuthRepository {
 
       await supabase.functions.invoke('create_notification', body: body);
     } catch (error, st) {
-      await logError('createNotification()', error, st);
+      logger.error('createNotification()', error, st);
     }
   }
 
@@ -457,7 +457,7 @@ class AuthRepository {
           await supabase.rpc('create_vault_secret', params: {'secret': secret});
       return secretId;
     } catch (error, st) {
-      await logError('createSecret()', error, st);
+      logger.error('createSecret()', error, st);
       rethrow;
     }
   }
@@ -502,8 +502,7 @@ class AuthRepository {
       }
       return true;
     } catch (error, st) {
-      await logError(
-          '_createProfileWithLanguageAndUniqueUsername()', error, st);
+      logger.error('_createProfileWithLanguageAndUniqueUsername()', error, st);
       rethrow;
     }
   }

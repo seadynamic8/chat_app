@@ -35,7 +35,7 @@ class ChatLobbyRepository {
 
       return Room.fromMap(room.first);
     } catch (error, st) {
-      await logError('findRoomByProfiles()', error, st);
+      logger.error('findRoomByProfiles()', error, st);
       rethrow;
     }
   }
@@ -51,7 +51,7 @@ class ChatLobbyRepository {
 
       return Room.fromMap(roomResponse);
     } catch (error, st) {
-      await logError('createRoom()', error, st);
+      logger.error('createRoom()', error, st);
       rethrow;
     }
   }
@@ -68,7 +68,7 @@ class ChatLobbyRepository {
         'joined': joined,
       });
     } catch (error, st) {
-      await logError('addUserToRoom()', error, st);
+      logger.error('addUserToRoom()', error, st);
       rethrow;
     }
   }
@@ -97,7 +97,7 @@ class ChatLobbyRepository {
 
       return roomsList.map((room) => Room.fromMap(room)).toList();
     } catch (error, st) {
-      await logError('getAllRooms()', error, st);
+      logger.error('getAllRooms()', error, st);
       rethrow;
     }
   }
@@ -118,7 +118,7 @@ class ChatLobbyRepository {
 
       return roomsList.map((room) => Room.fromMap(room)).toList();
     } catch (error, st) {
-      await logError('getUnReadRooms()', error, st);
+      logger.error('getUnReadRooms()', error, st);
       rethrow;
     }
   }
@@ -141,7 +141,7 @@ class ChatLobbyRepository {
 
       return roomsList.map((room) => Room.fromMap(room)).toList();
     } catch (error, st) {
-      await logError('getRequestedRooms()', error, st);
+      logger.error('getRequestedRooms()', error, st);
       rethrow;
     }
   }
@@ -178,7 +178,7 @@ class ChatLobbyRepository {
             : null,
       );
     } catch (error, st) {
-      await logError('getChatLobbyItemState()', error, st);
+      logger.error('getChatLobbyItemState()', error, st);
       rethrow;
     }
   }

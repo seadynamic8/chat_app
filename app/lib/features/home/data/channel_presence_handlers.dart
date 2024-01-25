@@ -110,7 +110,7 @@ extension ChannelPresenceHandlers on ChannelRepository {
         'enteredAt': DateTime.now().toUtc().toIso8601String(),
       });
     } catch (error, st) {
-      await logError('updatePresence()', error, st);
+      logger.error('updatePresence()', error, st);
       rethrow;
     }
   }

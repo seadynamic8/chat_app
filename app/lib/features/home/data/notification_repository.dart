@@ -26,7 +26,7 @@ class NotificationRepository {
       final settings = await messaging.getNotificationSettings();
       return settings.authorizationStatus == AuthorizationStatus.authorized;
     } catch (error, st) {
-      await logError('hasPermissions()', error, st);
+      logger.error('hasPermissions()', error, st);
       return false;
     }
   }
@@ -36,7 +36,7 @@ class NotificationRepository {
       final permission = await messaging.requestPermission();
       return permission.authorizationStatus == AuthorizationStatus.authorized;
     } catch (error, st) {
-      await logError('getPermissions()', error, st);
+      logger.error('getPermissions()', error, st);
       return false;
     }
   }

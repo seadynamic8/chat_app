@@ -59,7 +59,7 @@ class TabsNavigation extends ConsumerWidget {
             _listenToForegroundMessages(context, ref);
           },
           error: (error, st) =>
-              logError('notificationProfvider build()', error, st),
+              logger.error('notificationProfvider build()', error, st),
           loading: () => null,
         );
 

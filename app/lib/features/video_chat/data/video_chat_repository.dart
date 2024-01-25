@@ -27,7 +27,7 @@ class VideoChatRepository {
         payload,
       );
     } catch (error, st) {
-      await logError('send()', error, st);
+      logger.error('send()', error, st);
       throw Exception('Something went wrong with sending message'.i18n);
     }
   }
@@ -40,7 +40,7 @@ class VideoChatRepository {
         callback(VideoChatMessage(psMessage: psMessage));
       });
     } catch (error, st) {
-      await logError('subscribe()', error, st);
+      logger.error('subscribe()', error, st);
     }
   }
 
@@ -52,7 +52,7 @@ class VideoChatRepository {
         callback(VideoChatMessage(psMessage: psMessage));
       });
     } catch (error, st) {
-      await logError('unsubscribe()', error, st);
+      logger.error('unsubscribe()', error, st);
     }
   }
 }

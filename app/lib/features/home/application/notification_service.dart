@@ -53,7 +53,7 @@ class NotificationService {
         .listen(
           (fcmToken) => _addToken(Token(fcmValue: fcmToken)),
         )
-        .onError((err, st) async => await logError('_initTokens()', err, st));
+        .onError((err, st) async => logger.error('_initTokens()', err, st));
 
     return true;
   }

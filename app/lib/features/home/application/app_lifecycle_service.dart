@@ -41,7 +41,7 @@ class AppLifecycleService {
         default:
       }
     } catch (error, st) {
-      await logError('_onStateChanged()', error, st);
+      logger.error('_onStateChanged()', error, st);
     }
   }
 

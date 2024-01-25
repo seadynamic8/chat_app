@@ -33,17 +33,16 @@ class VideoApi {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
       if (e.response != null) {
-        await logError(
-            'getRoomId(): Data: ${e.response!.data}', e, e.stackTrace);
-        await logError(
+        logger.error('getRoomId(): Data: ${e.response!.data}', e, e.stackTrace);
+        logger.error(
             'getRoomId(): Request options: ${e.response!.requestOptions.headers}',
             e,
             e.stackTrace);
       } else {
-        await logError('getRoomId(): ${e.message}', e, e.stackTrace);
+        logger.error('getRoomId(): ${e.message}', e, e.stackTrace);
       }
     } catch (error, st) {
-      await logError('getRoomId()', error, st);
+      logger.error('getRoomId()', error, st);
       throw Exception('Unable to create new video room'.i18n);
     }
 

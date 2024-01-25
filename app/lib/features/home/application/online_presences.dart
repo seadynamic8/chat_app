@@ -31,7 +31,7 @@ class OnlinePresences extends _$OnlinePresences {
       final currentUserId = ref.read(currentUserIdProvider)!;
       await lobbyChannel.updatePresence(currentUserId, onlineStatus);
     } catch (error, st) {
-      await logError('updateCurrentUserPresence()', error, st);
+      logger.error('updateCurrentUserPresence()', error, st);
       rethrow;
     }
   }

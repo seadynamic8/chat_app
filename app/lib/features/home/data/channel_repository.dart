@@ -56,7 +56,7 @@ class ChannelRepository {
     try {
       await channel.unsubscribe(const Duration(minutes: 1));
     } catch (error, st) {
-      await logError('close()', error, st);
+      logger.error('close()', error, st);
       rethrow;
     }
   }

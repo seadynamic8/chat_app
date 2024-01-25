@@ -115,16 +115,6 @@ class LoggerRepository {
   }
 }
 
-Future<void> logError(String message, Object error, StackTrace st) async {
-  logger.e(message, error: error, stackTrace: st);
-  remoteErrorRepository.captureRemoteError(error, stackTrace: st);
-}
-
-Future<void> logErrorMessage(String message) async {
-  logger.e(message, stackTrace: StackTrace.current);
-  remoteErrorRepository.captureRemoteErrorMessage(message);
-}
-
 @riverpod
 LoggerRepository loggerRepository(LoggerRepositoryRef ref) {
   final remoteErrorRepository = ref.watch(remoteErrorProvider);
@@ -132,7 +122,5 @@ LoggerRepository loggerRepository(LoggerRepositoryRef ref) {
   return LoggerRepository(
       logger: talker, remoteErrorRepository: remoteErrorRepository);
 }
-
-final remoteErrorRepository = ProviderContainer().read(remoteErrorProvider);
 
 final logger = ProviderContainer().read(loggerRepositoryProvider);

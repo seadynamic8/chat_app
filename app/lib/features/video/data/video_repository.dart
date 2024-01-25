@@ -62,7 +62,7 @@ class VideoRepository {
     try {
       await videoRoom.join();
     } catch (error, st) {
-      await logError('join()', error, st);
+      logger.error('join()', error, st);
       throw Exception('Unable to join video call'.i18n);
     }
   }
@@ -106,7 +106,7 @@ class VideoRepository {
     try {
       videoRoom.leave();
     } catch (error, st) {
-      await logError('leave()', error, st);
+      logger.error('leave()', error, st);
     }
   }
 
@@ -116,7 +116,7 @@ class VideoRepository {
     try {
       videoRoom.end();
     } catch (error, st) {
-      await logError('end()', error, st);
+      logger.error('end()', error, st);
     }
   }
 
@@ -125,7 +125,7 @@ class VideoRepository {
   Future<void> muteMic() async {
     await videoRoom.muteMic();
     try {} catch (error, st) {
-      await logError('muteMic()', error, st);
+      logger.error('muteMic()', error, st);
       throw Exception('Unable to mute microphone'.i18n);
     }
   }
@@ -134,7 +134,7 @@ class VideoRepository {
     try {
       await videoRoom.unmuteMic();
     } catch (error, st) {
-      await logError('unmuteMic()', error, st);
+      logger.error('unmuteMic()', error, st);
       throw Exception('Unable to unmute microphone'.i18n);
     }
   }
@@ -142,7 +142,7 @@ class VideoRepository {
   Future<void> disableCam() async {
     await videoRoom.disableCam();
     try {} catch (error, st) {
-      await logError('disableCam()', error, st);
+      logger.error('disableCam()', error, st);
       throw Exception('Something went wrong when disabling the camera'.i18n);
     }
   }
@@ -151,7 +151,7 @@ class VideoRepository {
     try {
       await videoRoom.enableCam();
     } catch (error, st) {
-      await logError('enableCam()', error, st);
+      logger.error('enableCam()', error, st);
       throw Exception('Something went wrong when enabling the camera'.i18n);
     }
   }
@@ -160,7 +160,7 @@ class VideoRepository {
     try {
       await videoRoom.changeCam(deviceId);
     } catch (error, st) {
-      await logError('changeCam()', error, st);
+      logger.error('changeCam()', error, st);
       throw Exception('Something went wrong when changing the camera'.i18n);
     }
   }

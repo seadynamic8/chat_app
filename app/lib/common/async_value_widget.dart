@@ -25,7 +25,7 @@ class AsyncValueWidget<T> extends StatelessWidget {
     return value.when(
       data: data,
       error: (error, st) {
-        logError('AsyncValueWidget', error, st);
+        logger.error('AsyncValueWidget', error, st);
 
         return showLoading
             ? Center(

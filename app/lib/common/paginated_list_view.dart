@@ -78,7 +78,7 @@ class PaginatedListView<T> extends StatelessWidget {
               ),
             ),
             error: (e, st) {
-              logError('paginate slivers', e, st);
+              logger.error('paginate slivers', e, st);
               return SliverToBoxAdapter(
                 child: Center(
                   child: ErrorMessageWidget('Error: Something went wrong'.i18n),

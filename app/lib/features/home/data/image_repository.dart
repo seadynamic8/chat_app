@@ -43,7 +43,7 @@ class ImageRepository {
       }
       return File(image.path);
     } catch (error, st) {
-      await logError('pickImage()', error, st);
+      logger.error('pickImage()', error, st);
       rethrow;
     }
   }

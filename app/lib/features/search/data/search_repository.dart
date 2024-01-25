@@ -32,7 +32,7 @@ class SearchRepository {
 
       return profiles.map((profile) => Profile.fromMap(profile)).toList();
     } catch (error, st) {
-      await logError('searchProfiles()', error, st);
+      logger.error('searchProfiles()', error, st);
       rethrow;
     }
   }
