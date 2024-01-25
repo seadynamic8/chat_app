@@ -1,36 +1,9 @@
-// import 'package:logger/logger.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:chat_app/common/remote_error_repository.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:talker_flutter/talker_flutter.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-// class MyPrinter extends PrettyPrinter {
-//   final String className;
-
-//   MyPrinter({this.className = ''})
-//       : super(
-//           methodCount: 1,
-//           errorMethodCount: 8,
-//           lineLength: 60,
-//           noBoxingByDefault: true,
-//           excludeBox: {
-//             Level.error: false,
-//           },
-//         );
-
-//   @override
-//   List<String> log(LogEvent event) {
-//     if (event.level == Level.error) return super.log(event);
-
-//     final color = PrettyPrinter.defaultLevelColors[event.level];
-//     final emoji = PrettyPrinter.defaultLevelEmojis[event.level];
-//     final errorString = '$emoji $className - ${event.message}';
-//     return [color == null ? errorString : color(errorString)];
-//   }
-// }
-
-// Custom logger that will display class name with messages
-// Logger getLogger(String className) {
-//   return Logger(printer: MyPrinter(className: className));
-// }
+part 'logger.g.dart';
 
 class MyCustomTalkerLog extends TalkerLog {
   MyCustomTalkerLog(
@@ -52,10 +25,11 @@ class MyCustomTalkerLog extends TalkerLog {
   String get message => '${className != null ? "$className - " : ""} $msg';
 }
 
-class MyLogger {
-  MyLogger({required this.logger});
+class LoggerRepository {
+  LoggerRepository({required this.logger, required this.remoteErrorRepository});
 
   final Talker logger;
+  final RemoteErrorRepository remoteErrorRepository;
 
   static int grey(double level) => 232 + (level.clamp(0.0, 1.0) * 23).round();
 
@@ -129,34 +103,36 @@ class MyLogger {
   }) {
     logger.logTyped(MyCustomTalkerLog(msg, className: className));
   }
+
+  void error(String message, Object error, StackTrace st) {
+    e(message, error: error, stackTrace: st);
+    remoteErrorRepository.captureRemoteError(error, stackTrace: st);
+  }
+
+  void message(String message) {
+    e(message, stackTrace: StackTrace.current);
+    remoteErrorRepository.captureRemoteErrorMessage(message);
+  }
 }
 
-// log error with sentry log
 Future<void> logError(String message, Object error, StackTrace st) async {
   logger.e(message, error: error, stackTrace: st);
-  // Sentry can await, but is too slow for request, so just fire and forget
-  Sentry.captureException(error, stackTrace: st);
+  remoteErrorRepository.captureRemoteError(error, stackTrace: st);
 }
 
-// log error with sentry log message
 Future<void> logErrorMessage(String message) async {
   logger.e(message, stackTrace: StackTrace.current);
-  // Sentry can await, but is too slow for request, so just fire and forget
-  Sentry.captureMessage(message, level: SentryLevel.error);
+  remoteErrorRepository.captureRemoteErrorMessage(message);
 }
 
-final talker = TalkerFlutter.init();
+@riverpod
+LoggerRepository loggerRepository(LoggerRepositoryRef ref) {
+  final remoteErrorRepository = ref.watch(remoteErrorProvider);
+  final talker = TalkerFlutter.init();
+  return LoggerRepository(
+      logger: talker, remoteErrorRepository: remoteErrorRepository);
+}
 
-final logger = MyLogger(logger: talker);
+final remoteErrorRepository = ProviderContainer().read(remoteErrorProvider);
 
-// final logger = Logger(
-//   printer: PrettyPrinter(
-//     methodCount: 0,
-//     errorMethodCount: 8,
-//     lineLength: 60,
-//     noBoxingByDefault: true,
-//     excludeBox: {
-//       Level.error: false,
-//     },
-//   ),
-// );
+final logger = ProviderContainer().read(loggerRepositoryProvider);

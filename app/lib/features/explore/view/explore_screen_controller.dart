@@ -1,4 +1,5 @@
 import 'package:chat_app/common/pagination_state.dart';
+import 'package:chat_app/common/remote_error_repository.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/explore/view/application/explore_service.dart';
@@ -19,6 +20,8 @@ class ExploreScreenController extends _$ExploreScreenController {
   @override
   FutureOr<PaginationState<Profile>> build() async {
     final lobbyChannel = await ref.watch(lobbySubscribedChannelProvider.future);
+
+    await ref.watch(remoteErrorProvider).setCurrentUser();
 
     lobbyChannel.onJoin(_onJoin);
     lobbyChannel.onLeave(_onLeave);

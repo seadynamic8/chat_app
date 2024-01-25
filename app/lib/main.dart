@@ -77,7 +77,7 @@ class MyApp extends ConsumerWidget {
         ),
         navigatorObservers: () => [
           ref.read(routingObserverProvider),
-          TalkerRouteObserver(talker),
+          TalkerRouteObserver(ref.watch(loggerRepositoryProvider).logger),
         ],
       ),
       localizationsDelegates: localizationDelegates,

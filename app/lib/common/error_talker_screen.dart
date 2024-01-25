@@ -10,6 +10,7 @@ class ErrorTalkerScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return TalkerScreen(talker: talker);
+    final loggerRepository = ref.watch(loggerRepositoryProvider);
+    return TalkerScreen(talker: loggerRepository.logger);
   }
 }
