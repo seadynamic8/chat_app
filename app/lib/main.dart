@@ -23,9 +23,6 @@ void main() async {
   final environment = ProviderContainer().read(environmentProvider);
   final (supabaseUrl, supabaseKey) = environment.getSupabaseUrlAndKey();
 
-  logger.i('Current Environment: ${environment.envType.name}');
-  logger.t('Supabase Url: $supabaseUrl');
-
   await Supabase.initialize(
     url: supabaseUrl,
     anonKey: supabaseKey,
@@ -33,6 +30,10 @@ void main() async {
     realtimeClientOptions:
         const RealtimeClientOptions(eventsPerSecond: 10), // Default is 10
   );
+
+  // Call logger only after initialize Supabase, because it needs it log user
+  logger.i('Current Environment: ${environment.envType.name}');
+  logger.t('Supabase Url: $supabaseUrl');
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 

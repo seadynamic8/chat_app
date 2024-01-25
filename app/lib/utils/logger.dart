@@ -1,4 +1,5 @@
 import 'package:chat_app/common/remote_error_repository.dart';
+import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -34,7 +35,7 @@ class LoggerRepository {
   static int grey(double level) => 232 + (level.clamp(0.0, 1.0) * 23).round();
 
   void t(dynamic msg, {Object? error, StackTrace? stackTrace}) {
-    talker.log(
+    _logCustom(
       msg,
       exception: error,
       stackTrace: stackTrace,
@@ -44,7 +45,7 @@ class LoggerRepository {
   }
 
   void w(dynamic msg, {Object? error, StackTrace? stackTrace}) {
-    talker.log(
+    _logCustom(
       msg,
       exception: error,
       stackTrace: stackTrace,
@@ -58,7 +59,7 @@ class LoggerRepository {
   }
 
   void i(dynamic msg, {Object? error, StackTrace? stackTrace}) {
-    talker.log(
+    _logCustom(
       msg,
       exception: error,
       stackTrace: stackTrace,
@@ -68,7 +69,7 @@ class LoggerRepository {
   }
 
   void e(dynamic msg, {Object? error, StackTrace? stackTrace}) {
-    talker.log(
+    _logCustom(
       msg,
       exception: error,
       stackTrace: stackTrace,
@@ -78,7 +79,7 @@ class LoggerRepository {
   }
 
   void f(dynamic msg, {Object? error, StackTrace? stackTrace}) {
-    talker.log(
+    _logCustom(
       msg,
       exception: error,
       stackTrace: stackTrace,
@@ -112,6 +113,24 @@ class LoggerRepository {
   void message(String message) {
     e(message, stackTrace: StackTrace.current);
     ref.read(remoteErrorProvider).captureRemoteErrorMessage(message);
+  }
+
+  void _logCustom(
+    dynamic msg, {
+    required LogLevel logLevel,
+    Object? exception,
+    StackTrace? stackTrace,
+    AnsiPen? pen,
+  }) async {
+    final currentProfile = await ref.read(currentProfileStreamProvider.future);
+
+    talker.log(
+      currentProfile != null ? '[User: ${currentProfile.username}]: $msg' : msg,
+      exception: exception,
+      stackTrace: stackTrace,
+      logLevel: logLevel,
+      pen: pen,
+    );
   }
 }
 
