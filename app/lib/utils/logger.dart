@@ -26,15 +26,15 @@ class MyCustomTalkerLog extends TalkerLog {
 }
 
 class LoggerRepository {
-  LoggerRepository({required this.logger, required this.remoteErrorRepository});
+  LoggerRepository({required this.ref});
 
-  final Talker logger;
-  final RemoteErrorRepository remoteErrorRepository;
+  final Ref ref;
+  final Talker talker = TalkerFlutter.init();
 
   static int grey(double level) => 232 + (level.clamp(0.0, 1.0) * 23).round();
 
   void t(dynamic msg, {Object? error, StackTrace? stackTrace}) {
-    logger.log(
+    talker.log(
       msg,
       exception: error,
       stackTrace: stackTrace,
@@ -44,7 +44,7 @@ class LoggerRepository {
   }
 
   void w(dynamic msg, {Object? error, StackTrace? stackTrace}) {
-    logger.log(
+    talker.log(
       msg,
       exception: error,
       stackTrace: stackTrace,
@@ -54,11 +54,11 @@ class LoggerRepository {
   }
 
   void d(dynamic msg, {Object? error, StackTrace? stackTrace}) {
-    logger.debug(msg, error, stackTrace);
+    talker.debug(msg, error, stackTrace);
   }
 
   void i(dynamic msg, {Object? error, StackTrace? stackTrace}) {
-    logger.log(
+    talker.log(
       msg,
       exception: error,
       stackTrace: stackTrace,
@@ -68,7 +68,7 @@ class LoggerRepository {
   }
 
   void e(dynamic msg, {Object? error, StackTrace? stackTrace}) {
-    logger.log(
+    talker.log(
       msg,
       exception: error,
       stackTrace: stackTrace,
@@ -78,7 +78,7 @@ class LoggerRepository {
   }
 
   void f(dynamic msg, {Object? error, StackTrace? stackTrace}) {
-    logger.log(
+    talker.log(
       msg,
       exception: error,
       stackTrace: stackTrace,
@@ -88,11 +88,11 @@ class LoggerRepository {
   }
 
   void good(dynamic msg, {Object? error, StackTrace? stackTrace}) {
-    logger.good(msg, error, stackTrace);
+    talker.good(msg, error, stackTrace);
   }
 
   void handle(Object error, {StackTrace? stackTrace, dynamic message}) {
-    logger.handle(error, stackTrace, message);
+    talker.handle(error, stackTrace, message);
   }
 
   void logClass(
@@ -101,26 +101,23 @@ class LoggerRepository {
     Object? error,
     StackTrace? stackTrace,
   }) {
-    logger.logTyped(MyCustomTalkerLog(msg, className: className));
+    talker.logTyped(MyCustomTalkerLog(msg, className: className));
   }
 
   void error(String message, Object error, StackTrace st) {
     e(message, error: error, stackTrace: st);
-    remoteErrorRepository.captureRemoteError(error, stackTrace: st);
+    ref.read(remoteErrorProvider).captureRemoteError(error, stackTrace: st);
   }
 
   void message(String message) {
     e(message, stackTrace: StackTrace.current);
-    remoteErrorRepository.captureRemoteErrorMessage(message);
+    ref.read(remoteErrorProvider).captureRemoteErrorMessage(message);
   }
 }
 
 @riverpod
 LoggerRepository loggerRepository(LoggerRepositoryRef ref) {
-  final remoteErrorRepository = ref.watch(remoteErrorProvider);
-  final talker = TalkerFlutter.init();
-  return LoggerRepository(
-      logger: talker, remoteErrorRepository: remoteErrorRepository);
+  return LoggerRepository(ref: ref);
 }
 
 final logger = ProviderContainer().read(loggerRepositoryProvider);
