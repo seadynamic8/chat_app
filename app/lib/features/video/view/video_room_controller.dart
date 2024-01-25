@@ -8,6 +8,7 @@ import 'package:chat_app/features/video/data/video_repository.dart';
 import 'package:chat_app/features/video/data/video_timer_provider.dart';
 import 'package:chat_app/features/video/domain/video_participant.dart';
 import 'package:chat_app/features/video/domain/video_room_state.dart';
+import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -32,10 +33,21 @@ class VideoRoomController extends _$VideoRoomController {
 
     WakelockPlus.enable();
 
+    watchAppPaused();
+
     return VideoRoomState(
       localParticipant: videoRepository.localParticipant,
       remoteParticipants: videoRepository.remoteParticipants,
     );
+  }
+
+  void watchAppPaused() async {
+    AppLifecycleListener(onStateChange: (appLifecycleState) async {
+      final oldState = await future;
+      if (appLifecycleState == AppLifecycleState.paused) {
+        state = AsyncData(oldState.copyWith(isAppPaused: true));
+      }
+    });
   }
 
   void endCall(String videoRoomId, String otherProfileId) async {

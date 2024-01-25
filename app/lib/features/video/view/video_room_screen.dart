@@ -74,12 +74,23 @@ class VideoRoomScreen extends ConsumerWidget {
     }
   }
 
+  void _listenForAppPaused(BuildContext context, WidgetRef ref) {
+    ref.listen(
+        videoRoomControllerProvider(isCaller),
+        (_, state) => state.whenData((videoRoomState) {
+              if (videoRoomState.isAppPaused) {
+                _endCall(context, ref);
+              }
+            }));
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     _listenForCallRequestEnd(context, ref);
     if (isCaller) _listenForTimerEnd(context, ref);
 
     final stateValue = ref.watch(videoRoomControllerProvider(isCaller));
+    _listenForAppPaused(context, ref);
 
     final mediaQuerySize = MediaQuery.sizeOf(context);
 
