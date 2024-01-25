@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/auth/view/common/birthdate_picker.dart';
@@ -9,6 +10,7 @@ import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:chat_app/utils/locale_from_string.dart';
 import 'package:chat_app/utils/string_validators.dart';
+import 'package:collection/collection.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -112,7 +114,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   }
 
   // Maybe later add in HK and TW for Chinese support
-  List<Language> get supportedLanguages {
+  List<Language> getSsupportedLanguages(Locale? currentLocale) {
     // Filtering to match language_picker languages with flutter languages
     final listOfLangs = [
       ...kMaterialSupportedLanguages,
@@ -126,7 +128,18 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
     return listOfLangs
         .map((langCode) => Language.fromIsoCode(langCode))
+        .sorted((langA, langB) => _displayLanguage(langA, currentLocale)
+            .compareTo(_displayLanguage(langB, currentLocale)))
         .toList();
+  }
+
+  String _displayLanguage(Language language, Locale? currentLocale) {
+    if (currentLocale == null) {
+      return Locale.fromSubtags(languageCode: language.isoCode)
+          .defaultDisplayLanguageScript;
+    }
+    return Locale.fromSubtags(languageCode: language.isoCode)
+        .displayLanguageScriptIn(currentLocale);
   }
 
   @override
@@ -139,6 +152,8 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final currentLocaleValue = ref.watch(currentProfileStreamProvider
+        .select((value) => value.whenData((profile) => profile?.language)));
 
     return I18n(
       child: Scaffold(
@@ -253,18 +268,22 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                       ),
                       const SizedBox(width: 20),
                       Expanded(
-                        child: LanguagePickerDropdown(
-                          initialValue: _selectedLanguage,
-                          languages: supportedLanguages,
-                          itemBuilder: (language) => Text(
-                            Locale.fromSubtags(languageCode: language.isoCode)
-                                .nativeDisplayLanguageScript,
-                            key: K.editProfileLanguageField,
-                            style: theme.textTheme.bodyMedium,
+                        child: AsyncValueWidget(
+                          value: currentLocaleValue,
+                          data: (currentLocale) => LanguagePickerDropdown(
+                            initialValue: _selectedLanguage,
+                            languages: getSsupportedLanguages(currentLocale),
+                            itemBuilder: (language) => Text(
+                              _displayLanguage(language, currentLocale),
+                              key: K.editProfileLanguageField,
+                              style: theme.textTheme.bodyMedium,
+                            ),
+                            onValuePicked: (Language language) {
+                              setState(() => _selectedLanguage = language);
+                            },
                           ),
-                          onValuePicked: (Language language) {
-                            setState(() => _selectedLanguage = language);
-                          },
+                          showLoading: false,
+                          showError: false,
                         ),
                       )
                     ],
