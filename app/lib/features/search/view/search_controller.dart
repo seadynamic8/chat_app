@@ -16,7 +16,10 @@ class SearchController extends _$SearchController {
 
   @override
   PaginationState<Profile> build() {
-    return PaginationState(items: []);
+    return PaginationState(
+      items: [],
+      resultsState: PaginationResultsState.before,
+    );
   }
 
   Future<void> searchInitialProfiles(String searchText) async {
@@ -28,7 +31,11 @@ class SearchController extends _$SearchController {
           range: numberOfProfilesPerRequest + initialExtraProfiles,
         );
 
-    state = PaginationState(nextPage: initialPage + 1, items: profiles);
+    state = PaginationState(
+      nextPage: initialPage + 1,
+      items: profiles,
+      resultsState: _getResultsState(profiles),
+    );
   }
 
   Future<void> searchNextProfiles(String searchText) async {
@@ -42,12 +49,21 @@ class SearchController extends _$SearchController {
 
     final isLastPage = profiles.length < numberOfProfilesPerRequest;
     state = state.copyWith(
-        isLastPage: isLastPage,
-        nextPage: state.nextPage! + 1,
-        items: [...state.items, ...profiles]);
+      isLastPage: isLastPage,
+      nextPage: state.nextPage! + 1,
+      items: [...state.items, ...profiles],
+      resultsState: _getResultsState(profiles),
+    );
   }
 
-  void clearProfiles() {
-    state = state.copyWith(items: []);
+  void reset() {
+    state =
+        state.copyWith(items: [], resultsState: PaginationResultsState.before);
+  }
+
+  PaginationResultsState _getResultsState(List<Profile> results) {
+    return results.isEmpty
+        ? PaginationResultsState.none
+        : PaginationResultsState.results;
   }
 }

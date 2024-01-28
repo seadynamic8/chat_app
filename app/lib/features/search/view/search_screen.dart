@@ -17,16 +17,13 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final _searchController = TextEditingController();
-  var _beforeSearch = true;
   final debounceTime = const Duration(milliseconds: 500);
 
   String get searchText => _searchController.text.trim();
 
   void _search() {
-    setState(() => _beforeSearch = false);
-
     if (searchText.isEmpty) {
-      ref.read(searchControllerProvider.notifier).clearProfiles();
+      ref.read(searchControllerProvider.notifier).reset();
       return;
     }
 
@@ -67,14 +64,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               onChanged: (value) => _search(),
             ),
           ),
-          body: _beforeSearch
-              ? const Center(
-                  child: Text('Search above for users'),
-                )
-              : SearchResults(
-                  debounceTime: debounceTime,
-                  getNextPage: () => getNextPage,
-                ),
+          body: SearchResults(getNextPage: () => getNextPage),
         ),
       ),
     );
