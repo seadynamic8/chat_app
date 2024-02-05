@@ -1,3 +1,4 @@
+import 'package:chat_app/common/terms_and_privacy_text.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,18 +22,47 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
     return I18n(
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
             title: Text('Settings'.i18n),
           ),
-          body: ListView(
+          body: Column(
             children: [
-              ListTile(
-                key: K.settingsLogoutTile,
-                title: Text('Logout'.i18n),
-                onTap: () => _logOut(context, ref),
+              Expanded(
+                child: ListView(
+                  children: [
+                    ListTile(
+                      key: K.settingsLogoutTile,
+                      title: Text('Logout'.i18n),
+                      onTap: () => _logOut(context, ref),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 40),
+                child: Column(
+                  children: [
+                    TermsAndPrivacyText(textColor: theme.hintColor),
+                    Text(
+                      'Copyright © 2023-${DateTime.now().year} Star Cache, LLC'
+                          .i18n,
+                      style: theme.textTheme.bodySmall!.copyWith(
+                        color: theme.hintColor,
+                      ),
+                    ),
+                    Text(
+                      'All rights reserved.'.i18n,
+                      style: theme.textTheme.bodySmall!.copyWith(
+                        color: theme.hintColor,
+                      ),
+                    ),
+                  ],
+                ),
               )
             ],
           ),
