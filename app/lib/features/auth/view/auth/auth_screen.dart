@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:chat_app/common/checkbox_form_field.dart';
 import 'package:chat_app/common/error_snackbar.dart';
+import 'package:chat_app/common/terms_and_privacy_text.dart';
 import 'package:chat_app/features/auth/view/auth/auth_form_state.dart';
 import 'package:chat_app/features/auth/view/auth/auth_screen_controller.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
@@ -34,6 +36,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   // error hints only when the form has been submitted
   var _submitted = false;
   var _passwordObscured = true;
+  var _termsChecked = false;
 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -183,6 +186,32 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                       state.passwordErrorText(password ?? ''),
                 ),
                 const SizedBox(width: 16, height: 16),
+
+                // TERMS OF SERVICE
+                if (state.formType == AuthFormType.signup)
+                  CheckBoxFormField(
+                    key: K.authFormTermsOfServiceCheckbox,
+                    value: _termsChecked,
+                    onChanged: (value) {
+                      setState(() => _termsChecked = value ?? false);
+                    },
+                    title: Row(
+                      children: [
+                        Text(
+                          'I agree to the '.i18n,
+                          style: theme.textTheme.bodySmall!.copyWith(
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                        TermsAndPrivacyText(
+                            textColor: theme.colorScheme.primary)
+                      ],
+                    ),
+                    autovalidateMode: _submitted
+                        ? AutovalidateMode.onUserInteraction
+                        : AutovalidateMode.disabled,
+                    validator: (terms) => state.termsErrorText(terms ?? false),
+                  ),
 
                 // FORGOT PASSWORD
                 if (state.formType == AuthFormType.login)

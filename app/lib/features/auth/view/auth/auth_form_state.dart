@@ -122,4 +122,8 @@ extension AuthFormStateX on AuthFormState {
         : 'Password is too short'.i18n;
     return showErrorText ? errorText : null;
   }
+
+  String? termsErrorText(bool termsAccepted) {
+    return !termsAccepted ? 'You must accept the terms'.i18n : null;
+  }
 }

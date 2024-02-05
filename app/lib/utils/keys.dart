@@ -14,6 +14,8 @@ class Keys {
   static const authFormEmailField = Key('authFormEmailField');
   static const authFormUsernameField = Key('authFormUsernameField');
   static const authFormPasswordField = Key('authFormPasswordField');
+  static const authFormTermsOfServiceCheckbox =
+      Key('authFormTermsOfServiceCheckbox');
   static const authFormForgotPasswordBtn = Key('authFormForgotPasswordBtn');
   static const authFormSubmitButton = Key('authFormSubmitButton');
   static const authFormTypeToggle = Key('authFormTypeToggle');
