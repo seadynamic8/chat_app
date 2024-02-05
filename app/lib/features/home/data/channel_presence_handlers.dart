@@ -10,12 +10,16 @@ extension ChannelPresenceHandlers on ChannelRepository {
   void onJoin([void Function(OnlineState onlineState)? callback]) {
     channel.on(RealtimeListenTypes.presence, ChannelFilter(event: 'join'),
         (payload, [ref]) {
-      final newUserPresences = payload['newPresences'] as List<Presence>;
-      final newUserIdentifiers = _getUserIdentifiers(newUserPresences);
-      logger.t('${channel.subTopic} | ${newUserIdentifiers.first} | Joined');
+      try {
+        final newUserPresences = payload['newPresences'] as List<Presence>;
+        final newUserIdentifiers = _getUserIdentifiers(newUserPresences);
+        logger.t('${channel.subTopic} | ${newUserIdentifiers.first} | Joined');
 
-      if (callback != null) {
-        callback(OnlineState.fromMap(newUserPresences.first.payload));
+        if (callback != null) {
+          callback(OnlineState.fromMap(newUserPresences.first.payload));
+        }
+      } catch (error, st) {
+        logger.error('onJoin()', error, st);
       }
     });
   }
@@ -23,12 +27,18 @@ extension ChannelPresenceHandlers on ChannelRepository {
   void onLeave([void Function(OnlineState onlineState)? callback]) {
     channel.on(RealtimeListenTypes.presence, ChannelFilter(event: 'leave'),
         (payload, [ref]) {
-      final leavingUserPresences = payload['leftPresences'] as List<Presence>;
-      final leavingUserIdentifiers = _getUserIdentifiers(leavingUserPresences);
-      logger.t('${channel.subTopic} | ${leavingUserIdentifiers.first} | Left');
+      try {
+        final leavingUserPresences = payload['leftPresences'] as List<Presence>;
+        final leavingUserIdentifiers =
+            _getUserIdentifiers(leavingUserPresences);
+        logger
+            .t('${channel.subTopic} | ${leavingUserIdentifiers.first} | Left');
 
-      if (callback != null) {
-        callback(OnlineState.fromMap(leavingUserPresences.first.payload));
+        if (callback != null) {
+          callback(OnlineState.fromMap(leavingUserPresences.first.payload));
+        }
+      } catch (error, st) {
+        logger.error('onLeave()', error, st);
       }
     });
   }
@@ -37,12 +47,17 @@ extension ChannelPresenceHandlers on ChannelRepository {
       [void Function(Map<String, OnlineState> onlinePresences)? callback]) {
     channel.on(RealtimeListenTypes.presence, ChannelFilter(event: 'sync'),
         (payload, [ref]) {
-      // payload is only: {event: sync} (so not useful,
-      // need to call presenceState() to get updated presences)
-      final onlinePresences = getOnlinePresences();
-      logger.t('${channel.subTopic} | ${onlinePresences.keys} | Current Users');
+      try {
+        // payload is only: {event: sync} (so not useful,
+        // need to call presenceState() to get updated presences)
+        final onlinePresences = getOnlinePresences();
+        logger
+            .t('${channel.subTopic} | ${onlinePresences.keys} | Current Users');
 
-      if (callback != null) callback(onlinePresences);
+        if (callback != null) callback(onlinePresences);
+      } catch (error, st) {
+        logger.error('onUpdate()', error, st);
+      }
     });
   }
 
@@ -56,30 +71,40 @@ extension ChannelPresenceHandlers on ChannelRepository {
   Map<String, OnlineState> getOnlinePresences() {
     return presenceStates.fold<Map<String, OnlineState>>({},
         (onlinePresences, presenceList) {
-      final presence = presenceList.first; // Only one presence in list
-      final userId = presence.payload['profileId'] as String;
-      onlinePresences[userId] = OnlineState.fromMap(presence.payload);
-      return onlinePresences;
+      try {
+        final presence = presenceList.first; // Only one presence in list
+        final userId = presence.payload['profileId'] as String;
+        onlinePresences[userId] = OnlineState.fromMap(presence.payload);
+        return onlinePresences;
+      } catch (error, st) {
+        logger.error('getOnlinePresences()', error, st);
+        return {};
+      }
     });
   }
 
   List<String> getOnlineUserIds({required int limit, DateTime? lastOnlineAt}) {
-    List<String> onlineUserIds = [];
-    for (final presenceList in presenceStates) {
-      final presence = presenceList.first; // Only one presence in list
+    try {
+      List<String> onlineUserIds = [];
+      for (final presenceList in presenceStates) {
+        final presence = presenceList.first; // Only one presence in list
 
-      // reached limit (or range of page)
-      if (onlineUserIds.length == limit) return onlineUserIds;
+        // reached limit (or range of page)
+        if (onlineUserIds.length == limit) return onlineUserIds;
 
-      final enteredAt = presence.payload['enteredAt'];
+        final enteredAt = presence.payload['enteredAt'];
 
-      // don't add newer online users (i.e. we want the older online
-      // users based on the lastOnlineAt cursor)
-      if (lastOnlineAt != null && enteredAt >= lastOnlineAt) continue;
+        // don't add newer online users (i.e. we want the older online
+        // users based on the lastOnlineAt cursor)
+        if (lastOnlineAt != null && enteredAt >= lastOnlineAt) continue;
 
-      onlineUserIds.add(presence.payload['profileId'] as String);
+        onlineUserIds.add(presence.payload['profileId'] as String);
+      }
+      return onlineUserIds;
+    } catch (error, st) {
+      logger.error('getOnlineUserIds()', error, st);
+      return [];
     }
-    return onlineUserIds;
   }
 
   Future<void> subscribed() async {
@@ -87,16 +112,20 @@ extension ChannelPresenceHandlers on ChannelRepository {
     final currentUserId = ref.read(currentUserIdProvider)!;
 
     channel.subscribe((status, [ref]) async {
-      if (status == 'SUBSCRIBED') {
-        await updatePresence(currentUserId, OnlineStatus.online);
-        logger.i('${channel.subTopic} | $currentUserId | Subscribed');
+      try {
+        if (status == 'SUBSCRIBED') {
+          await updatePresence(currentUserId, OnlineStatus.online);
+          logger.i('${channel.subTopic} | $currentUserId | Subscribed');
 
-        completer.complete();
-      } else {
-        logger.t('${channel.subTopic} | $currentUserId | Status: $status');
+          completer.complete();
+        } else {
+          logger.t('${channel.subTopic} | $currentUserId | Status: $status');
+        }
+        return await completer.future;
+      } catch (error, st) {
+        logger.error('subscribed()', error, st);
       }
     });
-    return await completer.future;
   }
 
   Future<void> updatePresence(String currentUserId, OnlineStatus status) async {
