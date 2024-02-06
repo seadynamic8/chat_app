@@ -51,7 +51,9 @@ class ExploreScreenController extends _$ExploreScreenController {
     final isLastPage = otherOnlineProfiles.length < numberOfUsersPerRequest;
     state = AsyncData(oldState.copyWith(
       isLastPage: isLastPage,
-      lastOnlineAt: otherOnlineProfiles.last.onlineAt,
+      lastOnlineAt: otherOnlineProfiles.isEmpty
+          ? null
+          : otherOnlineProfiles.last.onlineAt,
       items: [...oldState.items, ...otherOnlineProfiles],
     ));
   }
