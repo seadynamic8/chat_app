@@ -14,7 +14,7 @@ INSERT INTO "auth"."users" ("instance_id", "id", "aud", "role", "email", "encryp
 	('00000000-0000-0000-0000-000000000000', 'fcd95429-e523-4d5f-afbd-9fef8f282a73', 'authenticated', 'authenticated', 'jov@test.com', '$2a$10$OQcGUmVveG/Jlz.ShUTL9.V.2tMksiWDMy8vcyrTl1XuvPOcRvD52', '2023-10-30 14:03:58.604781+00', NULL, '', NULL, '', NULL, '', '', NULL, NULL, '{"provider": "email", "providers": ["email"]}', '{}', NULL, '2023-10-30 14:03:58.60212+00', '2023-10-30 14:03:58.604924+00', NULL, NULL, '', '', NULL, '', 0, NULL, '', NULL, false, NULL);
 
 
-INSERT INTO "auth"."identities" ("id", "user_id", "identity_data", "provider", "last_sign_in_at", "created_at", "updated_at") VALUES
+INSERT INTO "auth"."identities" ("provider_id", "user_id", "identity_data", "provider", "last_sign_in_at", "created_at", "updated_at") VALUES
 	('f46cb5be-0832-451f-a2e3-e2422debaccb', 'f46cb5be-0832-451f-a2e3-e2422debaccb', '{"sub": "f46cb5be-0832-451f-a2e3-e2422debaccb", "email": "test@test.com"}', 'email', '2023-10-30 03:03:07.023823+00', '2023-10-30 03:03:07.023848+00', '2023-10-30 03:03:07.023848+00'),
 	('8916e484-8ef1-4a01-bc11-e82bcdc0b02b', '8916e484-8ef1-4a01-bc11-e82bcdc0b02b', '{"sub": "8916e484-8ef1-4a01-bc11-e82bcdc0b02b", "email": "jarvis@test.com"}', 'email', '2023-10-30 14:03:28.707912+00', '2023-10-30 14:03:28.707933+00', '2023-10-30 14:03:28.707933+00'),
 	('fcd95429-e523-4d5f-afbd-9fef8f282a73', 'fcd95429-e523-4d5f-afbd-9fef8f282a73', '{"sub": "fcd95429-e523-4d5f-afbd-9fef8f282a73", "email": "jov@test.com"}', 'email', '2023-10-30 14:03:58.603027+00', '2023-10-30 14:03:58.603049+00', '2023-10-30 14:03:58.603049+00'),
