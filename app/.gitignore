@@ -61,3 +61,6 @@ build.yaml
 # Generated localization strings
 strings.json
 strings.po
+
+# FVM Version Cache
+.fvm/
