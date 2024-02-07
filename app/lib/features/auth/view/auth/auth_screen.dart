@@ -195,7 +195,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                     onChanged: (value) {
                       setState(() => _termsChecked = value ?? false);
                     },
-                    title: Row(
+                    title: Wrap(
                       children: [
                         Text(
                           'I agree to the '.i18n,

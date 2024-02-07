@@ -22,8 +22,7 @@ class TermsAndPrivacyText extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Wrap(
       children: [
         InkWell(
           onTap: () => _launchUrl(Uri.parse(_termsUrl)),
