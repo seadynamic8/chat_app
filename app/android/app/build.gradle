@@ -28,17 +28,23 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
-def envVariables = [
-    // APP_NAME: project.hasProperty('APP_NAME')
-    //         ? APP_NAME
-    //         : 'batcave',
-    // APP_SUFFIX: project.hasProperty('APP_SUFFIX')
-    //         ? APP_SUFFIX
-    //         : null,
-    ADAPTY_SDK_KEY: project.hasProperty('ADAPTY_SDK_KEY')
-            ? ADAPTY_SDK_KEY
-            : "someString",
-];
+// Old 3.16 way of getting environment variables (using dart-define-from-file)
+// def envVariables = [
+//     ADAPTY_SDK_KEY: project.hasProperty('ADAPTY_SDK_KEY')
+//             ? ADAPTY_SDK_KEY
+//             : "someString",
+// ];
+
+/// 3.17, use dart-define to set env variables individually (until better method)
+def envVariables = []
+if (project.hasProperty('dart-defines')) {
+    envVariables = project.property('dart-defines')
+            .split(',')
+            .collectEntries { entry ->
+                def pair = new String(entry.decodeBase64(), 'UTF-8').split('=')
+                [(pair.first()): pair.last()]
+            }
+}
 
 android {
     namespace "com.stcache.dazzely"
@@ -71,6 +77,7 @@ android {
         testInstrumentationRunner "pl.leancode.patrol.PatrolJUnitRunner"
         testInstrumentationRunnerArguments clearPackageData: "true"
 
+        // Make sure to add all the dart-defines individually here
         resValue "string", "adapty_sdk_key", envVariables.ADAPTY_SDK_KEY
     }
 
