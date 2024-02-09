@@ -42,7 +42,7 @@ class PaywallRepository {
 
   Future<AdaptyPaywall> getPaywall() async {
     try {
-      return await adapty.getPaywall(id: 'main', locale: 'en');
+      return await adapty.getPaywall(placementId: 'main', locale: 'en');
     } on AdaptyError catch (adaptyError, st) {
       logger.error('AdaptyError getPaywall(): $adaptyError', adaptyError, st);
       rethrow;
