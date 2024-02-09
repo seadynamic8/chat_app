@@ -95,7 +95,7 @@ dev_dependencies:
       path: secure_dotenv_generator
   riverpod_generator: ^2.3.5
   auto_route_generator: ^7.3.2
-  patrol: ^3.0.2+1
+  patrol: ^3.5.0
   json_serializable: ^6.7.1
   riverpod_lint: ^2.3.3
   custom_lint: ^0.5.6
