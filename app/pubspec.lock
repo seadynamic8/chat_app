@@ -349,10 +349,10 @@ packages:
     dependency: "direct main"
     description:
       name: datepicker_dropdown
-      sha256: a6ed67be78411369b52d1f84cd9ecc96326a98364171662a2e8e02342d633d3d
+      sha256: "9d954fe923b7be16e243cc7a9012bead50ae039dba1fd8ab0ae9c29c34feae92"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.8"
+    version: "0.1.0"
   dbus:
     dependency: transitive
     description:
@@ -793,10 +793,10 @@ packages:
     dependency: "direct main"
     description:
       name: image_picker
-      sha256: "7d7f2768df2a8b0a3cefa5ef4f84636121987d403130e70b17ef7e2cf650ba84"
+      sha256: "26222b01a0c9a2c8fe02fc90b8208bd3325da5ed1f4a2acabf75939031ac0bdd"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.4"
+    version: "1.0.7"
   image_picker_android:
     dependency: transitive
     description:
