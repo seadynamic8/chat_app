@@ -61,7 +61,7 @@ dependencies:
   username_gen: ^1.0.4
   path: ^1.8.3
   flutter_launcher_icons: ^0.13.1
-  mocktail: ^1.0.1
+  mocktail: ^1.0.3
   shimmer: ^3.0.0
   sliver_tools: ^0.2.12
   intl: ^0.18.1
