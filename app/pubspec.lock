@@ -21,10 +21,10 @@ packages:
     dependency: "direct main"
     description:
       name: adapty_flutter
-      sha256: "5151c580297472605c7145f2767091a0c3ff25c8f2f429adc46a70fde416b120"
+      sha256: bd2f6c4339d123cd0f4d364fce2bd2b8d5ce4732f63e045d79741fc7e46a5714
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.0"
+    version: "2.9.1"
   age_calculator:
     dependency: "direct main"
     description:
