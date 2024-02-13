@@ -10,7 +10,6 @@ class AppInitializer {
     await Supabase.initialize(
       url: supabaseUrl,
       anonKey: supabaseKey,
-      authFlowType: AuthFlowType.pkce,
       realtimeClientOptions: const RealtimeClientOptions(eventsPerSecond: 2),
     );
   }

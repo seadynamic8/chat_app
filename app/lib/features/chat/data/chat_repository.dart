@@ -6,7 +6,7 @@ import 'package:chat_app/features/chat_lobby/domain/room.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:chat_app/utils/pagination.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' hide Provider;
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chat_repository.g.dart';
@@ -41,7 +41,7 @@ class ChatRepository {
       final messageResponse = await supabase
           .from('messages')
           .insert(message.toMap())
-          .select<Map<String, dynamic>>()
+          .select()
           .single();
 
       // Save message as "not read" for other user
@@ -68,7 +68,7 @@ class ChatRepository {
 
       final messages = await supabase
           .from('messages')
-          .select<List<Map<String, dynamic>>>('''
+          .select('''
           id,
           type,
           content,
@@ -115,30 +115,34 @@ class ChatRepository {
   Stream<Message> watchNewMessageForRoom(String roomId) async* {
     final streamController = StreamController<Message>();
 
-    supabase.channel('public:messages:room=eq.$roomId').on(
-      RealtimeListenTypes.postgresChanges,
-      ChannelFilter(
-        event: 'INSERT',
-        schema: 'public',
-        table: 'messages',
-        filter: 'room_id=eq.$roomId',
-      ),
-      (payload, [ref]) async {
-        try {
-          final messageMap = payload['new'];
-          var message = Message.fromMap(messageMap);
+    supabase
+        .channel('public:messages:room=eq.$roomId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'messages',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'room_id',
+            value: roomId,
+          ),
+          callback: (PostgresChangePayload payload) async {
+            try {
+              final messageMap = payload.newRecord;
+              var message = Message.fromMap(messageMap);
 
-          if (messageMap['parent_message_id'] != null) {
-            final replyMessage =
-                await getMessage(messageMap['parent_message_id'] as String);
-            message = message.copyWith(replyMessage: replyMessage);
-          }
-          streamController.add(message);
-        } catch (error, st) {
-          logger.error('watchNewMessageForRoom()', error, st);
-        }
-      },
-    ).subscribe();
+              if (messageMap['parent_message_id'] != null) {
+                final replyMessage =
+                    await getMessage(messageMap['parent_message_id'] as String);
+                message = message.copyWith(replyMessage: replyMessage);
+              }
+              streamController.add(message);
+            } catch (error, st) {
+              logger.error('watchNewMessageForRoom()', error, st);
+            }
+          },
+        )
+        .subscribe();
 
     yield* streamController.stream;
   }
@@ -225,7 +229,7 @@ class ChatRepository {
     try {
       final chatUser = await supabase
           .from('chat_users')
-          .select<Map<String, dynamic>>('joined')
+          .select('joined')
           .eq('room_id', roomId)
           .eq('profile_id', profileId)
           .single();
@@ -240,19 +244,23 @@ class ChatRepository {
   Stream<Map<String, dynamic>> watchChatUserInsert(String profileId) {
     final streamController = StreamController<Map<String, dynamic>>();
 
-    supabase.channel('public:chat_users:insert:profile_id=eq.$profileId').on(
-      RealtimeListenTypes.postgresChanges,
-      ChannelFilter(
-        event: 'INSERT',
-        schema: 'public',
-        table: 'chat_users',
-        filter: 'profile_id=eq.$profileId',
-      ),
-      (payload, [ref]) async {
-        final chatUser = payload['new'];
-        streamController.add(chatUser);
-      },
-    ).subscribe();
+    supabase
+        .channel('public:chat_users:insert:profile_id=eq.$profileId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'chat_users',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'profile_id',
+            value: profileId,
+          ),
+          callback: (PostgresChangePayload payload) async {
+            final chatUser = payload.newRecord;
+            streamController.add(chatUser);
+          },
+        )
+        .subscribe();
 
     return streamController.stream;
   }
@@ -260,19 +268,23 @@ class ChatRepository {
   Stream<Map<String, dynamic>> watchChatUserUpdate(String profileId) {
     final streamController = StreamController<Map<String, dynamic>>();
 
-    supabase.channel('public:chat_users:update:profile_id=eq.$profileId').on(
-      RealtimeListenTypes.postgresChanges,
-      ChannelFilter(
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'chat_users',
-        filter: 'profile_id=eq.$profileId',
-      ),
-      (payload, [ref]) async {
-        final chatUser = payload['new'];
-        streamController.add(chatUser);
-      },
-    ).subscribe();
+    supabase
+        .channel('public:chat_users:update:profile_id=eq.$profileId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: 'chat_users',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'profile_id',
+            value: profileId,
+          ),
+          callback: (PostgresChangePayload payload) async {
+            final chatUser = payload.newRecord;
+            streamController.add(chatUser);
+          },
+        )
+        .subscribe();
 
     return streamController.stream;
   }

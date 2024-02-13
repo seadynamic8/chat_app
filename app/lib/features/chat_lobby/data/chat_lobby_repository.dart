@@ -26,8 +26,7 @@ class ChatLobbyRepository {
     try {
       final room = await supabase
           .from('rooms')
-          .select<List<Map<String, dynamic>>>(
-              'id, c1:chat_users!inner(), c2:chat_users!inner()')
+          .select('id, c1:chat_users!inner(), c2:chat_users!inner()')
           .eq('c1.profile_id', currentProfileId)
           .eq('c2.profile_id', otherProfileId);
 
@@ -43,11 +42,8 @@ class ChatLobbyRepository {
   // * Create Room
   Future<Room> createRoom() async {
     try {
-      final roomResponse = await supabase
-          .from('rooms')
-          .insert({})
-          .select<Map<String, dynamic>>('id')
-          .single();
+      final roomResponse =
+          await supabase.from('rooms').insert({}).select('id').single();
 
       return Room.fromMap(roomResponse);
     } catch (error, st) {
@@ -87,13 +83,13 @@ class ChatLobbyRepository {
       // messages table is just to sort the rooms by message creation date
       final roomsList = await supabase
           .from('chat_users')
-          .select<List<Map<String, dynamic>>>('''
+          .select('''
             id:room_id, messages:room_id ()
           ''')
           .eq('profile_id', currentUserId)
           .eq('joined', true)
           .range(from, to)
-          .order('created_at', foreignTable: 'messages');
+          .order('created_at', referencedTable: 'messages');
 
       return roomsList.map((room) => Room.fromMap(room)).toList();
     } catch (error, st) {
@@ -112,7 +108,7 @@ class ChatLobbyRepository {
     try {
       final roomsList = await supabase
           .from('un_read_joined_rooms')
-          .select<List<Map<String, dynamic>>>('id:room_id, last_unread_at')
+          .select('id:room_id, last_unread_at')
           .order('last_unread_at', ascending: false)
           .range(from, to);
 
@@ -133,7 +129,7 @@ class ChatLobbyRepository {
     try {
       final roomsList = await supabase
           .from('chat_users')
-          .select<List<Map<String, dynamic>>>('id:room_id')
+          .select('id:room_id')
           .eq('profile_id', currentUserId)
           .eq('joined', false)
           .order('created_at', ascending: false)
@@ -155,14 +151,14 @@ class ChatLobbyRepository {
     try {
       final chatLobbyItemResponse = await supabase
           .from('rooms')
-          .select<List<Map<String, dynamic>>>('''
+          .select('''
           messages (id, profile_id, content, translation, type, created_at),
           profiles!inner (id, username, avatar_url, language)
         ''')
           .eq('id', roomId)
           .neq('profiles.id', currentProfileId)
-          .order('created_at', foreignTable: 'messages', ascending: false)
-          .limit(1, foreignTable: 'messages');
+          .order('created_at', referencedTable: 'messages', ascending: false)
+          .limit(1, referencedTable: 'messages');
 
       if (chatLobbyItemResponse.isEmpty) {
         logger.w(
@@ -213,19 +209,21 @@ class ChatLobbyRepository {
 
     supabase
         .channel('public:messages_users:insert:profile_id=eq.$currentUserId')
-        .on(
-      RealtimeListenTypes.postgresChanges,
-      ChannelFilter(
-        event: 'INSERT',
-        schema: 'public',
-        table: 'messages_users',
-        filter: 'profile_id=eq.$currentUserId',
-      ),
-      (payload, [ref]) async {
-        final messagesUser = payload['new'];
-        streamController.add(Message.fromMap(messagesUser));
-      },
-    ).subscribe();
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'messages_users',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'profile_id',
+            value: currentUserId,
+          ),
+          callback: (PostgresChangePayload payload) async {
+            final messagesUser = payload.newRecord;
+            streamController.add(Message.fromMap(messagesUser));
+          },
+        )
+        .subscribe();
 
     return streamController.stream;
   }
@@ -235,19 +233,21 @@ class ChatLobbyRepository {
 
     supabase
         .channel('public:messages_users:update:profile_id=eq.$currentUserId')
-        .on(
-      RealtimeListenTypes.postgresChanges,
-      ChannelFilter(
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'messages_users',
-        filter: 'profile_id=eq.$currentUserId',
-      ),
-      (payload, [ref]) async {
-        final messagesUser = payload['new'];
-        streamController.add(Message.fromMap(messagesUser));
-      },
-    ).subscribe();
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: 'messages_users',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'profile_id',
+            value: currentUserId,
+          ),
+          callback: (PostgresChangePayload payload) async {
+            final messagesUser = payload.newRecord;
+            streamController.add(Message.fromMap(messagesUser));
+          },
+        )
+        .subscribe();
 
     return streamController.stream;
   }

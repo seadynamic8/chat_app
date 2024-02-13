@@ -13,7 +13,7 @@ import 'package:chat_app/utils/username_generate_data.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n_extension/i18n_widget.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' hide Provider;
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:username_gen/username_gen.dart';
 import 'package:path/path.dart' as p;
@@ -45,7 +45,7 @@ class AuthRepository {
     try {
       final profileUser = await supabase
           .from('profiles')
-          .select<Map<String, dynamic>>('*')
+          .select('*')
           .eq('id', profileId)
           .single();
 
@@ -62,7 +62,7 @@ class AuthRepository {
     try {
       final profiles = await supabase
           .from('profiles')
-          .select<List<Map<String, dynamic>>>('''
+          .select('''
             id, 
             username, 
             birthdate, 
@@ -71,9 +71,10 @@ class AuthRepository {
             country, 
             ... online_status (online_at)
           ''')
-          .in_('id', userIds)
-          .neq('id', currentUserId)
-          .order('online_at', foreignTable: 'online_status', ascending: false);
+          .inFilter('id', userIds)
+          .neq('id', currentUserId!)
+          .order('online_at',
+              referencedTable: 'online_status', ascending: false);
 
       return profiles.map((profile) => Profile.fromMap(profile)).toList();
     } catch (error, st) {
@@ -95,19 +96,24 @@ class AuthRepository {
   Stream<Profile> watchProfileChanges(String profileId) async* {
     final streamController = StreamController<Profile>();
 
-    supabase.channel('public:profiles:id=eq.$profileId').on(
-      RealtimeListenTypes.postgresChanges,
-      ChannelFilter(
-          event: 'UPDATE',
+    supabase
+        .channel('public:profiles:id=eq.$profileId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
           schema: 'public',
           table: 'profiles',
-          filter: 'id=eq.$profileId'),
-      (payload, [ref]) {
-        final profile = payload['new'];
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'id',
+            value: profileId,
+          ),
+          callback: (PostgresChangePayload payload) {
+            final profile = payload.newRecord;
 
-        streamController.add(Profile.fromMap(profile));
-      },
-    ).subscribe();
+            streamController.add(Profile.fromMap(profile));
+          },
+        )
+        .subscribe();
 
     yield* streamController.stream;
   }
@@ -117,7 +123,7 @@ class AuthRepository {
       await supabase
           .from('profiles')
           .update(profile.toMap())
-          .eq('id', currentUserId);
+          .eq('id', currentUserId!);
     } on PostgrestException catch (error, st) {
       if (error.message ==
           'duplicate key value violates unique constraint "profiles_username_key"') {
@@ -286,10 +292,9 @@ class AuthRepository {
 
   Future<String> generateJWTToken() async {
     try {
-      final jwtResponse = await supabase.functions
-          .invoke('jwt_token', responseType: ResponseType.text);
+      final jwtResponse = await supabase.functions.invoke('jwt_token');
 
-      if (jwtResponse.status != null && jwtResponse.status! > 400) {
+      if (jwtResponse.status > 400) {
         throw Exception(
             'JWT Token failed to be retrieved, Response Code: ${jwtResponse.status}');
       }
@@ -309,7 +314,7 @@ class AuthRepository {
     final currentBlockStream = supabase
         .from('blocked_users')
         .stream(primaryKey: ['blocker_id', 'blocked_id']).eq(
-            'blocker_id', currentUserId);
+            'blocker_id', currentUserId!);
 
     return currentBlockStream.map((blockedUsers) {
       final blocked = blockedUsers.firstWhereOrNull((user) =>
@@ -488,7 +493,7 @@ class AuthRepository {
               'username': username,
               'language': Locale(I18n.locale.languageCode).toString(),
             })
-            .select<Map<String, dynamic>>()
+            .select()
             .single();
 
         if (userResponse.isEmpty) {

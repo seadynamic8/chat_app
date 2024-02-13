@@ -26,9 +26,9 @@ void main() async {
   await Supabase.initialize(
     url: supabaseUrl,
     anonKey: supabaseKey,
-    authFlowType: AuthFlowType.pkce,
-    realtimeClientOptions:
-        const RealtimeClientOptions(eventsPerSecond: 10), // Default is 10
+    realtimeClientOptions: const RealtimeClientOptions(
+      eventsPerSecond: 10, // Default is 10
+    ),
   );
 
   // Call logger only after initialize Supabase, because it needs it log user

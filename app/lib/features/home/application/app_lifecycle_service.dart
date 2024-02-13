@@ -64,7 +64,10 @@ class AppLifecycleService {
 
   bool _notLoggedIn() {
     // Don't use currentUserIdProvider (since it's cached, use the actual value)
-    return ref.read(authRepositoryProvider).currentSession == null;
+    final currentSession = ref.read(authRepositoryProvider).currentSession;
+    final isSessionExpired = currentSession?.isExpired ?? true;
+
+    return currentSession == null || isSessionExpired;
   }
 }
 

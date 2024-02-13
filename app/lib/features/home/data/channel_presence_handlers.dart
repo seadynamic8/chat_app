@@ -4,16 +4,15 @@ import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/utils/logger.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' hide Provider;
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 extension ChannelPresenceHandlers on ChannelRepository {
   void onJoin([void Function(OnlineState onlineState)? callback]) {
-    channel.on(RealtimeListenTypes.presence, ChannelFilter(event: 'join'),
-        (payload, [ref]) {
+    channel.onPresenceJoin((RealtimePresenceJoinPayload payload) {
       try {
-        final newUserPresences = payload['newPresences'] as List<Presence>;
+        final newUserPresences = payload.newPresences;
         final newUserIdentifiers = _getUserIdentifiers(newUserPresences);
-        logger.t('${channel.subTopic} | ${newUserIdentifiers.first} | Joined');
+        logger.t('$channelName | ${newUserIdentifiers.first} | Joined');
 
         if (callback != null) {
           callback(OnlineState.fromMap(newUserPresences.first.payload));
@@ -25,14 +24,12 @@ extension ChannelPresenceHandlers on ChannelRepository {
   }
 
   void onLeave([void Function(OnlineState onlineState)? callback]) {
-    channel.on(RealtimeListenTypes.presence, ChannelFilter(event: 'leave'),
-        (payload, [ref]) {
+    channel.onPresenceLeave((RealtimePresenceLeavePayload payload) {
       try {
-        final leavingUserPresences = payload['leftPresences'] as List<Presence>;
+        final leavingUserPresences = payload.leftPresences;
         final leavingUserIdentifiers =
             _getUserIdentifiers(leavingUserPresences);
-        logger
-            .t('${channel.subTopic} | ${leavingUserIdentifiers.first} | Left');
+        logger.t('$channelName | ${leavingUserIdentifiers.first} | Left');
 
         if (callback != null) {
           callback(OnlineState.fromMap(leavingUserPresences.first.payload));
@@ -45,14 +42,12 @@ extension ChannelPresenceHandlers on ChannelRepository {
 
   void onUpdate(
       [void Function(Map<String, OnlineState> onlinePresences)? callback]) {
-    channel.on(RealtimeListenTypes.presence, ChannelFilter(event: 'sync'),
-        (payload, [ref]) {
+    channel.onPresenceSync((RealtimePresenceSyncPayload payload) {
       try {
-        // payload is only: {event: sync} (so not useful,
-        // need to call presenceState() to get updated presences)
+        // payload is only: PresenceSyncPayload(event: PresenceEvent.sync)
+        // so not useful, need to call presenceState() to get updated presences
         final onlinePresences = getOnlinePresences();
-        logger
-            .t('${channel.subTopic} | ${onlinePresences.keys} | Current Users');
+        logger.t('$channelName | ${onlinePresences.keys} | Current Users');
 
         if (callback != null) callback(onlinePresences);
       } catch (error, st) {
@@ -62,17 +57,19 @@ extension ChannelPresenceHandlers on ChannelRepository {
   }
 
   // presenceState() returns something like:
-  // { key : [ [ Presence ], [ Presence ], [ Presence ] ] }
-  // key (not that useful for us),  and the outer list is an iterable
-  // also, the presence.payload gives you actual details => Map<String, dynamic>
-  Iterable<List<Presence>> get presenceStates =>
-      channel.presenceState().values as Iterable<List<Presence>>;
+  // [ PresenceState(key: uuid, presences: [ Presence ]), ...]
+  // key (not that useful for us)
+  // Presence.payload gives you actual details => Map<String, dynamic>
+  List<Presence> get presenceStates => channel
+      .presenceState()
+      .map((SinglePresenceState state) =>
+          state.presences.first) // presences should always have one value
+      .toList();
 
   Map<String, OnlineState> getOnlinePresences() {
     return presenceStates.fold<Map<String, OnlineState>>({},
-        (onlinePresences, presenceList) {
+        (onlinePresences, presence) {
       try {
-        final presence = presenceList.first; // Only one presence in list
         final userId = presence.payload['profileId'] as String;
         onlinePresences[userId] = OnlineState.fromMap(presence.payload);
         return onlinePresences;
@@ -86,9 +83,7 @@ extension ChannelPresenceHandlers on ChannelRepository {
   List<String> getOnlineUserIds({required int limit, DateTime? lastOnlineAt}) {
     try {
       List<String> onlineUserIds = [];
-      for (final presenceList in presenceStates) {
-        final presence = presenceList.first; // Only one presence in list
-
+      for (final presence in presenceStates) {
         // reached limit (or range of page)
         if (onlineUserIds.length == limit) return onlineUserIds;
 
@@ -111,15 +106,15 @@ extension ChannelPresenceHandlers on ChannelRepository {
     final completer = Completer<void>();
     final currentUserId = ref.read(currentUserIdProvider)!;
 
-    channel.subscribe((status, [ref]) async {
+    channel.subscribe((status, error) async {
       try {
-        if (status == 'SUBSCRIBED') {
+        if (status == RealtimeSubscribeStatus.subscribed) {
           await updatePresence(currentUserId, OnlineStatus.online);
-          logger.i('${channel.subTopic} | $currentUserId | Subscribed');
+          logger.i('$channelName | $currentUserId | Subscribed');
 
           completer.complete();
         } else {
-          logger.t('${channel.subTopic} | $currentUserId | Status: $status');
+          logger.t('$channelName | $currentUserId | Status: ${status.name}');
         }
         return await completer.future;
       } catch (error, st) {

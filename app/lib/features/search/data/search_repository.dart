@@ -24,7 +24,7 @@ class SearchRepository {
       // Search by username for now
       final profiles = await supabase
           .from('profiles')
-          .select<List<Map<String, dynamic>>>('id, username')
+          .select('id, username')
           .ilike('username', '%$searchText%')
           .neq('id', currentUserId)
           .order('username', ascending: true)
