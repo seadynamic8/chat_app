@@ -106,7 +106,7 @@ class ChatMessages extends ConsumerWidget {
                           content: getblockAction(ref, message),
                         ),
                       _ => SwipeTo(
-                          key: ValueKey(message.id),
+                          key: ValueKey(message.id), // needs to be unique key
                           onRightSwipe: isCurrentUser(ref, message.profileId!)
                               ? null
                               : (_) => onSwipedMessage(ref, message),
