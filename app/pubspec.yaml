@@ -47,7 +47,7 @@ dependencies:
   videosdk: ^1.1.7
   timeago: ^3.6.1
   flutter_keyboard_visibility: ^6.0.0
-  pinput: ^4.0.0
+  pinput: ^3.0.1
   datepicker_dropdown: ^0.1.0
   image_picker: ^1.0.4
   age_calculator: ^1.0.0
