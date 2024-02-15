@@ -1567,26 +1567,26 @@ packages:
     dependency: transitive
     description:
       name: talker
-      sha256: "1e4351253560219859a8e757f5b8dbd266d5c289a50dd90d12da4f3041184392"
+      sha256: "496e5592ea443c57797fdeb690beb0de08d50ff7ef0217c7ca1ef40b1815bba9"
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.0"
+    version: "4.0.2"
   talker_flutter:
     dependency: "direct main"
     description:
       name: talker_flutter
-      sha256: "4ebc616d1b5fce7bbb394ec6950a0469308bd9444b68e24f738b3b278f6bb649"
+      sha256: dabc7005943dd8e15d05a238bca18d1fd0fc4b87a2601d9d600c2af798c1be71
       url: "https://pub.dev"
     source: hosted
-    version: "3.6.0"
+    version: "4.0.2"
   talker_logger:
     dependency: transitive
     description:
       name: talker_logger
-      sha256: "3f8d051e5821c4aa3c27efe8204829dde128724cbd0294ae3cee76b097cf2cbb"
+      sha256: "4ed4e684fa3841f4c6abafe90e00b94539f23441197c482c92ddf5fa7c8a3e20"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.0"
+    version: "4.0.2"
   term_glyph:
     dependency: transitive
     description:

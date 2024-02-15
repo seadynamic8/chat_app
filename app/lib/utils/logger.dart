@@ -32,15 +32,12 @@ class LoggerRepository {
   final Ref ref;
   final Talker talker;
 
-  static int grey(double level) => 232 + (level.clamp(0.0, 1.0) * 23).round();
-
   void t(dynamic msg, {Object? error, StackTrace? stackTrace}) {
     _logCustom(
       msg,
       exception: error,
       stackTrace: stackTrace,
       logLevel: LogLevel.verbose,
-      pen: AnsiPen()..xterm(grey(0.5)),
     );
   }
 
@@ -50,7 +47,6 @@ class LoggerRepository {
       exception: error,
       stackTrace: stackTrace,
       logLevel: LogLevel.warning,
-      pen: AnsiPen()..xterm(208),
     );
   }
 
@@ -64,7 +60,6 @@ class LoggerRepository {
       exception: error,
       stackTrace: stackTrace,
       logLevel: LogLevel.info,
-      pen: AnsiPen()..xterm(12),
     );
   }
 
@@ -74,7 +69,6 @@ class LoggerRepository {
       exception: error,
       stackTrace: stackTrace,
       logLevel: LogLevel.error,
-      pen: AnsiPen()..xterm(196),
     );
   }
 
@@ -84,12 +78,7 @@ class LoggerRepository {
       exception: error,
       stackTrace: stackTrace,
       logLevel: LogLevel.critical,
-      pen: AnsiPen()..xterm(199),
     );
-  }
-
-  void good(dynamic msg, {Object? error, StackTrace? stackTrace}) {
-    talker.good(msg, error, stackTrace);
   }
 
   void handle(Object error, {StackTrace? stackTrace, dynamic message}) {
@@ -120,7 +109,6 @@ class LoggerRepository {
     required LogLevel logLevel,
     Object? exception,
     StackTrace? stackTrace,
-    AnsiPen? pen,
   }) async {
     final currentProfile = await ref.read(currentProfileStreamProvider.future);
 
@@ -129,12 +117,23 @@ class LoggerRepository {
       exception: exception,
       stackTrace: stackTrace,
       logLevel: logLevel,
-      pen: pen,
     );
   }
 }
 
-final talker = TalkerFlutter.init();
+int grey(double level) => 232 + (level.clamp(0.0, 1.0) * 23).round();
+
+final talker = TalkerFlutter.init(
+  settings: TalkerSettings(
+    colors: {
+      TalkerLogType.verbose: AnsiPen()..xterm(grey(0.5)),
+      TalkerLogType.warning: AnsiPen()..xterm(208),
+      TalkerLogType.info: AnsiPen()..xterm(12),
+      TalkerLogType.error: AnsiPen()..xterm(196),
+      TalkerLogType.critical: AnsiPen()..xterm(199),
+    },
+  ),
+);
 
 @riverpod
 LoggerRepository loggerRepository(LoggerRepositoryRef ref) {
