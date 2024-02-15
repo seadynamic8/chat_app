@@ -27,10 +27,10 @@ class MyCustomTalkerLog extends TalkerLog {
 }
 
 class LoggerRepository {
-  LoggerRepository({required this.ref});
+  LoggerRepository({required this.ref, required this.talker});
 
   final Ref ref;
-  final Talker talker = TalkerFlutter.init();
+  final Talker talker;
 
   static int grey(double level) => 232 + (level.clamp(0.0, 1.0) * 23).round();
 
@@ -134,9 +134,11 @@ class LoggerRepository {
   }
 }
 
+final talker = TalkerFlutter.init();
+
 @riverpod
 LoggerRepository loggerRepository(LoggerRepositoryRef ref) {
-  return LoggerRepository(ref: ref);
+  return LoggerRepository(ref: ref, talker: talker);
 }
 
 final logger = ProviderContainer().read(loggerRepositoryProvider);

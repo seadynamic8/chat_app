@@ -60,6 +60,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appRouter = ref.watch(appRouterProvider);
+    ref.watch(loggerRepositoryProvider);
 
     ref.watch(mainControllerProvider);
     ref.watch(appLifecycleServiceProvider);
@@ -78,7 +79,7 @@ class MyApp extends ConsumerWidget {
         ),
         navigatorObservers: () => [
           ref.read(routingObserverProvider),
-          TalkerRouteObserver(ref.watch(loggerRepositoryProvider).talker),
+          TalkerRouteObserver(talker),
         ],
       ),
       localizationsDelegates: localizationDelegates,
