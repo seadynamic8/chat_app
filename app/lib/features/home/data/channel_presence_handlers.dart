@@ -47,7 +47,11 @@ extension ChannelPresenceHandlers on ChannelRepository {
         // payload is only: PresenceSyncPayload(event: PresenceEvent.sync)
         // so not useful, need to call presenceState() to get updated presences
         final onlinePresences = getOnlinePresences();
-        logger.t('$channelName | ${onlinePresences.keys} | Current Users');
+
+        final usernames = onlinePresences.values
+            .map((onlineState) => onlineState.username)
+            .toList();
+        logger.t('$channelName | $usernames | Current Users');
 
         if (callback != null) callback(onlinePresences);
       } catch (error, st) {
@@ -104,13 +108,11 @@ extension ChannelPresenceHandlers on ChannelRepository {
 
   Future<void> subscribed() async {
     final completer = Completer<void>();
-    final currentUserId = ref.read(currentUserIdProvider)!;
 
     channel.subscribe((status, error) async {
       try {
         if (status == RealtimeSubscribeStatus.subscribed) {
-          await updatePresence(currentUserId, OnlineStatus.online);
-          logger.i('$channelName | $currentUserId | Subscribed');
+          await updatePresence(OnlineStatus.online);
 
           completer.complete();
         } else {
@@ -123,16 +125,20 @@ extension ChannelPresenceHandlers on ChannelRepository {
     });
   }
 
-  Future<void> updatePresence(String currentUserId, OnlineStatus status) async {
-    final currentProfile = await ref.read(currentProfileStreamProvider.future);
+  Future<void> updatePresence(OnlineStatus status) async {
     try {
+      final currentProfile =
+          await ref.read(currentProfileStreamProvider.future);
+      if (currentProfile == null) throw Exception('Profile is null');
+
       await channel.track({
-        'profileId': currentUserId,
+        'profileId': currentProfile.id,
         'username':
-            currentProfile?.username, // This field makes debugging easier
+            currentProfile.username, // This field makes debugging easier
         'status': status.name,
         'enteredAt': DateTime.now().toUtc().toIso8601String(),
       });
+      logger.i('$channelName | ${currentProfile.username} | Subscribed');
     } catch (error, st) {
       logger.error('updatePresence()', error, st);
       rethrow;
@@ -143,7 +149,7 @@ extension ChannelPresenceHandlers on ChannelRepository {
 
   List<String> _getUserIdentifiers(List<Presence> presences) {
     return presences.fold<List<String>>([], (userIdentifiers, presence) {
-      userIdentifiers.add(presence.payload['profileId'] as String);
+      userIdentifiers.add(presence.payload['username'] as String);
       return userIdentifiers;
     });
   }

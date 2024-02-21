@@ -6,7 +6,7 @@ part of 'online_presences.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$onlinePresencesHash() => r'8e701d5ffd6c263becf6e7c68139f8d212f53379';
+String _$onlinePresencesHash() => r'e3e875d9d1e84770a64b0cdde144850d17ccd8fc';
 
 /// See also [OnlinePresences].
 @ProviderFor(OnlinePresences)
