@@ -1,4 +1,3 @@
-import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/home/domain/online_presences_state.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
