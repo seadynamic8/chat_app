@@ -73,7 +73,7 @@ dependencies:
   another_flushbar: ^1.12.30
   talker_flutter: ^4.0.2
   swipe_to: ^1.0.6
-  url_launcher: ^6.2.4
+  url_launcher: ^6.2.5
   
 
 dev_dependencies:
