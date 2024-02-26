@@ -43,7 +43,7 @@ dependencies:
   i18n_extension: ^10.0.3
   flutter_localizations:
     sdk: flutter
-  dio: ^5.3.3
+  dio: ^5.4.1
   videosdk: ^1.1.7
   timeago: ^3.6.1
   flutter_keyboard_visibility: ^6.0.0
