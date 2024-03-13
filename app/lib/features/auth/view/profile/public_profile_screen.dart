@@ -1,10 +1,7 @@
 import 'package:chat_app/common/async_value_widget.dart';
-import 'package:chat_app/common/video_call_button.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/domain/profile.dart';
-import 'package:chat_app/features/chat_lobby/application/chat_lobby_service.dart';
+import 'package:chat_app/features/auth/view/profile/public_profile_buttons.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
-import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/constants.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:country_flags/country_flags.dart';
@@ -23,19 +20,6 @@ class PublicProfileScreen extends ConsumerWidget {
 
   bool isCurrentUser(WidgetRef ref) {
     return profileId == ref.watch(currentUserIdProvider)!;
-  }
-
-  void _joinChatRoom(BuildContext context, WidgetRef ref) async {
-    final router = context.router;
-
-    final room =
-        await ref.read(chatLobbyServiceProvider).findOrCreateRoom(profileId);
-
-    router.replaceAll([
-      const ChatNavigation(),
-      const ChatLobbyRoute(),
-      ChatRoomRoute(roomId: room.id, otherProfileId: profileId),
-    ]);
   }
 
   @override
@@ -164,29 +148,7 @@ class PublicProfileScreen extends ConsumerWidget {
             ),
             floatingActionButton: isCurrentUser(ref)
                 ? null
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      FloatingActionButton.extended(
-                        key: K.publicProfileSendMsgButton,
-                        icon: const Icon(Icons.message),
-                        label: const Text('Send Message'),
-                        heroTag: null,
-                        onPressed: () => _joinChatRoom(context, ref),
-                      ),
-                      VideoCallButton(
-                        buttonType: VideoCallButtonType.profile,
-                        otherProfileId: profileId,
-                      )
-                      // TODO: Add Follow Button
-                      // FloatingActionButton.extended(
-                      //   icon: const Icon(Icons.follow),
-                      //   label: const Text('Follow'),
-                      //   heroTag: 'tag2',
-                      //   onPressed: () {},
-                      // )
-                    ],
-                  ),
+                : PublicProfileButtons(otherProfileId: profileId),
             floatingActionButtonLocation: isCurrentUser(ref)
                 ? null
                 : FloatingActionButtonLocation.centerFloat,
