@@ -35,6 +35,11 @@ class GenderSelector extends StatelessWidget {
               isSelected: selectedGender == Gender.female,
               onChanged: updateSelectedGender,
             ),
+            GenderSelectButton(
+              gender: Gender.other,
+              isSelected: selectedGender == Gender.other,
+              onChanged: updateSelectedGender,
+            ),
           ],
         ),
         const SizedBox(height: 20),

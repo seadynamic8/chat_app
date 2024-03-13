@@ -19,6 +19,14 @@ class GenderSelectButton extends StatefulWidget {
 }
 
 class _GenderSelectButtonState extends State<GenderSelectButton> {
+  Key genderKey(Gender gender) {
+    return switch (gender) {
+      Gender.male => K.signUpGenderMaleButton,
+      Gender.female => K.signUpGenderFemaleButton,
+      Gender.other => K.signUpGenderOtherButton
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -40,14 +48,11 @@ class _GenderSelectButtonState extends State<GenderSelectButton> {
             color: selectedColor,
           ),
           child: IconButton(
-            key: widget.gender == Gender.male
-                ? K.signUpGenderMaleButton
-                : K.signUpGenderFemaleButton,
+            key: genderKey(widget.gender),
             onPressed: () {
               widget.onChanged(widget.gender);
             },
-            icon:
-                Icon(widget.gender == Gender.male ? Icons.male : Icons.female),
+            icon: Icon(widget.gender.icon),
           ),
         ),
         const SizedBox(height: 12),

@@ -27,6 +27,7 @@ class Keys {
   static const signUpBirthdateDropdown = Key('signUpBirthdateDropdown');
   static const signUpGenderMaleButton = Key('signUpGenderMaleButton');
   static const signUpGenderFemaleButton = Key('signUpGenderFemaleButton');
+  static const signUpGenderOtherButton = Key('signUpGenderOtherButton');
   static const signUpScreenOneNextButton = Key('signUpScreenOneNextButton');
 
   static const signUpImagePicker = Key('signUpImagePicker');

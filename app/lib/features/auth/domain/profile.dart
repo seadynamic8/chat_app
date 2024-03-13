@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:age_calculator/age_calculator.dart';
 import 'package:chat_app/utils/locale_from_string.dart';
+import 'package:flutter/material.dart';
 
 // * Database (Supabase) Stores Auth User and Profile in seperate tables
 // * Auth User (id, email, encrypted_password)
@@ -10,8 +11,13 @@ import 'package:chat_app/utils/locale_from_string.dart';
 // * --> so that means, we often use User or Profile to mean the same thing
 
 enum Gender {
-  male,
-  female,
+  male(Icons.male),
+  female(Icons.female),
+  other(Icons.transgender);
+
+  final IconData icon;
+
+  const Gender(this.icon);
 }
 
 class Profile {
