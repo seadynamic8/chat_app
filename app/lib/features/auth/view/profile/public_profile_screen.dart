@@ -133,9 +133,7 @@ class PublicProfileScreen extends ConsumerWidget {
                     children: [
                       // GENDER AND AGE
                       Chip(
-                        avatar: Icon(profile.gender == Gender.male
-                            ? Icons.male
-                            : Icons.female),
+                        avatar: Icon(profile.gender?.icon),
                         label: Text(profile.age ?? ''),
                       ),
                       const SizedBox(width: 12),

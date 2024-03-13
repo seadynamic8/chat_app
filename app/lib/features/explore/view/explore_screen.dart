@@ -72,9 +72,7 @@ class ExploreScreen extends ConsumerWidget {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Icon(
-                                  profile.gender == Gender.male
-                                      ? Icons.male
-                                      : Icons.female,
+                                  profile.gender?.icon,
                                   size: 15,
                                   color: theme.primaryColorLight,
                                 ),
