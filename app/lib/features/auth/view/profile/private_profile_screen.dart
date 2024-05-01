@@ -1,7 +1,7 @@
 import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/common/avatar_image.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/domain/profile.dart';
+import 'package:chat_app/features/auth/domain/user_access.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +20,7 @@ class PrivateProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final profileValue = ref.watch(currentProfileStreamProvider);
+    final userAccessValue = ref.watch(userAccessStreamProvider);
 
     return I18n(
       child: SafeArea(
@@ -128,6 +129,29 @@ class PrivateProfileScreen extends ConsumerWidget {
                           onPressed: () => context.router
                               .push(PublicProfileRoute(profileId: profile.id!)),
                           child: const Text('Show Profile'),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // SUBSCRIPTION
+                      AsyncValueWidget(
+                        value: userAccessValue,
+                        data: (userAccess) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: switch (userAccess.level) {
+                            AccessLevel.trial =>
+                              Chip(label: Text('Free Trial'.i18n)),
+                            AccessLevel.standard => OutlinedButton(
+                                onPressed: () => context.router.push(
+                                  const PaywallRoute(),
+                                ),
+                                child: const Text('Subscribe to Premium'),
+                              ),
+                            AccessLevel.premium => Chip(
+                                label: Text('Premium Subscription'.i18n),
+                              ),
+                            _ => const SizedBox.shrink(),
+                          },
                         ),
                       ),
                       const SizedBox(height: 20),

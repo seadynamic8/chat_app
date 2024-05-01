@@ -48,7 +48,6 @@ class AppRouter extends $AppRouter {
                     AutoRoute(page: ChatLobbyRoute.page, initial: true),
                   ],
                 ),
-                AutoRoute(page: PaywallRoute.page),
                 AutoRoute(
                   page: ProfileNavigation.page,
                   children: [
@@ -63,6 +62,7 @@ class AppRouter extends $AppRouter {
             AutoRoute(page: ChatRoomRoute.page),
             AutoRoute(page: WaitingRoute.page),
             AutoRoute(page: VideoRoomRoute.page),
+            AutoRoute(page: PaywallRoute.page),
           ],
         ),
       ];

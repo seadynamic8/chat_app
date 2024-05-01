@@ -34,7 +34,7 @@ class VideoRoomScreen extends ConsumerWidget {
   void _pressEndCall(BuildContext context, WidgetRef ref) {
     ref
         .read(videoRoomControllerProvider(isCaller).notifier)
-        .updateAccessDurationOrCredits();
+        .updateAccessDuration();
     _endCall(context, ref);
   }
 
@@ -58,6 +58,9 @@ class VideoRoomScreen extends ConsumerWidget {
     ref.listen<CallRequestState>(callRequestControllerProvider, (_, state) {
       if (state.callType == CallRequestType.endCall) {
         ref.read(callRequestControllerProvider.notifier).resetToWaiting();
+        ref
+            .read(videoRoomControllerProvider(isCaller).notifier)
+            .updateAccessDuration();
 
         _leaveVideoRoom(context);
       }
@@ -79,6 +82,10 @@ class VideoRoomScreen extends ConsumerWidget {
         videoRoomControllerProvider(isCaller),
         (_, state) => state.whenData((videoRoomState) {
               if (videoRoomState.isAppPaused) {
+                ref
+                    .read(videoRoomControllerProvider(isCaller).notifier)
+                    .updateAccessDuration();
+
                 _endCall(context, ref);
               }
             }));

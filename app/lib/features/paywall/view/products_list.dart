@@ -15,26 +15,22 @@ class ProductsList extends ConsumerWidget {
     final productsValue = ref.watch(paywallProductsProvider);
 
     return productsValue.when(
-      data: (products) => SliverList(
-        delegate: SliverChildBuilderDelegate(
-          childCount: products.length,
-          (context, index) {
+      data: (products) => Expanded(
+        child: ListView.builder(
+          itemCount: products.length,
+          itemBuilder: (context, index) {
             final product = products[index];
 
             return ProductTile(product: product);
           },
         ),
       ),
-      loading: () => SliverToBoxAdapter(
-        child: Center(
-          child: CircularProgressIndicator(
-            color: theme.colorScheme.onBackground,
-          ),
+      loading: () => Center(
+        child: CircularProgressIndicator(
+          color: theme.colorScheme.onBackground,
         ),
       ),
-      error: (e, st) => SliverToBoxAdapter(
-        child: Text('Error gettting coins list'.i18n),
-      ),
+      error: (e, st) => Text('Error gettting coins list'.i18n),
     );
   }
 }

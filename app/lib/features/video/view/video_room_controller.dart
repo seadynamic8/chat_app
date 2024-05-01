@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:chat_app/features/auth/application/access_level_service.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/auth/domain/user_access.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/features/video/data/stopwatch_repository.dart';
 import 'package:chat_app/features/video/data/video_repository.dart';
@@ -65,18 +66,19 @@ class VideoRoomController extends _$VideoRoomController {
     await accessLevelService.changeAccessLevel();
   }
 
-  void updateAccessDurationOrCredits() async {
+  void updateAccessDuration() async {
     final stopwatchRepository = ref.read(stopwatchRepositoryProvider);
     stopwatchRepository.stop();
 
-    // timer is always set for a caller
-    if (isCaller) {
+    final userAccess = await ref.read(userAccessStreamProvider.future);
+
+    if (isCaller && userAccess.level == AccessLevel.trial) {
       final elapsedDuration =
           Duration(milliseconds: stopwatchRepository.elapsedMilliseconds);
       final accessLevelService =
           await ref.read(accessLevelServiceProvider.future);
 
-      await accessLevelService.updateAccessDurationOrCredits(elapsedDuration);
+      await accessLevelService.updateAccessDuration(elapsedDuration);
     }
   }
 
@@ -88,7 +90,9 @@ class VideoRoomController extends _$VideoRoomController {
     if (!isCaller) return;
 
     final userAccess = await ref.read(userAccessStreamProvider.future);
-    ref.read(videoTimerProvider.notifier).setTimer(userAccess.levelDuration);
+    if (userAccess.level == AccessLevel.trial) {
+      ref.read(videoTimerProvider.notifier).setTimer(userAccess.levelDuration);
+    }
   }
 
   void _addRemoteParticipant(VideoParticipant videoParticipant) async {

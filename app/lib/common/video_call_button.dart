@@ -139,21 +139,13 @@ class VideoButtonPrice extends ConsumerWidget {
         .select((value) => value.whenData((userAccess) => userAccess.level)));
 
     return accessLevelValue.maybeWhen(
-      data: (accessLevel) => accessLevel == AccessLevel.trial
-          ? Text('Free Trial'.i18n, style: theme.textTheme.labelSmall)
-          : Row(
-              children: [
-                Text('10', style: theme.textTheme.labelSmall),
-                const SizedBox(width: 2),
-                Icon(
-                  Icons.stars_rounded,
-                  size: 12,
-                  color: theme.colorScheme.onBackground,
-                ),
-                const SizedBox(width: 2),
-                Text('/min'.i18n, style: theme.textTheme.labelSmall)
-              ],
-            ),
+      data: (accessLevel) => switch (accessLevel) {
+        AccessLevel.trial =>
+          Text('Free Trial'.i18n, style: theme.textTheme.labelSmall),
+        AccessLevel.standard =>
+          Text('Get Premium', style: theme.textTheme.labelSmall),
+        _ => const SizedBox.shrink(),
+      },
       orElse: SizedBox.shrink,
     );
   }

@@ -5,21 +5,32 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'payment_controller.g.dart';
 
+enum PaymentStatus { none, success, failed }
+
 @riverpod
 class PaymentController extends _$PaymentController {
   @override
-  FutureOr<void> build() {}
-
-  Future<bool> purchaseCredits(Product product) async {
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _buyAndUpdateCredits(product));
-    return !state.hasError;
+  FutureOr<PaymentStatus> build() {
+    return PaymentStatus.none;
   }
 
-  Future<void> _buyAndUpdateCredits(Product product) async {
-    await ref.read(paywallRepositoryProvider).makePurchase(product);
+  void purchaseProduct(Product product) async {
+    state = const AsyncLoading();
 
-    final userAccess = await ref.read(accessLevelServiceProvider.future);
-    await userAccess.updateAccessCredits(product.quantity);
+    final success =
+        await ref.read(paywallRepositoryProvider).makePurchase(product);
+    if (success == false) {
+      state = const AsyncData(PaymentStatus.failed);
+      return;
+    }
+
+    await _updateAccessToPremium();
+
+    state = const AsyncValue.data(PaymentStatus.success);
+  }
+
+  Future<void> _updateAccessToPremium() async {
+    final userAccessService = await ref.read(accessLevelServiceProvider.future);
+    await userAccessService.updateAccessToPremium();
   }
 }

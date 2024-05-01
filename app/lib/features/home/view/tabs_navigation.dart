@@ -71,7 +71,6 @@ class TabsNavigation extends ConsumerWidget {
               routes: const [
                 ExploreNavigation(),
                 ChatNavigation(),
-                PaywallRoute(),
                 ProfileNavigation(),
               ],
               bottomNavigationBuilder: (_, tabsRouter) {
@@ -113,10 +112,6 @@ class TabsNavigation extends ConsumerWidget {
                         orElse: () => regularChatTab,
                       ),
                       label: 'Chats'.i18n,
-                    ),
-                    BottomNavigationBarItem(
-                      icon: const Icon(Icons.stars),
-                      label: 'Coins'.i18n,
                     ),
                     BottomNavigationBarItem(
                       icon: const Icon(

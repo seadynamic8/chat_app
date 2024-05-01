@@ -12,29 +12,35 @@ class ProductTile extends ConsumerWidget {
   final Product product;
 
   void _selectProduct(BuildContext context, WidgetRef ref) async {
-    final isSuccess = await ref
-        .read(paymentControllerProvider.notifier)
-        .purchaseCredits(product);
-
-    if (!context.mounted) return;
-
-    if (isSuccess) {
-      showAlertDialog(
-          context: context,
-          title: 'Awesome!'.i18n,
-          content:
-              '${product.quantity} coins have been added to your account :)'
-                  .i18n);
-    } else {
-      context
-          .showErrorSnackBar('Could not buy coins right, try again later'.i18n);
-    }
+    ref.read(paymentControllerProvider.notifier).purchaseProduct(product);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final paymentState = ref.watch(paymentControllerProvider);
+
+    ref.listen<AsyncValue<PaymentStatus>>(
+      paymentControllerProvider,
+      (_, state) => state.whenData((paymentStatus) {
+        switch (paymentStatus) {
+          case PaymentStatus.success:
+            showAlertDialog(
+                context: context,
+                title: 'Awesome!'.i18n,
+                content:
+                    'Your account has been updated to premium status :)'.i18n);
+            break;
+          case PaymentStatus.failed:
+            context.showErrorSnackBar(
+                'Could not update to premium subscription right now, try again later'
+                    .i18n);
+            break;
+          case PaymentStatus.none:
+            break;
+        }
+      }),
+    );
 
     final tile = ListTile(
       key: ValueKey(product.id),
@@ -52,7 +58,7 @@ class ProductTile extends ConsumerWidget {
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  '${product.quantity}',
+                  'Premium',
                   style: theme.textTheme.labelLarge!.copyWith(
                     color: theme.colorScheme.onSecondary,
                   ),
@@ -62,7 +68,7 @@ class ProductTile extends ConsumerWidget {
       trailing: paymentState.isLoading
           ? null
           : Text(
-              '\$${product.price}',
+              '\$${product.price} / month',
               style: theme.textTheme.labelLarge!.copyWith(
                 color: theme.colorScheme.onSecondary,
               ),

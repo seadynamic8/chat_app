@@ -12,8 +12,8 @@ extension VideoCallMessagesExtension on BuildContext {
     if (accessLevel == AccessLevel.standard) {
       final isRecharge = await showAlertDialog(
           context: this,
-          title: 'No more coins left',
-          content: 'Would you like to get more coins?',
+          title: 'No subscription'.i18n,
+          content: 'Would you like to purchase premium subscription?',
           cancelActionText: 'No',
           defaultActionText: 'Yes');
       return isRecharge ?? false;

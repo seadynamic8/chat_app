@@ -42,7 +42,8 @@ class PaywallRepository {
 
   Future<AdaptyPaywall> getPaywall() async {
     try {
-      return await adapty.getPaywall(placementId: 'main', locale: 'en');
+      return await adapty.getPaywall(
+          placementId: 'main-subscription', locale: 'en');
     } on AdaptyError catch (adaptyError, st) {
       logger.error('AdaptyError getPaywall(): $adaptyError', adaptyError, st);
       rethrow;
@@ -55,6 +56,7 @@ class PaywallRepository {
   Future<List<Product>> getPaywallProducts(AdaptyPaywall paywall) async {
     try {
       final paywallProducts = await adapty.getPaywallProducts(paywall: paywall);
+
       return paywallProducts
           .map((paywallProduct) => Product(adaptyProduct: paywallProduct))
           .toList();
@@ -72,12 +74,13 @@ class PaywallRepository {
     }
   }
 
-  // Adapty API docs say to check access level to confirm, but when using
-  // consumable, it doesn't change (empty value).  So unless it errors,
-  // for now, assume that it was a successful purchase.
-  Future<void> makePurchase(Product product) async {
+  Future<bool> makePurchase(Product product) async {
     try {
-      await adapty.makePurchase(product: product.adaptyProduct);
+      final profile = await adapty.makePurchase(product: product.adaptyProduct);
+
+      if (profile?.accessLevels['premium']?.isActive ?? false) {
+        return true;
+      }
     } on AdaptyError catch (adaptyError, st) {
       logger.w('AdaptyError makePurchase(): $adaptyError',
           error: adaptyError, stackTrace: st);
@@ -86,6 +89,7 @@ class PaywallRepository {
       logger.error('makePurchase()', error, st);
       rethrow;
     }
+    return false;
   }
 
   Future<void> paywallLogout() async {
