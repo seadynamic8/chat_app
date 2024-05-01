@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:chat_app/features/auth/application/access_level_service.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/user_access.dart';
-import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/features/video/data/stopwatch_repository.dart';
 import 'package:chat_app/features/video/data/video_repository.dart';
 import 'package:chat_app/features/video/data/video_timer_provider.dart';
@@ -34,7 +33,7 @@ class VideoRoomController extends _$VideoRoomController {
 
     WakelockPlus.enable();
 
-    watchAppPaused();
+    _watchAppPaused();
 
     return VideoRoomState(
       localParticipant: videoRepository.localParticipant,
@@ -42,44 +41,15 @@ class VideoRoomController extends _$VideoRoomController {
     );
   }
 
-  void watchAppPaused() async {
-    AppLifecycleListener(onStateChange: (appLifecycleState) async {
-      final oldState = await future;
-      if (appLifecycleState == AppLifecycleState.paused) {
-        state = AsyncData(oldState.copyWith(isAppPaused: true));
-      }
-    });
-  }
-
-  void endCall(String videoRoomId, String otherProfileId) async {
-    ref
-        .read(callRequestControllerProvider.notifier)
-        .sendEndCall(videoRoomId, otherProfileId);
+  void endCall({bool trialFinished = false}) async {
+    _stopStopwatch();
 
     final videoRepository = await ref.read(videoRepositoryProvider.future);
     videoRepository.end();
-  }
 
-  void changeAccessLevel() async {
-    final accessLevelService =
-        await ref.read(accessLevelServiceProvider.future);
-    await accessLevelService.changeAccessLevel();
-  }
+    if (!isCaller) return;
 
-  void updateAccessDuration() async {
-    final stopwatchRepository = ref.read(stopwatchRepositoryProvider);
-    stopwatchRepository.stop();
-
-    final userAccess = await ref.read(userAccessStreamProvider.future);
-
-    if (isCaller && userAccess.level == AccessLevel.trial) {
-      final elapsedDuration =
-          Duration(milliseconds: stopwatchRepository.elapsedMilliseconds);
-      final accessLevelService =
-          await ref.read(accessLevelServiceProvider.future);
-
-      await accessLevelService.updateAccessDuration(elapsedDuration);
-    }
+    _updateAccess(trialFinished: trialFinished);
   }
 
   // * Callback Handlers
@@ -118,6 +88,39 @@ class VideoRoomController extends _$VideoRoomController {
     if (participant != null) {
       state =
           AsyncData(oldState.copyWith(remoteParticipants: remoteParticipants));
+    }
+  }
+
+  void _watchAppPaused() async {
+    AppLifecycleListener(onStateChange: (appLifecycleState) async {
+      final oldState = await future;
+      if (appLifecycleState == AppLifecycleState.paused) {
+        state = AsyncData(oldState.copyWith(isAppPaused: true));
+      }
+    });
+  }
+
+  // * Private methods
+
+  void _stopStopwatch() {
+    ref.read(stopwatchRepositoryProvider).stop();
+  }
+
+  void _updateAccess({bool trialFinished = false}) async {
+    final userAccess = await ref.read(userAccessStreamProvider.future);
+
+    if (userAccess.level == AccessLevel.trial) {
+      final accessLevelService =
+          await ref.read(accessLevelServiceProvider.future);
+
+      if (trialFinished) {
+        accessLevelService.updateAccessLevel();
+      } else {
+        final elapsedDuration = Duration(
+            milliseconds:
+                ref.read(stopwatchRepositoryProvider).elapsedMilliseconds);
+        await accessLevelService.updateAccessDuration(elapsedDuration);
+      }
     }
   }
 }

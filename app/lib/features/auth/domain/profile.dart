@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:age_calculator/age_calculator.dart';
 import 'package:chat_app/utils/locale_from_string.dart';
 import 'package:flutter/material.dart';

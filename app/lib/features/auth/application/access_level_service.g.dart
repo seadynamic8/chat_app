@@ -7,7 +7,7 @@ part of 'access_level_service.dart';
 // **************************************************************************
 
 String _$accessLevelServiceHash() =>
-    r'ec64546ae7e0cf22cecd0eac6d89b7900dad318d';
+    r'dca3886b05e41f4cb16775fac573060d7588941d';
 
 /// See also [accessLevelService].
 @ProviderFor(accessLevelService)

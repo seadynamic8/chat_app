@@ -7,23 +7,24 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'access_level_service.g.dart';
 
 class AccessLevelService {
-  AccessLevelService({required this.ref, required this.userAccess});
+  AccessLevelService(
+      {required this.ref,
+      required this.userAccess,
+      required this.currentProfileId});
 
   final Ref ref;
   final UserAccess userAccess;
+  final String currentProfileId;
 
-  Future<void> changeAccessLevel() async {
-    final currentProfileId = ref.read(currentUserIdProvider)!;
+  Future<void> updateAccessLevel() async {
     await _changeAccessToStandardAndResetDuration(currentProfileId);
   }
 
   Future<void> updateAccessDuration(Duration elapsedDuration) async {
-    final currentProfileId = ref.read(currentUserIdProvider)!;
     await _updateTrialDuration(currentProfileId, elapsedDuration);
   }
 
   Future<void> updateAccessToPremium() async {
-    final currentProfileId = ref.read(currentUserIdProvider)!;
     try {
       await ref.read(authRepositoryProvider).updateAccessLevel(
             currentProfileId,
@@ -68,5 +69,7 @@ class AccessLevelService {
 FutureOr<AccessLevelService> accessLevelService(
     AccessLevelServiceRef ref) async {
   final userAccess = await ref.watch(userAccessStreamProvider.future);
-  return AccessLevelService(ref: ref, userAccess: userAccess);
+  final currentProfileId = ref.read(currentUserIdProvider)!;
+  return AccessLevelService(
+      ref: ref, userAccess: userAccess, currentProfileId: currentProfileId);
 }

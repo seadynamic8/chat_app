@@ -19,14 +19,13 @@ class PaymentController extends _$PaymentController {
 
     final success =
         await ref.read(paywallRepositoryProvider).makePurchase(product);
-    if (success == false) {
+
+    if (success) {
+      await _updateAccessToPremium();
+      state = const AsyncData(PaymentStatus.success);
+    } else {
       state = const AsyncData(PaymentStatus.failed);
-      return;
     }
-
-    await _updateAccessToPremium();
-
-    state = const AsyncValue.data(PaymentStatus.success);
   }
 
   Future<void> _updateAccessToPremium() async {

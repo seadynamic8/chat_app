@@ -31,18 +31,21 @@ class VideoRoomScreen extends ConsumerWidget {
   final String otherProfileId;
   final bool isCaller;
 
-  void _pressEndCall(BuildContext context, WidgetRef ref) {
-    ref
-        .read(videoRoomControllerProvider(isCaller).notifier)
-        .updateAccessDuration();
-    _endCall(context, ref);
-  }
-
-  void _endCall(BuildContext context, WidgetRef ref) {
+  void _endCall(
+    BuildContext context,
+    WidgetRef ref, {
+    bool isLocal = true,
+    bool trialFinished = false,
+  }) {
     try {
+      if (isLocal) {
+        ref
+            .read(callRequestControllerProvider.notifier)
+            .sendEndCall(videoRoomId, otherProfileId);
+      }
       ref
           .read(videoRoomControllerProvider(isCaller).notifier)
-          .endCall(videoRoomId, otherProfileId);
+          .endCall(trialFinished: trialFinished);
     } catch (error) {
       logger.w('Error ending call: $error', stackTrace: StackTrace.current);
     }
@@ -58,11 +61,7 @@ class VideoRoomScreen extends ConsumerWidget {
     ref.listen<CallRequestState>(callRequestControllerProvider, (_, state) {
       if (state.callType == CallRequestType.endCall) {
         ref.read(callRequestControllerProvider.notifier).resetToWaiting();
-        ref
-            .read(videoRoomControllerProvider(isCaller).notifier)
-            .updateAccessDuration();
-
-        _leaveVideoRoom(context);
+        _endCall(context, ref, isLocal: false);
       }
     });
   }
@@ -70,25 +69,19 @@ class VideoRoomScreen extends ConsumerWidget {
   void _listenForTimerEnd(BuildContext context, WidgetRef ref) {
     final timerEnded = ref.watch(videoTimerProvider);
     if (timerEnded) {
-      ref
-          .read(videoRoomControllerProvider(isCaller).notifier)
-          .changeAccessLevel();
-      _endCall(context, ref);
+      _endCall(context, ref, trialFinished: true);
     }
   }
 
   void _listenForAppPaused(BuildContext context, WidgetRef ref) {
     ref.listen(
-        videoRoomControllerProvider(isCaller),
-        (_, state) => state.whenData((videoRoomState) {
-              if (videoRoomState.isAppPaused) {
-                ref
-                    .read(videoRoomControllerProvider(isCaller).notifier)
-                    .updateAccessDuration();
-
-                _endCall(context, ref);
-              }
-            }));
+      videoRoomControllerProvider(isCaller),
+      (_, state) => state.whenData((videoRoomState) {
+        if (videoRoomState.isAppPaused) {
+          _endCall(context, ref);
+        }
+      }),
+    );
   }
 
   @override
@@ -144,7 +137,7 @@ class VideoRoomScreen extends ConsumerWidget {
                           // BACK BUTTON
                           VideoBackButton(
                             width: backButtonWidth,
-                            onPressEndCall: () => _pressEndCall(context, ref),
+                            onPressEndCall: () => _endCall(context, ref),
                           ),
 
                           IntrinsicWidth(
