@@ -1,4 +1,4 @@
-import 'package:chat_app/features/chat/data/joined_room_notifier.dart';
+import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -13,6 +13,8 @@ class PublicProfileButtonsController extends _$PublicProfileButtonsController {
 
     if (room == null) return false;
 
-    return ref.watch(joinedRoomNotifierProvider(room.id).future);
+    return ref
+        .read(chatRepositoryProvider)
+        .getJoinStatus(room.id, otherProfileId);
   }
 }

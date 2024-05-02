@@ -7,7 +7,7 @@ part of 'public_profile_buttons_controller.dart';
 // **************************************************************************
 
 String _$publicProfileButtonsControllerHash() =>
-    r'138d019f84e3720c00a22a9d920a038d3ef8fccf';
+    r'56320b7f6dde53bcf74d79c118a326f7a8d84484';
 
 /// Copied from Dart SDK
 class _SystemHash {
