@@ -338,11 +338,11 @@ class AuthRepository {
     });
   }
 
-  // * Access Levels
+  // * User Access
 
-  Stream<UserAccess> getAccessLevelChanges(String profileId) {
+  Stream<UserAccess> getUserAccessChanges(String profileId) {
     final userAccessStream = supabase
-        .from('access_levels')
+        .from('user_access')
         .stream(primaryKey: ['id']).eq('id', profileId);
 
     return userAccessStream.map((userAccesses) {
@@ -350,15 +350,14 @@ class AuthRepository {
     });
   }
 
-  Future<void> updateAccessLevel(
-      String profileId, UserAccess userAccess) async {
+  Future<void> updateUserAccess(String profileId, UserAccess userAccess) async {
     try {
       await supabase
-          .from('access_levels')
+          .from('user_access')
           .update(userAccess.toMap())
           .eq('id', profileId);
     } catch (error, st) {
-      logger.error('updateAccessLevel()', error, st);
+      logger.error('updateUserAccess()', error, st);
       throw Exception('Something went wrong with updating your subscription');
     }
   }
@@ -590,7 +589,7 @@ Future<BlockState> blockedByChanges(
 Stream<UserAccess> userAccessStream(UserAccessStreamRef ref) {
   final currentProfileId = ref.watch(currentUserIdProvider)!;
   final authRepository = ref.watch(authRepositoryProvider);
-  return authRepository.getAccessLevelChanges(currentProfileId);
+  return authRepository.getUserAccessChanges(currentProfileId);
 }
 
 @riverpod

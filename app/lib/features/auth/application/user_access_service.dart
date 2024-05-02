@@ -4,10 +4,10 @@ import 'package:chat_app/utils/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'access_level_service.g.dart';
+part 'user_access_service.g.dart';
 
-class AccessLevelService {
-  AccessLevelService(
+class UserAccessService {
+  UserAccessService(
       {required this.ref,
       required this.userAccess,
       required this.currentProfileId});
@@ -26,12 +26,12 @@ class AccessLevelService {
 
   Future<void> updateAccessToPremium() async {
     try {
-      await ref.read(authRepositoryProvider).updateAccessLevel(
+      await ref.read(authRepositoryProvider).updateUserAccess(
             currentProfileId,
             userAccess.copyWith(level: AccessLevel.premium),
           );
     } catch (error) {
-      logger.e('AccessLevelService updateAccessToPremium() error: $error');
+      logger.e('UserAccessService updateAccessToPremium() error: $error');
       rethrow;
     }
   }
@@ -40,7 +40,7 @@ class AccessLevelService {
 
   Future<void> _changeAccessToStandardAndResetDuration(
       String currentProfileId) async {
-    await ref.read(authRepositoryProvider).updateAccessLevel(
+    await ref.read(authRepositoryProvider).updateUserAccess(
           currentProfileId,
           userAccess.copyWith(
             level: AccessLevel.standard,
@@ -58,7 +58,7 @@ class AccessLevelService {
         ? elapsedDuration
         : beforeCallDuration + elapsedDuration;
 
-    await ref.read(authRepositoryProvider).updateAccessLevel(
+    await ref.read(authRepositoryProvider).updateUserAccess(
           currentProfileId,
           userAccess.copyWith(trialDuration: usedDuration),
         );
@@ -66,10 +66,9 @@ class AccessLevelService {
 }
 
 @riverpod
-FutureOr<AccessLevelService> accessLevelService(
-    AccessLevelServiceRef ref) async {
+FutureOr<UserAccessService> userAccessService(UserAccessServiceRef ref) async {
   final userAccess = await ref.watch(userAccessStreamProvider.future);
   final currentProfileId = ref.read(currentUserIdProvider)!;
-  return AccessLevelService(
+  return UserAccessService(
       ref: ref, userAccess: userAccess, currentProfileId: currentProfileId);
 }

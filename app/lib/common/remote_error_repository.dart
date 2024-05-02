@@ -1,4 +1,4 @@
-import 'package:chat_app/features/auth/application/access_level_service.dart';
+import 'package:chat_app/features/auth/application/user_access_service.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -17,11 +17,11 @@ class RemoteErrorRepository {
       throw Exception('trying to set user when its not avaliable yet');
     }
 
-    final accessLevel = await ref.read(accessLevelServiceProvider.future);
+    final userAccessService = await ref.read(userAccessServiceProvider.future);
 
     Sentry.configureScope(
       (scope) => scope
-        ..setTag('access-level', accessLevel.userAccess.level.name)
+        ..setTag('access-level', userAccessService.userAccess.level.name)
         ..setUser(SentryUser(
             id: currentProfile.id,
             email: currentProfile.email,

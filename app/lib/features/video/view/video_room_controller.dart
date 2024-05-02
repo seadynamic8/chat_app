@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:chat_app/features/auth/application/access_level_service.dart';
+import 'package:chat_app/features/auth/application/user_access_service.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/user_access.dart';
 import 'package:chat_app/features/video/data/stopwatch_repository.dart';
@@ -110,16 +110,16 @@ class VideoRoomController extends _$VideoRoomController {
     final userAccess = await ref.read(userAccessStreamProvider.future);
 
     if (userAccess.level == AccessLevel.trial) {
-      final accessLevelService =
-          await ref.read(accessLevelServiceProvider.future);
+      final userAccessService =
+          await ref.read(userAccessServiceProvider.future);
 
       if (trialFinished) {
-        accessLevelService.updateAccessLevel();
+        userAccessService.updateAccessLevel();
       } else {
         final elapsedDuration = Duration(
             milliseconds:
                 ref.read(stopwatchRepositoryProvider).elapsedMilliseconds);
-        await accessLevelService.updateAccessDuration(elapsedDuration);
+        await userAccessService.updateAccessDuration(elapsedDuration);
       }
     }
   }

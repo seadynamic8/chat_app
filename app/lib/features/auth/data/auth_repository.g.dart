@@ -769,7 +769,7 @@ class _BlockedByChangesProviderElement
       (origin as BlockedByChangesProvider).otherProfileId;
 }
 
-String _$userAccessStreamHash() => r'865285b2ac2d2c5e80b9c077a838cf3bc9cbb3c6';
+String _$userAccessStreamHash() => r'6f35d9c5279386e68fb05d4cbbdca046a8ffcc82';
 
 /// See also [userAccessStream].
 @ProviderFor(userAccessStream)
