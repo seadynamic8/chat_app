@@ -6,7 +6,7 @@ part of 'paywall_repository.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$paywallRepositoryHash() => r'929d4e54c5e145780dba3a54a9a87bfedded28ae';
+String _$paywallRepositoryHash() => r'e3629d48175578e388904f56952dbcce08070121';
 
 /// See also [paywallRepository].
 @ProviderFor(paywallRepository)

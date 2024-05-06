@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:adapty_flutter/adapty_flutter.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/paywall/domain/paywall_profile.dart';
 import 'package:chat_app/features/paywall/domain/product.dart';
 import 'package:chat_app/utils/exceptions.dart';
 import 'package:chat_app/utils/logger.dart';
@@ -28,9 +31,10 @@ class PaywallRepository {
     }
   }
 
-  Future<AdaptyProfile> getProfile() async {
+  Future<PaywallProfile> getProfile() async {
     try {
-      return await adapty.getProfile();
+      final adaptyProfile = await adapty.getProfile();
+      return PaywallProfile(profile: adaptyProfile);
     } on AdaptyError catch (adaptyError, st) {
       logger.error('AdaptyError getProfile(): $adaptyError', adaptyError, st);
       rethrow;
@@ -38,6 +42,16 @@ class PaywallRepository {
       logger.error('getProfile()', error, st);
       rethrow;
     }
+  }
+
+  Stream<PaywallProfile> watchProfileUpdates() {
+    final streamController = StreamController<PaywallProfile>();
+
+    adapty.didUpdateProfileStream.listen((adaptyProfile) {
+      streamController.add(PaywallProfile(profile: adaptyProfile));
+    });
+
+    return streamController.stream;
   }
 
   Future<AdaptyPaywall> getPaywall() async {
@@ -108,7 +122,6 @@ class PaywallRepository {
 PaywallRepository paywallRepository(PaywallRepositoryRef ref) {
   final paywallRepository = PaywallRepository(ref: ref);
   ref.onDispose(() => paywallRepository.paywallLogout());
-  paywallRepository.initialize();
   return paywallRepository;
 }
 

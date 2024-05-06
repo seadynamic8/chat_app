@@ -140,7 +140,7 @@ class PrivateProfileScreen extends ConsumerWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 40),
                           child: switch (userAccess.level) {
                             AccessLevel.trial =>
-                              Chip(label: Text('Free Trial'.i18n)),
+                              Chip(label: Text('Free Trial (60 minutes)'.i18n)),
                             AccessLevel.standard => OutlinedButton(
                                 onPressed: () => context.router.push(
                                   const PaywallRoute(),

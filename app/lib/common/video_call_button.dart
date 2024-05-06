@@ -135,7 +135,7 @@ class VideoButtonPrice extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final accessLevelValue = ref.read(userAccessStreamProvider
+    final accessLevelValue = ref.watch(userAccessStreamProvider
         .select((value) => value.whenData((userAccess) => userAccess.level)));
 
     return accessLevelValue.maybeWhen(
