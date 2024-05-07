@@ -22,7 +22,7 @@ final paywallRepositoryProvider =
 );
 
 typedef PaywallRepositoryRef = AutoDisposeProviderRef<PaywallRepository>;
-String _$paywallProductsHash() => r'9cd974accbab7362af84155418e45f8db8ad5e5c';
+String _$paywallProductsHash() => r'82362a073cf99322bb5966f3bdede94db5558218';
 
 /// See also [paywallProducts].
 @ProviderFor(paywallProducts)

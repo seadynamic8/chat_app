@@ -88,6 +88,17 @@ class PaywallRepository {
     }
   }
 
+  Future<void> logShowPaywall(AdaptyPaywall paywall) async {
+    try {
+      await adapty.logShowPaywall(paywall: paywall);
+    } on AdaptyError catch (adaptyError, st) {
+      logger.error(
+          'AdaptyError logShowPaywall(): $adaptyError', adaptyError, st);
+    } catch (error, st) {
+      logger.error('logShowPaywall()', error, st);
+    }
+  }
+
   Future<bool> makePurchase(Product product) async {
     try {
       final profile = await adapty.makePurchase(product: product.adaptyProduct);
@@ -128,6 +139,9 @@ PaywallRepository paywallRepository(PaywallRepositoryRef ref) {
 @riverpod
 FutureOr<List<Product>> paywallProducts(PaywallProductsRef ref) async {
   final paywallRepository = ref.watch(paywallRepositoryProvider);
-  final paywall = await ref.read(paywallRepositoryProvider).getPaywall();
+  final paywall = await paywallRepository.getPaywall();
+
+  paywallRepository.logShowPaywall(paywall);
+
   return paywallRepository.getPaywallProducts(paywall);
 }
