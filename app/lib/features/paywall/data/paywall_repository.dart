@@ -109,10 +109,8 @@ class PaywallRepository {
     } on AdaptyError catch (adaptyError, st) {
       logger.w('AdaptyError makePurchase(): $adaptyError',
           error: adaptyError, stackTrace: st);
-      rethrow;
     } catch (error, st) {
       logger.error('makePurchase()', error, st);
-      rethrow;
     }
     return false;
   }
