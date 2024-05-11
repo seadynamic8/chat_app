@@ -68,8 +68,8 @@ dependencies:
   collection: ^1.18.0
   sentry_flutter: ^7.16.1
   i18n_extension_importer: ^0.0.6
-  firebase_core: ^2.25.4
-  firebase_messaging: ^14.7.16
+  firebase_core: ^2.31.0
+  firebase_messaging: ^14.9.2
   another_flushbar: ^1.12.30
   talker_flutter: ^4.0.2
   swipe_to: ^1.0.6
