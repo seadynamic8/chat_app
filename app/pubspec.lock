@@ -349,10 +349,10 @@ packages:
     dependency: "direct main"
     description:
       name: datepicker_dropdown
-      sha256: "9d954fe923b7be16e243cc7a9012bead50ae039dba1fd8ab0ae9c29c34feae92"
+      sha256: f8cf4d19e4c501aadef5da64bf9f98a21195b2694b1a5b0a5b75b06bbfe0787f
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.1"
   dbus:
     dependency: transitive
     description:
