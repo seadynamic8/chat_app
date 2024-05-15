@@ -64,3 +64,6 @@ strings.po
 
 # FVM Version Cache
 .fvm/
+
+# IOS dart-defines related (Make dart-define work for ios)
+/ios/Flutter/Dart-Defines.xcconfig
