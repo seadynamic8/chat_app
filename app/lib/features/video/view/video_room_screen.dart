@@ -15,7 +15,7 @@ import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i18n_extension/i18n_widget.dart';
+import 'package:i18n_extension/i18n_extension.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 @RoutePage()
@@ -54,7 +54,7 @@ class VideoRoomScreen extends ConsumerWidget {
 
   void _leaveVideoRoom(BuildContext context) {
     WakelockPlus.disable();
-    context.router.pop();
+    context.router.maybePop();
   }
 
   void _listenForCallRequestEnd(BuildContext context, WidgetRef ref) {

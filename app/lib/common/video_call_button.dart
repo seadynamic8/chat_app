@@ -61,7 +61,7 @@ class _VideoCallButtonState extends ConsumerState<VideoCallButton> {
 
       router.push(WaitingRoute(otherProfileId: widget.otherProfileId));
     } catch (error, st) {
-      if (!context.mounted) return;
+      if (!mounted) return;
       context.logAndShowError(widget.buttonType.className, error, st);
     }
   }

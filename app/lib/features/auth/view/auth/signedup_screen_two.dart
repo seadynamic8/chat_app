@@ -13,7 +13,7 @@ import 'package:chat_app/utils/string_validators.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i18n_extension/i18n_widget.dart';
+import 'package:i18n_extension/i18n_extension.dart';
 
 @RoutePage()
 class SignedupScreenTwo extends ConsumerStatefulWidget {
@@ -56,10 +56,10 @@ class _SignedupScreenTwoState extends ConsumerState<SignedupScreenTwo> {
 
       router.replaceAll([const MainNavigation()]);
     } on DuplicateUsernameException catch (error) {
-      if (!context.mounted) return;
+      if (!mounted) return;
       context.showErrorSnackBar(error.message);
     } catch (error) {
-      if (!context.mounted) return;
+      if (!mounted) return;
       context.showErrorSnackBar(error.toString());
     }
   }
@@ -148,7 +148,7 @@ class _SignedupScreenTwoState extends ConsumerState<SignedupScreenTwo> {
                     children: [
                       ElevatedButton(
                         key: K.signUpScreenTwoBackButton,
-                        onPressed: () => context.router.pop(),
+                        onPressed: () => context.router.maybePop(),
                         child: Text('Back'.i18n),
                       ),
                       const SizedBox(width: 12),

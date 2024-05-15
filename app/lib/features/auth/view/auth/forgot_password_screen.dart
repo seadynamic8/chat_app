@@ -8,7 +8,7 @@ import 'package:chat_app/utils/string_validators.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i18n_extension/i18n_widget.dart';
+import 'package:i18n_extension/i18n_extension.dart';
 
 @RoutePage()
 class ForgotPasswordScreen extends ConsumerStatefulWidget {
@@ -114,7 +114,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
                     children: [
                       ElevatedButton(
                         key: K.forgotPasswordBackButton,
-                        onPressed: () => context.router.pop(),
+                        onPressed: () => context.router.maybePop(),
                         child: Text('Back'.i18n),
                       ),
                       const SizedBox(width: 12),

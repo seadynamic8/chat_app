@@ -4,7 +4,7 @@ import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i18n_extension/i18n_widget.dart';
+import 'package:i18n_extension/i18n_extension.dart';
 
 @RoutePage()
 class PaywallScreen extends ConsumerWidget {

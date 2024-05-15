@@ -8,7 +8,7 @@ import 'package:country_flags/country_flags.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:i18n_extension/i18n_widget.dart';
+import 'package:i18n_extension/i18n_extension.dart';
 import 'package:locale_names/locale_names.dart';
 
 @RoutePage()
@@ -65,7 +65,7 @@ class PublicProfileScreen extends ConsumerWidget {
                         key: K.publicProfileBackButton,
                         icon: const Icon(Icons.arrow_back),
                         onPressed: () {
-                          context.router.pop();
+                          context.router.maybePop();
                         },
                       ),
                     ),

@@ -39,15 +39,15 @@ dependencies:
   secure_dotenv: ^1.0.0
   flutter_riverpod: ^2.4.10
   riverpod_annotation: ^2.3.4
-  auto_route: ^7.8.4
-  i18n_extension: ^10.0.3
+  auto_route: ^8.1.3
+  i18n_extension: ^11.0.12
   flutter_localizations:
     sdk: flutter
   dio: ^5.4.3+1
   videosdk: ^1.1.7
   timeago: ^3.6.1
   flutter_keyboard_visibility: ^6.0.0
-  pinput: ^3.0.1
+  pinput: ^4.0.0
   datepicker_dropdown: ^0.1.1
   image_picker: ^1.0.4
   age_calculator: ^1.0.0
@@ -66,7 +66,7 @@ dependencies:
   adapty_flutter: ^2.10.1
   stop_watch_timer: ^3.1.0+4
   collection: ^1.18.0
-  sentry_flutter: ^7.16.1
+  sentry_flutter: ^8.2.0
   i18n_extension_importer: ^0.0.6
   firebase_core: ^2.31.0
   firebase_messaging: ^14.9.2
@@ -85,14 +85,14 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.1
+  flutter_lints: ^4.0.0
   build_runner: ^2.4.8
   secure_dotenv_generator: 
     git: 
       url: https://github.com/seadynamic8/secure_dotenv.dart.git
       path: secure_dotenv_generator
   riverpod_generator: ^2.3.11
-  auto_route_generator: ^7.3.2
+  auto_route_generator: ^8.0.0
   patrol: ^3.5.2
   riverpod_lint: ^2.3.9
   custom_lint: ^0.6.2

@@ -7,7 +7,7 @@ import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:i18n_extension/i18n_widget.dart';
+import 'package:i18n_extension/i18n_extension.dart';
 
 @RoutePage()
 class WaitingScreen extends ConsumerStatefulWidget {
@@ -21,7 +21,7 @@ class WaitingScreen extends ConsumerStatefulWidget {
 
 class _WaitingScreenState extends ConsumerState<WaitingScreen> {
   void _cancelWait() {
-    context.router.pop();
+    context.router.maybePop();
   }
 
   void _cancelCall() async {

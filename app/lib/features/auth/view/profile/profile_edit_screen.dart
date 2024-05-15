@@ -15,7 +15,7 @@ import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i18n_extension/i18n_widget.dart';
+import 'package:i18n_extension/i18n_extension.dart';
 import 'package:language_picker/language_picker.dart';
 import 'package:language_picker/languages.dart';
 import 'package:locale_names/locale_names.dart';
@@ -81,7 +81,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
           ),
         );
 
-    router.pop();
+    router.maybePop();
   }
 
   Future<String?> _saveSelectedImage() async {

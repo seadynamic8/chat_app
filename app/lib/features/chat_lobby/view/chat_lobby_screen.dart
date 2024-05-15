@@ -6,7 +6,7 @@ import 'package:chat_app/i18n/localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:i18n_extension/i18n_widget.dart';
+import 'package:i18n_extension/i18n_extension.dart';
 
 @RoutePage()
 class ChatLobbyScreen extends ConsumerWidget {

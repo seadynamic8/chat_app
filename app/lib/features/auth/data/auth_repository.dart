@@ -12,7 +12,7 @@ import 'package:chat_app/utils/logger.dart';
 import 'package:chat_app/utils/username_generate_data.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i18n_extension/i18n_widget.dart';
+import 'package:i18n_extension/i18n_extension.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:username_gen/username_gen.dart';
