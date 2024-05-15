@@ -37,7 +37,7 @@ end
 
 namespace :dev do
   
-  desc "Run on S20"
+  desc "Run on iPhone"
   task :run_iphone do
     command = "flutter run -d 00008101-0014108A3AE0001E --dart-define-from-file=encryption_key.json --dart-define-from-file=.dev.env"
     system command
