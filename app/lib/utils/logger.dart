@@ -113,7 +113,7 @@ class LoggerRepository {
     final currentProfile = await ref.read(currentProfileStreamProvider.future);
 
     talker.log(
-      currentProfile != null ? '[User: ${currentProfile.username}]: $msg' : msg,
+      'User(${currentProfile == null ? 'None' : currentProfile.username}): $msg',
       exception: exception,
       stackTrace: stackTrace,
       logLevel: logLevel,
