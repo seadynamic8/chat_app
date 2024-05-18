@@ -111,6 +111,8 @@ extension ChannelPresenceHandlers on ChannelRepository {
 
     channel.subscribe((status, error) async {
       try {
+        final currentUserId = ref.read(currentUserIdProvider);
+
         if (status == RealtimeSubscribeStatus.subscribed) {
           await updatePresence(OnlineStatus.online);
 
