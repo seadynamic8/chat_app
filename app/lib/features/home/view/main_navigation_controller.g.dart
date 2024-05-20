@@ -7,7 +7,7 @@ part of 'main_navigation_controller.dart';
 // **************************************************************************
 
 String _$mainNavigationControllerHash() =>
-    r'eae117311d7d5ec5f952b3907f02816808563a37';
+    r'663db6a70cc54141cad4e6c18d34c8ab719ea8e1';
 
 /// See also [MainNavigationController].
 @ProviderFor(MainNavigationController)

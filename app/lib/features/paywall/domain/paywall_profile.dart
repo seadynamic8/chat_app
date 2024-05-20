@@ -1,4 +1,5 @@
 import 'package:adapty_flutter/adapty_flutter.dart';
+import 'package:chat_app/utils/constants.dart';
 
 enum PaywallAccessLevel { active, inactive }
 
@@ -7,7 +8,12 @@ class PaywallProfile {
 
   final AdaptyProfile profile;
 
-  bool get active => profile.accessLevels['premium']?.isActive ?? false;
+  bool get loggedIn => profile.customerUserId != null;
+
+  bool get subscribed => profile.accessLevels.isNotEmpty;
+
+  bool get active =>
+      profile.accessLevels[adaptyAccessLevelId]?.isActive ?? false;
 
   PaywallAccessLevel get accessLevel =>
       active ? PaywallAccessLevel.active : PaywallAccessLevel.inactive;

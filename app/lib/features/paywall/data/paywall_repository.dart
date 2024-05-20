@@ -17,13 +17,19 @@ class PaywallRepository {
   final Ref ref;
   final adapty = Adapty();
 
-  Future<void> initialize() async {
+  Future<void> setLogLvel() async {
     try {
       await adapty.setLogLevel(AdaptyLogLevel.info);
-      adapty.activate();
+    } on AdaptyError catch (adaptyError, st) {
+      logger.error('AdaptyError setLogLevel(): $adaptyError', adaptyError, st);
+    } catch (error, st) {
+      logger.error('setLogLevel()', error, st);
+    }
+  }
 
-      final currentUserId = ref.read(currentUserIdProvider)!;
-      await adapty.identify(currentUserId);
+  void activate() {
+    try {
+      adapty.activate();
     } on AdaptyError catch (adaptyError, st) {
       logger.error('AdaptyError initialize(): $adaptyError', adaptyError, st);
     } catch (error, st) {
@@ -31,7 +37,20 @@ class PaywallRepository {
     }
   }
 
-  Future<PaywallProfile> getProfile() async {
+  // Set currentUserId for Adapty and is null when logged out.
+  Future<void> identifyCurrentUser() async {
+    try {
+      final currentUserId = ref.read(currentUserIdProvider)!;
+      await adapty.identify(currentUserId);
+    } on AdaptyError catch (adaptyError, st) {
+      logger.error(
+          'AdaptyError identifyCurrentUser(): $adaptyError', adaptyError, st);
+    } catch (error, st) {
+      logger.error('identifyCurrentUser()', error, st);
+    }
+  }
+
+  Future<PaywallProfile> getPaywallProfile() async {
     try {
       final adaptyProfile = await adapty.getProfile();
       return PaywallProfile(profile: adaptyProfile);
