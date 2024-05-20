@@ -65,8 +65,8 @@ ChannelRepository channelRepository(
 
 @riverpod
 FutureOr<ChannelRepository> userSubscribedChannel(
-    UserSubscribedChannelRef ref, String userId) async {
-  final userChannel = ref.watch(channelRepositoryProvider(userId));
+    UserSubscribedChannelRef ref, String userIdentifier) async {
+  final userChannel = ref.watch(channelRepositoryProvider(userIdentifier));
   userChannel.onJoin();
   userChannel.onLeave();
   userChannel.onUpdate();

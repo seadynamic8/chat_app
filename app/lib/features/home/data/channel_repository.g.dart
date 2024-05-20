@@ -158,7 +158,7 @@ class _ChannelRepositoryProviderElement
 }
 
 String _$userSubscribedChannelHash() =>
-    r'e746a39be998531f26f7d5e192846cff38112753';
+    r'04bb8e68f9567f02a8174852ee3890b41d46110f';
 
 /// See also [userSubscribedChannel].
 @ProviderFor(userSubscribedChannel)
@@ -172,10 +172,10 @@ class UserSubscribedChannelFamily
 
   /// See also [userSubscribedChannel].
   UserSubscribedChannelProvider call(
-    String userId,
+    String userIdentifier,
   ) {
     return UserSubscribedChannelProvider(
-      userId,
+      userIdentifier,
     );
   }
 
@@ -184,7 +184,7 @@ class UserSubscribedChannelFamily
     covariant UserSubscribedChannelProvider provider,
   ) {
     return call(
-      provider.userId,
+      provider.userIdentifier,
     );
   }
 
@@ -208,11 +208,11 @@ class UserSubscribedChannelProvider
     extends AutoDisposeFutureProvider<ChannelRepository> {
   /// See also [userSubscribedChannel].
   UserSubscribedChannelProvider(
-    String userId,
+    String userIdentifier,
   ) : this._internal(
           (ref) => userSubscribedChannel(
             ref as UserSubscribedChannelRef,
-            userId,
+            userIdentifier,
           ),
           from: userSubscribedChannelProvider,
           name: r'userSubscribedChannelProvider',
@@ -223,7 +223,7 @@ class UserSubscribedChannelProvider
           dependencies: UserSubscribedChannelFamily._dependencies,
           allTransitiveDependencies:
               UserSubscribedChannelFamily._allTransitiveDependencies,
-          userId: userId,
+          userIdentifier: userIdentifier,
         );
 
   UserSubscribedChannelProvider._internal(
@@ -233,10 +233,10 @@ class UserSubscribedChannelProvider
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.userId,
+    required this.userIdentifier,
   }) : super.internal();
 
-  final String userId;
+  final String userIdentifier;
 
   @override
   Override overrideWith(
@@ -252,7 +252,7 @@ class UserSubscribedChannelProvider
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        userId: userId,
+        userIdentifier: userIdentifier,
       ),
     );
   }
@@ -264,13 +264,14 @@ class UserSubscribedChannelProvider
 
   @override
   bool operator ==(Object other) {
-    return other is UserSubscribedChannelProvider && other.userId == userId;
+    return other is UserSubscribedChannelProvider &&
+        other.userIdentifier == userIdentifier;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, userId.hashCode);
+    hash = _SystemHash.combine(hash, userIdentifier.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -278,8 +279,8 @@ class UserSubscribedChannelProvider
 
 mixin UserSubscribedChannelRef
     on AutoDisposeFutureProviderRef<ChannelRepository> {
-  /// The parameter `userId` of this provider.
-  String get userId;
+  /// The parameter `userIdentifier` of this provider.
+  String get userIdentifier;
 }
 
 class _UserSubscribedChannelProviderElement
@@ -288,7 +289,8 @@ class _UserSubscribedChannelProviderElement
   _UserSubscribedChannelProviderElement(super.provider);
 
   @override
-  String get userId => (origin as UserSubscribedChannelProvider).userId;
+  String get userIdentifier =>
+      (origin as UserSubscribedChannelProvider).userIdentifier;
 }
 
 String _$lobbySubscribedChannelHash() =>

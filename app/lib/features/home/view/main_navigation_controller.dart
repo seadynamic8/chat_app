@@ -31,10 +31,13 @@ class MainNavigationController extends _$MainNavigationController {
 
   // Join user channel on startup, to be able to receive calls right away
   Future<void> _setupUserChannel() async {
-    final currentUserId = ref.watch(currentUserIdProvider)!;
+    final currentProfile = await ref.read(currentProfileStreamProvider.future);
+    if (currentProfile == null) {
+      throw Exception('Current profile is null');
+    }
 
-    final myChannel =
-        await ref.watch(userSubscribedChannelProvider(currentUserId).future);
+    final myChannel = await ref
+        .watch(userSubscribedChannelProvider(currentProfile.username!).future);
 
     // Interesting, here, don't need to delay after subscribe to add callback handlers
 

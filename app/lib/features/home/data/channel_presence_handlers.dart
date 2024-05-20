@@ -111,14 +111,16 @@ extension ChannelPresenceHandlers on ChannelRepository {
 
     channel.subscribe((status, error) async {
       try {
-        final currentUserId = ref.read(currentUserIdProvider);
+        final currentProfile =
+            await ref.read(currentProfileStreamProvider.future);
 
         if (status == RealtimeSubscribeStatus.subscribed) {
           await updatePresence(OnlineStatus.online);
 
           completer.complete();
         } else {
-          logger.t('$channelName | $currentUserId | Status: ${status.name}');
+          logger.t(
+              '$channelName | ${currentProfile?.username} | Status: ${status.name}');
         }
         return await completer.future;
       } catch (error, st) {

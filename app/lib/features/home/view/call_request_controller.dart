@@ -97,7 +97,7 @@ class CallRequestController extends _$CallRequestController {
     final currentProfile = await ref.read(currentProfileStreamProvider.future);
 
     await _sendMessageToOtherUser(
-      channelName: otherProfileId,
+      userId: otherProfileId,
       event: 'new_call',
       payload: {
         'fromUserId': currentProfile!.id,
@@ -126,7 +126,7 @@ class CallRequestController extends _$CallRequestController {
 
     final currentProfile = await ref.read(currentProfileStreamProvider.future);
     await _sendMessageToOtherUser(
-      channelName: state.otherUserId!,
+      userId: state.otherUserId!,
       event: 'cancel_call',
       payload: {
         'fromUsername': currentProfile!.username,
@@ -144,7 +144,7 @@ class CallRequestController extends _$CallRequestController {
     logger.i('finish setting user to busy');
 
     await _sendMessageToOtherUser(
-      channelName: state.otherUserId!,
+      userId: state.otherUserId!,
       event: 'accept_call',
       payload: {'videoRoomId': state.videoRoomId!},
     );
@@ -159,7 +159,7 @@ class CallRequestController extends _$CallRequestController {
         VideoStatus.rejected, state.otherUserId!);
 
     await _sendMessageToOtherUser(
-        channelName: state.otherUserId!, event: 'reject_call');
+        userId: state.otherUserId!, event: 'reject_call');
 
     resetToWaiting();
   }
@@ -176,7 +176,7 @@ class CallRequestController extends _$CallRequestController {
         .createChatMessageForVideoStatus(VideoStatus.ended, otherProfileId);
 
     await _sendMessageToOtherUser(
-      channelName: otherProfileId,
+      userId: otherProfileId,
       event: 'end_call',
       payload: {'videoRoomId': videoRoomId},
     );
@@ -186,16 +186,18 @@ class CallRequestController extends _$CallRequestController {
   // * Private Methods
 
   Future<void> _sendMessageToOtherUser({
-    required String channelName,
+    required String userId,
     required String event,
     Map<String, dynamic>? payload,
   }) async {
-    final otherUserChannel = await _getOtherUserChannel(channelName);
+    final otherProfile = await ref.read(profileStreamProvider(userId).future);
+
+    final otherUserChannel = await _getOtherUserChannel(otherProfile.username!);
 
     otherUserChannel.send(event, payload: payload);
 
     // This still comes back we since we are 'watch'ing it.
-    ref.invalidate(channelRepositoryProvider(channelName));
+    ref.invalidate(channelRepositoryProvider(otherProfile.username!));
   }
 
   Future<ChannelRepository> _getOtherUserChannel(String channelName) async {

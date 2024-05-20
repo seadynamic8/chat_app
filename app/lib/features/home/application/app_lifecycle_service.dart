@@ -57,9 +57,10 @@ class AppLifecycleService {
   }
 
   Future<void> closeUserChannel() async {
-    final currentProfileId = ref.read(currentUserIdProvider);
-    if (currentProfileId == null) return;
-    ref.invalidate(channelRepositoryProvider(currentProfileId));
+    final currentProfile = await ref.read(currentProfileStreamProvider.future);
+    if (currentProfile == null) return;
+
+    ref.invalidate(channelRepositoryProvider(currentProfile.username!));
   }
 
   bool _notLoggedIn() {
