@@ -1,6 +1,7 @@
 import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/view/profile/public_profile_buttons.dart';
+import 'package:chat_app/features/home/application/current_user_id_provider.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/utils/constants.dart';
 import 'package:chat_app/utils/keys.dart';

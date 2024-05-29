@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat_lobby/domain/room.dart';
+import 'package:chat_app/features/home/application/current_user_id_provider.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:chat_app/utils/pagination.dart';

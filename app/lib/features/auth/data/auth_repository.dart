@@ -6,6 +6,7 @@ import 'package:chat_app/features/auth/domain/block_state.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/auth/domain/token.dart';
 import 'package:chat_app/features/auth/domain/user_access.dart';
+import 'package:chat_app/features/home/application/current_user_id_provider.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/utils/exceptions.dart';
 import 'package:chat_app/utils/logger.dart';
@@ -532,12 +533,6 @@ Session? currentSession(CurrentSessionRef ref) {
 Stream<AuthState> authStateChanges(AuthStateChangesRef ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   return authRepository.onAuthStateChanges();
-}
-
-@riverpod
-String? currentUserId(CurrentUserIdRef ref) {
-  final authRepository = ref.watch(authRepositoryProvider);
-  return authRepository.currentUserId;
 }
 
 @riverpod

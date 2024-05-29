@@ -19,10 +19,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 @RoutePage()
 class AuthScreen extends ConsumerStatefulWidget {
-  const AuthScreen({super.key, required this.formType, required this.resolver});
+  const AuthScreen({
+    super.key,
+    required this.formType,
+    required this.onAuthResult,
+  });
 
   final AuthFormType formType;
-  final NavigationResolver resolver;
+  final void Function(bool isSuccess) onAuthResult;
 
   @override
   ConsumerState<AuthScreen> createState() => _AuthScreenState();
@@ -60,7 +64,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
         if (responseSuccess) {
           if (state.formType == AuthFormType.login) {
             if (kIsWeb) {
-              widget.resolver.resolveNext(true, reevaluateNext: false);
+              widget.onAuthResult(true);
             }
             router.replaceAll([const MainNavigation()]);
           } else {

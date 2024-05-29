@@ -67,7 +67,7 @@ abstract class $AppRouter extends _i25.RootStackRouter {
         child: _i2.AuthScreen(
           key: args.key,
           formType: args.formType,
-          resolver: args.resolver,
+          onAuthResult: args.onAuthResult,
         ),
       );
     },
@@ -265,14 +265,14 @@ class AuthRoute extends _i25.PageRouteInfo<AuthRouteArgs> {
   AuthRoute({
     _i26.Key? key,
     required _i27.AuthFormType formType,
-    required _i25.NavigationResolver resolver,
+    required void Function(bool) onAuthResult,
     List<_i25.PageRouteInfo>? children,
   }) : super(
           AuthRoute.name,
           args: AuthRouteArgs(
             key: key,
             formType: formType,
-            resolver: resolver,
+            onAuthResult: onAuthResult,
           ),
           initialChildren: children,
         );
@@ -287,18 +287,18 @@ class AuthRouteArgs {
   const AuthRouteArgs({
     this.key,
     required this.formType,
-    required this.resolver,
+    required this.onAuthResult,
   });
 
   final _i26.Key? key;
 
   final _i27.AuthFormType formType;
 
-  final _i25.NavigationResolver resolver;
+  final void Function(bool) onAuthResult;
 
   @override
   String toString() {
-    return 'AuthRouteArgs{key: $key, formType: $formType, resolver: $resolver}';
+    return 'AuthRouteArgs{key: $key, formType: $formType, onAuthResult: $onAuthResult}';
   }
 }
 

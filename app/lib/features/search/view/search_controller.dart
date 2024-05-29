@@ -1,6 +1,6 @@
 import 'package:chat_app/common/pagination_state.dart';
-import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/profile.dart';
+import 'package:chat_app/features/home/application/current_user_id_provider.dart';
 import 'package:chat_app/features/search/data/search_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

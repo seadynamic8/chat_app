@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:adapty_flutter/adapty_flutter.dart';
-import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/home/application/current_user_id_provider.dart';
 import 'package:chat_app/features/paywall/domain/paywall_profile.dart';
 import 'package:chat_app/features/paywall/domain/product.dart';
 import 'package:chat_app/utils/exceptions.dart';

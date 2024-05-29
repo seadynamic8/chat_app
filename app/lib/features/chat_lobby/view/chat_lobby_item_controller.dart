@@ -5,6 +5,7 @@ import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:chat_app/features/chat_lobby/domain/chat_lobby_item_state.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
+import 'package:chat_app/features/home/application/current_user_id_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chat_lobby_item_controller.g.dart';

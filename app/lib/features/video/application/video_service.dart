@@ -3,6 +3,7 @@ import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat_lobby/application/chat_lobby_service.dart';
 import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
+import 'package:chat_app/features/home/application/current_user_id_provider.dart';
 import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';

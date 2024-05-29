@@ -1,5 +1,5 @@
-import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
+import 'package:chat_app/features/home/application/current_user_id_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'joined_room_notifier.g.dart';

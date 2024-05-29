@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/user_access.dart';
+import 'package:chat_app/features/home/application/current_user_id_provider.dart';
 import 'package:chat_app/features/paywall/data/paywall_repository.dart';
 import 'package:chat_app/features/paywall/domain/paywall_profile.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

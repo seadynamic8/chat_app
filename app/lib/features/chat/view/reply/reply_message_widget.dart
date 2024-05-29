@@ -1,7 +1,7 @@
-import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat/data/swiped_message_provider.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/view/reply/reply_message_translation.dart';
+import 'package:chat_app/features/home/application/current_user_id_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 

@@ -60,7 +60,6 @@ class TestHelper {
     await authRepository.signInWithEmailAndPassword(
         email: email, password: password);
 
-    ProviderContainer().invalidate(currentUserIdProvider);
     return userId;
   }
 

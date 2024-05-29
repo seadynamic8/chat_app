@@ -1,6 +1,6 @@
-import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:chat_app/features/chat_lobby/domain/room.dart';
+import 'package:chat_app/features/home/application/current_user_id_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

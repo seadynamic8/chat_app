@@ -1,5 +1,4 @@
 import 'package:chat_app/common/paginated_list_view.dart';
-import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
 import 'package:chat_app/features/chat/data/joined_room_notifier.dart';
 import 'package:chat_app/features/chat/data/swiped_message_provider.dart';
@@ -7,6 +6,7 @@ import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat/view/chat_messages_controller.dart';
 import 'package:chat_app/features/chat/view/message_tile.dart';
 import 'package:chat_app/features/chat/view/status_message.dart';
+import 'package:chat_app/features/home/application/current_user_id_provider.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
