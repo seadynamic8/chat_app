@@ -311,5 +311,141 @@ final lobbySubscribedChannelProvider =
 
 typedef LobbySubscribedChannelRef
     = AutoDisposeFutureProviderRef<ChannelRepository>;
+String _$lobbyUpdatePresenceStreamHash() =>
+    r'1ffbdd0eec79ed9ddc657f475874b5bdd8890dda';
+
+/// See also [lobbyUpdatePresenceStream].
+@ProviderFor(lobbyUpdatePresenceStream)
+const lobbyUpdatePresenceStreamProvider = LobbyUpdatePresenceStreamFamily();
+
+/// See also [lobbyUpdatePresenceStream].
+class LobbyUpdatePresenceStreamFamily
+    extends Family<AsyncValue<Map<String, OnlineState>>> {
+  /// See also [lobbyUpdatePresenceStream].
+  const LobbyUpdatePresenceStreamFamily();
+
+  /// See also [lobbyUpdatePresenceStream].
+  LobbyUpdatePresenceStreamProvider call(
+    ChannelRepository lobbyChannel,
+  ) {
+    return LobbyUpdatePresenceStreamProvider(
+      lobbyChannel,
+    );
+  }
+
+  @override
+  LobbyUpdatePresenceStreamProvider getProviderOverride(
+    covariant LobbyUpdatePresenceStreamProvider provider,
+  ) {
+    return call(
+      provider.lobbyChannel,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'lobbyUpdatePresenceStreamProvider';
+}
+
+/// See also [lobbyUpdatePresenceStream].
+class LobbyUpdatePresenceStreamProvider
+    extends AutoDisposeStreamProvider<Map<String, OnlineState>> {
+  /// See also [lobbyUpdatePresenceStream].
+  LobbyUpdatePresenceStreamProvider(
+    ChannelRepository lobbyChannel,
+  ) : this._internal(
+          (ref) => lobbyUpdatePresenceStream(
+            ref as LobbyUpdatePresenceStreamRef,
+            lobbyChannel,
+          ),
+          from: lobbyUpdatePresenceStreamProvider,
+          name: r'lobbyUpdatePresenceStreamProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$lobbyUpdatePresenceStreamHash,
+          dependencies: LobbyUpdatePresenceStreamFamily._dependencies,
+          allTransitiveDependencies:
+              LobbyUpdatePresenceStreamFamily._allTransitiveDependencies,
+          lobbyChannel: lobbyChannel,
+        );
+
+  LobbyUpdatePresenceStreamProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.lobbyChannel,
+  }) : super.internal();
+
+  final ChannelRepository lobbyChannel;
+
+  @override
+  Override overrideWith(
+    Stream<Map<String, OnlineState>> Function(
+            LobbyUpdatePresenceStreamRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: LobbyUpdatePresenceStreamProvider._internal(
+        (ref) => create(ref as LobbyUpdatePresenceStreamRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        lobbyChannel: lobbyChannel,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<Map<String, OnlineState>> createElement() {
+    return _LobbyUpdatePresenceStreamProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is LobbyUpdatePresenceStreamProvider &&
+        other.lobbyChannel == lobbyChannel;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, lobbyChannel.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin LobbyUpdatePresenceStreamRef
+    on AutoDisposeStreamProviderRef<Map<String, OnlineState>> {
+  /// The parameter `lobbyChannel` of this provider.
+  ChannelRepository get lobbyChannel;
+}
+
+class _LobbyUpdatePresenceStreamProviderElement
+    extends AutoDisposeStreamProviderElement<Map<String, OnlineState>>
+    with LobbyUpdatePresenceStreamRef {
+  _LobbyUpdatePresenceStreamProviderElement(super.provider);
+
+  @override
+  ChannelRepository get lobbyChannel =>
+      (origin as LobbyUpdatePresenceStreamProvider).lobbyChannel;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:chat_app/features/home/data/channel_presence_handlers.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -81,4 +82,10 @@ FutureOr<ChannelRepository> lobbySubscribedChannel(
   await lobbyChannel.subscribed();
   ref.read(authRepositoryProvider).setOnlineAt();
   return lobbyChannel;
+}
+
+@riverpod
+Stream<Map<String, OnlineState>> lobbyUpdatePresenceStream(
+    LobbyUpdatePresenceStreamRef ref, ChannelRepository lobbyChannel) {
+  return lobbyChannel.onUpdate();
 }

@@ -24,9 +24,15 @@ class MainNavigationController extends _$MainNavigationController {
     }
   }
 
-  // Join lobby channel on startup, to notify others that we have signed in
   Future<void> _setupLobbyChannel() async {
-    await ref.watch(lobbySubscribedChannelProvider.future);
+    // Join lobby channel on startup, to notify others that we have signed in
+    final lobbyChannel = await ref.watch(lobbySubscribedChannelProvider.future);
+
+    // - Listen to lobby updates to cache call to ensure only read once,
+    // but don't need updates here, so no callback work is being done.
+    // - Listen instead of watch, don't rebuild when updates.
+    ref.listen(
+        lobbyUpdatePresenceStreamProvider(lobbyChannel), (_, presences) => ());
   }
 
   // Join user channel on startup, to be able to receive calls right away

@@ -40,8 +40,9 @@ extension ChannelPresenceHandlers on ChannelRepository {
     });
   }
 
-  void onUpdate(
-      [void Function(Map<String, OnlineState> onlinePresences)? callback]) {
+  Stream<Map<String, OnlineState>> onUpdate() {
+    final streamController = StreamController<Map<String, OnlineState>>();
+
     channel.onPresenceSync((RealtimePresenceSyncPayload payload) {
       try {
         // payload is only: PresenceSyncPayload(event: PresenceEvent.sync)
@@ -53,11 +54,12 @@ extension ChannelPresenceHandlers on ChannelRepository {
             .toList();
         logger.t('$channelName | $usernames | Current Users');
 
-        if (callback != null) callback(onlinePresences);
+        streamController.add(onlinePresences);
       } catch (error, st) {
         logger.error('onUpdate()', error, st);
       }
     });
+    return streamController.stream;
   }
 
   // presenceState() returns something like:

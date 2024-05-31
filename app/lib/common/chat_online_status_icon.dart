@@ -1,5 +1,5 @@
+import 'package:chat_app/features/home/application/online_presence_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:flutter/material.dart';
 
 class ChatOnlineStatusIcon extends ConsumerWidget {
@@ -9,12 +9,10 @@ class ChatOnlineStatusIcon extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final onlinePresencesValue = ref.watch(onlinePresencesProvider);
+    final onlinePresenceValue = ref.watch(onlinePresenceProvider(userId));
 
-    return onlinePresencesValue.maybeWhen(
-      data: (onlinePresences) {
-        final userStatus = onlinePresences.onlineStatusFor(userId);
-
+    return onlinePresenceValue.maybeWhen(
+      data: (userStatus) {
         return Icon(
           Icons.circle,
           size: 10,

@@ -1,6 +1,6 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/home/application/online_presences.dart';
 import 'package:chat_app/features/chat/data/chat_repository.dart';
+import 'package:chat_app/features/home/application/online_presence_service.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:chat_app/features/home/domain/call_request_state.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
@@ -66,7 +66,7 @@ class CallRequestController extends _$CallRequestController {
     // after the accept call, the state gets wiped away.
 
     await ref
-        .read(onlinePresencesProvider.notifier)
+        .read(onlinePresenceServiceProvider)
         .updateCurrentUserPresence(OnlineStatus.online);
 
     state = CallRequestState(callType: CallRequestType.rejectCall);
@@ -79,7 +79,7 @@ class CallRequestController extends _$CallRequestController {
     // after the send accept call, the state gets wiped away.
 
     await ref
-        .read(onlinePresencesProvider.notifier)
+        .read(onlinePresenceServiceProvider)
         .updateCurrentUserPresence(OnlineStatus.online);
 
     state = CallRequestState(callType: CallRequestType.endCall);
@@ -118,7 +118,7 @@ class CallRequestController extends _$CallRequestController {
 
   Future<void> sendCancelCall() async {
     await ref
-        .read(onlinePresencesProvider.notifier)
+        .read(onlinePresenceServiceProvider)
         .updateCurrentUserPresence(OnlineStatus.online);
 
     await ref.read(videoServiceProvider).createChatMessageForVideoStatus(
@@ -139,9 +139,8 @@ class CallRequestController extends _$CallRequestController {
 
   Future<void> sendAcceptCall() async {
     await ref
-        .read(onlinePresencesProvider.notifier)
+        .read(onlinePresenceServiceProvider)
         .updateCurrentUserPresence(OnlineStatus.busy);
-    logger.i('finish setting user to busy');
 
     await _sendMessageToOtherUser(
       userId: state.otherUserId!,
@@ -168,7 +167,7 @@ class CallRequestController extends _$CallRequestController {
 
   void sendEndCall(String videoRoomId, String otherProfileId) async {
     await ref
-        .read(onlinePresencesProvider.notifier)
+        .read(onlinePresenceServiceProvider)
         .updateCurrentUserPresence(OnlineStatus.online);
 
     await ref

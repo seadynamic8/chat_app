@@ -2,7 +2,7 @@ import 'package:chat_app/common/async_value_widget.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/view/profile/public_profile_buttons.dart';
 import 'package:chat_app/features/home/application/current_user_id_provider.dart';
-import 'package:chat_app/features/home/application/online_presences.dart';
+import 'package:chat_app/features/home/application/online_presence_provider.dart';
 import 'package:chat_app/utils/constants.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:country_flags/country_flags.dart';
@@ -32,7 +32,8 @@ class PublicProfileScreen extends ConsumerWidget {
       child: AsyncValueWidget(
         value: profileValue,
         data: (profile) {
-          final onlinePresencesValue = ref.watch(onlinePresencesProvider);
+          final onlinePresencesValue =
+              ref.watch(onlinePresenceProvider(profileId));
 
           return Scaffold(
             key: K.publicProfile,
@@ -91,10 +92,7 @@ class PublicProfileScreen extends ConsumerWidget {
 
                       // ONLINE STATUS
                       onlinePresencesValue.maybeWhen(
-                        data: (onlinePresences) {
-                          final userStatus =
-                              onlinePresences.onlineStatusFor(profile.id!);
-
+                        data: (userStatus) {
                           return Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),

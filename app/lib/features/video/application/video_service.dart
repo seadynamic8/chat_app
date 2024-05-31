@@ -4,7 +4,7 @@ import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/chat_lobby/application/chat_lobby_service.dart';
 import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:chat_app/features/home/application/current_user_id_provider.dart';
-import 'package:chat_app/features/home/application/online_presences.dart';
+import 'package:chat_app/features/home/application/online_presence_service.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/features/video/data/video_api.dart';
@@ -68,7 +68,7 @@ class VideoService {
 
   Future<void> _setOnlineStatusToBusy() async {
     await ref
-        .read(onlinePresencesProvider.notifier)
+        .read(onlinePresenceServiceProvider)
         .updateCurrentUserPresence(OnlineStatus.busy);
   }
 

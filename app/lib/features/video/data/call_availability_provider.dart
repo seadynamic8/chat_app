@@ -1,7 +1,7 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/block_state.dart';
 import 'package:chat_app/features/auth/domain/user_access.dart';
-import 'package:chat_app/features/home/application/online_presences.dart';
+import 'package:chat_app/features/home/application/online_presence_provider.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/features/video/domain/call_availability.dart';
 import 'package:chat_app/utils/logger.dart';
@@ -32,8 +32,8 @@ class CallAvailability extends _$CallAvailability {
   }
 
   Future<CallAvailabilityState?> _getOnlineStatus(String otherProfileId) async {
-    final onlinePresences = await ref.watch(onlinePresencesProvider.future);
-    final userStatus = onlinePresences.onlineStatusFor(otherProfileId);
+    final userStatus =
+        await ref.watch(onlinePresenceProvider(otherProfileId).future);
     if (userStatus != OnlineStatus.online) {
       return CallAvailabilityState(
           status: CallAvailabilityStatus.unavailable, data: userStatus);

@@ -107,7 +107,7 @@ class ExploreScreenController extends _$ExploreScreenController {
     // and the leave message came late (=> he's changing to busy ultimately)
     // Also, we don't use onlinePresenceProvider for the data as the data
     // may not have updated yet (when both leave and update fire at same time)
-    final lobbyChannel = await ref.read(lobbySubscribedChannelProvider.future);
+    final lobbyChannel = await ref.watch(lobbySubscribedChannelProvider.future);
     final onlinePresences = lobbyChannel.getOnlinePresences();
     // The '?' protects against user not being in the list at all.
     return onlinePresences[onlineState.profileId]?.status == OnlineStatus.busy;
