@@ -32,12 +32,13 @@ class LoggerRepository {
   final Ref ref;
   final Talker talker;
 
-  void t(dynamic msg, {Object? error, StackTrace? stackTrace}) {
+  void t(dynamic msg, {Object? error, StackTrace? stackTrace, bool? addUser}) {
     _logCustom(
       msg,
       exception: error,
       stackTrace: stackTrace,
       logLevel: LogLevel.verbose,
+      addUser: addUser ?? true,
     );
   }
 
@@ -54,12 +55,13 @@ class LoggerRepository {
     talker.debug(msg, error, stackTrace);
   }
 
-  void i(dynamic msg, {Object? error, StackTrace? stackTrace}) {
+  void i(dynamic msg, {Object? error, StackTrace? stackTrace, bool? addUser}) {
     _logCustom(
       msg,
       exception: error,
       stackTrace: stackTrace,
       logLevel: LogLevel.info,
+      addUser: addUser ?? true,
     );
   }
 
@@ -109,11 +111,16 @@ class LoggerRepository {
     required LogLevel logLevel,
     Object? exception,
     StackTrace? stackTrace,
+    bool addUser = true,
   }) async {
-    final currentProfile = await ref.read(currentProfileStreamProvider.future);
+    final currentProfile =
+        addUser ? await ref.read(currentProfileStreamProvider.future) : null;
+
+    final displayMsg =
+        currentProfile != null ? 'User(${currentProfile.username}): $msg' : msg;
 
     talker.log(
-      'User(${currentProfile == null ? 'None' : currentProfile.username}): $msg',
+      displayMsg,
       exception: exception,
       stackTrace: stackTrace,
       logLevel: logLevel,

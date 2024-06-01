@@ -28,7 +28,8 @@ class ChannelRepository {
     channel.onBroadcast(
       event: event,
       callback: (Map<String, dynamic> payload) {
-        logger.i('$channelName | Received  | $event : $payload');
+        logger.i('$channelName | Received  | $event : $payload',
+            addUser: false);
         callback(payload);
       },
     );
@@ -39,7 +40,7 @@ class ChannelRepository {
       event: event,
       payload: payload ?? {},
     );
-    logger.i('$channelName | Sent | $event');
+    logger.i('$channelName | Sent | $event', addUser: false);
   }
 
   Future<void> close() async {

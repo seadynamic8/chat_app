@@ -6,13 +6,18 @@ import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+// For some reason the logger using the currentUserStream is causing issues
+// in the callbacks (concurrent modification errors), so the logger is
+// called with (addUser: false) for now.
+
 extension ChannelPresenceHandlers on ChannelRepository {
   void onJoin([void Function(OnlineState onlineState)? callback]) {
     channel.onPresenceJoin((RealtimePresenceJoinPayload payload) {
       try {
         final newUserPresences = payload.newPresences;
         final newUserIdentifiers = _getUserIdentifiers(newUserPresences);
-        logger.t('$channelName | ${newUserIdentifiers.first} | Joined');
+        logger.t('$channelName | ${newUserIdentifiers.first} | Joined',
+            addUser: false);
 
         if (callback != null) {
           callback(OnlineState.fromMap(newUserPresences.first.payload));
@@ -24,12 +29,14 @@ extension ChannelPresenceHandlers on ChannelRepository {
   }
 
   void onLeave([void Function(OnlineState onlineState)? callback]) {
-    channel.onPresenceLeave((RealtimePresenceLeavePayload payload) {
+    channel.onPresenceLeave((RealtimePresenceLeavePayload payload) async {
       try {
         final leavingUserPresences = payload.leftPresences;
+
         final leavingUserIdentifiers =
             _getUserIdentifiers(leavingUserPresences);
-        logger.t('$channelName | ${leavingUserIdentifiers.first} | Left');
+        logger.t('$channelName | ${leavingUserIdentifiers.first} | Left',
+            addUser: false);
 
         if (callback != null) {
           callback(OnlineState.fromMap(leavingUserPresences.first.payload));
@@ -52,7 +59,7 @@ extension ChannelPresenceHandlers on ChannelRepository {
         final usernames = onlinePresences.values
             .map((onlineState) => onlineState.username)
             .toList();
-        logger.t('$channelName | $usernames | Current Users');
+        logger.t('$channelName | $usernames | Current Users', addUser: false);
 
         streamController.add(onlinePresences);
       } catch (error, st) {
@@ -113,16 +120,16 @@ extension ChannelPresenceHandlers on ChannelRepository {
 
     channel.subscribe((status, error) async {
       try {
-        final currentProfile =
-            await ref.read(currentProfileStreamProvider.future);
-
         if (status == RealtimeSubscribeStatus.subscribed) {
           await updatePresence(OnlineStatus.online);
 
           completer.complete();
         } else {
+          final currentProfile =
+              await ref.read(currentProfileStreamProvider.future);
           logger.t(
-              '$channelName | ${currentProfile?.username} | Status: ${status.name}');
+              '$channelName | ${currentProfile?.username} | Status: ${status.name}',
+              addUser: false);
         }
         return await completer.future;
       } catch (error, st) {
@@ -144,7 +151,8 @@ extension ChannelPresenceHandlers on ChannelRepository {
         'status': status.name,
         'enteredAt': DateTime.now().toUtc().toIso8601String(),
       });
-      logger.i('$channelName | ${currentProfile.username} | Subscribed');
+      logger.i('$channelName | ${currentProfile.username} | Subscribed',
+          addUser: false);
     } catch (error, st) {
       logger.error('updatePresence()', error, st);
       rethrow;

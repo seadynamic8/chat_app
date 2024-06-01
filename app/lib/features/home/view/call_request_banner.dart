@@ -19,18 +19,18 @@ class CallRequestBanner {
   final StackRouter router;
 
   void showCallRequestBanner() {
-    logger.t('show call request banner');
+    logger.t('show call request banner', addUser: false);
     sMessenger.clearMaterialBanners();
     sMessenger.showMaterialBanner(_callRequestBanner());
   }
 
   void closeCallRequestBanner() {
-    logger.t('close call request banner');
+    logger.t('close call request banner', addUser: false);
     sMessenger.hideCurrentMaterialBanner();
   }
 
   void _acceptCall() async {
-    logger.t('click accept call');
+    logger.t('click accept call', addUser: false);
     final contextRouter = router;
     final callRequestState = ref.read(callRequestControllerProvider);
 
@@ -51,7 +51,7 @@ class CallRequestBanner {
   }
 
   void _rejectCall() {
-    logger.t('click reject call');
+    logger.t('click reject call', addUser: false);
     ref.read(callRequestControllerProvider.notifier).sendRejectCall();
 
     closeCallRequestBanner();
