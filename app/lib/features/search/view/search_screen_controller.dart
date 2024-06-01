@@ -4,10 +4,10 @@ import 'package:chat_app/features/home/application/current_user_id_provider.dart
 import 'package:chat_app/features/search/data/search_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'search_controller.g.dart';
+part 'search_screen_controller.g.dart';
 
 @riverpod
-class SearchController extends _$SearchController {
+class SearchScreenController extends _$SearchScreenController {
   // Make sure this fills the screen or it won't even scroll.
   // Also don't make too small since you don't want to query the API too much.
   static const initialExtraProfiles = 0;
@@ -19,6 +19,7 @@ class SearchController extends _$SearchController {
     return PaginationState(
       items: [],
       resultsState: PaginationResultsState.before,
+      nextPage: initialPage, // just to guard against null state
     );
   }
 
@@ -57,8 +58,10 @@ class SearchController extends _$SearchController {
   }
 
   void reset() {
-    state =
-        state.copyWith(items: [], resultsState: PaginationResultsState.before);
+    state = state.copyWith(
+      items: [],
+      resultsState: PaginationResultsState.before,
+    );
   }
 
   PaginationResultsState _getResultsState(List<Profile> results) {
