@@ -28,8 +28,7 @@ class ChannelRepository {
     channel.onBroadcast(
       event: event,
       callback: (Map<String, dynamic> payload) {
-        logger.i('$channelName | Received  | $event : $payload',
-            addUser: false);
+        logger.i('$channelName | Received  | $event', addUser: false);
         callback(payload);
       },
     );
