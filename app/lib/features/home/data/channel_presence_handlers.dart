@@ -125,11 +125,7 @@ extension ChannelPresenceHandlers on ChannelRepository {
 
           completer.complete();
         } else {
-          final currentProfile =
-              await ref.read(currentProfileStreamProvider.future);
-          logger.t(
-              '$channelName | ${currentProfile?.username} | Status: ${status.name}',
-              addUser: false);
+          logger.t('$channelName | Status: ${status.name}', addUser: false);
         }
         return await completer.future;
       } catch (error, st) {
