@@ -10,7 +10,7 @@ class CallPrice extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final accessLevelValue = ref.read(userAccessStreamProvider
-        .select((value) => value.whenData((userAccess) => userAccess.level)));
+        .select((value) => value.whenData((userAccess) => userAccess?.level)));
 
     return accessLevelValue.maybeWhen(
       data: (accessLevel) => accessLevel == AccessLevel.trial

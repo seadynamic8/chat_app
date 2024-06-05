@@ -16,7 +16,7 @@ class SendReplyWidget extends ConsumerWidget {
     final theme = Theme.of(context);
     final usernameValue = ref.watch(
       profileStreamProvider(replyMessage.profileId!).select(
-        (value) => value.whenData((profile) => profile.username),
+        (value) => value.whenData((profile) => profile?.username),
       ),
     );
 

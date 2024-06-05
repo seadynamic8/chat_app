@@ -82,7 +82,7 @@ final currentProfileStreamProvider =
 );
 
 typedef CurrentProfileStreamRef = AutoDisposeStreamProviderRef<Profile?>;
-String _$profileStreamHash() => r'ef2c4e91841ba671aa44d8d60dcd12bc52413427';
+String _$profileStreamHash() => r'2a8eb9eeda11b9d0cdd98fea7e9ea16ead2a8e98';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -110,7 +110,7 @@ class _SystemHash {
 const profileStreamProvider = ProfileStreamFamily();
 
 /// See also [profileStream].
-class ProfileStreamFamily extends Family<AsyncValue<Profile>> {
+class ProfileStreamFamily extends Family<AsyncValue<Profile?>> {
   /// See also [profileStream].
   const ProfileStreamFamily();
 
@@ -148,7 +148,7 @@ class ProfileStreamFamily extends Family<AsyncValue<Profile>> {
 }
 
 /// See also [profileStream].
-class ProfileStreamProvider extends AutoDisposeStreamProvider<Profile> {
+class ProfileStreamProvider extends AutoDisposeStreamProvider<Profile?> {
   /// See also [profileStream].
   ProfileStreamProvider(
     String profileId,
@@ -183,7 +183,7 @@ class ProfileStreamProvider extends AutoDisposeStreamProvider<Profile> {
 
   @override
   Override overrideWith(
-    Stream<Profile> Function(ProfileStreamRef provider) create,
+    Stream<Profile?> Function(ProfileStreamRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -200,7 +200,7 @@ class ProfileStreamProvider extends AutoDisposeStreamProvider<Profile> {
   }
 
   @override
-  AutoDisposeStreamProviderElement<Profile> createElement() {
+  AutoDisposeStreamProviderElement<Profile?> createElement() {
     return _ProfileStreamProviderElement(this);
   }
 
@@ -218,13 +218,13 @@ class ProfileStreamProvider extends AutoDisposeStreamProvider<Profile> {
   }
 }
 
-mixin ProfileStreamRef on AutoDisposeStreamProviderRef<Profile> {
+mixin ProfileStreamRef on AutoDisposeStreamProviderRef<Profile?> {
   /// The parameter `profileId` of this provider.
   String get profileId;
 }
 
 class _ProfileStreamProviderElement
-    extends AutoDisposeStreamProviderElement<Profile> with ProfileStreamRef {
+    extends AutoDisposeStreamProviderElement<Profile?> with ProfileStreamRef {
   _ProfileStreamProviderElement(super.provider);
 
   @override
@@ -754,11 +754,12 @@ class _BlockedByChangesProviderElement
       (origin as BlockedByChangesProvider).otherProfileId;
 }
 
-String _$userAccessStreamHash() => r'6f35d9c5279386e68fb05d4cbbdca046a8ffcc82';
+String _$userAccessStreamHash() => r'268abe2143f8c3ec5a235d1e160f94c83e8a98e6';
 
 /// See also [userAccessStream].
 @ProviderFor(userAccessStream)
-final userAccessStreamProvider = AutoDisposeStreamProvider<UserAccess>.internal(
+final userAccessStreamProvider =
+    AutoDisposeStreamProvider<UserAccess?>.internal(
   userAccessStream,
   name: r'userAccessStreamProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -768,7 +769,7 @@ final userAccessStreamProvider = AutoDisposeStreamProvider<UserAccess>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef UserAccessStreamRef = AutoDisposeStreamProviderRef<UserAccess>;
+typedef UserAccessStreamRef = AutoDisposeStreamProviderRef<UserAccess?>;
 String _$offlineAtHash() => r'198952519a3145871e5a65301c4df3af23ae236d';
 
 /// See also [offlineAt].

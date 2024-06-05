@@ -1,6 +1,7 @@
 import 'package:chat_app/features/auth/application/user_access_service.dart';
 import 'package:chat_app/features/paywall/data/paywall_repository.dart';
 import 'package:chat_app/features/paywall/domain/product.dart';
+import 'package:chat_app/utils/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'payment_controller.g.dart';
@@ -30,6 +31,14 @@ class PaymentController extends _$PaymentController {
 
   Future<void> _updateAccessToPremium() async {
     final userAccessService = await ref.read(userAccessServiceProvider.future);
+    if (userAccessService == null) {
+      logger.error(
+        'userAccessService is null in PaymentController._updateAccessToPremium()',
+        Error(),
+        StackTrace.current,
+      );
+      return;
+    }
     await userAccessService.updateAccessToPremium();
   }
 }

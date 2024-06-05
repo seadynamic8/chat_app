@@ -86,10 +86,11 @@ class ChatMessagesController extends _$ChatMessagesController {
   Future<void> _updateNewMessageTranslation(Message newMessage) async {
     final otherProfile =
         await ref.read(profileStreamProvider(newMessage.profileId!).future);
+    if (otherProfile == null) return;
+
     final translatedText = await ref
         .read(translationServiceProvider)
         .getTranslation(otherProfile.language!, newMessage.content!);
-
     if (translatedText == null) return;
 
     // Update the message with translation

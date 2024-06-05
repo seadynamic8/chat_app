@@ -138,7 +138,7 @@ extension ChannelPresenceHandlers on ChannelRepository {
     try {
       final currentProfile =
           await ref.read(currentProfileStreamProvider.future);
-      if (currentProfile == null) throw Exception('Profile is null');
+      if (currentProfile == null) return;
 
       await channel.track({
         'profileId': currentProfile.id,

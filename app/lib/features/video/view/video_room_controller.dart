@@ -8,6 +8,7 @@ import 'package:chat_app/features/video/data/video_repository.dart';
 import 'package:chat_app/features/video/data/video_timer_provider.dart';
 import 'package:chat_app/features/video/domain/video_participant.dart';
 import 'package:chat_app/features/video/domain/video_room_state.dart';
+import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -60,6 +61,15 @@ class VideoRoomController extends _$VideoRoomController {
     if (!isCaller) return;
 
     final userAccess = await ref.read(userAccessStreamProvider.future);
+    if (userAccess == null) {
+      logger.error(
+        'UserAccess is null in VideoRoomController _onLocalParticipantJoin()',
+        Error(),
+        StackTrace.current,
+      );
+      return;
+    }
+
     if (userAccess.level == AccessLevel.trial) {
       ref.read(videoTimerProvider.notifier).setTimer(userAccess.levelDuration);
     }
@@ -108,10 +118,26 @@ class VideoRoomController extends _$VideoRoomController {
 
   void _updateAccess({bool trialFinished = false}) async {
     final userAccess = await ref.read(userAccessStreamProvider.future);
+    if (userAccess == null) {
+      logger.error(
+        'UserAccess is null in VideoRoomController _updateAccess()',
+        Error(),
+        StackTrace.current,
+      );
+      return;
+    }
 
     if (userAccess.level == AccessLevel.trial) {
       final userAccessService =
           await ref.read(userAccessServiceProvider.future);
+      if (userAccessService == null) {
+        logger.error(
+          'UserAccessService is null in VideoRoomController _updateAccess()',
+          Error(),
+          StackTrace.current,
+        );
+        return;
+      }
 
       if (trialFinished) {
         userAccessService.updateAccessLevel();

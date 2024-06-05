@@ -1,5 +1,6 @@
 import 'package:chat_app/common/remote_error_repository.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/home/application/current_user_id_provider.dart';
 import 'package:chat_app/features/home/data/channel_repository.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/features/paywall/data/paywall_service.dart';
@@ -13,6 +14,9 @@ class MainNavigationController extends _$MainNavigationController {
   @override
   FutureOr<void> build() async {
     try {
+      final currentUserId = ref.watch(currentUserIdProvider);
+      if (currentUserId == null) return;
+
       await _setupLobbyChannel();
       await _setupUserChannel();
 
@@ -41,8 +45,10 @@ class MainNavigationController extends _$MainNavigationController {
       final currentProfile =
           await ref.watch(currentProfileStreamProvider.future);
 
+      if (currentProfile == null) return;
+
       final myChannel = await ref.watch(
-          userSubscribedChannelProvider(currentProfile!.username!).future);
+          userSubscribedChannelProvider(currentProfile.username!).future);
 
       // Interesting, here, don't need to delay after subscribe to add callback handlers
 

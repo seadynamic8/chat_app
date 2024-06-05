@@ -49,7 +49,7 @@ class _WaitingScreenState extends ConsumerState<WaitingScreen> {
 
     final otherUsernameValue = ref.watch(
         profileStreamProvider(widget.otherProfileId)
-            .select((value) => value.whenData((profile) => profile.username)));
+            .select((value) => value.whenData((profile) => profile?.username)));
 
     return I18n(
       child: SafeArea(

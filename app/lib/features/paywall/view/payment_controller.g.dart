@@ -6,7 +6,7 @@ part of 'payment_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$paymentControllerHash() => r'21ed80b0b177b4a3d391a49d16e8bb8657a53e99';
+String _$paymentControllerHash() => r'0cf3e3f6360e3a6449a1c8c348b4a341cc02c411';
 
 /// See also [PaymentController].
 @ProviderFor(PaymentController)

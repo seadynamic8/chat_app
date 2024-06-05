@@ -7,7 +7,7 @@ part of 'video_room_controller.dart';
 // **************************************************************************
 
 String _$videoRoomControllerHash() =>
-    r'067a8e7e626c2d4e294678104fceaefde756d7ee';
+    r'b2305c38bc1bef3405afdf0068bc1a47288c5037';
 
 /// Copied from Dart SDK
 class _SystemHash {

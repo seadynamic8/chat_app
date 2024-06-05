@@ -67,9 +67,11 @@ class UserAccessService {
 }
 
 @riverpod
-FutureOr<UserAccessService> userAccessService(UserAccessServiceRef ref) async {
+FutureOr<UserAccessService?> userAccessService(UserAccessServiceRef ref) async {
   final userAccess = await ref.watch(userAccessStreamProvider.future);
-  final currentProfileId = ref.read(currentUserIdProvider)!;
+  final currentProfileId = ref.read(currentUserIdProvider);
+  if (userAccess == null || currentProfileId == null) return null;
+
   return UserAccessService(
       ref: ref, userAccess: userAccess, currentProfileId: currentProfileId);
 }

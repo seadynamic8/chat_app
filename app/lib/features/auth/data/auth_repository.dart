@@ -84,14 +84,15 @@ class AuthRepository {
     }
   }
 
-  Stream<Profile> watchProfile(String profileId) {
+  Stream<Profile?> watchProfile(String profileId) {
     final profilesStream = supabase
         .from('profiles')
         .stream(primaryKey: ['id'])
         .eq('id', profileId)
         .limit(1);
 
-    return profilesStream.map((profiles) => Profile.fromMap(profiles.first));
+    return profilesStream.map((profiles) =>
+        profiles.isEmpty ? null : Profile.fromMap(profiles.first));
   }
 
   Stream<Profile> watchProfileChanges(String profileId) async* {
@@ -545,7 +546,7 @@ Stream<Profile?> currentProfileStream(CurrentProfileStreamRef ref) {
 }
 
 @riverpod
-Stream<Profile> profileStream(ProfileStreamRef ref, String profileId) {
+Stream<Profile?> profileStream(ProfileStreamRef ref, String profileId) {
   final authRepository = ref.watch(authRepositoryProvider);
   return authRepository.watchProfile(profileId);
 }
@@ -581,8 +582,10 @@ Future<BlockState> blockedByChanges(
 }
 
 @riverpod
-Stream<UserAccess> userAccessStream(UserAccessStreamRef ref) {
-  final currentProfileId = ref.watch(currentUserIdProvider)!;
+Stream<UserAccess?> userAccessStream(UserAccessStreamRef ref) {
+  final currentProfileId = ref.watch(currentUserIdProvider);
+  if (currentProfileId == null) return Stream.value(null);
+
   final authRepository = ref.watch(authRepositoryProvider);
   return authRepository.getUserAccessChanges(currentProfileId);
 }

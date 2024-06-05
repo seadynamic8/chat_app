@@ -1,7 +1,10 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:chat_app/common/alert_dialogs.dart';
 import 'package:chat_app/common/video_call_button.dart';
+import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/view/profile/public_profile_buttons_controller.dart';
 import 'package:chat_app/features/chat_lobby/application/chat_lobby_service.dart';
+import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +18,8 @@ class PublicProfileButtons extends ConsumerWidget {
   void _joinChatRoom(BuildContext context, WidgetRef ref) async {
     final router = context.router;
 
+    if (!await isLoggedIn(context, ref)) return;
+
     final room = await ref
         .read(chatLobbyServiceProvider)
         .findOrCreateRoom(otherProfileId);
@@ -24,6 +29,20 @@ class PublicProfileButtons extends ConsumerWidget {
       const ChatLobbyRoute(),
       ChatRoomRoute(roomId: room.id, otherProfileId: otherProfileId),
     ]);
+  }
+
+  Future<bool> isLoggedIn(BuildContext context, WidgetRef ref) async {
+    final currentProfile = await ref.watch(currentProfileStreamProvider.future);
+    if (currentProfile == null) {
+      if (!context.mounted) return false;
+      showAlertDialog(
+        context: context,
+        title: 'Need to sign up!'.i18n,
+        content: 'Please sign up to chat with other users'.i18n,
+      );
+      return false;
+    }
+    return true;
   }
 
   @override

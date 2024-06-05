@@ -23,7 +23,7 @@ final chatLobbyRepositoryProvider =
 );
 
 typedef ChatLobbyRepositoryRef = AutoDisposeProviderRef<ChatLobbyRepository>;
-String _$findRoomWithUserHash() => r'098a1cb842322a4c3e42705f75a0a227c46271b8';
+String _$findRoomWithUserHash() => r'9cfd54e236d8830d4894e3a558b84afc9f4dc20b';
 
 /// Copied from Dart SDK
 class _SystemHash {

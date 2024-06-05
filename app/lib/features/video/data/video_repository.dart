@@ -169,12 +169,15 @@ class VideoRepository {
 @riverpod
 FutureOr<VideoRepository> videoRepository(VideoRepositoryRef ref) async {
   final currentProfile = await ref.watch(currentProfileStreamProvider.future);
+  if (currentProfile == null) {
+    throw Exception('Unable to create video room, user not signed in'.i18n);
+  }
   final videoSettings = ref.watch(videoSettingsProvider);
 
   return VideoRepository.createVideoRoom(
     videoRoomId: videoSettings.roomId!,
     videoToken: videoSettings.token!,
-    displayName: currentProfile!.username!,
+    displayName: currentProfile.username!,
     currentUserId: currentProfile.id!,
   );
 }

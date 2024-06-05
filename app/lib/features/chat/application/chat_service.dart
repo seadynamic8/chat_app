@@ -6,6 +6,7 @@ import 'package:chat_app/features/chat/data/joined_room_notifier.dart';
 import 'package:chat_app/features/chat/data/swiped_message_provider.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 import 'package:chat_app/features/home/application/current_user_id_provider.dart';
+import 'package:chat_app/utils/logger.dart';
 import 'package:chat_app/utils/new_day_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -50,7 +51,13 @@ class ChatService {
     if (blockState.status != BlockStatus.no) return blockState;
 
     final currentProfile = await ref.read(currentProfileStreamProvider.future);
-    await _joinRoomIfNotJoined(roomId, currentProfile!.id!);
+    if (currentProfile == null) {
+      logger.error('currentProfile is null in ChatService.sendMessage()',
+          Error(), StackTrace.current);
+      return blockState;
+    }
+
+    await _joinRoomIfNotJoined(roomId, currentProfile.id!);
 
     final replyMessage = ref.read(swipedMessageProvider);
 

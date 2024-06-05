@@ -19,7 +19,9 @@ class TranslationService {
   Future<String?> getTranslation(
       Locale otherProfileLocale, String messageText) async {
     final currentProfile = await ref.read(currentProfileStreamProvider.future);
-    final currentProfileLang = currentProfile!.language!.languageCode;
+    if (currentProfile == null) return null;
+
+    final currentProfileLang = currentProfile.language!.languageCode;
     final otherProfileLang = otherProfileLocale.languageCode;
 
     return await translateRepository.translate(

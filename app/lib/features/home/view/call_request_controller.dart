@@ -90,17 +90,22 @@ class CallRequestController extends _$CallRequestController {
   // Caller Send
 
   Future<void> sendNewCall(String videoRoomId, String otherProfileId) async {
+    final currentProfile = await ref.read(currentProfileStreamProvider.future);
+    if (currentProfile == null) {
+      logger.error('currentProfile is null in sendNewCall()!', Error(),
+          StackTrace.current);
+      return;
+    }
+
     await ref
         .read(videoServiceProvider)
         .createChatMessageForVideoStatus(VideoStatus.started, otherProfileId);
-
-    final currentProfile = await ref.read(currentProfileStreamProvider.future);
 
     await _sendMessageToOtherUser(
       userId: otherProfileId,
       event: 'new_call',
       payload: {
-        'fromUserId': currentProfile!.id,
+        'fromUserId': currentProfile.id,
         'fromUsername': currentProfile.username,
         'videoRoomId': videoRoomId,
       },
@@ -111,7 +116,7 @@ class CallRequestController extends _$CallRequestController {
 
     state = state.copyWith(
       otherUserId: otherProfileId,
-      otherUsername: otherProfile.username,
+      otherUsername: otherProfile?.username,
       videoRoomId: videoRoomId,
     );
   }
@@ -190,6 +195,11 @@ class CallRequestController extends _$CallRequestController {
     Map<String, dynamic>? payload,
   }) async {
     final otherProfile = await ref.read(profileStreamProvider(userId).future);
+    if (otherProfile == null) {
+      logger.error('otherProfile is null in _sendMessageToOtherUser()!',
+          Error(), StackTrace.current);
+      return;
+    }
 
     final otherUserChannel = await _getOtherUserChannel(otherProfile.username!);
 

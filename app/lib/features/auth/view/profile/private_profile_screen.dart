@@ -27,8 +27,8 @@ class PrivateProfileScreen extends ConsumerWidget {
         child: AsyncValueWidget(
           value: profileValue,
           data: (profile) => profile == null
-              ? const Center(
-                  child: Text('Something went wrong with getting profile'),
+              ? Center(
+                  child: Text('No profile'.i18n),
                 )
               : Scaffold(
                   appBar: AppBar(
@@ -136,23 +136,29 @@ class PrivateProfileScreen extends ConsumerWidget {
                       // SUBSCRIPTION
                       AsyncValueWidget(
                         value: userAccessValue,
-                        data: (userAccess) => Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 40),
-                          child: switch (userAccess.level) {
-                            AccessLevel.trial =>
-                              Chip(label: Text('Free Trial (60 minutes)'.i18n)),
-                            AccessLevel.standard => OutlinedButton(
-                                onPressed: () => context.router.push(
-                                  const PaywallRoute(),
-                                ),
-                                child: const Text('Subscribe to Premium'),
+                        data: (userAccess) => userAccess == null
+                            ? Center(
+                                child: Text('No user subscription'.i18n),
+                              )
+                            : Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 40),
+                                child: switch (userAccess.level) {
+                                  AccessLevel.trial => Chip(
+                                      label:
+                                          Text('Free Trial (60 minutes)'.i18n)),
+                                  AccessLevel.standard => OutlinedButton(
+                                      onPressed: () => context.router.push(
+                                        const PaywallRoute(),
+                                      ),
+                                      child: const Text('Subscribe to Premium'),
+                                    ),
+                                  AccessLevel.premium => Chip(
+                                      label: Text('Premium Subscription'.i18n),
+                                    ),
+                                  _ => const SizedBox.shrink(),
+                                },
                               ),
-                            AccessLevel.premium => Chip(
-                                label: Text('Premium Subscription'.i18n),
-                              ),
-                            _ => const SizedBox.shrink(),
-                          },
-                        ),
                       ),
                       const SizedBox(height: 20),
 

@@ -38,10 +38,11 @@ class VideoChatController extends _$VideoChatController {
   void _updateNewMessageTranslation(VideoChatMessage newMessage) async {
     final otherProfile =
         await ref.read(profileStreamProvider(newMessage.senderId).future);
+    if (otherProfile == null) return;
+
     final translatedText = await ref
         .read(translationServiceProvider)
         .getTranslation(otherProfile.language!, newMessage.content);
-
     if (translatedText == null) return;
 
     // Update the message with translation

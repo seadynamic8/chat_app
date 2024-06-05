@@ -13,11 +13,10 @@ class RemoteErrorRepository {
 
   Future<void> setCurrentUser() async {
     final currentProfile = await ref.read(currentProfileStreamProvider.future);
-    if (currentProfile == null) {
-      throw Exception('trying to set user when its not avaliable yet');
-    }
 
     final userAccessService = await ref.read(userAccessServiceProvider.future);
+
+    if (currentProfile == null || userAccessService == null) return;
 
     Sentry.configureScope(
       (scope) => scope

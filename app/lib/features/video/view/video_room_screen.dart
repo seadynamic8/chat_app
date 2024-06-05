@@ -47,7 +47,7 @@ class VideoRoomScreen extends ConsumerWidget {
           .read(videoRoomControllerProvider(isCaller).notifier)
           .endCall(trialFinished: trialFinished);
     } catch (error) {
-      logger.w('Error ending call: $error', stackTrace: StackTrace.current);
+      logger.error('Error ending call: $error', error, StackTrace.current);
     }
     _leaveVideoRoom(context);
   }

@@ -17,18 +17,20 @@ class AvatarImage extends ConsumerWidget {
   final double radiusSize;
   final bool showLoading;
 
-  bool isCurrentUser(WidgetRef ref, String profileId) {
-    final currentUserId = ref.watch(currentUserIdProvider)!;
+  bool isCurrentUser(WidgetRef ref, String profileId, String currentUserId) {
     return currentUserId == profileId;
   }
 
   AsyncValue<String?> getAvatarUrlValue(WidgetRef ref, String profileId) {
-    if (isCurrentUser(ref, profileId)) {
+    final currentUserId = ref.watch(currentUserIdProvider);
+    if (currentUserId == null) return const AsyncData(null);
+
+    if (isCurrentUser(ref, profileId, currentUserId)) {
       return ref.watch(currentProfileStreamProvider
           .select((value) => value.whenData((profile) => profile!.avatarUrl)));
     }
     return ref.watch(profileStreamProvider(profileId)
-        .select((value) => value.whenData((profile) => profile.avatarUrl)));
+        .select((value) => value.whenData((profile) => profile?.avatarUrl)));
   }
 
   @override

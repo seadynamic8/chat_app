@@ -53,6 +53,8 @@ class CallAvailability extends _$CallAvailability {
 
   Future<CallAvailabilityState?> _getAccessLevel() async {
     final userAccess = await ref.watch(userAccessStreamProvider.future);
+    if (userAccess == null) return null;
+
     final accessLevel = userAccess.level;
     if (accessLevel == AccessLevel.standard) {
       return CallAvailabilityState(

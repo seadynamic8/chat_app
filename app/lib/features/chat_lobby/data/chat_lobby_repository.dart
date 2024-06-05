@@ -263,7 +263,10 @@ ChatLobbyRepository chatLobbyRepository(ChatLobbyRepositoryRef ref) {
 @riverpod
 FutureOr<Room?> findRoomWithUser(
     FindRoomWithUserRef ref, String otherProfileId) {
-  final currentProfileId = ref.watch(currentUserIdProvider)!;
+  final currentProfileId = ref.watch(currentUserIdProvider);
+  if (currentProfileId == null) {
+    throw Exception('Unable to find room, user not signed in');
+  }
   final chatLobbyRepository = ref.watch(chatLobbyRepositoryProvider);
   return chatLobbyRepository.findRoomByProfiles(
       currentProfileId: currentProfileId, otherProfileId: otherProfileId);

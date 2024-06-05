@@ -17,7 +17,7 @@ class UsernameWidget extends ConsumerWidget {
     final theme = Theme.of(context);
     final usernameValue = ref.watch(
       profileStreamProvider(profileId).select(
-        (value) => value.whenData((profile) => profile.username),
+        (value) => value.whenData((profile) => profile?.username),
       ),
     );
 

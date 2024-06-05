@@ -26,6 +26,7 @@ class PaywallService {
 
     // Chheck userAccess first here, to avoid unnecessary network call to Adapty.
     final userAccess = await _getUserAccess();
+    if (userAccess == null) return;
     if (userAccess.level != AccessLevel.premium) return;
 
     // don't await here, we don't want to block the app
@@ -36,7 +37,7 @@ class PaywallService {
     await _subscription?.cancel();
   }
 
-  Future<UserAccess> _getUserAccess() async {
+  Future<UserAccess?> _getUserAccess() async {
     return await ref.read(userAccessStreamProvider.future);
   }
 
@@ -48,6 +49,9 @@ class PaywallService {
       if (paywallProfile.loggedIn == false || paywallProfile.active) return;
 
       final userAccess = await ref.read(userAccessStreamProvider.future);
+      if (userAccess == null) {
+        throw Exception('UserAccess is null');
+      }
       if (userAccess.level != AccessLevel.premium) return;
 
       _downgradeUserAccessIfSubscriptionExpired(userAccess, paywallProfile);

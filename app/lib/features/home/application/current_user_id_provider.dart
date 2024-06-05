@@ -12,8 +12,12 @@ class CurrentUserId extends _$CurrentUserId {
 
     ref.listen(authStateChangesProvider, (_, state) {
       state.whenData((authState) {
-        if (authState.event == AuthChangeEvent.signedIn) {
-          _updateCurrentUserId();
+        switch (authState.event) {
+          case AuthChangeEvent.signedIn:
+          case AuthChangeEvent.signedOut:
+          case AuthChangeEvent.tokenRefreshed:
+            _updateCurrentUserId();
+          default:
         }
       });
     });
