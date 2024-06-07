@@ -74,6 +74,7 @@ dependencies:
   talker_flutter: ^4.0.2
   swipe_to: ^1.0.6
   url_launcher: ^6.2.5
+  flutter_ringtone_player: ^4.0.0+3
   
 
 dev_dependencies:
