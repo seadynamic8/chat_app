@@ -5,6 +5,7 @@ import 'package:chat_app/features/video/data/video_settings_provider.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CallRequestBanner {
@@ -22,11 +23,13 @@ class CallRequestBanner {
     logger.t('show call request banner', addUser: false);
     sMessenger.clearMaterialBanners();
     sMessenger.showMaterialBanner(_callRequestBanner());
+    FlutterRingtonePlayer().playRingtone();
   }
 
   void closeCallRequestBanner() {
     logger.t('close call request banner', addUser: false);
     sMessenger.hideCurrentMaterialBanner();
+    FlutterRingtonePlayer().stop();
   }
 
   void _acceptCall() async {
