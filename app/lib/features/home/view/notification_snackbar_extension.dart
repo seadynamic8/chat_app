@@ -5,6 +5,7 @@ import 'package:chat_app/features/home/domain/notification_message.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 
 extension NotificationSnackBarExtension on BuildContext {
   void onBackgroundNotificationClicked(
@@ -27,6 +28,7 @@ extension NotificationSnackBarExtension on BuildContext {
           message.body!,
           () => _goToChatRoom(message),
         );
+        FlutterRingtonePlayer().playNotification();
       }
     }
   }
