@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/home/application/vibration_repository.dart';
 import 'package:chat_app/features/home/view/call_request_controller.dart';
 import 'package:chat_app/features/video/data/video_settings_provider.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
@@ -24,12 +25,14 @@ class CallRequestBanner {
     sMessenger.clearMaterialBanners();
     sMessenger.showMaterialBanner(_callRequestBanner());
     FlutterRingtonePlayer().playRingtone();
+    ref.watch(vibrationRepositoryProvider).callVibrate();
   }
 
   void closeCallRequestBanner() {
     logger.t('close call request banner', addUser: false);
     sMessenger.hideCurrentMaterialBanner();
     FlutterRingtonePlayer().stop();
+    ref.watch(vibrationRepositoryProvider).cancelVibration();
   }
 
   void _acceptCall() async {

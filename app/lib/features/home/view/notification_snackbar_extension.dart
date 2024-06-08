@@ -6,6 +6,7 @@ import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+import 'package:vibration/vibration.dart';
 
 extension NotificationSnackBarExtension on BuildContext {
   void onBackgroundNotificationClicked(
@@ -17,7 +18,7 @@ extension NotificationSnackBarExtension on BuildContext {
     }
   }
 
-  void showAppNotification(NotificationMessage? message) {
+  void showAppNotification(NotificationMessage? message) async {
     if (message == null) return;
     if (message.notificationExists) {
       logger.t(
@@ -29,6 +30,9 @@ extension NotificationSnackBarExtension on BuildContext {
           () => _goToChatRoom(message),
         );
         FlutterRingtonePlayer().playNotification();
+        if (await Vibration.hasVibrator() ?? false) {
+          Vibration.vibrate();
+        }
       }
     }
   }
