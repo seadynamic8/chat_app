@@ -81,6 +81,14 @@ class NotificationRepository {
     return FirebaseMessaging.onMessage
         .map((message) => NotificationMessage(message: message));
   }
+
+  Future<void> deleteToken() async {
+    try {
+      await messaging.deleteToken();
+    } catch (error, st) {
+      logger.error('deleteToken()', error, st);
+    }
+  }
 }
 
 // * Make sure to initialize the notifcations first, with notificationService.initialize()

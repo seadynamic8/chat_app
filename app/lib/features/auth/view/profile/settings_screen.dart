@@ -1,5 +1,5 @@
 import 'package:chat_app/common/terms_and_privacy_text.dart';
-import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/auth/view/profile/settings_screen_controller.dart';
 import 'package:chat_app/utils/keys.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
@@ -15,7 +15,7 @@ class SettingsScreen extends ConsumerWidget {
   void _logOut(BuildContext context, WidgetRef ref) async {
     final router = context.router;
 
-    await ref.read(authRepositoryProvider).signOut();
+    await ref.read(settingsScreenControllerProvider.notifier).logOut();
 
     router.replaceAll([const MainNavigation()]);
   }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/token.dart';
 import 'package:chat_app/features/home/data/notification_repository.dart';
@@ -11,6 +13,7 @@ class NotificationService {
   NotificationService({required this.ref});
 
   final Ref ref;
+  StreamSubscription<String>? _tokenRefreshSubscription;
 
   Future<NotificationRepository> initialize() async {
     final notifications = ref.read(notificationsProvider);
@@ -24,6 +27,22 @@ class NotificationService {
     await notifications.setupIOSNotifications();
 
     return notifications;
+  }
+
+  Future<void> deleteToken() async {
+    final notificationRepository = ref.read(notificationsProvider);
+
+    final token = await notificationRepository.getToken();
+    if (token != null) {
+      // Delete from DB - Don't need to await
+      ref.read(authRepositoryProvider).deleteSecret(token);
+      // Delete from FCM - Don't need to await
+      notificationRepository.deleteToken();
+    }
+  }
+
+  Future<void> dispose() async {
+    await _tokenRefreshSubscription?.cancel();
   }
 
   Future<bool> _initPermssions(NotificationRepository notifications) async {
@@ -48,12 +67,11 @@ class NotificationService {
 
     if (await _tokenNotSet(token)) _addToken(token);
 
-    notifications
-        .onFCMTokenRefresh()
-        .listen(
+    _tokenRefreshSubscription = notifications.onFCMTokenRefresh().listen(
           (fcmToken) => _addToken(Token(fcmValue: fcmToken)),
-        )
-        .onError((err, st) async => logger.error('_initTokens()', err, st));
+        );
+    _tokenRefreshSubscription?.onError((err, st) async =>
+        logger.error('_initTokens() onFCMTokenRefresh()', err, st));
 
     return true;
   }
@@ -70,7 +88,9 @@ class NotificationService {
 
 @riverpod
 NotificationService notificationService(NotificationServiceRef ref) {
-  return NotificationService(ref: ref);
+  final notificationService = NotificationService(ref: ref);
+  ref.onDispose(() => notificationService.dispose());
+  return notificationService;
 }
 
 @riverpod

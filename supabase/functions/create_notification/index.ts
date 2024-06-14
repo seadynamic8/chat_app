@@ -114,12 +114,13 @@ const getFCMTokens = async (otherProfileId: string): Promise<Token[]> => {
   return fcmTokens;
 };
 
+// Don't need to delete from FCM as it's already unregistered
 const deleteFCMToken = async (token: string) => {
   const { error } = await supabaseAdmin
-    .rpc("delete_fcm_token", { "token": token });
+    .rpc("delete_vault_secret", { "secret": token });
 
   if (error != null) {
-    console.log("error");
+    console.log("deleteFCMToken error: ${error}");
     throw error;
   }
 };

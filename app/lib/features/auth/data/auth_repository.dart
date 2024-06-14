@@ -468,6 +468,14 @@ class AuthRepository {
     }
   }
 
+  Future<void> deleteSecret(String secret) async {
+    try {
+      await supabase.rpc('delete_vault_secret', params: {'secret': secret});
+    } catch (error, st) {
+      logger.error('deleteSecret()', error, st);
+    }
+  }
+
   // * Private methods
 
   Future<bool> _createProfileWithLanguageAndUniqueUsername(
@@ -510,6 +518,15 @@ class AuthRepository {
     } catch (error, st) {
       logger.error('_createProfileWithLanguageAndUniqueUsername()', error, st);
       rethrow;
+    }
+  }
+
+  Future<void> _deleteSecretById(String secretId) async {
+    try {
+      await supabase
+          .rpc('delete_fcm_token_by_id', params: {'secret_id': secretId});
+    } catch (error, st) {
+      logger.error('_deleteSecretById()', error, st);
     }
   }
 }
