@@ -16,6 +16,7 @@ class CurrentUserId extends _$CurrentUserId {
           case AuthChangeEvent.signedIn:
           case AuthChangeEvent.signedOut:
           case AuthChangeEvent.tokenRefreshed:
+          case AuthChangeEvent.passwordRecovery:
             _updateCurrentUserId();
           default:
         }
