@@ -174,7 +174,7 @@ class _FindRoomWithUserProviderElement
       (origin as FindRoomWithUserProvider).otherProfileId;
 }
 
-String _$allRoomsHash() => r'ca10ad8cf67662689131a42bc098f054e21f0e45';
+String _$allRoomsHash() => r'80cf49d25d76556e4c0a9c213373ebaef6d044a5';
 
 /// See also [allRooms].
 @ProviderFor(allRooms)
@@ -318,7 +318,7 @@ class _AllRoomsProviderElement
   int get range => (origin as AllRoomsProvider).range;
 }
 
-String _$unReadOnlyRoomsHash() => r'4444489e873ec10466a1b2c9d57ce54c3ec59de2';
+String _$unReadOnlyRoomsHash() => r'ebc8d157432b6d93fc4c78dbed5c1dcdbebab8b9';
 
 /// See also [unReadOnlyRooms].
 @ProviderFor(unReadOnlyRooms)
@@ -464,7 +464,7 @@ class _UnReadOnlyRoomsProviderElement
   int get range => (origin as UnReadOnlyRoomsProvider).range;
 }
 
-String _$requestedRoomsHash() => r'd4ed0a8432502000ac4a155209b9cf9112bc885a';
+String _$requestedRoomsHash() => r'89f38424ccb246102b00cb594006d11c634b852e';
 
 /// See also [requestedRooms].
 @ProviderFor(requestedRooms)

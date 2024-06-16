@@ -274,7 +274,9 @@ FutureOr<Room?> findRoomWithUser(
 
 @riverpod
 FutureOr<List<Room>> allRooms(AllRoomsRef ref, int page, int range) async {
-  final currentUserId = ref.watch(currentUserIdProvider)!;
+  final currentUserId = ref.watch(currentUserIdProvider);
+  if (currentUserId == null) return [];
+
   final chatLobbyRepository = ref.watch(chatLobbyRepositoryProvider);
   return await chatLobbyRepository.getAllRooms(
     currentUserId: currentUserId,
@@ -286,7 +288,9 @@ FutureOr<List<Room>> allRooms(AllRoomsRef ref, int page, int range) async {
 @riverpod
 FutureOr<List<Room>> unReadOnlyRooms(
     UnReadOnlyRoomsRef ref, int page, int range) async {
-  final currentUserId = ref.watch(currentUserIdProvider)!;
+  final currentUserId = ref.watch(currentUserIdProvider);
+  if (currentUserId == null) return [];
+
   final chatLobbyRepository = ref.watch(chatLobbyRepositoryProvider);
   return await chatLobbyRepository.getUnReadRooms(
     currentUserId: currentUserId,
@@ -298,7 +302,9 @@ FutureOr<List<Room>> unReadOnlyRooms(
 @riverpod
 FutureOr<List<Room>> requestedRooms(
     RequestedRoomsRef ref, int page, int range) async {
-  final currentUserId = ref.watch(currentUserIdProvider)!;
+  final currentUserId = ref.watch(currentUserIdProvider);
+  if (currentUserId == null) return [];
+
   final chatLobbyRepository = ref.watch(chatLobbyRepositoryProvider);
   return await chatLobbyRepository.getRequestedRooms(
     currentUserId: currentUserId,
