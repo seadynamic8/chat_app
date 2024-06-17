@@ -14,11 +14,15 @@ part 'chat_lobby_item_controller.g.dart';
 class ChatLobbyItemController extends _$ChatLobbyItemController {
   @override
   FutureOr<ChatLobbyItemState?> build(String roomId) async {
-    final currentProfileId = ref.watch(currentUserIdProvider)!;
+    final currentProfileId = ref.watch(currentUserIdProvider);
+    if (currentProfileId == null) return null;
+
     final chatLobbyItemState = await ref
         .watch(chatLobbyRepositoryProvider)
         .getChatLobbyItemState(roomId, currentProfileId);
-    if (chatLobbyItemState == null) return null;
+    if (chatLobbyItemState.otherProfile == null) {
+      return chatLobbyItemState;
+    }
 
     ref.listen<AsyncValue<Message>>(newMessagesStreamProvider(roomId),
         (_, state) {
@@ -26,7 +30,7 @@ class ChatLobbyItemController extends _$ChatLobbyItemController {
     });
 
     ref.listen<AsyncValue<Profile>>(
-        profileChangesProvider(chatLobbyItemState.otherProfile.id!),
+        profileChangesProvider(chatLobbyItemState.otherProfile!.id!),
         (_, state) {
       if (state.hasValue) _updateOtherProfile(state.value!);
     });
@@ -51,7 +55,7 @@ class ChatLobbyItemController extends _$ChatLobbyItemController {
 
     final translatedText = await ref
         .read(translationServiceProvider)
-        .getTranslation(oldState!.otherProfile.language!, message.content!);
+        .getTranslation(oldState!.otherProfile!.language!, message.content!);
 
     if (translatedText == null) return;
 

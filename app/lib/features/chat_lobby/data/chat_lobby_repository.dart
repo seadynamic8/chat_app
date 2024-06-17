@@ -145,7 +145,7 @@ class ChatLobbyRepository {
 
   // * Room Detail for each room
 
-  Future<ChatLobbyItemState?> getChatLobbyItemState(
+  Future<ChatLobbyItemState> getChatLobbyItemState(
     String roomId,
     String currentProfileId,
   ) async {
@@ -164,7 +164,7 @@ class ChatLobbyRepository {
       if (chatLobbyItemResponse.isEmpty) {
         logger.w(
             'Chat Lobby Item is empty, probably other user has been deleted and removed from room');
-        return null;
+        return ChatLobbyItemState();
       }
       final chatLobbyItem = chatLobbyItemResponse.first;
 

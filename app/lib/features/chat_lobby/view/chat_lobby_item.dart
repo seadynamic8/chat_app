@@ -38,47 +38,49 @@ class ChatLobbyItem extends ConsumerWidget {
     return AsyncValueWidget(
       value: chatLobbyItemValue,
       data: (chatLobbyItem) => chatLobbyItem == null
-          ? removedUserTile
-          : ListTile(
-              key: ValueKey('${K.chatLobbyItemTilePrefix}$roomId'),
-              leading: AvatarOnlineStatus(
-                key: K.chatLobbyItemAvatar,
-                profileId: chatLobbyItem.otherProfile.id!,
-                radiusSize: 15,
-              ),
-              title: Text(
-                chatLobbyItem.otherProfile.username!,
-                style: Theme.of(context).textTheme.titleSmall,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-                maxLines: 1,
-              ),
-              subtitle: chatLobbyItem.newestMessage != null
-                  ? NewestMessageContent(
-                      key: K.chatLobbyItemNewestMsg,
-                      newestMessage: chatLobbyItem.newestMessage!,
-                    )
-                  : null,
-              trailing: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  chatLobbyItem.newestMessage != null
-                      ? Text(
-                          key: K.chatLobbyItemNewestMsgTime,
-                          timeago
-                              .format(chatLobbyItem.newestMessage!.createdAt!),
+          ? const SizedBox.shrink()
+          : chatLobbyItem.otherProfile == null
+              ? removedUserTile
+              : ListTile(
+                  key: ValueKey('${K.chatLobbyItemTilePrefix}$roomId'),
+                  leading: AvatarOnlineStatus(
+                    key: K.chatLobbyItemAvatar,
+                    profileId: chatLobbyItem.otherProfile!.id!,
+                    radiusSize: 15,
+                  ),
+                  title: Text(
+                    chatLobbyItem.otherProfile!.username!,
+                    style: Theme.of(context).textTheme.titleSmall,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                    maxLines: 1,
+                  ),
+                  subtitle: chatLobbyItem.newestMessage != null
+                      ? NewestMessageContent(
+                          key: K.chatLobbyItemNewestMsg,
+                          newestMessage: chatLobbyItem.newestMessage!,
                         )
-                      : const Text(''),
-                  UnReadMessageCount(roomId: roomId),
-                ],
-              ),
-              onTap: () {
-                context.router.push(ChatRoomRoute(
-                    roomId: roomId,
-                    otherProfileId: chatLobbyItem.otherProfile.id!));
-              },
-            ),
+                      : null,
+                  trailing: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      chatLobbyItem.newestMessage != null
+                          ? Text(
+                              key: K.chatLobbyItemNewestMsgTime,
+                              timeago.format(
+                                  chatLobbyItem.newestMessage!.createdAt!),
+                            )
+                          : const Text(''),
+                      UnReadMessageCount(roomId: roomId),
+                    ],
+                  ),
+                  onTap: () {
+                    context.router.push(ChatRoomRoute(
+                        roomId: roomId,
+                        otherProfileId: chatLobbyItem.otherProfile!.id!));
+                  },
+                ),
       loading: Shimmer.fromColors(
         baseColor: Colors.black38,
         highlightColor: Colors.white54,

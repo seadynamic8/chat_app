@@ -3,9 +3,9 @@ import 'package:chat_app/features/auth/domain/profile.dart';
 import 'package:chat_app/features/chat/domain/message.dart';
 
 class ChatLobbyItemState {
-  ChatLobbyItemState({required this.otherProfile, this.newestMessage});
+  ChatLobbyItemState({this.otherProfile, this.newestMessage});
 
-  final Profile otherProfile;
+  final Profile? otherProfile;
   final Message? newestMessage;
 
   ChatLobbyItemState copyWith({
