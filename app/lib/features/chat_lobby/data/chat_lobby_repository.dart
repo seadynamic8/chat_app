@@ -161,11 +161,8 @@ class ChatLobbyRepository {
           .order('created_at', referencedTable: 'messages', ascending: false)
           .limit(1, referencedTable: 'messages');
 
-      if (chatLobbyItemResponse.isEmpty) {
-        logger.w(
-            'Chat Lobby Item is empty, probably other user has been deleted and removed from room');
-        return ChatLobbyItemState();
-      }
+      if (chatLobbyItemResponse.isEmpty) return ChatLobbyItemState();
+
       final chatLobbyItem = chatLobbyItemResponse.first;
 
       return ChatLobbyItemState(
