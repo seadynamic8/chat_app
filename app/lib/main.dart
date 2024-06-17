@@ -1,10 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/env/environment.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
+import 'package:chat_app/features/auth/view/auth/auth_form_state.dart';
 import 'package:chat_app/features/home/application/app_lifecycle_service.dart';
 import 'package:chat_app/firebase_options.dart';
 import 'package:chat_app/i18n/supported_locales_and_delegates.dart';
 import 'package:chat_app/main_controller.dart';
+import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/routing/routing_observer.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -57,12 +59,30 @@ void main() async {
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
+  void _listenToSignedOutEvent(WidgetRef ref) {
+    ref.listen(authStateChangesProvider, (_, state) {
+      state.whenData((authState) {
+        if (authState.event == AuthChangeEvent.signedOut) {
+          _redirectToLoginPage(ref);
+        }
+      });
+    });
+  }
+
+  void _redirectToLoginPage(WidgetRef ref) {
+    ref.read(appRouterProvider).replaceAll([
+      AuthRoute(formType: AuthFormType.login, onAuthResult: (_) => {}),
+    ]);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appRouter = ref.watch(appRouterProvider);
     ref.watch(loggerRepositoryProvider);
 
     ref.watch(mainControllerProvider);
+    _listenToSignedOutEvent(ref);
+
     ref.watch(appLifecycleServiceProvider);
 
     final currentLocale = ref.watch(currentProfileStreamProvider
