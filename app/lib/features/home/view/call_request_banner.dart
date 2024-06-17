@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/home/application/vibration_repository.dart';
@@ -6,6 +8,7 @@ import 'package:chat_app/features/video/data/video_settings_provider.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,12 +22,16 @@ class CallRequestBanner {
   final ScaffoldMessengerState sMessenger;
   final WidgetRef ref;
   final StackRouter router;
+  Timer? _ringtoneTimer;
 
   void showCallRequestBanner() {
     logger.t('show call request banner', addUser: false);
     sMessenger.clearMaterialBanners();
     sMessenger.showMaterialBanner(_callRequestBanner());
     FlutterRingtonePlayer().playRingtone();
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      _ringtoneTimer = _getRingtoneTimer();
+    }
     ref.watch(vibrationRepositoryProvider).callVibrate();
   }
 
@@ -32,6 +39,7 @@ class CallRequestBanner {
     logger.t('close call request banner', addUser: false);
     sMessenger.hideCurrentMaterialBanner();
     FlutterRingtonePlayer().stop();
+    _ringtoneTimer?.cancel();
     ref.watch(vibrationRepositoryProvider).cancelVibration();
   }
 
@@ -61,6 +69,12 @@ class CallRequestBanner {
     ref.read(callRequestControllerProvider.notifier).sendRejectCall();
 
     closeCallRequestBanner();
+  }
+
+  Timer _getRingtoneTimer() {
+    return Timer.periodic(const Duration(milliseconds: 3000), (_) {
+      FlutterRingtonePlayer().playRingtone();
+    });
   }
 
   MaterialBanner _callRequestBanner() {
