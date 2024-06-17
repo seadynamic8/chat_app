@@ -10,18 +10,17 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'notification_service.g.dart';
 
 class NotificationService {
-  NotificationService({required this.ref});
+  NotificationService({required this.ref, required this.notifications});
 
   final Ref ref;
+  final NotificationRepository notifications;
   StreamSubscription<String>? _tokenRefreshSubscription;
 
   Future<NotificationRepository> initialize() async {
-    final notifications = ref.read(notificationsProvider);
-
-    final isPermitted = await _initPermssions(notifications);
+    final isPermitted = await _initPermssions();
     if (!isPermitted) return notifications;
 
-    final tokensInitialized = await _initTokens(notifications);
+    final tokensInitialized = await _initTokens();
     if (!tokensInitialized) return notifications;
 
     await notifications.setupIOSNotifications();
@@ -30,14 +29,12 @@ class NotificationService {
   }
 
   Future<void> deleteToken() async {
-    final notificationRepository = ref.read(notificationsProvider);
-
-    final token = await notificationRepository.getToken();
+    final token = await notifications.getToken();
     if (token != null) {
       // Delete from DB - Don't need to await
       ref.read(authRepositoryProvider).deleteSecret(token);
       // Delete from FCM - Don't need to await
-      notificationRepository.deleteToken();
+      notifications.deleteToken();
     }
   }
 
@@ -45,7 +42,7 @@ class NotificationService {
     await _tokenRefreshSubscription?.cancel();
   }
 
-  Future<bool> _initPermssions(NotificationRepository notifications) async {
+  Future<bool> _initPermssions() async {
     final isPermittedAlready = await notifications.hasPermissions();
     if (!isPermittedAlready) {
       final isPermitted = await notifications.requestPermissions();
@@ -56,7 +53,7 @@ class NotificationService {
 
   // Note: we are fetching token each time, not ideal, but it's free
   // And can't be certain old tokens are for this device and still active.
-  Future<bool> _initTokens(NotificationRepository notifications) async {
+  Future<bool> _initTokens() async {
     final fcmToken = await notifications.getToken();
     if (fcmToken == null) return false;
 
@@ -88,7 +85,9 @@ class NotificationService {
 
 @riverpod
 NotificationService notificationService(NotificationServiceRef ref) {
-  final notificationService = NotificationService(ref: ref);
+  final notifications = ref.read(notificationsProvider);
+  final notificationService =
+      NotificationService(ref: ref, notifications: notifications);
   ref.onDispose(() => notificationService.dispose());
   return notificationService;
 }
