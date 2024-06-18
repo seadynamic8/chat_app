@@ -18,7 +18,7 @@ class ReplyMessageTranslation extends StatelessWidget {
       decoration: BoxDecoration(
         color: isCurrentUser
             ? Colors.grey.withAlpha(200)
-            : theme.colorScheme.background.withAlpha(100),
+            : theme.colorScheme.surface.withAlpha(100),
         // borderRadius: BorderRadius.circular(9),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
@@ -29,7 +29,7 @@ class ReplyMessageTranslation extends StatelessWidget {
           fontSize: 10,
           color: isCurrentUser
               ? Colors.black87
-              : theme.colorScheme.onBackground.withAlpha(200),
+              : theme.colorScheme.onSurface.withAlpha(200),
         ),
         overflow: TextOverflow.ellipsis,
         maxLines: 3,

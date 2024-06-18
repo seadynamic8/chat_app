@@ -28,7 +28,7 @@ class MessageBubbleContent extends StatelessWidget {
             style: TextStyle(
               height: 1.3,
               color: isCurrentUser
-                  ? theme.colorScheme.onBackground.withAlpha(200)
+                  ? theme.colorScheme.onSurface.withAlpha(200)
                   : theme.colorScheme.onSecondary,
             ),
           ),

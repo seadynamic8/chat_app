@@ -27,7 +27,7 @@ class ProductsList extends ConsumerWidget {
       ),
       loading: () => Center(
         child: CircularProgressIndicator(
-          color: theme.colorScheme.onBackground,
+          color: theme.colorScheme.onSurface,
         ),
       ),
       error: (e, st) => Text('Error gettting coins list'.i18n),

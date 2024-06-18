@@ -41,7 +41,7 @@ class ReplyMessageWidget extends ConsumerWidget {
                     replyMessage.content!,
                     style: theme.textTheme.bodySmall!.copyWith(
                       fontSize: 10,
-                      color: theme.colorScheme.onBackground.withOpacity(0.8),
+                      color: theme.colorScheme.onSurface.withOpacity(0.8),
                     ),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 3,

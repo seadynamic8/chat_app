@@ -76,7 +76,7 @@ class _VideoCallButtonState extends ConsumerState<VideoCallButton> {
     final videoProfileButtonText = Text(
       'Video Call'.i18n,
       style: theme.textTheme.labelLarge!.copyWith(
-        color: theme.colorScheme.background,
+        color: theme.colorScheme.surface,
         fontSize: 15,
       ),
     );

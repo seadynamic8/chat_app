@@ -18,7 +18,7 @@ class MessageBubbleTranslation extends StatelessWidget {
       decoration: BoxDecoration(
         color: isCurrentUser
             ? Colors.grey.withAlpha(200)
-            : theme.colorScheme.background.withAlpha(100),
+            : theme.colorScheme.surface.withAlpha(100),
         borderRadius: BorderRadius.only(
           topLeft: Radius.zero,
           topRight: Radius.zero,
@@ -33,7 +33,7 @@ class MessageBubbleTranslation extends StatelessWidget {
           height: 1.3,
           color: isCurrentUser
               ? Colors.black87
-              : theme.colorScheme.onBackground.withAlpha(200),
+              : theme.colorScheme.onSurface.withAlpha(200),
         ),
       ),
     );

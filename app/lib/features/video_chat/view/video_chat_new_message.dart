@@ -70,7 +70,7 @@ class _VideoChatNewMessageState extends ConsumerState<VideoChatNewMessage> {
           ),
           // Send Button
           IconButton(
-            color: theme.colorScheme.onBackground.withAlpha(230),
+            color: theme.colorScheme.onSurface.withAlpha(230),
             onPressed: _submitMessage,
             icon: const Icon(
               Icons.send,
