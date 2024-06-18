@@ -520,15 +520,6 @@ class AuthRepository {
       rethrow;
     }
   }
-
-  Future<void> _deleteSecretById(String secretId) async {
-    try {
-      await supabase
-          .rpc('delete_fcm_token_by_id', params: {'secret_id': secretId});
-    } catch (error, st) {
-      logger.error('_deleteSecretById()', error, st);
-    }
-  }
 }
 
 @riverpod
