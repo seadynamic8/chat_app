@@ -1,4 +1,4 @@
-import 'package:chat_app/features/video/domain/device_info.dart';
+import 'package:videosdk/videosdk.dart';
 
 class VideoControlsState {
   VideoControlsState({
@@ -9,12 +9,12 @@ class VideoControlsState {
 
   bool micEnabled;
   bool camEnabled;
-  final List<DeviceInfo> allCameras;
+  final List<MediaDeviceInfo> allCameras;
 
   VideoControlsState copyWith({
     bool? micEnabled,
     bool? camEnabled,
-    List<DeviceInfo>? allCameras,
+    List<MediaDeviceInfo>? allCameras,
   }) {
     return VideoControlsState(
       micEnabled: micEnabled ?? this.micEnabled,

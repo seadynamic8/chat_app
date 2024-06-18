@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/video/data/video_settings_provider.dart';
-import 'package:chat_app/features/video/domain/device_info.dart';
 import 'package:chat_app/features/video/domain/video_participant.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/utils/logger.dart';
@@ -52,8 +51,8 @@ class VideoRepository {
 
   String? get selectedCamId => videoRoom.selectedCamId;
 
-  List<DeviceInfo> get cameras {
-    return videoRoom.getCameras().map((mdi) => DeviceInfo(mdi: mdi)).toList();
+  List<MediaDeviceInfo> get cameras {
+    return videoRoom.getCameras();
   }
 
   // * Join Call

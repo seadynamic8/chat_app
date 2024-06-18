@@ -7,7 +7,6 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_webrtc
   gtk
   sentry_flutter
-  smart_auth
   url_launcher_linux
 )
 
