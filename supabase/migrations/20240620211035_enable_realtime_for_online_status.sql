@@ -1,0 +1,1 @@
+ALTER PUBLICATION supabase_realtime ADD table public.online_status;
