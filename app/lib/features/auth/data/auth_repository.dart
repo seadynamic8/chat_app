@@ -451,7 +451,14 @@ class AuthRepository {
 
       await supabase.functions.invoke('create_notification', body: body);
     } catch (error, st) {
-      logger.error('createNotification()', error, st);
+      if (error is FunctionException) {
+        logger.error(
+            'createNotification(): status ${error.status}, details: ${error.details}',
+            error,
+            st);
+      } else {
+        logger.error('createNotification()', error, st);
+      }
     }
   }
 
