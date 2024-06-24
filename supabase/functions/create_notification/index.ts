@@ -23,7 +23,7 @@ Deno.serve(async (req) => {
 
   console.log("Sending fcm message to other user....");
 
-  fcmTokens.forEach(async (token, _idx, _tokens) => {
+  const msgSendPromises = fcmTokens.map(async (token) => {
     let apnsSettings;
     if (token.apns != null) {
       apnsSettings = {
@@ -44,35 +44,33 @@ Deno.serve(async (req) => {
     }
 
     try {
-      const res = await fetch(
-        `https://fcm.googleapis.com/v1/projects/${serviceAccount.project_id}/messages:send`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${googleAccessToken}`,
-          },
-          body: JSON.stringify({
-            message: {
-              token: token.fcm,
-              android: {
-                priority: "high",
-              },
-              apns: apnsSettings,
-              notification: notification,
-              data: {
-                "otherProfileId": otherProfileId,
-                ...params,
-              },
-            },
-          }),
-        },
-      );
-      const resData = await res.json();
+      const url =
+        `https://fcm.googleapis.com/v1/projects/${serviceAccount.project_id}/messages:send`;
 
-      if (res.status < 200 || 299 < res.status) {
-        throw resData;
-      }
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${googleAccessToken}`,
+        },
+        body: JSON.stringify({
+          message: {
+            token: token.fcm,
+            android: {
+              priority: "high",
+            },
+            apns: apnsSettings,
+            notification: notification,
+            data: {
+              "otherProfileId": otherProfileId,
+              ...params,
+            },
+          },
+        }),
+      };
+      const response = await fetch(url, options);
+
+      return { token: token.fcm, response: response };
     } catch (error) {
       // Token either was refreshed or uninstalled or etc, anyways invalid now
       if (
@@ -89,6 +87,17 @@ Deno.serve(async (req) => {
       throw error;
     }
   });
+
+  const responses = await Promise.all(msgSendPromises);
+
+  for (const res of responses) {
+    const resData = await res?.response.json();
+
+    console.log(
+      `Successfully sent message to token: ${res?.token}, data:`,
+      resData,
+    );
+  }
 
   console.log("Finished sending message, returning....");
 
@@ -116,6 +125,8 @@ const getFCMTokens = async (otherProfileId: string): Promise<Token[]> => {
 
 // Don't need to delete from FCM as it's already unregistered
 const deleteFCMToken = async (token: string) => {
+  console.log("Deleting token: ", token);
+
   const { error } = await supabaseAdmin
     .rpc("delete_vault_secret", { "secret": token });
 
