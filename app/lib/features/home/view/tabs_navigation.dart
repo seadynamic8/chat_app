@@ -2,6 +2,7 @@ import 'package:chat_app/env/environment.dart';
 import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:chat_app/features/home/application/notification_service.dart';
 import 'package:chat_app/features/home/data/notification_repository.dart';
+import 'package:chat_app/features/home/view/chat_tab_icon.dart';
 import 'package:chat_app/features/home/view/notification_snackbar_extension.dart';
 import 'package:chat_app/utils/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,13 +16,6 @@ import 'package:i18n_extension/i18n_extension.dart';
 @RoutePage()
 class TabsNavigation extends ConsumerWidget {
   const TabsNavigation({super.key});
-
-  String unReadMessagesCountString(int unReadCount) {
-    if (unReadCount > 999) {
-      return '999+';
-    }
-    return unReadCount.toString();
-  }
 
   void _listenToInitialMessage(BuildContext context, WidgetRef ref) {
     ref.listen(initialMessageProvider, (_, state) {
@@ -74,14 +68,6 @@ class TabsNavigation extends ConsumerWidget {
                 ProfileNavigation(),
               ],
               bottomNavigationBuilder: (_, tabsRouter) {
-                final unReadMessageCountStream =
-                    ref.watch(unReadMessageCountStreamProvider());
-
-                const regularChatTab = Icon(
-                  Icons.message,
-                  key: K.chatsTab,
-                );
-
                 return BottomNavigationBar(
                   currentIndex: tabsRouter.activeIndex,
                   onTap: tabsRouter.setActiveIndex,
@@ -100,17 +86,7 @@ class TabsNavigation extends ConsumerWidget {
                       label: 'Home'.i18n,
                     ),
                     BottomNavigationBarItem(
-                      icon: unReadMessageCountStream.maybeWhen(
-                        data: (unReadMessageCount) => unReadMessageCount > 0
-                            ? Badge(
-                                key: K.chatsBadgeTab,
-                                label: Text(unReadMessagesCountString(
-                                    unReadMessageCount)),
-                                child: const Icon(Icons.message),
-                              )
-                            : regularChatTab,
-                        orElse: () => regularChatTab,
-                      ),
+                      icon: const ChatTabIcon(),
                       label: 'Chats'.i18n,
                     ),
                     BottomNavigationBarItem(
