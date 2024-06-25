@@ -1,10 +1,8 @@
 import 'package:chat_app/env/environment.dart';
-import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:chat_app/features/home/application/notification_service.dart';
 import 'package:chat_app/features/home/data/notification_repository.dart';
 import 'package:chat_app/features/home/view/chat_tab_icon.dart';
 import 'package:chat_app/features/home/view/notification_snackbar_extension.dart';
-import 'package:chat_app/utils/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/i18n/localizations.dart';
@@ -46,16 +44,10 @@ class TabsNavigation extends ConsumerWidget {
     final theme = Theme.of(context);
     final isProd = ref.watch(environmentProvider).envType == EnvType.production;
 
-    ref.watch(initializedNotificationsProvider).when(
-          data: (notificationRepository) {
-            _listenToInitialMessage(context, ref);
-            _listenToClickedBackgroundMessages(context, ref);
-            _listenToForegroundMessages(context, ref);
-          },
-          error: (error, st) =>
-              logger.error('notificationProfvider build()', error, st),
-          loading: () => null,
-        );
+    ref.listen(initializedNotificationsProvider, (_, state) => ());
+    _listenToInitialMessage(context, ref);
+    _listenToClickedBackgroundMessages(context, ref);
+    _listenToForegroundMessages(context, ref);
 
     return I18n(
       child: Column(

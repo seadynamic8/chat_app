@@ -85,7 +85,7 @@ class NotificationService {
 
 @riverpod
 NotificationService notificationService(NotificationServiceRef ref) {
-  final notifications = ref.read(notificationsProvider);
+  final notifications = ref.watch(notificationsProvider);
   final notificationService =
       NotificationService(ref: ref, notifications: notifications);
   ref.onDispose(() => notificationService.dispose());
