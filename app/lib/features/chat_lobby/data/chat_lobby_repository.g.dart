@@ -688,7 +688,7 @@ final newReadRoomProvider = AutoDisposeStreamProvider<Room>.internal(
 
 typedef NewReadRoomRef = AutoDisposeStreamProviderRef<Room>;
 String _$unReadMessageCountStreamHash() =>
-    r'61faa8e7d094cc24745bc56db8e842677d80fee6';
+    r'f19cb1c6ffea2ea4c65e2fd9a0547aca6bbdfdd4';
 
 /// See also [unReadMessageCountStream].
 @ProviderFor(unReadMessageCountStream)

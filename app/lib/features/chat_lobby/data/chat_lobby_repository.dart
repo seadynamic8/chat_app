@@ -364,7 +364,9 @@ Stream<Room> newReadRoom(NewReadRoomRef ref) {
 @riverpod
 Stream<int> unReadMessageCountStream(UnReadMessageCountStreamRef ref,
     [String? roomId]) {
-  final currentProfileId = ref.watch(currentUserIdProvider)!;
+  final currentProfileId = ref.watch(currentUserIdProvider);
+  if (currentProfileId == null) return Stream.value(0);
+
   final chatLobbyRepository = ref.watch(chatLobbyRepositoryProvider);
   return chatLobbyRepository.watchUnReadMessagesCount(
       profileId: currentProfileId, roomId: roomId);
