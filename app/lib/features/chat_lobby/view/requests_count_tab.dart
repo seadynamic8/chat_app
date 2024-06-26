@@ -11,7 +11,6 @@ class RequestsCountTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final requestsCountValue = ref.watch(
         chatLobbyControllerProvider(RoomType.requests).select(
             (value) => value.whenData((pageState) => pageState.items.length)));
@@ -22,8 +21,14 @@ class RequestsCountTab extends ConsumerWidget {
         data: (requestsCount) => requestsCount > 0
             ? Badge(
                 alignment: const Alignment(2, 2),
-                backgroundColor: theme.colorScheme.secondaryContainer,
-                label: Text(requestsCount.toString()),
+                backgroundColor: Colors.grey[700],
+                label: Text(
+                  requestsCount.toString(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 child: requestsText,
               )
             : requestsText,
