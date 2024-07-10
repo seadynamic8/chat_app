@@ -20,4 +20,8 @@ extension ShowSnackBar on BuildContext {
   void showErrorSnackBar(String errorMessage) {
     showSnackBar(errorMessage, backgroundColor: Colors.red);
   }
+
+  void showWarningSnackBar(String errorMessage) {
+    showSnackBar(errorMessage, backgroundColor: Colors.yellow);
+  }
 }

@@ -1,4 +1,10 @@
-enum CallAvailabilityStatus { unavailable, blocked, noCoins, canCall }
+enum CallAvailabilityStatus {
+  unavailable,
+  blocked,
+  noCoins,
+  notJoined,
+  canCall,
+}
 
 class CallAvailabilityState {
   CallAvailabilityState({required this.status, required this.data});

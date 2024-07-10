@@ -27,6 +27,10 @@ extension VideoCallMessagesExtension on BuildContext {
         : 'User is offline right now.'.i18n);
   }
 
+  void showNotJoinedMessage() {
+    showWarningSnackBar('User has not accepted chat room request yet.'.i18n);
+  }
+
   void showBlockMessage(BlockState blockState) {
     showErrorSnackBar('${blockState.message}, cannot video call');
   }

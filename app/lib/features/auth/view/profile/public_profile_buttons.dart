@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/common/alert_dialogs.dart';
 import 'package:chat_app/common/video_call_button.dart';
 import 'package:chat_app/features/auth/data/auth_repository.dart';
-import 'package:chat_app/features/auth/view/profile/public_profile_buttons_controller.dart';
 import 'package:chat_app/features/chat_lobby/application/chat_lobby_service.dart';
 import 'package:chat_app/i18n/localizations.dart';
 import 'package:chat_app/routing/app_router.gr.dart';
@@ -47,9 +46,6 @@ class PublicProfileButtons extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final joinedValue =
-        ref.watch(publicProfileButtonsControllerProvider(otherProfileId));
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -61,14 +57,9 @@ class PublicProfileButtons extends ConsumerWidget {
           onPressed: () => _joinChatRoom(context, ref),
         ),
         const SizedBox(width: 12),
-        joinedValue.maybeWhen(
-          data: (joined) => joined
-              ? VideoCallButton(
-                  buttonType: VideoCallButtonType.profile,
-                  otherProfileId: otherProfileId,
-                )
-              : const SizedBox.shrink(),
-          orElse: () => const SizedBox.shrink(),
+        VideoCallButton(
+          buttonType: VideoCallButtonType.profile,
+          otherProfileId: otherProfileId,
         ),
         // TODO: Add Follow Button
         // FloatingActionButton.extended(

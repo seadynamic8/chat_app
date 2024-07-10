@@ -1,6 +1,8 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/block_state.dart';
 import 'package:chat_app/features/auth/domain/user_access.dart';
+import 'package:chat_app/features/chat/data/chat_repository.dart';
+import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:chat_app/features/home/application/online_presence_provider.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
 import 'package:chat_app/features/video/domain/call_availability.dart';
@@ -16,6 +18,9 @@ class CallAvailability extends _$CallAvailability {
     try {
       final isUnavaliable = await _getOnlineStatus(otherProfileId);
       if (isUnavaliable != null) return isUnavaliable;
+
+      final isNotJoined = await _getJoinedStatus(otherProfileId);
+      if (isNotJoined != null) return isNotJoined;
 
       final isBlocked = await _getBlockState(otherProfileId);
       if (isBlocked != null) return isBlocked;
@@ -37,6 +42,25 @@ class CallAvailability extends _$CallAvailability {
     if (userStatus != OnlineStatus.online) {
       return CallAvailabilityState(
           status: CallAvailabilityStatus.unavailable, data: userStatus);
+    }
+    return null;
+  }
+
+  Future<CallAvailabilityState?> _getJoinedStatus(String otherProfileId) async {
+    final room =
+        await ref.watch(findRoomWithUserProvider(otherProfileId).future);
+    if (room == null) {
+      return CallAvailabilityState(
+          status: CallAvailabilityStatus.notJoined, data: null);
+    }
+
+    // We're not using stream here to cut down on realtime listeners
+    final isJoined = await ref
+        .read(chatRepositoryProvider)
+        .getJoinStatus(room.id, otherProfileId);
+    if (!isJoined) {
+      return CallAvailabilityState(
+          status: CallAvailabilityStatus.notJoined, data: null);
     }
     return null;
   }

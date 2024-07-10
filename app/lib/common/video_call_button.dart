@@ -39,6 +39,8 @@ class _VideoCallButtonState extends ConsumerState<VideoCallButton> {
     switch (callAvailability.status) {
       case CallAvailabilityStatus.unavailable:
         context.showStatusMessage(callAvailability.data);
+      case CallAvailabilityStatus.notJoined:
+        context.showNotJoinedMessage();
       case CallAvailabilityStatus.blocked:
         context.showBlockMessage(callAvailability.data);
       case CallAvailabilityStatus.noCoins:
