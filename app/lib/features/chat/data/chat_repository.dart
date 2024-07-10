@@ -321,16 +321,17 @@ Stream<Map<String, dynamic>> chatUserInsert(ChatUserInsertRef ref) {
 }
 
 @riverpod
-Stream<Map<String, dynamic>> chatUserUpdate(ChatUserUpdateRef ref) {
-  final currentUserId = ref.watch(currentUserIdProvider)!;
+Stream<Map<String, dynamic>> chatUserUpdate(
+    ChatUserUpdateRef ref, String profileId) {
   final chatLobbyRepository = ref.watch(chatRepositoryProvider);
-  return chatLobbyRepository.watchChatUserUpdate(currentUserId);
+  return chatLobbyRepository.watchChatUserUpdate(profileId);
 }
 
 @riverpod
-Stream<bool> onJoinForRoom(OnJoinForRoomRef ref, String roomId) {
+Stream<bool> onJoinForRoom(
+    OnJoinForRoomRef ref, String roomId, String profileId) {
   final streamController = StreamController<bool>();
-  ref.watch(chatUserUpdateProvider).whenData((chatUser) {
+  ref.watch(chatUserUpdateProvider(profileId)).whenData((chatUser) {
     if (chatUser['joined'] == true && chatUser['room_id'] == roomId) {
       streamController.add(true);
     }
@@ -352,12 +353,13 @@ Stream<Room> newRequestedRoom(NewRequestedRoomRef ref) {
 @riverpod
 Stream<Room> joinedRoom(JoinedRoomRef ref) {
   final streamController = StreamController<Room>();
+  final currentProfileId = ref.watch(currentUserIdProvider)!;
   ref.watch(chatUserInsertProvider).whenData((chatUser) {
     if (chatUser['joined'] == true) {
       streamController.add(Room(id: chatUser['room_id']));
     }
   });
-  ref.watch(chatUserUpdateProvider).whenData((chatUser) {
+  ref.watch(chatUserUpdateProvider(currentProfileId)).whenData((chatUser) {
     if (chatUser['joined'] == true) {
       streamController.add(Room(id: chatUser['room_id']));
     }

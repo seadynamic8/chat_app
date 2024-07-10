@@ -63,7 +63,9 @@ class ChatMessages extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final joinedValue = ref.watch(joinedRoomNotifierProvider(roomId));
+    final currentProfileId = ref.watch(currentUserIdProvider)!;
+    final joinedValue =
+        ref.watch(joinedRoomNotifierProvider(roomId, currentProfileId));
     final stateValue = ref.watch(chatMessagesControllerProvider(roomId));
 
     final getNextPage = ref

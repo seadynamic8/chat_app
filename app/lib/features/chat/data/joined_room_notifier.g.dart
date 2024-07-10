@@ -7,7 +7,7 @@ part of 'joined_room_notifier.dart';
 // **************************************************************************
 
 String _$joinedRoomNotifierHash() =>
-    r'35693e6c6a4b7601d87eea2892e2996d42abce13';
+    r'3e6c3051e47820a39664c06a4eb4847cc2da7dd0';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -33,9 +33,11 @@ class _SystemHash {
 abstract class _$JoinedRoomNotifier
     extends BuildlessAutoDisposeAsyncNotifier<bool> {
   late final String roomId;
+  late final String profileId;
 
   FutureOr<bool> build(
     String roomId,
+    String profileId,
   );
 }
 
@@ -51,9 +53,11 @@ class JoinedRoomNotifierFamily extends Family<AsyncValue<bool>> {
   /// See also [JoinedRoomNotifier].
   JoinedRoomNotifierProvider call(
     String roomId,
+    String profileId,
   ) {
     return JoinedRoomNotifierProvider(
       roomId,
+      profileId,
     );
   }
 
@@ -63,6 +67,7 @@ class JoinedRoomNotifierFamily extends Family<AsyncValue<bool>> {
   ) {
     return call(
       provider.roomId,
+      provider.profileId,
     );
   }
 
@@ -87,8 +92,11 @@ class JoinedRoomNotifierProvider
   /// See also [JoinedRoomNotifier].
   JoinedRoomNotifierProvider(
     String roomId,
+    String profileId,
   ) : this._internal(
-          () => JoinedRoomNotifier()..roomId = roomId,
+          () => JoinedRoomNotifier()
+            ..roomId = roomId
+            ..profileId = profileId,
           from: joinedRoomNotifierProvider,
           name: r'joinedRoomNotifierProvider',
           debugGetCreateSourceHash:
@@ -99,6 +107,7 @@ class JoinedRoomNotifierProvider
           allTransitiveDependencies:
               JoinedRoomNotifierFamily._allTransitiveDependencies,
           roomId: roomId,
+          profileId: profileId,
         );
 
   JoinedRoomNotifierProvider._internal(
@@ -109,9 +118,11 @@ class JoinedRoomNotifierProvider
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.roomId,
+    required this.profileId,
   }) : super.internal();
 
   final String roomId;
+  final String profileId;
 
   @override
   FutureOr<bool> runNotifierBuild(
@@ -119,6 +130,7 @@ class JoinedRoomNotifierProvider
   ) {
     return notifier.build(
       roomId,
+      profileId,
     );
   }
 
@@ -127,13 +139,16 @@ class JoinedRoomNotifierProvider
     return ProviderOverride(
       origin: this,
       override: JoinedRoomNotifierProvider._internal(
-        () => create()..roomId = roomId,
+        () => create()
+          ..roomId = roomId
+          ..profileId = profileId,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         roomId: roomId,
+        profileId: profileId,
       ),
     );
   }
@@ -146,13 +161,16 @@ class JoinedRoomNotifierProvider
 
   @override
   bool operator ==(Object other) {
-    return other is JoinedRoomNotifierProvider && other.roomId == roomId;
+    return other is JoinedRoomNotifierProvider &&
+        other.roomId == roomId &&
+        other.profileId == profileId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, roomId.hashCode);
+    hash = _SystemHash.combine(hash, profileId.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -161,6 +179,9 @@ class JoinedRoomNotifierProvider
 mixin JoinedRoomNotifierRef on AutoDisposeAsyncNotifierProviderRef<bool> {
   /// The parameter `roomId` of this provider.
   String get roomId;
+
+  /// The parameter `profileId` of this provider.
+  String get profileId;
 }
 
 class _JoinedRoomNotifierProviderElement
@@ -170,6 +191,8 @@ class _JoinedRoomNotifierProviderElement
 
   @override
   String get roomId => (origin as JoinedRoomNotifierProvider).roomId;
+  @override
+  String get profileId => (origin as JoinedRoomNotifierProvider).profileId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

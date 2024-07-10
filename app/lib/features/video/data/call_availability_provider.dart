@@ -1,7 +1,7 @@
 import 'package:chat_app/features/auth/data/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/block_state.dart';
 import 'package:chat_app/features/auth/domain/user_access.dart';
-import 'package:chat_app/features/chat/data/chat_repository.dart';
+import 'package:chat_app/features/chat/data/joined_room_notifier.dart';
 import 'package:chat_app/features/chat_lobby/data/chat_lobby_repository.dart';
 import 'package:chat_app/features/home/application/online_presence_provider.dart';
 import 'package:chat_app/features/home/domain/online_state.dart';
@@ -54,10 +54,8 @@ class CallAvailability extends _$CallAvailability {
           status: CallAvailabilityStatus.notJoined, data: null);
     }
 
-    // We're not using stream here to cut down on realtime listeners
     final isJoined = await ref
-        .read(chatRepositoryProvider)
-        .getJoinStatus(room.id, otherProfileId);
+        .watch(joinedRoomNotifierProvider(room.id, otherProfileId).future);
     if (!isJoined) {
       return CallAvailabilityState(
           status: CallAvailabilityStatus.notJoined, data: null);

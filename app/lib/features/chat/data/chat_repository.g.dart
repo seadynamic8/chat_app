@@ -187,23 +187,137 @@ final chatUserInsertProvider =
 );
 
 typedef ChatUserInsertRef = AutoDisposeStreamProviderRef<Map<String, dynamic>>;
-String _$chatUserUpdateHash() => r'363ec6424f12ddc9f79df7bf9326362fc9025c21';
+String _$chatUserUpdateHash() => r'96017bb2978f82967e97d01ee77bac10810558c3';
 
 /// See also [chatUserUpdate].
 @ProviderFor(chatUserUpdate)
-final chatUserUpdateProvider =
-    AutoDisposeStreamProvider<Map<String, dynamic>>.internal(
-  chatUserUpdate,
-  name: r'chatUserUpdateProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$chatUserUpdateHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const chatUserUpdateProvider = ChatUserUpdateFamily();
 
-typedef ChatUserUpdateRef = AutoDisposeStreamProviderRef<Map<String, dynamic>>;
-String _$onJoinForRoomHash() => r'83c4c5f315e71e8c49f0b9d9c6bd751c18e0cbdc';
+/// See also [chatUserUpdate].
+class ChatUserUpdateFamily extends Family<AsyncValue<Map<String, dynamic>>> {
+  /// See also [chatUserUpdate].
+  const ChatUserUpdateFamily();
+
+  /// See also [chatUserUpdate].
+  ChatUserUpdateProvider call(
+    String profileId,
+  ) {
+    return ChatUserUpdateProvider(
+      profileId,
+    );
+  }
+
+  @override
+  ChatUserUpdateProvider getProviderOverride(
+    covariant ChatUserUpdateProvider provider,
+  ) {
+    return call(
+      provider.profileId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'chatUserUpdateProvider';
+}
+
+/// See also [chatUserUpdate].
+class ChatUserUpdateProvider
+    extends AutoDisposeStreamProvider<Map<String, dynamic>> {
+  /// See also [chatUserUpdate].
+  ChatUserUpdateProvider(
+    String profileId,
+  ) : this._internal(
+          (ref) => chatUserUpdate(
+            ref as ChatUserUpdateRef,
+            profileId,
+          ),
+          from: chatUserUpdateProvider,
+          name: r'chatUserUpdateProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$chatUserUpdateHash,
+          dependencies: ChatUserUpdateFamily._dependencies,
+          allTransitiveDependencies:
+              ChatUserUpdateFamily._allTransitiveDependencies,
+          profileId: profileId,
+        );
+
+  ChatUserUpdateProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.profileId,
+  }) : super.internal();
+
+  final String profileId;
+
+  @override
+  Override overrideWith(
+    Stream<Map<String, dynamic>> Function(ChatUserUpdateRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ChatUserUpdateProvider._internal(
+        (ref) => create(ref as ChatUserUpdateRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        profileId: profileId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<Map<String, dynamic>> createElement() {
+    return _ChatUserUpdateProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ChatUserUpdateProvider && other.profileId == profileId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, profileId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin ChatUserUpdateRef on AutoDisposeStreamProviderRef<Map<String, dynamic>> {
+  /// The parameter `profileId` of this provider.
+  String get profileId;
+}
+
+class _ChatUserUpdateProviderElement
+    extends AutoDisposeStreamProviderElement<Map<String, dynamic>>
+    with ChatUserUpdateRef {
+  _ChatUserUpdateProviderElement(super.provider);
+
+  @override
+  String get profileId => (origin as ChatUserUpdateProvider).profileId;
+}
+
+String _$onJoinForRoomHash() => r'07834d72b71e632f978985d8c1a6fe4cdb47b217';
 
 /// See also [onJoinForRoom].
 @ProviderFor(onJoinForRoom)
@@ -217,9 +331,11 @@ class OnJoinForRoomFamily extends Family<AsyncValue<bool>> {
   /// See also [onJoinForRoom].
   OnJoinForRoomProvider call(
     String roomId,
+    String profileId,
   ) {
     return OnJoinForRoomProvider(
       roomId,
+      profileId,
     );
   }
 
@@ -229,6 +345,7 @@ class OnJoinForRoomFamily extends Family<AsyncValue<bool>> {
   ) {
     return call(
       provider.roomId,
+      provider.profileId,
     );
   }
 
@@ -252,10 +369,12 @@ class OnJoinForRoomProvider extends AutoDisposeStreamProvider<bool> {
   /// See also [onJoinForRoom].
   OnJoinForRoomProvider(
     String roomId,
+    String profileId,
   ) : this._internal(
           (ref) => onJoinForRoom(
             ref as OnJoinForRoomRef,
             roomId,
+            profileId,
           ),
           from: onJoinForRoomProvider,
           name: r'onJoinForRoomProvider',
@@ -267,6 +386,7 @@ class OnJoinForRoomProvider extends AutoDisposeStreamProvider<bool> {
           allTransitiveDependencies:
               OnJoinForRoomFamily._allTransitiveDependencies,
           roomId: roomId,
+          profileId: profileId,
         );
 
   OnJoinForRoomProvider._internal(
@@ -277,9 +397,11 @@ class OnJoinForRoomProvider extends AutoDisposeStreamProvider<bool> {
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.roomId,
+    required this.profileId,
   }) : super.internal();
 
   final String roomId;
+  final String profileId;
 
   @override
   Override overrideWith(
@@ -295,6 +417,7 @@ class OnJoinForRoomProvider extends AutoDisposeStreamProvider<bool> {
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         roomId: roomId,
+        profileId: profileId,
       ),
     );
   }
@@ -306,13 +429,16 @@ class OnJoinForRoomProvider extends AutoDisposeStreamProvider<bool> {
 
   @override
   bool operator ==(Object other) {
-    return other is OnJoinForRoomProvider && other.roomId == roomId;
+    return other is OnJoinForRoomProvider &&
+        other.roomId == roomId &&
+        other.profileId == profileId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, roomId.hashCode);
+    hash = _SystemHash.combine(hash, profileId.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -321,6 +447,9 @@ class OnJoinForRoomProvider extends AutoDisposeStreamProvider<bool> {
 mixin OnJoinForRoomRef on AutoDisposeStreamProviderRef<bool> {
   /// The parameter `roomId` of this provider.
   String get roomId;
+
+  /// The parameter `profileId` of this provider.
+  String get profileId;
 }
 
 class _OnJoinForRoomProviderElement
@@ -329,6 +458,8 @@ class _OnJoinForRoomProviderElement
 
   @override
   String get roomId => (origin as OnJoinForRoomProvider).roomId;
+  @override
+  String get profileId => (origin as OnJoinForRoomProvider).profileId;
 }
 
 String _$newRequestedRoomHash() => r'9b967f2aaceaea90b51a07c3108387c248e65a64';
@@ -346,7 +477,7 @@ final newRequestedRoomProvider = AutoDisposeStreamProvider<Room>.internal(
 );
 
 typedef NewRequestedRoomRef = AutoDisposeStreamProviderRef<Room>;
-String _$joinedRoomHash() => r'7ab55724c0128d9d804490fc857e1a96cf0d8b89';
+String _$joinedRoomHash() => r'31aa760e2747fadedda4b16d6d2036fb73e3a341';
 
 /// See also [joinedRoom].
 @ProviderFor(joinedRoom)

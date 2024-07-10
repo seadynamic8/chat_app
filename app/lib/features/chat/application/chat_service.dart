@@ -106,7 +106,8 @@ class ChatService {
     String roomId,
     String currentProfileId,
   ) async {
-    final joined = await ref.read(joinedRoomNotifierProvider(roomId).future);
+    final joined = await ref
+        .read(joinedRoomNotifierProvider(roomId, currentProfileId).future);
     if (joined) return;
 
     await ref
