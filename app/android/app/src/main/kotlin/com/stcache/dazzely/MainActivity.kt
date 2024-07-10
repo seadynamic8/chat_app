@@ -1,4 +1,4 @@
-package com.stcache.dazzely
+package com.stcache.worldchitchat
 
 import io.flutter.embedding.android.FlutterActivity
 

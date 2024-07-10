@@ -1,4 +1,4 @@
-package com.stcache.dazzely; // replace "com.example.myapp" with your app's package
+package com.stcache.worldchitchat; // replace "com.example.myapp" with your app's package
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import org.junit.Test;

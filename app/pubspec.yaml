@@ -104,7 +104,7 @@ dev_dependencies:
 patrol:
   app_name: Chat App
   android:
-    package_name: com.stcache.dazzely
+    package_name: com.stcache.worldchitchat
   ios:
     bundle_id: com.example.ChatApp
 
