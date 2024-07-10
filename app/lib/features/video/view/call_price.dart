@@ -13,11 +13,15 @@ class CallPrice extends ConsumerWidget {
         .select((value) => value.whenData((userAccess) => userAccess?.level)));
 
     return accessLevelValue.maybeWhen(
-      data: (accessLevel) => accessLevel == AccessLevel.trial
-          ? Center(
-              child: Text('Calling for Free (Trial)'.i18n),
-            )
-          : const SizedBox.shrink(),
+      data: (accessLevel) => switch (accessLevel) {
+        AccessLevel.trial => Center(
+            child: Text('Calling for Free (Trial)'.i18n),
+          ),
+        AccessLevel.free => Center(
+            child: Text('Calling for Free'.i18n),
+          ),
+        _ => const SizedBox.shrink(),
+      },
       orElse: () => const SizedBox.shrink(),
     );
   }

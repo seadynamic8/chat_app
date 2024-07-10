@@ -156,7 +156,9 @@ class PrivateProfileScreen extends ConsumerWidget {
                                   AccessLevel.premium => Chip(
                                       label: Text('Premium Subscription'.i18n),
                                     ),
-                                  _ => const SizedBox.shrink(),
+                                  AccessLevel.free => Chip(
+                                      label: Text('Free Subscription'.i18n),
+                                    ),
                                 },
                               ),
                       ),
