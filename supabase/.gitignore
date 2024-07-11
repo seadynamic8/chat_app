@@ -3,4 +3,4 @@
 .temp
 .env
 
-service-account.json
+service-account*

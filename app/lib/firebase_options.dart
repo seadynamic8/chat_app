@@ -27,10 +27,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -44,37 +41,47 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBlJmNcUwl3rlAUXWXJ7VzQMbSeG7cGHD8',
-    appId: '1:1069232687356:web:cc687d9f8098a53d64af79',
-    messagingSenderId: '1069232687356',
-    projectId: 'dazzely',
-    authDomain: 'dazzely.firebaseapp.com',
-    storageBucket: 'dazzely.appspot.com',
+    apiKey: 'AIzaSyDvPMnHJnMQp0Ksc5fYJF51cRdDPfOVGsw',
+    appId: '1:700062530532:web:72d4941a934bf3795025f1',
+    messagingSenderId: '700062530532',
+    projectId: 'sc-worldchitchat',
+    authDomain: 'sc-worldchitchat.firebaseapp.com',
+    storageBucket: 'sc-worldchitchat.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCWrmrs_as5JaDIEDW0NPmhvK8rS4mod48',
-    appId: '1:1069232687356:android:c7c7f4cf2711a5be64af79',
-    messagingSenderId: '1069232687356',
-    projectId: 'dazzely',
-    storageBucket: 'dazzely.appspot.com',
+    apiKey: 'AIzaSyD5MJT6u3Pb9zW8kcqZkpTdhSdMROgX4no',
+    appId: '1:700062530532:android:3225f72638613ee45025f1',
+    messagingSenderId: '700062530532',
+    projectId: 'sc-worldchitchat',
+    storageBucket: 'sc-worldchitchat.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDFihX4vi1fFCxnmfYOc6BNf83MQZRMlFM',
-    appId: '1:1069232687356:ios:d190736e8311500f64af79',
-    messagingSenderId: '1069232687356',
-    projectId: 'dazzely',
-    storageBucket: 'dazzely.appspot.com',
+    apiKey: 'AIzaSyCBpta93O0gClbACdDj-zsJq68xc57PEh8',
+    appId: '1:700062530532:ios:c7952921ba79a6d05025f1',
+    messagingSenderId: '700062530532',
+    projectId: 'sc-worldchitchat',
+    storageBucket: 'sc-worldchitchat.appspot.com',
     iosBundleId: 'com.stcache.dazzelyChatTest',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDFihX4vi1fFCxnmfYOc6BNf83MQZRMlFM',
-    appId: '1:1069232687356:ios:bea4a2d3e2b5dba064af79',
-    messagingSenderId: '1069232687356',
-    projectId: 'dazzely',
-    storageBucket: 'dazzely.appspot.com',
-    iosBundleId: 'com.example.chatApp.RunnerTests',
+    apiKey: 'AIzaSyCBpta93O0gClbACdDj-zsJq68xc57PEh8',
+    appId: '1:700062530532:ios:0745a65a8f8d8ebf5025f1',
+    messagingSenderId: '700062530532',
+    projectId: 'sc-worldchitchat',
+    storageBucket: 'sc-worldchitchat.appspot.com',
+    iosBundleId: 'com.example.chatApp',
   );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyDvPMnHJnMQp0Ksc5fYJF51cRdDPfOVGsw',
+    appId: '1:700062530532:web:507c7bcadcd1fc0e5025f1',
+    messagingSenderId: '700062530532',
+    projectId: 'sc-worldchitchat',
+    authDomain: 'sc-worldchitchat.firebaseapp.com',
+    storageBucket: 'sc-worldchitchat.appspot.com',
+  );
+
 }

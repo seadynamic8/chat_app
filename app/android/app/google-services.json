@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "1069232687356",
-    "project_id": "dazzely",
-    "storage_bucket": "dazzely.appspot.com"
+    "project_number": "700062530532",
+    "project_id": "sc-worldchitchat",
+    "storage_bucket": "sc-worldchitchat.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1069232687356:android:c7c7f4cf2711a5be64af79",
+        "mobilesdk_app_id": "1:700062530532:android:3225f72638613ee45025f1",
         "android_client_info": {
-          "package_name": "com.stcache.dazzely"
+          "package_name": "com.stcache.worldchitchat"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCWrmrs_as5JaDIEDW0NPmhvK8rS4mod48"
+          "current_key": "AIzaSyD5MJT6u3Pb9zW8kcqZkpTdhSdMROgX4no"
         }
       ],
       "services": {
