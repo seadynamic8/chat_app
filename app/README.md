@@ -1,4 +1,4 @@
-# Dazzely
+# WorldChitChat
 
 A new Flutter project.
 
