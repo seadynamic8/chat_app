@@ -55,9 +55,7 @@ dependencies:
   country_flags: ^3.0.0
   country_picker: ^2.0.26
   locale_names: ^1.1.1
-  language_picker:
-    git:
-      url: https://github.com/sczesla/language_picker
+  language_picker: ^0.4.4+1
   wakelock_plus: ^1.1.4
   username_gen: ^1.0.4
   path: ^1.8.3
