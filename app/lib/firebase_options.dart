@@ -59,11 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCBpta93O0gClbACdDj-zsJq68xc57PEh8',
-    appId: '1:700062530532:ios:c7952921ba79a6d05025f1',
+    appId: '1:700062530532:ios:5607fe1076d799a45025f1',
     messagingSenderId: '700062530532',
     projectId: 'sc-worldchitchat',
     storageBucket: 'sc-worldchitchat.appspot.com',
-    iosBundleId: 'com.stcache.dazzelyChatTest',
+    iosBundleId: 'com.stcache.worldchitchat',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(

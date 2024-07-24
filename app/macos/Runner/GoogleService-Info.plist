@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyDFihX4vi1fFCxnmfYOc6BNf83MQZRMlFM</string>
+	<string>AIzaSyCBpta93O0gClbACdDj-zsJq68xc57PEh8</string>
 	<key>GCM_SENDER_ID</key>
-	<string>1069232687356</string>
+	<string>700062530532</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.chatApp.RunnerTests</string>
+	<string>com.example.chatApp</string>
 	<key>PROJECT_ID</key>
-	<string>dazzely</string>
+	<string>sc-worldchitchat</string>
 	<key>STORAGE_BUCKET</key>
-	<string>dazzely.appspot.com</string>
+	<string>sc-worldchitchat.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1069232687356:ios:bea4a2d3e2b5dba064af79</string>
+	<string>1:700062530532:ios:0745a65a8f8d8ebf5025f1</string>
 </dict>
 </plist>
