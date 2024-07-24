@@ -6,8 +6,8 @@ import 'package:url_launcher/url_launcher.dart';
 class TermsAndPrivacyText extends StatelessWidget {
   const TermsAndPrivacyText({super.key, required this.textColor});
 
-  final _privacyUrl = 'https://dazzely.com/privacy.html';
-  final _termsUrl = 'https://dazzely.com/terms.html';
+  final _privacyUrl = 'https://worldchitchat.com/privacy.html';
+  final _termsUrl = 'https://worldchitchat.com/terms.html';
 
   final Color textColor;
 
