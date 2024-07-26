@@ -96,6 +96,7 @@ extension ChannelPresenceHandlers on ChannelRepository {
   List<String> getOnlineUserIds({required int limit, DateTime? lastOnlineAt}) {
     try {
       List<String> onlineUserIds = [];
+
       for (final presence in presenceStates) {
         // reached limit (or range of page)
         if (onlineUserIds.length == limit) return onlineUserIds;
@@ -127,11 +128,11 @@ extension ChannelPresenceHandlers on ChannelRepository {
         } else {
           logger.t('$channelName | Status: ${status.name}', addUser: false);
         }
-        return await completer.future;
       } catch (error, st) {
         logger.error('subscribed()', error, st);
       }
     });
+    return await completer.future;
   }
 
   Future<void> updatePresence(OnlineStatus status) async {
