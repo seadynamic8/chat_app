@@ -71,7 +71,12 @@ class PublicProfileScreen extends ConsumerWidget {
                             top: 10,
                             child: IconButton(
                               key: K.publicProfileBackButton,
-                              icon: const Icon(Icons.arrow_back),
+                              icon: const Icon(
+                                Icons.arrow_back,
+                                shadows: [
+                                  Shadow(color: Colors.black, blurRadius: 10),
+                                ],
+                              ),
                               onPressed: () {
                                 context.router.maybePop();
                               },
