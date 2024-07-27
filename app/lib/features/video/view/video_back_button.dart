@@ -20,7 +20,7 @@ class VideoBackButton extends StatelessWidget {
         icon: const Icon(
           Icons.arrow_back,
           shadows: [
-            Shadow(color: Colors.black, blurRadius: 1),
+            Shadow(color: Colors.black, blurRadius: 10),
           ],
         ),
       ),
