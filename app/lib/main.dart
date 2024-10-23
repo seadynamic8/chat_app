@@ -89,6 +89,7 @@ class MyApp extends ConsumerWidget {
         .select((value) => value.whenData((profile) => profile?.language)));
 
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       title: 'Chat With Friends',
       darkTheme:
           ThemeData.dark().copyWith(colorScheme: const ColorScheme.dark()),
