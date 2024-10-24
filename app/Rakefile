@@ -70,3 +70,30 @@ namespace :stage do
     system command
   end
 end
+
+namespace :prod do
+  
+  desc "Run on S20"
+  task :run_s20 do
+    command = "flutter run -d \"SM G981U\" --dart-define-from-file=encryption_key.json --dart-define-from-file=.prod.env"
+    system command
+  end
+
+  desc "Build ipa for production"
+  task :build_ios do
+    command = "flutter build ipa --obfuscate --split-debug-info=./build_debug_info --dart-define-from-file=encryption_key.json --dart-define-from-file=.prod.env"
+    system command
+  end
+  
+  desc "Build appbundle for production"
+  task :build_playstore do
+    command = "flutter build appbundle --obfuscate --split-debug-info=./build_debug_info --dart-define-from-file=encryption_key.json --dart-define-from-file=.prod.env"
+    system command
+  end
+  
+  desc "Build apk for production"
+  task :build_android do
+    command = "flutter build apk --obfuscate --split-debug-info=./build_debug_info --dart-define-from-file=encryption_key.json --dart-define-from-file=.prod.env"
+    system command
+  end
+end
